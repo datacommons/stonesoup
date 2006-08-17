@@ -70,3 +70,7 @@ Processing EntriesController#list (for 127.0.0.1 at 2006-08-17 13:52:22) [GET]
 Rendering  within layouts/entries
 Rendering entries/list
 Completed in 0.05046 (19 reqs/sec) | Rendering: 0.01653 (32%) | DB: 0.02322 (46%) | 200 OK [http://localhost/entries/list]
+  [4;36;1mSQL (0.000000)[0m   [0;1mMysql::Error: Table 'dcp_dev.schema_info' doesn't exist: SELECT * FROM schema_info[0m
+  [4;35;1mSQL (0.022717)[0m   [0mSHOW TABLES[0m
+  [4;36;1mSQL (0.049303)[0m   [0;1mSHOW FIELDS FROM entries[0m
+  [4;35;1mSQL (0.001914)[0m   [0mSHOW KEYS FROM entries[0m
