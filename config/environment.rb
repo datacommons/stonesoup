@@ -51,3 +51,11 @@ end
 # end
 
 # Include your application configuration below
+
+require("ferret/indexer")
+#MojoDNA::Searchable::Ferret::Indexer::default_index_path "#{RAILS_ROOT}/db/ssc_index"
+Searchable::backend :local
+
+# UTF-8 Support (multibyte support)
+$KCODE = 'u'
+require 'jcode'

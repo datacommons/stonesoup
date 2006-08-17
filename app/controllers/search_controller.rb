@@ -1,6 +1,7 @@
 class SearchController < ApplicationController
   def index
     search
+    render :action => 'search'
   end
 
   def search

@@ -1,0 +1,28 @@
+<p>This is a directory of organizations looking to build a cooperative economy.</p>
+
+<%= start_form_tag( {:action => 'search'}, :method => 'get' ) %>
+  <p><label for="q">Search:</label>
+  <%= text_field_tag 'q' %>
+  <%= submit_tag 'Go' %>
+  </p>
+<%= end_form_tag %>
+
+<% if @entries %>
+ <% if @entries.blank? %>
+  <p>No results were found for this search.</p>
+  <p><%= link_to 'Would you like to add an entry?', :controller => 'entries', :action => 'new' %>
+ <% else %>
+ <h2>Search Results</h2>
+ <hr />
+  <% for entry in @entries %>
+   <p><%= link_to entry.name, :controller => 'entries', :action => 'show', :id => entry %></p>
+  <% end %>
+ <% end %>
+<% end %>
+<hr />
+<h2>Latest Changes</h2>
+<% for entry in Entry.find(:all, :order => 'updated_at DESC', :limit => 15) %>
+  <p><%= link_to entry.name, :controller => 'entries', :action => 'show', :id => entry %>
+  updated <%= time_ago_in_words entry.updated_at %> ago
+  </p>
+<% end %>
