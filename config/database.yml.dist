@@ -12,9 +12,9 @@
 #   http://dev.mysql.com/doc/refman/5.0/en/old-client.html
 development:
   adapter: mysql
-  database: dcp_dev
+  database: dcp_development
   username: root
-  password: root
+  password: 
   host: localhost
 
 # Warning: The database defined as 'test' will be erased and
