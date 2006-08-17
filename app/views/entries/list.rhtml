@@ -1,0 +1,27 @@
+<h1>Listing entries</h1>
+
+<table>
+  <tr>
+  <% for column in Entry.content_columns %>
+    <th><%= column.human_name %></th>
+  <% end %>
+  </tr>
+  
+<% for entry in @entries %>
+  <tr>
+  <% for column in Entry.content_columns %>
+    <td><%=h entry.send(column.name) %></td>
+  <% end %>
+    <td><%= link_to 'Show', :action => 'show', :id => entry %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => entry %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => entry }, :confirm => 'Are you sure?', :post => true %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to 'Previous page', { :page => @entry_pages.current.previous } if @entry_pages.current.previous %>
+<%= link_to 'Next page', { :page => @entry_pages.current.next } if @entry_pages.current.next %> 
+
+<br />
+
+<%= link_to 'New entry', :action => 'new' %>
