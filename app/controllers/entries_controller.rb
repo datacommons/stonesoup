@@ -24,7 +24,7 @@ class EntriesController < ApplicationController
     @entry = Entry.new(params[:entry])
     if @entry.save
       flash[:notice] = 'Entry was successfully created.'
-      redirect_to :action => 'list'
+      redirect_to :controller => 'search', :action => 'search'
     else
       render :action => 'new'
     end

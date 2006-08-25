@@ -1,5 +1,6 @@
 <p>This is a directory of organizations looking to build a cooperative economy.</p>
 
+<p><%= link_to 'Add New Entry', :controller => 'entries', :action => 'new' %></p>
 <%= start_form_tag( {:action => 'search'}, :method => 'get' ) %>
   <p><label for="q">Search:</label>
   <%= text_field_tag 'q' %>
@@ -10,7 +11,7 @@
 <% if @entries %>
  <% if @entries.blank? %>
   <p>No results were found for this search.</p>
-  <p><%= link_to 'Would you like to add an entry?', :controller => 'entries', :action => 'new' %>
+  <p><%= link_to 'Would you like to add an entry?', :controller => 'entries', :action => 'new' %></p>
  <% else %>
  <h2>Search Results</h2>
  <hr />
