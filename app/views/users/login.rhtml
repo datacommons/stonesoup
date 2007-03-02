@@ -1,0 +1,41 @@
+<div title="Account login" id="loginform" class="form">
+
+<%= start_form_tag :action=> "login" %>
+    <h3>Please login if you have an account</h3>
+    
+    <% if @message %>
+      <div id="message"><%= @message %></div>
+    <% end %>
+
+    <label for="user_login">Login:</label><br/>
+    <input type="text" name="user_login" id="user_login" size="30" value=""/><br/>
+
+    <label for="user_password">Password:</label><br/>
+    <input type="password" name="user_password" id="user_password" size="30"/>
+
+    <br/>
+    <input type="submit" name="login" value="Login &#187;" class="primary" />
+
+<%= end_form_tag %>
+
+</div>
+
+
+<div title="Account signup" id="signupform" class="form">
+
+<%= start_form_tag :action=> "signup" %>
+  <h3>Signup</h3>
+  <%= error_messages_for 'user' %><br/>
+  
+  <label for="user_login">Desired login:</label><br/>
+  <%= text_field "user", "login", :size => 30 %><br/>
+  <label for="user_password">Choose password:</label><br/>
+  <%= password_field "user", "password", :size => 30 %><br/>
+  <label for="user_password_confirmation">Confirm password:</label><br/>
+  <%= password_field "user", "password_confirmation", :size => 30 %><br/>
+
+<input type="submit" value="Signup &#187;" class="primary" />
+
+<%= end_form_tag %>
+
+</div>

@@ -8,6 +8,12 @@
 
 <p style="color: green"><%= flash[:notice] %></p>
 
+<% if current_user %>
+<p>Logged in as: <%= current_user.login %> (<%= link_to 'Logout', :controller => 'users', :action => 'logout' %>)</p>
+<% else %>
+<p><%= link_to 'Login', :controller => 'users', :action => 'login' %></p>
+<% end %>
+
 <%= @content_for_layout %>
 
 </body>
