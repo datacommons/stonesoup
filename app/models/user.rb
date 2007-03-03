@@ -5,6 +5,8 @@ class User < ActiveRecord::Base
 
   cattr_accessor :current_user
 
+  has_and_belongs_to_many :entries
+
   def self.authenticate(login, pass)
     find_first(["login = ? AND password = ?", login, sha1(pass)])
   end  

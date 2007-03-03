@@ -4,5 +4,16 @@
 </p>
 <% end %>
 
+<% if @entry.users.any? %>
+<h3>Editors of this entry</h3>
+<% for user in @entry.users %>
+<p><%= user.login%></p>
+<% end %>
+<% end %>
+
+<% if @entry.users.blank? %>
+<p>There is no current editor for this entry.  Would you like to <%= link_to 'become the editor for this entry', :action => 'become_editor', :id => @entry %>?</p>
+<% end %>
+
 <%= link_to 'Edit', :action => 'edit', :id => @entry %> |
 <%= link_to 'Back', :action => 'list' %>

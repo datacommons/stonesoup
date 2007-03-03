@@ -1,5 +1,5 @@
 class EntriesController < ApplicationController
-  before_filter :login_required, :only => [:new, :create, :edit, :update, :destroy]
+  before_filter :login_required, :only => [:new, :create, :edit, :update, :destroy, :become_editor]
 
   def index
     list
@@ -25,6 +25,7 @@ class EntriesController < ApplicationController
   def create
     @entry = Entry.new(params[:entry])
     if @entry.save
+      @entry.users << current_user if params[:associate_user_to_entry]
       flash[:notice] = 'Entry was successfully created.'
       redirect_to :controller => 'search', :action => 'search'
     else
@@ -49,5 +50,14 @@ class EntriesController < ApplicationController
   def destroy
     Entry.find(params[:id]).destroy
     redirect_to :action => 'list'
+  end
+
+  def become_editor
+    @entry = Entry.find(params[:id])
+    if request.method == :post
+      @entry.users << current_user
+      flash[:notice] = "You are now an editor for entry: #{@entry.name}"
+      redirect_to :action => 'show', :id => @entry
+    end
   end
 end
