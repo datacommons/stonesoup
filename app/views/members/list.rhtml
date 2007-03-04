@@ -1,0 +1,27 @@
+<h1>Listing members</h1>
+
+<table>
+  <tr>
+  <% for column in Member.content_columns %>
+    <th><%= column.human_name %></th>
+  <% end %>
+  </tr>
+  
+<% for member in @members %>
+  <tr>
+  <% for column in Member.content_columns %>
+    <td><%=h member.send(column.name) %></td>
+  <% end %>
+    <td><%= link_to 'Show', :action => 'show', :id => member %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => member %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => member }, :confirm => 'Are you sure?', :post => true %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to 'Previous page', { :page => @member_pages.current.previous } if @member_pages.current.previous %>
+<%= link_to 'Next page', { :page => @member_pages.current.next } if @member_pages.current.next %> 
+
+<br />
+
+<%= link_to 'New member', :action => 'new' %>

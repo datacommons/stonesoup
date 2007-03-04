@@ -15,6 +15,7 @@ class UsersController < ApplicationController
       when :post
         if session[:user] = User.authenticate(params['user_login'], params['user_password'])
 
+          session[:user].update_attribute('last_login', DateTime.now)
           flash['notice']  = "Login successful"
           redirect_back_or_default :action => "welcome"
         else

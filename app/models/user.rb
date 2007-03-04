@@ -11,6 +11,8 @@ class User < ActiveRecord::Base
   before_validation_on_create :crypt_password
 
   has_and_belongs_to_many :entries
+  belongs_to :member
+  #attr_protected :member_id  #will want this for security soon...
 
   def self.authenticate(login, pass)
     find_first(["login = ? AND password = ?", login, sha1(pass)])
@@ -57,7 +59,7 @@ class User < ActiveRecord::Base
   # If its empty we assume that the user didn't want to change his
   # password and just reset it to the old value.
   def crypt_unless_empty
-    if password_cleartext.empty?
+    if password_cleartext.blank?
       user = self.class.find(self.id)
       self.password = user.password
     else

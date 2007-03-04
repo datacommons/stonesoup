@@ -3,6 +3,7 @@ class Entry < ActiveRecord::Base
   include GeoKit::Geocoders
 
   has_and_belongs_to_many :users
+  belongs_to :member
 
   index_path "#{RAILS_ROOT}/db/entry_index"
   
