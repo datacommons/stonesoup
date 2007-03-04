@@ -15,5 +15,17 @@
 <p>There is no current editor for this entry.  Would you like to <%= link_to 'become the editor for this entry', :action => 'become_editor', :id => @entry %>?</p>
 <% end %>
 
+  <%
+  map = GoogleMap.new
+  map.markers << GoogleMapMarker.new(:map => map, 
+                                     :lat => Float(@entry.latitude), 
+                                     :lng => Float(@entry.longitude),
+                                     :html => @entry.name )
+  %>
+  <%= map.to_html %>
+  <div style="width: 500px; height: 500px;">
+    <%= map.div %>
+  </div>
+
 <%= link_to 'Edit', :action => 'edit', :id => @entry %> |
 <%= link_to 'Back', :action => 'list' %>
