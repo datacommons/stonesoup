@@ -5,6 +5,11 @@ class User < ActiveRecord::Base
 
   cattr_accessor :current_user
 
+  attr_accessor :password_cleartext
+  before_update :crypt_unless_empty
+
+  before_validation_on_create :crypt_password
+
   has_and_belongs_to_many :entries
 
   def self.authenticate(login, pass)
@@ -14,11 +19,15 @@ class User < ActiveRecord::Base
   def change_password(pass)
     update_attribute "password", self.class.sha1(pass)
   end
+
+  def is_admin?
+    is_admin
+  end
     
   protected
 
   def self.sha1(pass)
-    Digest::SHA1.hexdigest("change-me--#{pass}--")
+    Digest::SHA1.hexdigest("ROTFL--#{pass}--")
   end
     
   before_create :crypt_password
@@ -28,8 +37,32 @@ class User < ActiveRecord::Base
   end
 
   validates_length_of :login, :within => 3..40
-  validates_length_of :password, :within => 5..40
-  validates_presence_of :login, :password, :password_confirmation
+  #validates_length_of :password, :within => 5..40
+  validates_presence_of :login, :password
   validates_uniqueness_of :login, :on => :create
-  validates_confirmation_of :password, :on => :create     
+  validates_confirmation_of :password_cleartext, :on => :create     
+
+  # Before saving the record to database we will crypt the password 
+  # using SHA1. 
+  # We never store the actual password in the DB.
+  def crypt_password
+    if password_cleartext && !password_cleartext.empty?
+      write_attribute "password", self.class.sha1(password_cleartext)
+    else
+      write_attribute "password", nil
+    end
+  end
+
+  # If the record is updated we will check if the password is empty.
+  # If its empty we assume that the user didn't want to change his
+  # password and just reset it to the old value.
+  def crypt_unless_empty
+    if password_cleartext.empty?
+      user = self.class.find(self.id)
+      self.password = user.password
+    else
+      write_attribute "password", self.class.sha1(password_cleartext)
+    end        
+  end  
+
 end

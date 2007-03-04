@@ -1,0 +1,12 @@
+<%= error_messages_for 'user' %>
+
+<!--[form:user]-->
+<p><label for="user_login">Login</label><br/>
+<%= text_field 'user', 'login'  %></p>
+
+<p><label for="user_password_cleartext">Password</label><br/>
+<%= text_field 'user', 'password_cleartext'  %></p>
+
+<p><%= check_box 'user', 'is_admin' %><label for="user_is_admin">This user is an administrator</label></p>
+<!--[eoform:user]-->
+
