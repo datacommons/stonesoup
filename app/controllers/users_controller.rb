@@ -17,7 +17,7 @@ class UsersController < ApplicationController
 
           session[:user].update_attribute('last_login', DateTime.now)
           flash['notice']  = "Login successful"
-          redirect_back_or_default :action => "welcome"
+          redirect_back_or_default :controller => 'search', :action => "index"
         else
           @login    = params['user_login']
           @message  = "Login unsuccessful"

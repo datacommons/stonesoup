@@ -61,10 +61,11 @@
 <p><label for="entry_description">Description</label><br/>
 <%= text_area 'entry', 'description'  %></p>
 
-<p><label for="entry_created_at">Created at</label><br/>
-<%= datetime_select 'entry', 'created_at'  %></p>
+<% if current_user.member %>
+<p><%= check_box_tag 'make_entry_private', '1', @entry.member %>
+<label for="make_entry_private">This entry is private to <%= current_user.member.name %></label>
+</p>
+<% end %>
 
-<p><label for="entry_updated_at">Updated at</label><br/>
-<%= datetime_select 'entry', 'updated_at'  %></p>
 <!--[eoform:entry]-->
 

@@ -7,12 +7,20 @@
 <% if @entry.users.any? %>
 <h3>Editors of this entry</h3>
 <% for user in @entry.users %>
-<p><%= user.login%></p>
+<p><%= user.login %><%= " (pending)" unless user.last_login %></p>
 <% end %>
 <% end %>
 
 <% if @entry.users.blank? %>
 <p>There is no current editor for this entry.  Would you like to <%= link_to 'become the editor for this entry', :action => 'become_editor', :id => @entry %>?</p>
+<% end %>
+
+<% if @entry.users.include? current_user %>
+<p>Invite new editor for this entry:</p>
+<%= start_form_tag :action => 'invite', :id => @entry %>
+<%= text_field_tag 'user_login' %>
+<%= submit_tag 'Invite' %>
+<%= end_form_tag %>
 <% end %>
 
   <%

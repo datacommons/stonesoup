@@ -16,14 +16,16 @@
  <h2>Search Results</h2>
  <hr />
   <% for entry in @entries %>
-   <p><%= link_to entry.name, :controller => 'entries', :action => 'show', :id => entry %></p>
+   <p><%= link_to entry.name, :controller => 'entries', :action => 'show', :id => entry %>
+  <%= "(Private to #{entry.member.name})" if entry.member %></p>
   <% end %>
  <% end %>
 <% end %>
 <hr />
 <h2>Latest Changes</h2>
-<% for entry in Entry.find(:all, :order => 'updated_at DESC', :limit => 15) %>
+<% for entry in Entry.latest_changes %>
   <p><%= link_to entry.name, :controller => 'entries', :action => 'show', :id => entry %>
+  <%= "(Private to #{entry.member.name})" if entry.member %>
   updated <%= time_ago_in_words entry.updated_at %> ago
   </p>
 <% end %>
