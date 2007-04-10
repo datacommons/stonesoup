@@ -1,20 +1,104 @@
-body { background-color: #fff; color: #333; }
+html, body {
+	margin:0;
+	padding:0;
+	text-align:center;
+	font-family:lucida grande, verdana, arial;
+	font-size:12px;
+	line-height:150%;
+	color:#222;
+	background-color: #a3c17b;
+} 
 
-body, p, ol, ul, td {
-  font-family: verdana, arial, helvetica, sans-serif;
-  font-size:   13px;
-  line-height: 18px;
+img { border: 0; }
+
+a:link{
+        color: #114499;
 }
 
-pre {
-  background-color: #eee;
-  padding: 10px;
-  font-size: 11px;
+a:visited{
+           color: #114499;
 }
 
-a { color: #000; }
-a:visited { color: #666; }
-a:hover { color: #fff; background-color:#000; }
+a:hover{
+         color: red;
+} 
+
+h1 {
+	color: #339966;
+	font-size:18px;
+	line-height:1.2em;
+}
+
+h2 {
+	color: #339966;
+	font-size:16px;
+}
+
+h3 {
+	color: #339966;
+	font-size:14px;
+}
+
+
+/** Main Layout CSS **/
+ 
+#maincol {
+	position: relative;
+	margin: 0;
+	padding: 0;
+	width: 701px;
+	text-align:left;
+	padding:0 0 20px 15px; 
+}
+
+#footer {
+	text-align: center;
+	vertical-align: middle;
+	height:60px;
+	clear:both;
+	padding: 0;
+	margin: 0;
+	border-top: 1px solid #339966; 
+        background-image: url(/images/footer-bg.gif);
+        background-position: top left;
+        background-repeat: repeat-x; 
+        background-color: #93b86d;
+}
+
+#bigwrapper {
+	background: url(/images/dcp-bg.gif) repeat-y top; 
+}
+
+#pagewidth {
+	padding:0;
+	width:716px;
+	text-align:left;
+	margin-left:auto;
+	margin-right:auto;
+	background-color: #f0f6d2;
+} 
+ 
+#header {
+	margin: 0;
+	padding: 0;
+	position:relative;
+	height:141px;
+	width:100%;
+	border-bottom: 2px solid #23480d;
+	background-color: #fff;
+}
+
+#logo {
+	height:110px;
+	width:700px;
+	float:left;
+	margin: 8px 0 0 8px;
+}
+
+#userstatus {
+	float: left;
+	margin: 0 0 0 15px;
+}
 
 .fieldWithErrors {
   padding: 2px;
