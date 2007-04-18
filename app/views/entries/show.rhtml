@@ -14,6 +14,8 @@
 
 <p><%= simple_format @entry.description %></p>
 
+<div class="clearboth"></div>
+
 <div id="listing_info">
 
 <dl id="address">
@@ -36,6 +38,7 @@
 </div id="listing_info">
 
 <% if @entry.users.any? %>
+<div class="clearboth"></div>
 <h3>Editors of this entry</h3>
 <% for user in @entry.users %>
 <p><%= user.login %><%= " (pending)" unless user.last_login %></p>
