@@ -2,7 +2,7 @@
 # migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 
-ActiveRecord::Schema.define(:version => 6) do
+ActiveRecord::Schema.define(:version => 7) do
 
   create_table "entries", :force => true do |t|
     t.column "name", :string
@@ -33,6 +33,53 @@ ActiveRecord::Schema.define(:version => 6) do
     t.column "longitude", :float
     t.column "distance", :float
     t.column "member_id", :integer
+    t.column "prod_serv1", :string
+    t.column "prod_serv2", :string
+    t.column "prod_serv3", :string
+    t.column "support_organization", :boolean
+    t.column "worker_coop", :boolean
+    t.column "producer_coop", :boolean
+    t.column "marketing_coop", :boolean
+    t.column "housing_coop", :boolean
+    t.column "consumer_coop", :boolean
+    t.column "community_land_trust", :boolean
+    t.column "conservation_ag_land_trust", :boolean
+    t.column "alternative_currency", :boolean
+    t.column "intentional_community", :boolean
+    t.column "collective", :boolean
+    t.column "artist_run_center", :boolean
+    t.column "community_center", :boolean
+    t.column "community_development_financial_institution", :boolean
+    t.column "cooperative_financial_institution", :boolean
+    t.column "mutual_aid_self_help_group", :boolean
+    t.column "activist_social_change_organization", :boolean
+    t.column "union_labor_organization", :boolean
+    t.column "government", :boolean
+    t.column "fair_trade_organization", :boolean
+    t.column "network_association", :boolean
+    t.column "non_profit_org", :boolean
+    t.column "esop", :boolean
+    t.column "majority_owned_esop", :boolean
+    t.column "percentage_owned", :boolean
+    t.column "other", :boolean
+    t.column "type_of_other", :string
+    t.column "naics_code", :integer
+    t.column "informal", :boolean
+    t.column "cooperative", :boolean
+    t.column "partnership", :boolean
+    t.column "llc", :boolean
+    t.column "s_corporation", :boolean
+    t.column "c_corporation", :boolean
+    t.column "non_profit_corporation_501c3", :boolean
+    t.column "non_profit_corporation_501c4", :boolean
+    t.column "non_profit_corporation_other", :boolean
+    t.column "other_type_of_incorp", :boolean
+    t.column "type_of_other_incorp", :string
+    t.column "have_a_fiscal_sponsor", :boolean
+    t.column "year_founded", :date
+    t.column "democratic", :boolean
+    t.column "union_association", :boolean
+    t.column "which_union", :string
   end
 
   create_table "entries_users", :id => false, :force => true do |t|
