@@ -1,8 +1,39 @@
-<% for column in Entry.content_columns %>
-<p>
-  <b><%= column.human_name %>:</b> <%=h @entry.send(column.name) %>
-</p>
-<% end %>
+<h1><%= @entry.name %></h1>
+
+  <%
+  map = GoogleMap.new
+  map.markers << GoogleMapMarker.new(:map => map, 
+                                     :lat => Float(@entry.latitude), 
+                                     :lng => Float(@entry.longitude),
+                                     :html => @entry.name )
+  %>
+  <%= map.to_html %>
+  <div style="width: 300px; height: 300px; float: right; border: 1px solid #ccc; margin: 5px 0 20px 20px;">
+    <%= map.div %>
+  </div>
+
+<p><%= simple_format @entry.description %></p>
+
+<div id="listing_info">
+
+<dl id="address">
+<dt>Address</dt>
+<dd><%= @entry.physical_address1 %>, <%= @entry.physical_address2 %></dd>
+<dd><%= @entry.physical_city %></dd>
+<dd><%= @entry.physical_state %>, <%= @entry.physical_zip %></dd>
+<dd><%= @entry.physical_country %></dd>
+</dl id="address">
+
+<dl id="address">
+<dt>Phone</dt>
+<dd><%= @entry.phone1 %></dd>
+</dl id="address">
+
+<dl id="address">
+<dt>Email</dt>
+<dd><A HREF=mailto:<%= @entry.email %>><%= @entry.email %></A></dd>
+</dl id="address">
+</div id="listing_info">
 
 <% if @entry.users.any? %>
 <h3>Editors of this entry</h3>
@@ -23,17 +54,5 @@
 <%= end_form_tag %>
 <% end %>
 
-  <%
-  map = GoogleMap.new
-  map.markers << GoogleMapMarker.new(:map => map, 
-                                     :lat => Float(@entry.latitude), 
-                                     :lng => Float(@entry.longitude),
-                                     :html => @entry.name )
-  %>
-  <%= map.to_html %>
-  <div style="width: 500px; height: 500px;">
-    <%= map.div %>
-  </div>
-
 <%= link_to 'Edit', :action => 'edit', :id => @entry %> |
-<%= link_to 'Back', :action => 'list' %>
+<%= link_to 'Back', :controller => 'search', :action => 'index' %>

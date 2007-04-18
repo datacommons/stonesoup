@@ -3,8 +3,7 @@ html, body {
 	padding:0;
 	text-align:center;
 	font-family:lucida grande, verdana, arial;
-	font-size:12px;
-	line-height:150%;
+	font-size:14px;
 	color:#222;
 	background-color: #a3c17b;
 } 
@@ -25,20 +24,32 @@ a:hover{
 
 h1 {
 	color: #339966;
-	font-size:18px;
-	line-height:1.2em;
+	font-size:19px;
+	border-bottom: 1px solid #ccc;
 }
 
 h2 {
 	color: #339966;
-	font-size:16px;
+	font-size:17px;
+	border-bottom: 1px solid #ccc;
 }
 
 h3 {
 	color: #339966;
-	font-size:14px;
+	font-size:15px;
+	border-bottom: 1px solid #ccc;
 }
 
+dl {
+	text-align: left;
+	}
+
+dd {
+	font-size: 85%;
+	text-align: left;
+	padding-left: 0px;
+	margin-left: 0px;
+}
 
 /** Main Layout CSS **/
  
@@ -46,9 +57,9 @@ h3 {
 	position: relative;
 	margin: 0;
 	padding: 0;
-	width: 701px;
+	width: 686px; /* was 701 */ 
 	text-align:left;
-	padding:0 0 20px 15px; 
+	padding:0 15px 20px 15px; 
 }
 
 #footer {
@@ -99,6 +110,42 @@ h3 {
 	float: left;
 	margin: 0 0 0 15px;
 }
+
+#listing_info {
+	min-height: 130px;
+	margin-top: 0px;
+}
+
+#address {
+	float: left;
+	padding: 25px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+#address dt {
+	font-size: 140%;
+	color: #339966;
+	border-bottom: 1px solid #ccc;
+}
+
+#address dd {
+	font-size: 100%;
+}
+
+#loginform {
+	width: 320px;
+	margin: 0 0 20px 0;
+	padding: 0;
+}
+
+#signupform {
+	width: 320px;
+	margin: 0 0 20px 0;
+	padding: 0;
+}
+
+/* Rails Stuff */
 
 .fieldWithErrors {
   padding: 2px;
@@ -155,4 +202,3 @@ div.progressBar div.background {
   height: 18px;
   width: 0%;
 }
-
