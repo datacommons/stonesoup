@@ -145,6 +145,10 @@ dd {
 	padding: 0;
 }
 
+.clearboth {
+	clear: both;
+}
+
 /* Rails Stuff */
 
 .fieldWithErrors {
