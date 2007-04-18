@@ -1,14 +1,15 @@
 <h1><%= @entry.name %></h1>
 
+<%# default :controls = :zoom, :type, :overview, :scale %>
   <%
-  map = GoogleMap.new
+  map = GoogleMap.new(:controls => [:zoom])
   map.markers << GoogleMapMarker.new(:map => map, 
                                      :lat => Float(@entry.latitude), 
                                      :lng => Float(@entry.longitude),
                                      :html => @entry.name )
   %>
   <%= map.to_html %>
-  <div style="width: 300px; height: 300px; float: right; border: 1px solid #ccc; margin: 5px 0 20px 20px;">
+  <div id="google_map">
     <%= map.div %>
   </div>
 
