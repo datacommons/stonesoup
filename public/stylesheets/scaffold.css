@@ -93,7 +93,7 @@ dd {
 	margin: 0;
 	padding: 0;
 	position:relative;
-	height:141px;
+	height:151px;
 	width:100%;
 	border-bottom: 2px solid #23480d;
 	background-color: #fff;
@@ -108,7 +108,7 @@ dd {
 
 #userstatus {
 	float: left;
-	margin: 0 0 0 15px;
+	margin: 10px 0 0 15px;
 }
 
 #listing_info {
