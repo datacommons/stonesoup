@@ -2,7 +2,7 @@ html, body {
 	margin:0;
 	padding:0;
 	text-align:center;
-	font-family:lucida grande, verdana, arial;
+	font-family:lucida grande,verdana, arial;
 	font-size:14px;
 	color:#222;
 	background-color: #a3c17b;
@@ -101,8 +101,8 @@ dd {
 }
 
 #logo {
-	height:110px;
-	width:700px;
+	height:107px;
+	width:693px;
 	float:left;
 	margin: 8px 0 0 8px;
 }
