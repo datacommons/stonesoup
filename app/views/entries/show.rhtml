@@ -41,19 +41,59 @@
 <div class="clearboth"></div>
 <div id="attributes">
 <h2>Attributes</h2>
-Date Founded: <%= @entry.year_founded %>
-
-<% entry_attrs = %w(cooperative llc worker_coop c_corporation) %>
-
+Date Founded: <%= @entry.year_founded %><br />
+<% entry_attrs = %w(
+support_organization
+worker_coop
+producer_coop
+marketing_coop
+housing_coop
+consumer_coop
+community_land_trust
+conservation_ag_land_trust
+alternative_currency
+intentional_community
+collective
+artist_run_center
+community_center
+community_development_financial_institution
+cooperative_financial_institution
+mutual_aid_self_help_group
+activist_social_change_organization
+union_labor_organization
+government
+fair_trade_organization
+network_association
+non_profit_org
+esop
+majority_owned_esop
+percentage_owned
+other
+informal
+cooperative
+partnership
+llc
+s_corporation
+c_corporation
+non_profit_corporation_501c3
+non_profit_corporation_501c4
+non_profit_corporation_other
+other_type_of_incorp
+have_a_fiscal_sponsor
+democratic
+union_association
+) %>
+<ul id="attribute_list">
 <% entry_attrs.each do |entry_attr| %>
 
 <% if @entry.send(entry_attr) %>
 
-<%= entry_attr.humanize %><br />
+<li><%= entry_attr.humanize %></li>
 
 <% end %>
 
 <% end %>
+</ul>
 
 </div>
 
