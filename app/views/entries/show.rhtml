@@ -21,7 +21,7 @@
 
 <dl id="address">
 <dt>Address</dt>
-<dd><%= @entry.physical_address1 %>, <%= @entry.physical_address2 %></dd>
+<dd><%= @entry.physical_address1 %><% if @entry.physical_address1.any? and @entry.physical_address2.any? %>, <% end %><%= @entry.physical_address2 %></dd>
 <dd><%= @entry.physical_city %></dd>
 <dd><%= @entry.physical_state %>, <%= @entry.physical_zip %></dd>
 <dd><%= @entry.physical_country %></dd>
