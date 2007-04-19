@@ -43,9 +43,9 @@
 Date Founded: <%= @entry.year_founded %>
 </div>
 
-<% if @entry.users.any? %>
 <div class="clearboth"></div>
-<h3>Editors of this entry</h3>
+<h2>Editors of this entry</h2>
+<% if @entry.users.any? %>
 <% for user in @entry.users %>
 <p><%= user.login %><%= " (pending)" unless user.last_login %></p>
 <% end %>
