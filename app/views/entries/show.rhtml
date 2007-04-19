@@ -42,6 +42,19 @@
 <div id="attributes">
 <h2>Attributes</h2>
 Date Founded: <%= @entry.year_founded %>
+
+<% entry_attrs = %w(cooperative llc worker_coop c_corporation) %>
+
+<% entry_attrs.each do |entry_attr| %>
+
+<% if @entry.send(entry_attr) %>
+
+<%= entry_attr.humanize %><br />
+
+<% end %>
+
+<% end %>
+
 </div>
 
 <div class="clearboth"></div>
