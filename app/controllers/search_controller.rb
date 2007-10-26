@@ -17,6 +17,6 @@ class SearchController < ApplicationController
       query += " +(public:true #{@member_clause})"
     end
 
-    @entries = Entry.search(query) if params[:q]
+    @entries = Entry.find_with_ferret(query) if params[:q]
   end
 end

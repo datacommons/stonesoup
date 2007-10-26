@@ -1,18 +1,17 @@
 class Entry < ActiveRecord::Base
-  include Searchable
   include GeoKit::Geocoders
+
+  acts_as_ferret(:fields => {
+                   :name => {:boost => 2.0},
+                   :description => {},
+                   :public => {},
+                   :member_id => {}
+                 } )
 
   before_save :save_ll
 
   has_and_belongs_to_many :users
   belongs_to :member
-
-  index_path "#{RAILS_ROOT}/db/entry_index"
-  
-  index_attr :name, :boost => 2.0
-  index_attr :description
-  index_attr :public
-  index_attr :member_id
 
   def public
     member == nil
