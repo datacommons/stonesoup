@@ -12,10 +12,10 @@
 <% end %>
 
 <p>Invite new user for this member organization:</p>
-<%= start_form_tag :action => 'invite', :id => @member %>
+<% form_tag :action => 'invite', :id => @member do %>
 <%= text_field_tag 'user_login' %>
 <%= submit_tag 'Invite' %>
-<%= end_form_tag %>
+<% end %>
 
 <%= link_to 'Edit', :action => 'edit', :id => @member %> |
 <%= link_to 'Back', :action => 'list' %>

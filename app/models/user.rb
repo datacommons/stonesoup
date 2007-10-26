@@ -15,7 +15,7 @@ class User < ActiveRecord::Base
   #attr_protected :member_id  #will want this for security soon...
 
   def self.authenticate(login, pass)
-    find_first(["login = ? AND password = ?", login, sha1(pass)])
+    find(:first, :conditions =>["login = ? AND password = ?", login, sha1(pass)])
   end  
 
   def change_password(pass)
@@ -24,6 +24,15 @@ class User < ActiveRecord::Base
 
   def is_admin?
     is_admin
+  end
+
+  # rather than serializing entire user object to session, just dump id & load
+  def _dump(ignored)
+    self.id.to_s
+  end
+
+  def self._load(id)
+    find(id)
   end
     
   protected

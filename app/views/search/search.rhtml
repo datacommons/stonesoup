@@ -1,12 +1,12 @@
 <p>This is a directory of organizations looking to build a cooperative economy.</p>
 
 <p><%= link_to 'Add New Entry', :controller => 'entries', :action => 'new' %></p>
-<%= start_form_tag( {:action => 'search'}, :method => 'get' ) %>
+<% form_tag( {:action => 'search'}, :method => 'get' ) do %>
   <p><label for="q">Search:</label>
   <%= text_field_tag 'q' %>
   <%= submit_tag 'Go' %>
   </p>
-<%= end_form_tag %>
+<% end %>
 
 <% if @entries %>
  <% if @entries.blank? %>

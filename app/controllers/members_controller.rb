@@ -11,7 +11,7 @@ class MembersController < ApplicationController
          :redirect_to => { :action => :list }
 
   def list
-    @member_pages, @members = paginate :members, :per_page => 10
+    @members = Member.find(:all)
   end
 
   def show

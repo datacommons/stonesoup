@@ -5,7 +5,7 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '1.1.6'
+RAILS_GEM_VERSION = '1.2.5.7919'
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
@@ -22,6 +22,13 @@ Rails::Initializer.run do |config|
   # Force all environments to use the same logger level 
   # (by default production uses :info, the others :debug)
   # config.log_level = :debug
+
+  # Your secret key for verifying cookie session data integrity.
+  # If you change this key, all old sessions will become invalid!
+  config.action_controller.session = {
+    :session_key => '_dcp_session',
+    :secret      => '2f545e9d2a7d6df0b893695b2b2f34bb9'
+  }
 
   # Use the database for sessions instead of the file system
   # (create the session table with 'rake db:sessions:create')
@@ -70,9 +77,9 @@ GeoKit::Geocoders::YAHOO='REPLACE_WITH_YOUR_YAHOO_KEY'
 # and http://www.google.com/apis/maps/documentation/#Geocoding_Examples
 
 # the key given here is appropriate for http://localhost/
-GeoKit::Geocoders::GOOGLE='ABQIAAAATL4sfiJFXUFfYtomrKYcMRT2yXp_ZAY8_ufC3CFXhHIE1NvwkxSgdzNqmW5nuNCkPicJS8sOhHTE4w'
+#GeoKit::Geocoders::GOOGLE='ABQIAAAATL4sfiJFXUFfYtomrKYcMRT2yXp_ZAY8_ufC3CFXhHIE1NvwkxSgdzNqmW5nuNCkPicJS8sOhHTE4w'
 # Here's a key for http://localhost:3000
-#GeoKit::Geocoders::GOOGLE="ABQIAAAA3HdfrnxFAPWyY-aiJUxmqRTJQa0g3IQ9GZqIMmInSLzwtGDKaBQ0KYLwBEKSM7F9gCevcsIf6WPuIQ"    
+GeoKit::Geocoders::GOOGLE="ABQIAAAA3HdfrnxFAPWyY-aiJUxmqRTJQa0g3IQ9GZqIMmInSLzwtGDKaBQ0KYLwBEKSM7F9gCevcsIf6WPuIQ"    
 
 # This is your username and password for geocoder.us.
 # To use the free service, the value can be set to nil or false.  For 

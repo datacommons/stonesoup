@@ -11,7 +11,7 @@ class UsersController < ApplicationController
          :redirect_to => { :action => :list }
 
   def login
-    case @request.method
+    case request.method
       when :post
         if session[:user] = User.authenticate(params['user_login'], params['user_password'])
 
@@ -26,7 +26,7 @@ class UsersController < ApplicationController
   end
   
   def signup
-    case @request.method
+    case request.method
       when :post
         @user = User.new(params['user'])
         
