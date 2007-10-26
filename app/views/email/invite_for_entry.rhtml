@@ -7,5 +7,4 @@ Password: <%= @user.password_cleartext %>
 <% end %>
 
 To login and see the entry, go to:
-<%- #= url_for :controller => 'entries', :action => 'show', :id => @entry -%>
-http://dcp.brattcollective.com/entries/show/<%= @entry.id %>
+<%= url_for :controller => 'entries', :action => 'show', :id => @entry %>

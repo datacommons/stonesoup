@@ -7,5 +7,4 @@ Password: <%= @user.password_cleartext %>
 <% end %>
 
 To login and see the member organization, go to:
-<%- #= url_for :controller => 'members', :action => 'show', :id => @member -%>
-http://dcp.brattcollective.com/members/show/<%= @member.id %>
+<%= url_for :controller => 'members', :action => 'show', :id => @member %>
