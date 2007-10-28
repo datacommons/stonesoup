@@ -5,99 +5,99 @@
 ActiveRecord::Schema.define(:version => 7) do
 
   create_table "entries", :force => true do |t|
-    t.column "name", :string
-    t.column "physical_address1", :string
-    t.column "physical_address2", :string
-    t.column "physical_city", :string
-    t.column "physical_state", :string
-    t.column "physical_zip", :string
-    t.column "physical_country", :string
-    t.column "mailing_address1", :string
-    t.column "mailing_address2", :string
-    t.column "mailing_city", :string
-    t.column "mailing_state", :string
-    t.column "mailing_zip", :string
-    t.column "mailing_country", :string
-    t.column "phone1", :string
-    t.column "phone2", :string
-    t.column "fax", :string
-    t.column "email", :string
-    t.column "website", :string
-    t.column "preferred_contact", :string
-    t.column "description", :text
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-    t.column "created_by_id", :integer
-    t.column "updated_by_id", :integer
-    t.column "latitude", :float
-    t.column "longitude", :float
-    t.column "distance", :float
-    t.column "member_id", :integer
-    t.column "prod_serv1", :string
-    t.column "prod_serv2", :string
-    t.column "prod_serv3", :string
-    t.column "support_organization", :boolean
-    t.column "worker_coop", :boolean
-    t.column "producer_coop", :boolean
-    t.column "marketing_coop", :boolean
-    t.column "housing_coop", :boolean
-    t.column "consumer_coop", :boolean
-    t.column "community_land_trust", :boolean
-    t.column "conservation_ag_land_trust", :boolean
-    t.column "alternative_currency", :boolean
-    t.column "intentional_community", :boolean
-    t.column "collective", :boolean
-    t.column "artist_run_center", :boolean
-    t.column "community_center", :boolean
-    t.column "community_development_financial_institution", :boolean
-    t.column "cooperative_financial_institution", :boolean
-    t.column "mutual_aid_self_help_group", :boolean
-    t.column "activist_social_change_organization", :boolean
-    t.column "union_labor_organization", :boolean
-    t.column "government", :boolean
-    t.column "fair_trade_organization", :boolean
-    t.column "network_association", :boolean
-    t.column "non_profit_org", :boolean
-    t.column "esop", :boolean
-    t.column "majority_owned_esop", :boolean
-    t.column "percentage_owned", :boolean
-    t.column "other", :boolean
-    t.column "type_of_other", :string
-    t.column "naics_code", :integer
-    t.column "informal", :boolean
-    t.column "cooperative", :boolean
-    t.column "partnership", :boolean
-    t.column "llc", :boolean
-    t.column "s_corporation", :boolean
-    t.column "c_corporation", :boolean
-    t.column "non_profit_corporation_501c3", :boolean
-    t.column "non_profit_corporation_501c4", :boolean
-    t.column "non_profit_corporation_other", :boolean
-    t.column "other_type_of_incorp", :boolean
-    t.column "type_of_other_incorp", :string
-    t.column "have_a_fiscal_sponsor", :boolean
-    t.column "year_founded", :date
-    t.column "democratic", :boolean
-    t.column "union_association", :boolean
-    t.column "which_union", :string
+    t.string   "name"
+    t.string   "physical_address1"
+    t.string   "physical_address2"
+    t.string   "physical_city"
+    t.string   "physical_state"
+    t.string   "physical_zip"
+    t.string   "physical_country"
+    t.string   "mailing_address1"
+    t.string   "mailing_address2"
+    t.string   "mailing_city"
+    t.string   "mailing_state"
+    t.string   "mailing_zip"
+    t.string   "mailing_country"
+    t.string   "phone1"
+    t.string   "phone2"
+    t.string   "fax"
+    t.string   "email"
+    t.string   "website"
+    t.string   "preferred_contact"
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "created_by_id"
+    t.integer  "updated_by_id"
+    t.float    "latitude"
+    t.float    "longitude"
+    t.float    "distance"
+    t.integer  "member_id"
+    t.string   "prod_serv1"
+    t.string   "prod_serv2"
+    t.string   "prod_serv3"
+    t.boolean  "support_organization"
+    t.boolean  "worker_coop"
+    t.boolean  "producer_coop"
+    t.boolean  "marketing_coop"
+    t.boolean  "housing_coop"
+    t.boolean  "consumer_coop"
+    t.boolean  "community_land_trust"
+    t.boolean  "conservation_ag_land_trust"
+    t.boolean  "alternative_currency"
+    t.boolean  "intentional_community"
+    t.boolean  "collective"
+    t.boolean  "artist_run_center"
+    t.boolean  "community_center"
+    t.boolean  "community_development_financial_institution"
+    t.boolean  "cooperative_financial_institution"
+    t.boolean  "mutual_aid_self_help_group"
+    t.boolean  "activist_social_change_organization"
+    t.boolean  "union_labor_organization"
+    t.boolean  "government"
+    t.boolean  "fair_trade_organization"
+    t.boolean  "network_association"
+    t.boolean  "non_profit_org"
+    t.boolean  "esop"
+    t.boolean  "majority_owned_esop"
+    t.boolean  "percentage_owned"
+    t.boolean  "other"
+    t.string   "type_of_other"
+    t.integer  "naics_code"
+    t.boolean  "informal"
+    t.boolean  "cooperative"
+    t.boolean  "partnership"
+    t.boolean  "llc"
+    t.boolean  "s_corporation"
+    t.boolean  "c_corporation"
+    t.boolean  "non_profit_corporation_501c3"
+    t.boolean  "non_profit_corporation_501c4"
+    t.boolean  "non_profit_corporation_other"
+    t.boolean  "other_type_of_incorp"
+    t.string   "type_of_other_incorp"
+    t.boolean  "have_a_fiscal_sponsor"
+    t.date     "year_founded"
+    t.boolean  "democratic"
+    t.boolean  "union_association"
+    t.string   "which_union"
   end
 
   create_table "entries_users", :id => false, :force => true do |t|
-    t.column "entry_id", :integer
-    t.column "user_id", :integer
+    t.integer "entry_id"
+    t.integer "user_id"
   end
 
   create_table "members", :force => true do |t|
-    t.column "name", :string
+    t.string "name"
   end
 
   create_table "users", :force => true do |t|
-    t.column "login", :string, :limit => 80
-    t.column "password", :string, :limit => 40
-    t.column "is_admin", :boolean
-    t.column "member_id", :integer
-    t.column "created_at", :datetime
-    t.column "last_login", :datetime
+    t.string   "login",      :limit => 80
+    t.string   "password",   :limit => 40
+    t.boolean  "is_admin"
+    t.integer  "member_id"
+    t.datetime "created_at"
+    t.datetime "last_login"
   end
 
 end
