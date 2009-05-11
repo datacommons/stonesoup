@@ -2,10 +2,10 @@ class Entry < ActiveRecord::Base
   include GeoKit::Geocoders
 
   acts_as_ferret(:fields => {
-                   :name => {:boost => 2.0},
-                   :description => {},
-                   :public => {},
-                   :member_id => {}
+                   :name => {:boost => 2.0, :store => :yes },
+                   :description => { :store => :yes },
+                   :public => { :store => :yes },
+                   :member_id => { :store => :yes }
                  } )
 
   before_save :save_ll
