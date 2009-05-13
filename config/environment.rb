@@ -5,13 +5,19 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '1.2.5.7919'
+#RAILS_GEM_VERSION = '1.2.5.7919'
+RAILS_GEM_VERSION = '2.3.2'
+
+#require 'acts_as_ferret'
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence those specified here
+
+  config.gem "geokit"
+#  config.gem "acts_as_ferret"
   
   # Skip frameworks you're not going to use
   # config.frameworks -= [ :action_web_service, :action_mailer ]
