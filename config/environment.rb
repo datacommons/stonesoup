@@ -13,11 +13,17 @@ RAILS_GEM_VERSION = '2.3.2'
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
 
+require "ruport"
+require "ruport/acts_as_reportable"
+
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence those specified here
 
   config.gem "geokit"
 #  config.gem "acts_as_ferret"
+
+#  config.gem "ruport"
+#  config.gem "acts_as_reportable"
   
   # Skip frameworks you're not going to use
   # config.frameworks -= [ :action_web_service, :action_mailer ]

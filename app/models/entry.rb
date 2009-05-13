@@ -8,6 +8,8 @@ class Entry < ActiveRecord::Base
                    :member_id => {}
                  } )
 
+  acts_as_reportable
+
   before_save :save_ll
 
   has_and_belongs_to_many :users
