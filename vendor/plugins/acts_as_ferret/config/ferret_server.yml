@@ -14,10 +14,10 @@ production:
 
 # aaf won't try to use the DRb server in environments that are not 
 # configured here.
-development:
-  host: localhost
-  port: 9010
-  pid_file: log/ferret.pid
+#development:
+#  host: localhost
+#  port: 9010
+#  pid_file: log/ferret.pid
 #test:
 #  host: localhost
 #  port: 9009

@@ -5,10 +5,7 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-#RAILS_GEM_VERSION = '1.2.5.7919'
-RAILS_GEM_VERSION = '2.3.2'
-
-#require 'acts_as_ferret'
+RAILS_GEM_VERSION = '2.2.2'
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
@@ -18,12 +15,6 @@ require "ruport/acts_as_reportable"
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence those specified here
-
-  config.gem "geokit"
-#  config.gem "acts_as_ferret"
-
-#  config.gem "ruport"
-#  config.gem "acts_as_reportable"
   
   # Skip frameworks you're not going to use
   # config.frameworks -= [ :action_web_service, :action_mailer ]
@@ -58,6 +49,7 @@ Rails::Initializer.run do |config|
   # config.active_record.default_timezone = :utc
   
   # See Rails::Configuration for more options
+  config.gem "geokit"
 end
 
 # Add new inflection rules using the following format 
@@ -84,10 +76,15 @@ GeoKit::Geocoders::YAHOO='REPLACE_WITH_YOUR_YAHOO_KEY'
 # See http://www.google.com/apis/maps/signup.html
 # and http://www.google.com/apis/maps/documentation/#Geocoding_Examples
 
-# the key given here is appropriate for http://localhost/
-#GeoKit::Geocoders::GOOGLE='ABQIAAAATL4sfiJFXUFfYtomrKYcMRT2yXp_ZAY8_ufC3CFXhHIE1NvwkxSgdzNqmW5nuNCkPicJS8sOhHTE4w'
-# Here's a key for http://localhost:3000
-GeoKit::Geocoders::GOOGLE="ABQIAAAA3HdfrnxFAPWyY-aiJUxmqRTJQa0g3IQ9GZqIMmInSLzwtGDKaBQ0KYLwBEKSM7F9gCevcsIf6WPuIQ"    
+if ENV['RAILS_ENV'] == 'development'
+   # the key given here is appropriate for http://localhost/
+   #GeoKit::Geocoders::GOOGLE='ABQIAAAATL4sfiJFXUFfYtomrKYcMRT2yXp_ZAY8_ufC3CFXhHIE1NvwkxSgdzNqmW5nuNCkPicJS8sOhHTE4w'
+   # Here's a key for http://localhost:3000
+   GeoKit::Geocoders::GOOGLE="ABQIAAAA3HdfrnxFAPWyY-aiJUxmqRTJQa0g3IQ9GZqIMmInSLzwtGDKaBQ0KYLwBEKSM7F9gCevcsIf6WPuIQ"    
+elsif ENV['RAILS_ENV'] == 'production'
+   # Here's a key for http://temp-dcp.gaiahost.net/ 
+   GeoKit::Geocoders::GOOGLE="ABQIAAAATL4sfiJFXUFfYtomrKYcMRTiunT2uSmbcIF9JcYA7tUAKz8ykBQrDga0HatVT0swrunnV3FDzdK4QA" 
+end
 
 # This is your username and password for geocoder.us.
 # To use the free service, the value can be set to nil or false.  For 
