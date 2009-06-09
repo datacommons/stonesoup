@@ -18,6 +18,11 @@
    <p><%= link_to entry.name, :controller => 'entries', :action => 'show', :id => entry %>
   <%= "(Private to #{entry.member.name})" if entry.member %></p>
   <% end %>
+ <h2>Download Search Results</h2>
+   <ul>  
+    <li>Download as <%= link_to 'CSV', :action => 'search', :q => params[:q].to_s, :format => 'csv' %> (suitable for spreadsheet programs)</li>
+    <li>Download as <%= link_to 'XML', :action => 'search', :q => params[:q].to_s, :format => 'xml' %></li>
+   </ul>
  <% end %>
 <% end %>
 <h2>Latest Changes</h2>
