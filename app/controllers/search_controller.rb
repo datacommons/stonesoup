@@ -17,7 +17,20 @@ class SearchController < ApplicationController
       query += " +(public:true #{@member_clause})"
     end
 
-    @entries = Entry.find_with_ferret(query) if params[:q]
+    if params[:q]
+      @entries = Entry.find_with_ferret(query) 
+
+      f = params[:format]
+      respond_to do |f| 
+        f.html
+        f.xml { render :xml => @entries }
+        f.csv do
+          send_data Entry.report_table.to_csv,
+          :type => 'text/csv; charset=iso-8859-1; header=present',
+          :disposition => ("attachment; filename=search.csv")
+        end
+      end
+    end
   end
 
 

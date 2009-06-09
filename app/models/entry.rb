@@ -12,6 +12,8 @@ class Entry < ActiveRecord::Base
                    :lng_column_name => 'longitude',
                    :distance_field_name => 'distance'
 
+  acts_as_reportable
+
   before_save :save_ll
 
   has_and_belongs_to_many :users

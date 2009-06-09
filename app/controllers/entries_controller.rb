@@ -16,6 +16,15 @@ class EntriesController < ApplicationController
 
   def show
     @entry = Entry.find(params[:id])
+    respond_to do |format| 
+      format.html
+      format.xml { render :xml => @entry }
+      format.csv do
+        send_data Entry.report_table.to_csv,
+        :type => 'text/csv; charset=iso-8859-1; header=present',
+        :disposition => ("attachment; filename=" + params[:id] + ".csv")
+      end
+    end
   end
 
   def new

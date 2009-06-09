@@ -121,5 +121,12 @@ union_association
 <% end %>
 <% end %>
 
+<h2>Download this entry</h2>
+
+<ul>
+<li>Download as <%= link_to 'CSV', :action => 'show', :id => @entry, :format => 'csv' %> (suitable for spreadsheet programs)</li>
+<li>Download as <%= link_to 'XML', :action => 'show', :id => @entry, :format => 'xml' %></li>
+</ul>
+
 <%= link_to 'Edit', :action => 'edit', :id => @entry %> |
 <%= link_to 'Back', :controller => 'search', :action => 'index' %>
