@@ -8,6 +8,10 @@ class Entry < ActiveRecord::Base
                    :member_id => { :store => :yes }
                  } )
 
+  acts_as_mappable :lat_column_name => 'latitude', 
+                   :lng_column_name => 'longitude',
+                   :distance_field_name => 'distance'
+
   before_save :save_ll
 
   has_and_belongs_to_many :users

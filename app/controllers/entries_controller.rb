@@ -117,4 +117,5 @@ class EntriesController < ApplicationController
 
     true
   end
+
 end

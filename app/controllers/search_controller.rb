@@ -19,4 +19,11 @@ class SearchController < ApplicationController
 
     @entries = Entry.find_with_ferret(query) if params[:q]
   end
+
+
+  def near
+    @entry = Entry.find(params[:id])
+    @entries = Entry.find(:all, :origin => @entry, :within=>10)
+    render :action => 'search'
+  end
 end
