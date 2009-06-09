@@ -1,0 +1,16 @@
+2009-06-09  Paul Fitzpatrick  <paulfitz@alum.mit.edu>
+
+	* app/controllers/search_controller.rb: generate csv/xml for search
+
+	* app/controllers/entries_controller.rb: generate cvs/xml
+
+	* app/models/entry.rb: tag Entry class as "acts_as_reportable"
+
+	* app/views/entries/show.rhtml: add csv/xml download options.
+
+	* app/views/search/search.rhtml: added csv/xml download options.
+
+	* config/routes.rb: added csv/xml extensions.
+
+	* config/environment.rb: added dependency on "ruport" - ruby reports.
+
