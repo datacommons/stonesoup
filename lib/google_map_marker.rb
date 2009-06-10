@@ -1,11 +1,14 @@
 class GoogleMapMarker
+  #include Reloadable
+  
   include ActionView::Helpers::JavaScriptHelper
   
   attr_accessor :dom_id,
                 :lat,
                 :lng,
                 :html,
-                :map
+                :map,
+                :icon
                 
   def initialize(options = {})
     options.each_pair { |key, value| send("#{key}=", value) }
@@ -18,16 +21,31 @@ class GoogleMapMarker
     end
   end
   
-  def to_js
+  def open_info_window_function
     js = []
     
     js << "function #{dom_id}_infowindow_function() {"
     js << "  #{dom_id}.openInfoWindowHtml(\"#{escape_javascript(html)}\")"
     js << "}"
     
-    js << "#{dom_id} = new GMarker(new GLatLng(#{lat}, #{lng}));"
+    return js.join("\n")
+  end
+  
+  def open_info_window
+    "#{dom_id}_infowindow_function();"
+  end
+  
+  def to_js
+    js = []
     
-    js << "GEvent.addListener(#{dom_id}, 'click', function() {#{dom_id}_infowindow_function()});"
+    # If a icon is specified, use it in marker creation.
+    i = ", #{icon.dom_id}" if icon
+    
+    js << "#{dom_id} = new GMarker(new GLatLng(#{lat}, #{lng})#{i});"
+    
+    if self.html
+      js << "GEvent.addListener(#{dom_id}, 'click', function() {#{dom_id}_infowindow_function()});"
+    end
     
     js << "#{map.dom_id}.addOverlay(#{dom_id});"
     

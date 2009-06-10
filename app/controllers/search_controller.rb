@@ -33,10 +33,25 @@ class SearchController < ApplicationController
     end
   end
 
-
   def near
     @entry = Entry.find(params[:id])
     @entries = Entry.find(:all, :origin => @entry, :within=>10)
-    render :action => 'search'
+    printf("hi\n")
+
+    f = params[:format]
+    respond_to do |f| 
+      f.html
+      f.xml { render :xml => @entries }
+      f.csv do
+        data = [@entries].flatten
+        data = data.map {|r| r.reportable_data}.flatten
+        cols = data.first.keys
+        table = Ruport::Data::Table.new(:data => data,
+                                        :column_names => cols)
+        send_data(table.to_csv, 
+                  :type => 'text/csv; charset=iso-8859-1; header=present',
+                  :disposition => ("attachment; filename=search.csv"))
+      end
+    end
   end
 end
