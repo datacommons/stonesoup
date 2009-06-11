@@ -24,7 +24,12 @@ class EntriesController < ApplicationController
       format.html
       format.xml { render :xml => @entry }
       format.csv do
-        send_data Entry.report_table.to_csv,
+        data = [@entry].flatten
+        data = data.map {|r| r.reportable_data}.flatten
+        cols = Entry.column_names
+        table = Ruport::Data::Table.new(:data => data,
+                                        :column_names => cols)
+        send_data table.to_csv,
         :type => 'text/csv; charset=iso-8859-1; header=present',
         :disposition => ("attachment; filename=" + params[:id] + ".csv")
       end

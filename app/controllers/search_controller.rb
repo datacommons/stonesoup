@@ -25,7 +25,12 @@ class SearchController < ApplicationController
         f.html
         f.xml { render :xml => @entries }
         f.csv do
-          send_data Entry.report_table.to_csv,
+          data = [@entries].flatten
+          data = data.map {|r| r.reportable_data}.flatten
+          cols = Entry.column_names
+          table = Ruport::Data::Table.new(:data => data,
+                                          :column_names => cols)
+          send_data table.to_csv,
           :type => 'text/csv; charset=iso-8859-1; header=present',
           :disposition => ("attachment; filename=search.csv")
         end
@@ -52,7 +57,7 @@ class SearchController < ApplicationController
       f.csv do
         data = [@entries].flatten
         data = data.map {|r| r.reportable_data}.flatten
-        cols = data.first.keys
+        cols = Entry.column_names
         table = Ruport::Data::Table.new(:data => data,
                                         :column_names => cols)
         send_data(table.to_csv, 
