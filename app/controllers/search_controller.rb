@@ -34,8 +34,16 @@ class SearchController < ApplicationController
   end
 
   def near
+    within = 10
+    if params[:within]
+      within = params[:within].to_f
+      if (within-within.to_i).abs<0.001
+        within = within.to_i
+      end
+    end
     @entry = Entry.find(params[:id])
-    @entries = Entry.find(:all, :origin => @entry, :within=>10, :order=>'distance asc')
+    @entries = Entry.find(:all, :origin => @entry, :within=>within, :order=>'distance asc', :units=>:miles)
+    @within = within
 
     f = params[:format]
     respond_to do |f| 

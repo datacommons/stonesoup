@@ -38,6 +38,8 @@
   </p>
 <% end %>
 
+<p>Current search is restricted to within <%= @within %> mile(s) of <%= @entry.name %>.<br /> [expand to <%= link_to (@within*10).to_s, :within => @within*10, :action => 'near', :controller => 'search', :id => @entry %> mile(s), contract to <%= link_to (@within/10).to_s, :within => @within/10, :action => 'near', :controller => 'search', :id => @entry %> mile(s)]</p>
+
 <% if @entries %>
  <% if @entries.blank? %>
   <p>No results were found for this search.</p>
