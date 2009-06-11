@@ -4,17 +4,22 @@
 <%# default :controls = :zoom, :type, :overview, :scale %>
   <%
   map = GoogleMap.new(:controls => [:zoom])
-  icon = GoogleMapSmallIcon.new('red')
+  at = 0
+  markers = {}
   for entry in @entries
+    icon = GoogleMapLetterIcon.new((at+"A"[0]).chr)
+    at = (at + 1)%26
+
+    markers[entry.id] = icon.image_url
     map.markers << GoogleMapMarker.new(:map => map, 
                                        :icon => icon,
                                        :lat => Float(entry.latitude), 
                                        :lng => Float(entry.longitude),
                                        :html => entry.name )
   end
-  icon = GoogleMapSmallIcon.new('blue')
+  icon2 = GoogleMapIcon.new()
   map.markers << GoogleMapMarker.new(:map => map, 
-                                     :icon => icon,
+                                     :icon => icon2,
                                      :lat => Float(@entry.latitude), 
                                      :lng => Float(@entry.longitude),
                                      :html => @entry.name )
@@ -40,7 +45,7 @@
  <% else %>
  <h2>Search Results</h2>
   <% for entry in @entries %>
-   <p><%= link_to entry.name, :controller => 'entries', :action => 'show', :id => entry %>
+   <p><img src="<%= markers[entry.id] %>" width="20" height="34" /><%= link_to entry.name, :controller => 'entries', :action => 'show', :id => entry %>
   <%= "(Private to #{entry.member.name})" if entry.member %></p>
   <% end %>
  <h2>Download Search Results</h2>
