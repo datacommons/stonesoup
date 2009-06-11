@@ -154,13 +154,6 @@ dd {
               margin: 5px 0 20px 20px; 
 }
 
-#near_map { 
-              clear: both;
-              width: 300px;
-              float: right; 
-              margin: 5px 0 20px 20px; 
-}
-
 .clearboth {
 	clear: both;
 }
