@@ -16,6 +16,10 @@ class EntriesController < ApplicationController
 
   def show
     @entry = Entry.find(params[:id])
+    if not(@entry.latitude)
+      @entry.save_ll
+      @entry.save
+    end
     respond_to do |format| 
       format.html
       format.xml { render :xml => @entry }

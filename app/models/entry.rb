@@ -4,6 +4,7 @@ class Entry < ActiveRecord::Base
   acts_as_ferret(:fields => {
                    :name => {:boost => 2.0, :store => :yes },
                    :description => { :store => :yes },
+                   :physical_zip => { :store => :yes },
                    :public => { :store => :yes },
                    :member_id => { :store => :yes }
                  } )
