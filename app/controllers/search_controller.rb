@@ -36,7 +36,6 @@ class SearchController < ApplicationController
   def near
     @entry = Entry.find(params[:id])
     @entries = Entry.find(:all, :origin => @entry, :within=>10)
-    printf("hi\n")
 
     f = params[:format]
     respond_to do |f| 
