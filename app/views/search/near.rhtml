@@ -6,9 +6,14 @@
   map = GoogleMap.new(:controls => [:zoom])
   at = 0
   markers = {}
+  target = @entry.id
   for entry in @entries
-    icon = GoogleMapLetterIcon.new((at+"A"[0]).chr)
-    at = (at + 1)%26
+    if entry.id == target
+      icon = GoogleMapIcon.new()
+    else
+      icon = GoogleMapLetterIcon.new((at+"A"[0]).chr)
+      at = (at + 1)%26
+    end
 
     markers[entry.id] = icon.image_url
     map.markers << GoogleMapMarker.new(:map => map, 
@@ -17,12 +22,6 @@
                                        :lng => Float(entry.longitude),
                                        :html => entry.name )
   end
-  icon2 = GoogleMapIcon.new()
-  map.markers << GoogleMapMarker.new(:map => map, 
-                                     :icon => icon2,
-                                     :lat => Float(@entry.latitude), 
-                                     :lng => Float(@entry.longitude),
-                                     :html => @entry.name )
   %>
   <%= map.to_html %>
   <div id="google_map">
