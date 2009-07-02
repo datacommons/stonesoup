@@ -12,6 +12,10 @@
   <div id="google_map">
     <%= map.div %>
   </div>
+  <div id="near_map">
+    Find organizations <%= link_to 'nearby', :action => 'near', :controller => 'search', :id => @entry %>
+  </div>
+
 
 <p><%= simple_format @entry.description %></p>
 
@@ -21,7 +25,7 @@
 
 <dl id="address">
 <dt>Address</dt>
-<dd><%= @entry.physical_address1 %><% if @entry.physical_address1.any? and @entry.physical_address2.any? %>, <% end %><%= @entry.physical_address2 %></dd>
+<dd><%= @entry.physical_address1 %><% if @entry.physical_address1 and @entry.physical_address2 %>, <% end %><%= @entry.physical_address2 %></dd>
 <dd><%= @entry.physical_city %></dd>
 <dd><%= @entry.physical_state %>, <%= @entry.physical_zip %></dd>
 <dd><%= @entry.physical_country %></dd>

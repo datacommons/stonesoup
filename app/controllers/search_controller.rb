@@ -25,10 +25,44 @@ class SearchController < ApplicationController
         f.html
         f.xml { render :xml => @entries }
         f.csv do
-          send_data Entry.report_table.to_csv,
+          data = [@entries].flatten
+          data = data.map {|r| r.reportable_data}.flatten
+          cols = Entry.column_names
+          table = Ruport::Data::Table.new(:data => data,
+                                          :column_names => cols)
+          send_data table.to_csv,
           :type => 'text/csv; charset=iso-8859-1; header=present',
           :disposition => ("attachment; filename=search.csv")
         end
+      end
+    end
+  end
+
+  def near
+    within = 10
+    if params[:within]
+      within = params[:within].to_f
+      if (within-within.to_i).abs<0.001
+        within = within.to_i
+      end
+    end
+    @entry = Entry.find(params[:id])
+    @entries = Entry.find(:all, :origin => @entry, :within=>within, :order=>'distance asc', :units=>:miles)
+    @within = within
+
+    f = params[:format]
+    respond_to do |f| 
+      f.html
+      f.xml { render :xml => @entries }
+      f.csv do
+        data = [@entries].flatten
+        data = data.map {|r| r.reportable_data}.flatten
+        cols = Entry.column_names
+        table = Ruport::Data::Table.new(:data => data,
+                                        :column_names => cols)
+        send_data(table.to_csv, 
+                  :type => 'text/csv; charset=iso-8859-1; header=present',
+                  :disposition => ("attachment; filename=search.csv"))
       end
     end
   end

@@ -29,6 +29,8 @@
 <% for entry in Entry.latest_changes %>
   <p><%= link_to entry.name, :controller => 'entries', :action => 'show', :id => entry %>
   <%= "(Private to #{entry.member.name})" if entry.member %>
-  updated <%= time_ago_in_words entry.updated_at %> ago
+  <% if entry.updated_at %>
+    updated <%= time_ago_in_words entry.updated_at %> ago
+  <% end %>
   </p>
 <% end %>

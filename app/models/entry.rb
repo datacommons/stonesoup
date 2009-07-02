@@ -4,9 +4,14 @@ class Entry < ActiveRecord::Base
   acts_as_ferret(:fields => {
                    :name => {:boost => 2.0, :store => :yes },
                    :description => { :store => :yes },
+                   :physical_zip => { :store => :yes },
                    :public => { :store => :yes },
                    :member_id => { :store => :yes }
                  } )
+
+  acts_as_mappable :lat_column_name => 'latitude', 
+                   :lng_column_name => 'longitude',
+                   :distance_field_name => 'distance'
 
   acts_as_reportable
 
