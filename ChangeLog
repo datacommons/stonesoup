@@ -1,3 +1,21 @@
+2009-07-01  Paul Fitzpatrick <paulfitz@alum.mit.edu>
+
+	* app/views/search/near.rhtml,
+	* lib/google_map_icon.rb,
+	* lib/google_map_letter_icon.rb,
+	* lib/google_map_small_icon.rb,
+	* lib/unbacked_dom_id.rb: Added.
+
+	* app/controllers/entries_controller.rb,
+	* app/controllers/search_controller.rb,
+	* app/models/entry.rb,
+	* app/views/entries/show.rhtml,
+	* app/views/search/search.rhtml,
+	* lib/google_map.rb,
+	* lib/google_map_marker.rb: Modified.
+
+	[47] merge with neighborhood mapping branch
+
 2009-06-09  Paul Fitzpatrick  <paulfitz@alum.mit.edu>
 
 	* app/controllers/search_controller.rb: generate csv/xml for search
