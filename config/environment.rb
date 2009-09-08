@@ -83,7 +83,9 @@ if ENV['RAILS_ENV'] == 'development'
    GeoKit::Geocoders::GOOGLE="ABQIAAAA3HdfrnxFAPWyY-aiJUxmqRTJQa0g3IQ9GZqIMmInSLzwtGDKaBQ0KYLwBEKSM7F9gCevcsIf6WPuIQ"    
 elsif ENV['RAILS_ENV'] == 'production'
    # Here's a key for http://temp-dcp.gaiahost.net/ 
-   GeoKit::Geocoders::GOOGLE="ABQIAAAATL4sfiJFXUFfYtomrKYcMRTiunT2uSmbcIF9JcYA7tUAKz8ykBQrDga0HatVT0swrunnV3FDzdK4QA" 
+   #GeoKit::Geocoders::GOOGLE="ABQIAAAATL4sfiJFXUFfYtomrKYcMRTiunT2uSmbcIF9JcYA7tUAKz8ykBQrDga0HatVT0swrunnV3FDzdK4QA" 
+   # Here's a key for http://proto.find.coop
+   GeoKit::Geocoders::GOOGLE="ABQIAAAATL4sfiJFXUFfYtomrKYcMRSRQZaHZSfXeR81hnlCJRsRo2MAKhSQQPObczixZftaBkuHNkPBTHA0XQ";
 end
 
 # This is your username and password for geocoder.us.
