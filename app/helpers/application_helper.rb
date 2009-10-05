@@ -7,4 +7,11 @@ module ApplicationHelper
       return nil
     end
   end
+
+  def default_map_type
+    return :openstreetmap
+    # return :yahoo
+    # return :openlayers
+    # return :google
+  end
 end

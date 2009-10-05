@@ -146,11 +146,15 @@ dd {
 	padding: 0;
 }
 
-#google_map { 
+#the_map { 
               width: 300px;
               height: 300px;
               float: right; 
               border: 1px solid #ccc;
+}
+
+#surround_map { 
+              float: right; 
               margin: 5px 0 20px 20px; 
 }
 
