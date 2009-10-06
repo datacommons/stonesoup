@@ -1,7 +1,7 @@
 
 
   <%
-  map = Mapstraction.new("the_map",default_map_type)
+  map = Mapstraction.new("the_map",current_map_type)
   map.control_init(:small => true)
   at = 0
   markers = {}
@@ -24,11 +24,11 @@
   end
   map.center_zoom_on_bounds_init([[bounds[0],bounds[1]],
                                   [bounds[2],bounds[3]]])
-# map.center_zoom_init(pt,14)
   %>
   <%= map.to_html %>
   <div id="surround_map">
-  <%= map.div() %>
+  <%= map.div() %><br />
+  <%= render :partial => "layouts/map_choice" %>
   </div>
 
 

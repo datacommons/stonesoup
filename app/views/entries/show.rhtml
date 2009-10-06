@@ -1,7 +1,7 @@
 <h1><%= @entry.name %></h1>
 
   <%
-  map = Mapstraction.new("the_map",default_map_type)
+  map = Mapstraction.new("the_map",current_map_type)
   map.control_init(:small => true)
   pt = [Float(@entry.latitude),Float(@entry.longitude)]
   map.center_zoom_init(pt,14)
@@ -10,8 +10,9 @@
   <%= map.to_html %>
 
   <div id="surround_map">
+  Find organizations <%= link_to 'nearby', :action => 'near', :controller => 'search', :id => @entry %><br />
   <%= map.div() %><br />
-  Find organizations <%= link_to 'nearby', :action => 'near', :controller => 'search', :id => @entry %>
+  <%= render :partial => "layouts/map_choice" %>
   </div>
 
 <p><%= simple_format @entry.description %></p>
