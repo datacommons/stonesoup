@@ -1,221 +1,150 @@
 <%= error_messages_for 'entry' %>
 
 <!--[form:entry]-->
-<p><label for="entry_name">Name</label><br/>
-<%= text_field 'entry', 'name'  %></p>
+<table width="100%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td colspan="2">
+			<label for="entry_name">Organization Name</label>: <%= text_field 'entry', 'name'  %><br/>
+			<label for="entry_phone1">Phone 1</label>: <%= text_field 'entry', 'phone1'  %><br/>
+			<label for="entry_phone2">Phone 2</label>: <%= text_field 'entry', 'phone2'  %><br/>
+			<label for="entry_fax">Fax</label>: <%= text_field 'entry', 'fax'  %><br/>
+			<label for="entry_email">Email</label>: <%= text_field 'entry', 'email'  %><br/>
+			<label for="entry_website">Website</label>: <%= text_field 'entry', 'website'  %><br/>
+			<label for="entry_preferred_contact">Preferred contact</label>: <%= text_field 'entry', 'preferred_contact'  %>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<div class="option_group">
+				<div class="option_group_title">Physical Address</div>
+				<label for="entry_physical_address1">Address 1</label>: <%= text_field 'entry', 'physical_address1'  %><br/>
+				<label for="entry_physical_address2">Address 2</label>: <%= text_field 'entry', 'physical_address2'  %><br/>
+				<label for="entry_physical_city">City</label>: <%= text_field 'entry', 'physical_city'  %><br/>
+				<label for="entry_physical_state">State</label>: <%= text_field 'entry', 'physical_state'  %><br/>
+				<label for="entry_physical_zip">Zip</label>: <%= text_field 'entry', 'physical_zip'  %><br/>
+				<label for="entry_physical_country">Country</label>: <%= text_field 'entry', 'physical_country'  %>
+			</div>
+		</td>
+		<td>
+			<div class="option_group">
+				<div class="option_group_title">Mailing Address</div>
+				<label for="entry_mailing_address1">Address 1</label>: <%= text_field 'entry', 'mailing_address1'  %><br/>
+				<label for="entry_mailing_address2">Address 2</label>: <%= text_field 'entry', 'mailing_address2'  %><br/>
+				<label for="entry_mailing_city">City</label>: <%= text_field 'entry', 'mailing_city'  %><br/>
+				<label for="entry_mailing_state">State</label>: <%= text_field 'entry', 'mailing_state'  %><br/>
+				<label for="entry_mailing_zip">Zip</label>: <%= text_field 'entry', 'mailing_zip'  %><br/>
+				<label for="entry_mailing_country">Country</label>: <%= text_field 'entry', 'mailing_country'  %>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<label for="entry_description">Description:</label><br/>
+			<%= text_area 'entry', 'description', :rows => 5, :cols => 60  %><br/>
 
-<p><label for="entry_physical_address1">Physical address1</label><br/>
-<%= text_field 'entry', 'physical_address1'  %></p>
+			<label for="entry_prod_serv1">Product/service 1:</label> <%= text_field 'entry', 'prod_serv1'  %><br/>
+			<label for="entry_prod_serv2">Product/service 2:</label> <%= text_field 'entry', 'prod_serv2'  %><br/>
+			<label for="entry_prod_serv3">Product/service 3:</label> <%= text_field 'entry', 'prod_serv3'  %><br/>
+			<label for="entry_created_at">Created at:</label> <%= datetime_select 'entry', 'created_at'  %><br/>
+			<label for="entry_updated_at">Updated at:</label> <%= datetime_select 'entry', 'updated_at'  %><br/>
+			<label for="entry_latitude">Latitude: </label> <%= text_field 'entry', 'latitude'  %><br/>
+			<label for="entry_longitude">Longitude: </label> <%= text_field 'entry', 'longitude'  %><br/>
+			<label for="entry_distance">Distance</label>: <%= text_field 'entry', 'distance'  %></p>
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">
+			<p><label for="entry_support_organization">Support organization</label>: <%= select "entry", "support_organization", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_physical_address2">Physical address2</label><br/>
-<%= text_field 'entry', 'physical_address2'  %></p>
+			<p><label for="entry_worker_coop">Worker coop</label>: <%= select "entry", "worker_coop", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_physical_city">Physical city</label><br/>
-<%= text_field 'entry', 'physical_city'  %></p>
+			<p><label for="entry_producer_coop">Producer coop</label>: <%= select "entry", "producer_coop", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_physical_state">Physical state</label><br/>
-<%= text_field 'entry', 'physical_state'  %></p>
+			<p><label for="entry_marketing_coop">Marketing coop</label>: <%= select "entry", "marketing_coop", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_physical_zip">Physical zip</label><br/>
-<%= text_field 'entry', 'physical_zip'  %></p>
+			<p><label for="entry_housing_coop">Housing coop</label>: <%= select "entry", "housing_coop", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_physical_country">Physical country</label><br/>
-<%= text_field 'entry', 'physical_country'  %></p>
+			<p><label for="entry_consumer_coop">Consumer coop</label>: <%= select "entry", "consumer_coop", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_mailing_address1">Mailing address1</label><br/>
-<%= text_field 'entry', 'mailing_address1'  %></p>
+			<p><label for="entry_community_land_trust">Community land trust</label>: <%= select "entry", "community_land_trust", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_mailing_address2">Mailing address2</label><br/>
-<%= text_field 'entry', 'mailing_address2'  %></p>
+			<p><label for="entry_conservation_ag_land_trust">Conservation ag land trust</label>: <%= select "entry", "conservation_ag_land_trust", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_mailing_city">Mailing city</label><br/>
-<%= text_field 'entry', 'mailing_city'  %></p>
+			<p><label for="entry_alternative_currency">Alternative currency</label>: <%= select "entry", "alternative_currency", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_mailing_state">Mailing state</label><br/>
-<%= text_field 'entry', 'mailing_state'  %></p>
+			<p><label for="entry_intentional_community">Intentional community</label>: <%= select "entry", "intentional_community", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_mailing_zip">Mailing zip</label><br/>
-<%= text_field 'entry', 'mailing_zip'  %></p>
+			<p><label for="entry_collective">Collective</label>: <%= select "entry", "collective", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_mailing_country">Mailing country</label><br/>
-<%= text_field 'entry', 'mailing_country'  %></p>
+			<p><label for="entry_artist_run_center">Artist run center</label>: <%= select "entry", "artist_run_center", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_phone1">Phone1</label><br/>
-<%= text_field 'entry', 'phone1'  %></p>
+			<p><label for="entry_community_center">Community center</label>: <%= select "entry", "community_center", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_phone2">Phone2</label><br/>
-<%= text_field 'entry', 'phone2'  %></p>
+			<p><label for="entry_community_development_financial_institution">Community development financial institution</label>: <%= select "entry", "community_development_financial_institution", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_fax">Fax</label><br/>
-<%= text_field 'entry', 'fax'  %></p>
+			<p><label for="entry_cooperative_financial_institution">Cooperative financial institution</label>: <%= select "entry", "cooperative_financial_institution", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_email">Email</label><br/>
-<%= text_field 'entry', 'email'  %></p>
+			<p><label for="entry_mutual_aid_self_help_group">Mutual aid self help group</label>: <%= select "entry", "mutual_aid_self_help_group", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_website">Website</label><br/>
-<%= text_field 'entry', 'website'  %></p>
+			<p><label for="entry_activist_social_change_organization">Activist social change organization</label>: <%= select "entry", "activist_social_change_organization", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_preferred_contact">Preferred contact</label><br/>
-<%= text_field 'entry', 'preferred_contact'  %></p>
+			<p><label for="entry_union_labor_organization">Union labor organization</label>: <%= select "entry", "union_labor_organization", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_description">Description</label><br/>
-<%= text_area 'entry', 'description'  %></p>
+			<p><label for="entry_government">Government</label>: <%= select "entry", "government", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_created_at">Created at</label><br/>
-<%= datetime_select 'entry', 'created_at'  %></p>
+			<p><label for="entry_fair_trade_organization">Fair trade organization</label>: <%= select "entry", "fair_trade_organization", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_updated_at">Updated at</label><br/>
-<%= datetime_select 'entry', 'updated_at'  %></p>
+			<p><label for="entry_network_association">Network association</label>: <%= select "entry", "network_association", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_latitude">Latitude</label><br/>
-<%= text_field 'entry', 'latitude'  %></p>
+			<p><label for="entry_non_profit_org">Non profit org</label>: <%= select "entry", "non_profit_org", [["True", true], ["False", false]] %></p>
+		</td>
+		<td valign="top">
+			<p><label for="entry_esop">Esop</label>: <%= select "entry", "esop", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_longitude">Longitude</label><br/>
-<%= text_field 'entry', 'longitude'  %></p>
+			<p><label for="entry_majority_owned_esop">Majority owned esop</label>: <%= select "entry", "majority_owned_esop", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_distance">Distance</label><br/>
-<%= text_field 'entry', 'distance'  %></p>
+			<p><label for="entry_percentage_owned">Percentage owned</label>: <%= select "entry", "percentage_owned", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_prod_serv1">Prod serv1</label><br/>
-<%= text_field 'entry', 'prod_serv1'  %></p>
+			<p><label for="entry_other">Other</label>: <%= select "entry", "other", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_prod_serv2">Prod serv2</label><br/>
-<%= text_field 'entry', 'prod_serv2'  %></p>
+			<p><label for="entry_type_of_other">Type of other</label>: <%= text_field 'entry', 'type_of_other'  %></p>
 
-<p><label for="entry_prod_serv3">Prod serv3</label><br/>
-<%= text_field 'entry', 'prod_serv3'  %></p>
+			<p><label for="entry_naics_code">Naics code</label>: <%= text_field 'entry', 'naics_code'  %></p>
 
-<p><label for="entry_support_organization">Support organization</label><br/>
-<%= select "entry", "support_organization", [["True", true], ["False", false]] %></p>
+			<p><label for="entry_informal">Informal</label>: <%= select "entry", "informal", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_worker_coop">Worker coop</label><br/>
-<%= select "entry", "worker_coop", [["True", true], ["False", false]] %></p>
+			<p><label for="entry_cooperative">Cooperative</label>: <%= select "entry", "cooperative", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_producer_coop">Producer coop</label><br/>
-<%= select "entry", "producer_coop", [["True", true], ["False", false]] %></p>
+			<p><label for="entry_partnership">Partnership</label>: <%= select "entry", "partnership", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_marketing_coop">Marketing coop</label><br/>
-<%= select "entry", "marketing_coop", [["True", true], ["False", false]] %></p>
+			<p><label for="entry_llc">Llc</label>: <%= select "entry", "llc", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_housing_coop">Housing coop</label><br/>
-<%= select "entry", "housing_coop", [["True", true], ["False", false]] %></p>
+			<p><label for="entry_s_corporation">S corporation</label>: <%= select "entry", "s_corporation", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_consumer_coop">Consumer coop</label><br/>
-<%= select "entry", "consumer_coop", [["True", true], ["False", false]] %></p>
+			<p><label for="entry_c_corporation">C corporation</label>: <%= select "entry", "c_corporation", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_community_land_trust">Community land trust</label><br/>
-<%= select "entry", "community_land_trust", [["True", true], ["False", false]] %></p>
+			<p><label for="entry_non_profit_corporation_501c3">Non profit corporation 501c3</label>: <%= select "entry", "non_profit_corporation_501c3", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_conservation_ag_land_trust">Conservation ag land trust</label><br/>
-<%= select "entry", "conservation_ag_land_trust", [["True", true], ["False", false]] %></p>
+			<p><label for="entry_non_profit_corporation_501c4">Non profit corporation 501c4</label>: <%= select "entry", "non_profit_corporation_501c4", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_alternative_currency">Alternative currency</label><br/>
-<%= select "entry", "alternative_currency", [["True", true], ["False", false]] %></p>
+			<p><label for="entry_non_profit_corporation_other">Non profit corporation other</label>: <%= select "entry", "non_profit_corporation_other", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_intentional_community">Intentional community</label><br/>
-<%= select "entry", "intentional_community", [["True", true], ["False", false]] %></p>
+			<p><label for="entry_other_type_of_incorp">Other type of incorp</label>: <%= select "entry", "other_type_of_incorp", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_collective">Collective</label><br/>
-<%= select "entry", "collective", [["True", true], ["False", false]] %></p>
+			<p><label for="entry_type_of_other_incorp">Type of other incorp</label>: <%= text_field 'entry', 'type_of_other_incorp'  %></p>
 
-<p><label for="entry_artist_run_center">Artist run center</label><br/>
-<%= select "entry", "artist_run_center", [["True", true], ["False", false]] %></p>
+			<p><label for="entry_have_a_fiscal_sponsor">Have a fiscal sponsor</label>: <%= select "entry", "have_a_fiscal_sponsor", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_community_center">Community center</label><br/>
-<%= select "entry", "community_center", [["True", true], ["False", false]] %></p>
+			<p><label for="entry_year_founded">Year founded</label>: <%= date_select 'entry', 'year_founded'  %></p>
 
-<p><label for="entry_community_development_financial_institution">Community development financial institution</label><br/>
-<%= select "entry", "community_development_financial_institution", [["True", true], ["False", false]] %></p>
+			<p><label for="entry_democratic">Democratic</label>: <%= select "entry", "democratic", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_cooperative_financial_institution">Cooperative financial institution</label><br/>
-<%= select "entry", "cooperative_financial_institution", [["True", true], ["False", false]] %></p>
+			<p><label for="entry_union_association">Union association</label>: <%= select "entry", "union_association", [["True", true], ["False", false]] %></p>
 
-<p><label for="entry_mutual_aid_self_help_group">Mutual aid self help group</label><br/>
-<%= select "entry", "mutual_aid_self_help_group", [["True", true], ["False", false]] %></p>
-
-<p><label for="entry_activist_social_change_organization">Activist social change organization</label><br/>
-<%= select "entry", "activist_social_change_organization", [["True", true], ["False", false]] %></p>
-
-<p><label for="entry_union_labor_organization">Union labor organization</label><br/>
-<%= select "entry", "union_labor_organization", [["True", true], ["False", false]] %></p>
-
-<p><label for="entry_government">Government</label><br/>
-<%= select "entry", "government", [["True", true], ["False", false]] %></p>
-
-<p><label for="entry_fair_trade_organization">Fair trade organization</label><br/>
-<%= select "entry", "fair_trade_organization", [["True", true], ["False", false]] %></p>
-
-<p><label for="entry_network_association">Network association</label><br/>
-<%= select "entry", "network_association", [["True", true], ["False", false]] %></p>
-
-<p><label for="entry_non_profit_org">Non profit org</label><br/>
-<%= select "entry", "non_profit_org", [["True", true], ["False", false]] %></p>
-
-<p><label for="entry_esop">Esop</label><br/>
-<%= select "entry", "esop", [["True", true], ["False", false]] %></p>
-
-<p><label for="entry_majority_owned_esop">Majority owned esop</label><br/>
-<%= select "entry", "majority_owned_esop", [["True", true], ["False", false]] %></p>
-
-<p><label for="entry_percentage_owned">Percentage owned</label><br/>
-<%= select "entry", "percentage_owned", [["True", true], ["False", false]] %></p>
-
-<p><label for="entry_other">Other</label><br/>
-<%= select "entry", "other", [["True", true], ["False", false]] %></p>
-
-<p><label for="entry_type_of_other">Type of other</label><br/>
-<%= text_field 'entry', 'type_of_other'  %></p>
-
-<p><label for="entry_naics_code">Naics code</label><br/>
-<%= text_field 'entry', 'naics_code'  %></p>
-
-<p><label for="entry_informal">Informal</label><br/>
-<%= select "entry", "informal", [["True", true], ["False", false]] %></p>
-
-<p><label for="entry_cooperative">Cooperative</label><br/>
-<%= select "entry", "cooperative", [["True", true], ["False", false]] %></p>
-
-<p><label for="entry_partnership">Partnership</label><br/>
-<%= select "entry", "partnership", [["True", true], ["False", false]] %></p>
-
-<p><label for="entry_llc">Llc</label><br/>
-<%= select "entry", "llc", [["True", true], ["False", false]] %></p>
-
-<p><label for="entry_s_corporation">S corporation</label><br/>
-<%= select "entry", "s_corporation", [["True", true], ["False", false]] %></p>
-
-<p><label for="entry_c_corporation">C corporation</label><br/>
-<%= select "entry", "c_corporation", [["True", true], ["False", false]] %></p>
-
-<p><label for="entry_non_profit_corporation_501c3">Non profit corporation 501c3</label><br/>
-<%= select "entry", "non_profit_corporation_501c3", [["True", true], ["False", false]] %></p>
-
-<p><label for="entry_non_profit_corporation_501c4">Non profit corporation 501c4</label><br/>
-<%= select "entry", "non_profit_corporation_501c4", [["True", true], ["False", false]] %></p>
-
-<p><label for="entry_non_profit_corporation_other">Non profit corporation other</label><br/>
-<%= select "entry", "non_profit_corporation_other", [["True", true], ["False", false]] %></p>
-
-<p><label for="entry_other_type_of_incorp">Other type of incorp</label><br/>
-<%= select "entry", "other_type_of_incorp", [["True", true], ["False", false]] %></p>
-
-<p><label for="entry_type_of_other_incorp">Type of other incorp</label><br/>
-<%= text_field 'entry', 'type_of_other_incorp'  %></p>
-
-<p><label for="entry_have_a_fiscal_sponsor">Have a fiscal sponsor</label><br/>
-<%= select "entry", "have_a_fiscal_sponsor", [["True", true], ["False", false]] %></p>
-
-<p><label for="entry_year_founded">Year founded</label><br/>
-<%= date_select 'entry', 'year_founded'  %></p>
-
-<p><label for="entry_democratic">Democratic</label><br/>
-<%= select "entry", "democratic", [["True", true], ["False", false]] %></p>
-
-<p><label for="entry_union_association">Union association</label><br/>
-<%= select "entry", "union_association", [["True", true], ["False", false]] %></p>
-
-<p><label for="entry_which_union">Which union</label><br/>
-<%= text_field 'entry', 'which_union'  %></p>
+			<p><label for="entry_which_union">Which union</label>: <%= text_field 'entry', 'which_union'  %></p>
+		</td>
+	</tr>
+</table>
 
 <% if current_user.member %>
 <p><%= check_box_tag 'make_entry_private', '1', @entry.member %>

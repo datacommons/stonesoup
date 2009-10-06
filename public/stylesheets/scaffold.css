@@ -51,6 +51,20 @@ dd {
 	margin-left: 0px;
 }
 
+.option_group {
+	padding: 5px;
+	border-top-style: double;
+	border-right-style:double;
+	border-bottom-style:double;
+	border-left-style:double;
+	margin: 3px;
+}
+
+.option_group_title {
+	font-weight: bold;
+	margin-bottom: 15px;
+	border-bottom-style: solid;
+}
 /** Main Layout CSS **/
  
 #maincol {
