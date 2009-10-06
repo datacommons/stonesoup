@@ -1,12 +1,11 @@
 <h1><%= @entry.name %></h1>
 
   <%
-	  map = Mapstraction.new("the_map",default_map_type)
-	  map.control_init(:small => true)
-	  pt = [Float(@entry.latitude),Float(@entry.longitude)]
-	  map.center_zoom_init(pt,14)
-	  map.marker_init(Marker.new(pt, :info_bubble => @entry.name, :icon => "http://maps.google.com/mapfiles/marker.png"))
-	  puts map.to_html
+  map = Mapstraction.new("the_map",default_map_type)
+  map.control_init(:small => true)
+  pt = [Float(@entry.latitude),Float(@entry.longitude)]
+  map.center_zoom_init(pt,14)
+  map.marker_init(Marker.new(pt, :info_bubble => @entry.name, :icon => "http://maps.google.com/mapfiles/marker.png"))
   %>
   <%= map.to_html %>
 
