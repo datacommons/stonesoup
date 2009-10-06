@@ -1,0 +1,44 @@
+
+<% 
+map_type = current_map_type
+page = request.request_uri 
+%>
+
+<% if map_type == :openlayers %>
+<a href='http://openlayers.org'>openlayers</a> viewer,
+<a href='http://www.openstreetmap.org'>openstreetmap</a> data
+<% end %>
+
+<% if map_type == :openstreetmap %>
+<a href='http://maps.google.com'>Google</a> viewer with
+<a href='http://www.openstreetmap.org'>openstreetmap</a> data
+<% end %>
+
+<% if map_type == :google %>
+<a href='http://maps.google.com'>Google</a> maps
+<% end %>
+
+<br />Alternatives:
+
+<% if map_type != :google %>
+<a href='<%= request.path %>?map=google'>Google maps</a>
+<% end %>
+
+<% if map_type != :openstreetmap %>
+<% if map_type == :openlayers %>
+<a href='<%= request.path %>?map=openstreetmap'>Google viewer</a>
+<% else %>
+<a href='<%= request.path %>?map=openstreetmap'>Open data</a>
+<% end %>
+<% end %>
+
+<% if map_type != :openlayers %>
+<% if map_type == :google %>
+<a href='<%= request.path %>?map=openlayers'>Open everything</a>
+<% else %>
+<a href='<%= request.path %>?map=openlayers'>Open viewer</a>
+<% end %>
+<% end %>
+
+
+

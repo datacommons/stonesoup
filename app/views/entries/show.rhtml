@@ -1,21 +1,19 @@
 <h1><%= @entry.name %></h1>
 
-<%# default :controls = :zoom, :type, :overview, :scale %>
   <%
-  map = GoogleMap.new(:controls => [:zoom])
-  map.markers << GoogleMapMarker.new(:map => map, 
-                                     :lat => Float(@entry.latitude), 
-                                     :lng => Float(@entry.longitude),
-                                     :html => @entry.name )
+  map = Mapstraction.new("the_map",current_map_type)
+  map.control_init(:small => true)
+  pt = [Float(@entry.latitude),Float(@entry.longitude)]
+  map.center_zoom_init(pt,14)
+  map.marker_init(Marker.new(pt, :info_bubble => @entry.name, :icon => "http://maps.google.com/mapfiles/marker.png"))
   %>
   <%= map.to_html %>
-  <div id="google_map">
-    <%= map.div %>
-  </div>
-  <div id="near_map">
-    Find organizations <%= link_to 'nearby', :action => 'near', :controller => 'search', :id => @entry %>
-  </div>
 
+  <div id="surround_map">
+  Find organizations <%= link_to 'nearby', :action => 'near', :controller => 'search', :id => @entry %><br />
+  <%= map.div() %><br />
+  <%= render :partial => "layouts/map_choice" %>
+  </div>
 
 <p><%= simple_format @entry.description %></p>
 
