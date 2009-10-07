@@ -30,8 +30,10 @@ class UsersController < ApplicationController
       when :post
         @user = User.new(params['user'])
         
-        if @user.save      
-          session[:user] = User.authenticate(@user.login, params['user']['password'])
+        if @user.save
+          logger.debug("user created with pass #{@user.password}, authenticating with pass #{params['user']['password_cleartext']}")
+          session[:user] = User.authenticate(@user.login, params['user']['password_cleartext'])
+          session[:user].update_attribute('last_login', DateTime.now)
           flash['notice']  = "Signup successful"
           redirect_back_or_default :action => "welcome"          
         end
