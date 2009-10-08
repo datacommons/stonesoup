@@ -43,7 +43,9 @@
 <div class="clearboth"></div>
 <div id="attributes">
 <h2>Attributes</h2>
-Date Founded: <%= @entry.year_founded %><br />
+<% if !@entry.year_founded.nil? %>
+Year Founded: <%= @entry.year_founded.year %><br />
+<% end %>
 <% entry_attrs = %w(
 support_organization
 worker_coop
