@@ -1,7 +1,11 @@
 class SearchController < ApplicationController
   def index
     search
-    render :action => 'search'
+    if params[:q]
+      render :action => 'search'
+    else
+      render :action => 'welcome'
+    end
   end
 
   def search
