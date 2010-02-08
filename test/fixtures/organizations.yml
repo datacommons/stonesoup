@@ -1,0 +1,27 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  name: MyString
+  description: MyText
+  created_by_id: 1
+  updated_by_id: 1
+  phone: MyString
+  fax: MyString
+  email: MyString
+  website: MyString
+  year_founded: 2010-02-08
+  democratic: false
+  primary_location_id: 1
+
+two:
+  name: MyString
+  description: MyText
+  created_by_id: 1
+  updated_by_id: 1
+  phone: MyString
+  fax: MyString
+  email: MyString
+  website: MyString
+  year_founded: 2010-02-08
+  democratic: false
+  primary_location_id: 1

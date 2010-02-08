@@ -1,0 +1,37 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  organization_id: 1
+  note: MyString
+  physical_address1: MyString
+  physical_address2: MyString
+  physical_city: MyString
+  physical_state: MyString
+  physical_zip: MyString
+  physical_country: MyString
+  mailing_address1: MyString
+  mailing_address2: MyString
+  mailing_city: MyString
+  mailing_state: MyString
+  mailing_zip: MyString
+  mailing_country: MyString
+  latitude: 1.5
+  longitude: 1.5
+
+two:
+  organization_id: 1
+  note: MyString
+  physical_address1: MyString
+  physical_address2: MyString
+  physical_city: MyString
+  physical_state: MyString
+  physical_zip: MyString
+  physical_country: MyString
+  mailing_address1: MyString
+  mailing_address2: MyString
+  mailing_city: MyString
+  mailing_state: MyString
+  mailing_zip: MyString
+  mailing_country: MyString
+  latitude: 1.5
+  longitude: 1.5
