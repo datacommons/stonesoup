@@ -1,5 +1,10 @@
 This application requires the following gems:
+	rails v2.2.2
+	ruport
+	acts_as_reportable
 	ferret
+	geokit
+	mysql
 
 
 To get Searches working in the DCP Directory:
