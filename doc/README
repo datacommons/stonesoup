@@ -1,0 +1,14 @@
+This application requires the following gems:
+	ferret
+
+
+To get Searches working in the DCP Directory:
+1) Start up the Ferret Server:
+script/ferret_server -e production -R `pwd` start
+or
+script/ferret_server -e development -R `pwd` start
+
+2) If the index has never been built (i.e. first installation, first run, etc.):
+script/runner -e production 'Entry.rebuild_index'
+or
+script/runner -e development 'Entry.rebuild_index'
