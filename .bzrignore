@@ -1,0 +1,9 @@
+log
+config/database.yml
+.bzrignore
+tmp/cache
+tmp/pids
+tmp/sessions
+tmp/sockets
+log/acts_as_ferret.log
+log/development.log
