@@ -2,14 +2,14 @@
 
 <table>
   <tr>
-  <% for column in Entry.content_columns %>
+  <% for column in Organization.content_columns %>
     <th><%= column.human_name %></th>
   <% end %>
   </tr>
   
 <% for entry in @entries %>
   <tr>
-  <% for column in Entry.content_columns %>
+  <% for column in Organization.content_columns %>
     <td><%=h entry.send(column.name) %></td>
   <% end %>
     <td><%= link_to 'Show', :action => 'show', :id => entry %></td>

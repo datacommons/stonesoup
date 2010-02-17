@@ -5,7 +5,7 @@ require File.dirname(__FILE__) + '/../config/environment'
 require 'fastercsv'
 
 FasterCSV.foreach('entries.csv', :headers => :first_row) do |row|
-  e = Entry.new
+  e = Organization.new
   row.each do |k,v|
     if e.respond_to? k
       e[k] = v
@@ -13,5 +13,3 @@ FasterCSV.foreach('entries.csv', :headers => :first_row) do |row|
   end
   e.save or warn "failure"
 end
-
-#id,name,phone1,phone2,fax,email,website,physical_address1,physical_address2,physical_city,physical_state,physical_zip,physical_country,mailing_address1,mailing_city,mailing_state,mailing_zip,mailing_country,preferred_form_of_contact,contact_person_1,cont1__first_name,cont1__last_name,cont1__primary_title,cont1__office_phone,cont1__extension,cont1__cell,cont1__fax,cont1__email,primary_contact,description,prod_serv1,prod_serv2,prod_serv3,support_organization,worker_coop,producer_coop,marketing_coop,housing_coop,consumer_coop,community_land_trust,conservation_ag_land_trust,alternative_currency,intentional_community,collective,artist_run_center,community_center,community_development_financial_institution,cooperative_financial_institution,mutual_aid_self_help_group,activist_social_change_organization,union_labor_organization,government,fair_trade_organization,network_association,non_profit_org,esop,majority_owned_esop,percentage_owned,other,type_of_other,naics_code,informal,cooperative,partnership,llc,s_corporation,c_corporation,non_profit_corporation_501c3,non_profit_corporation_501c4,non_profit_corporation_other,other_type_of_incorp,type_of_other_incorp,have_a_fiscal_sponsor,year_founded,democratic,union_association,which_union

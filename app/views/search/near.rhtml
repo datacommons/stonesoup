@@ -32,7 +32,7 @@
   </div>
 
 
-<p><%= link_to 'Add New Entry', :controller => 'entries', :action => 'new' %></p>
+<p><%= link_to 'Add New Organization', :controller => 'organizations', :action => 'new' %></p>
 <% form_tag( {:action => 'search'}, :method => 'get' ) do %>
   <p><label for="q">Search:</label>
   <%= text_field_tag 'q' %>
@@ -45,11 +45,11 @@
 <% if @entries %>
  <% if @entries.blank? %>
   <p>No results were found for this search.</p>
-  <p><%= link_to 'Would you like to add an entry?', :controller => 'entries', :action => 'new' %></p>
+  <p><%= link_to 'Would you like to add an entry?', :controller => 'organizations', :action => 'new' %></p>
  <% else %>
  <h2>Search Results</h2>
   <% for entry in @entries %>
-   <p><img src="<%= markers[entry.id] %>" width="20" height="34" /><%= link_to entry.name, :controller => 'entries', :action => 'show', :id => entry %>
+   <p><img src="<%= markers[entry.id] %>" width="20" height="34" /><%= link_to entry.name, :controller => 'organizations', :action => 'show', :id => entry %>
   <%= "(Private to #{entry.member.name})" if entry.member %></p>
   <% end %>
  <h2>Download Search Results</h2>
@@ -60,8 +60,8 @@
  <% end %>
 <% end %>
 <h2>Latest Changes</h2>
-<% for entry in Entry.latest_changes %>
-  <p><%= link_to entry.name, :controller => 'entries', :action => 'show', :id => entry %>
+<% for entry in Organization.latest_changes %>
+  <p><%= link_to entry.name, :controller => 'organizations', :action => 'show', :id => entry %>
   <%= "(Private to #{entry.member.name})" if entry.member %>
   <% if entry.updated_at %>
     updated <%= time_ago_in_words entry.updated_at %> ago

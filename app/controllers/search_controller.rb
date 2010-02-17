@@ -22,7 +22,7 @@ class SearchController < ApplicationController
     end
 
     if params[:q]
-      @entries = Entry.find_with_ferret(query) 
+      @entries = Organization.find_with_ferret(query) 
 
       f = params[:format]
       respond_to do |f| 
@@ -31,7 +31,7 @@ class SearchController < ApplicationController
         f.csv do
           data = [@entries].flatten
           data = data.map {|r| r.reportable_data}.flatten
-          cols = Entry.column_names
+          cols = Organization.column_names
           table = Ruport::Data::Table.new(:data => data,
                                           :column_names => cols)
           send_data table.to_csv,
@@ -50,8 +50,8 @@ class SearchController < ApplicationController
         within = within.to_i
       end
     end
-    @entry = Entry.find(params[:id])
-    @entries = Entry.find(:all, :origin => @entry, :within=>within, :order=>'distance asc', :units=>:miles)
+    @entry = Organization.find(params[:id])
+    @entries = Organization.find(:all, :origin => @entry, :within=>within, :order=>'distance asc', :units=>:miles)
     @within = within
 
     f = params[:format]
@@ -61,7 +61,7 @@ class SearchController < ApplicationController
       f.csv do
         data = [@entries].flatten
         data = data.map {|r| r.reportable_data}.flatten
-        cols = Entry.column_names
+        cols = Organization.column_names
         table = Ruport::Data::Table.new(:data => data,
                                         :column_names => cols)
         send_data(table.to_csv, 

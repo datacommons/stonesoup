@@ -23,15 +23,15 @@
 
 <dl id="address">
 <dt>Address</dt>
-<dd><%= @entry.physical_address1 %><% if @entry.physical_address1 and @entry.physical_address2 %>, <% end %><%= @entry.physical_address2 %></dd>
-<dd><%= @entry.physical_city %></dd>
-<dd><%= @entry.physical_state %>, <%= @entry.physical_zip %></dd>
-<dd><%= @entry.physical_country %></dd>
+<dd><%= @entry.primary_location.physical_address1 %><% unless @entry.primary_location.physical_address1.blank? and @entry.primary_location.physical_address2.blank? %>, <% end %><%= @entry.primary_location.physical_address2 %></dd>
+<dd><%= @entry.primary_location.physical_city %></dd>
+<dd><%= @entry.primary_location.physical_state %>, <%= @entry.primary_location.physical_zip %></dd>
+<dd><%= @entry.primary_location.physical_country %></dd>
 </dl id="address">
 
 <dl id="address">
 <dt>Phone</dt>
-<dd><%= @entry.phone1 %></dd>
+<dd><%= @entry.phone %></dd>
 </dl id="address">
 
 <dl id="address">
@@ -46,56 +46,13 @@
 <% if !@entry.year_founded.nil? %>
 Year Founded: <%= @entry.year_founded.year %><br />
 <% end %>
-<% entry_attrs = %w(
-support_organization
-worker_coop
-producer_coop
-marketing_coop
-housing_coop
-consumer_coop
-community_land_trust
-conservation_ag_land_trust
-alternative_currency
-intentional_community
-collective
-artist_run_center
-community_center
-community_development_financial_institution
-cooperative_financial_institution
-mutual_aid_self_help_group
-activist_social_change_organization
-union_labor_organization
-government
-fair_trade_organization
-network_association
-non_profit_org
-esop
-majority_owned_esop
-percentage_owned
-other
-informal
-cooperative
-partnership
-llc
-s_corporation
-c_corporation
-non_profit_corporation_501c3
-non_profit_corporation_501c4
-non_profit_corporation_other
-other_type_of_incorp
-have_a_fiscal_sponsor
-democratic
-union_association
-) %>
+
+<% unless @entry.products_services.empty? %>
+<h2>Products &quot; Services</h2>
 <ul id="attribute_list">
-<% entry_attrs.each do |entry_attr| %>
-
-<% if @entry.send(entry_attr) %>
-
-<li><%= entry_attr.humanize %></li>
-
-<% end %>
-
+	<% @entry.products_services.each do |ps| %>
+<li><%= ps %></li>
+	<% end %>
 <% end %>
 </ul>
 
