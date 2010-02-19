@@ -1,10 +1,12 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-<title>Data Commons Project: <%= controller.action_name %></title>
-<%= Mapstraction.header(current_map_type) %>
-<meta http-equiv="content-type" content="text/html;charset=utf-8" />
-  <%= stylesheet_link_tag 'scaffold.css?q=1' %>
+	<title>Data Commons Project: <%= controller.action_name %></title>
+	<%= Mapstraction.header(current_map_type) %>
+	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+	<%= stylesheet_link_tag 'scaffold.css' %>
+	<%= stylesheet_link_tag 'main.css' %>
+	<%= javascript_include_tag :defaults %>
 </head>
 <body>
 

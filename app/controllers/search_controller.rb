@@ -50,8 +50,8 @@ class SearchController < ApplicationController
         within = within.to_i
       end
     end
-    @entry = Organization.find(params[:id])
-    @entries = Organization.find(:all, :origin => @entry, :within=>within, :order=>'distance asc', :units=>:miles)
+    @organization = Organization.find(params[:id])
+    @entries = Organization.find(:all, :origin => @organization, :within=>within, :order=>'distance asc', :units=>:miles)
     @within = within
 
     f = params[:format]

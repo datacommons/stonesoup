@@ -6,7 +6,7 @@
   at = 0
   markers = {}
   bounds = [10000, 10000, -10000, -10000]
-  target = @entry.id
+  target = @organization.id
   for entry in @entries
     if entry.id == target
       icon = "http://maps.google.com/mapfiles/marker.png"
@@ -40,7 +40,7 @@
   </p>
 <% end %>
 
-<p>Current search is restricted to within <%= @within %> mile(s) of <%= @entry.name %>.<br /> [expand to <%= link_to (@within*10).to_s, :within => @within*10, :action => 'near', :controller => 'search', :id => @entry %> mile(s), contract to <%= link_to (@within/10).to_s, :within => @within/10, :action => 'near', :controller => 'search', :id => @entry %> mile(s)]</p>
+<p>Current search is restricted to within <%= @within %> mile(s) of <%= @organization.name %>.<br /> [expand to <%= link_to (@within*10).to_s, :within => @within*10, :action => 'near', :controller => 'search', :id => @organization %> mile(s), contract to <%= link_to (@within/10).to_s, :within => @within/10, :action => 'near', :controller => 'search', :id => @organization %> mile(s)]</p>
 
 <% if @entries %>
  <% if @entries.blank? %>
@@ -54,8 +54,8 @@
   <% end %>
  <h2>Download Search Results</h2>
    <ul>  
-    <li>Download as <%= link_to 'CSV', :action => 'near', :id => @entry, :format => 'csv' %> (suitable for spreadsheet programs)</li>
-    <li>Download as <%= link_to 'XML', :action => 'near', :id => @entry, :format => 'xml' %></li>
+    <li>Download as <%= link_to 'CSV', :action => 'near', :id => @organization, :format => 'csv' %> (suitable for spreadsheet programs)</li>
+    <li>Download as <%= link_to 'XML', :action => 'near', :id => @organization, :format => 'xml' %></li>
    </ul>
  <% end %>
 <% end %>

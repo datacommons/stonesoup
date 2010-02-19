@@ -1,9 +1,24 @@
 <h1>Editing entry</h1>
 
-<% form_tag :action => 'update', :id => @entry do %>
+<% form_tag :action => 'update', :id => @organization do %>
   <%= render :partial => 'form' %>
   <%= submit_tag 'Edit' %>
 <% end %>
+<br/>
+<div id="locations">
+	<%= render :partial => 'locations/manage' %>
+</div>
 
-<%= link_to 'Show', :action => 'show', :id => @entry %>
+<div class="clearboth">
+	#TODO: add products/services
+	#TODO: add legal_structure
+	#TODO: add access_rule
+	#TODO: add org_types
+	#TODO: add sectors
+	#TODO: add member_orgs
+	#TODO: add associated people
+	#TODO: add user editors
+</div>
+
+<%= link_to 'Show', :action => 'show', :id => @organization %>
 

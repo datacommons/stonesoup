@@ -1,4 +1,5 @@
 class OrganizationsController < ApplicationController
+  layout 'application'
   before_filter :login_required, :only => [:new, :create, :edit, :update, :destroy, :become_editor, :show]
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
   verify :method => :post, :only => [ :destroy, :create, :update ],
@@ -18,7 +19,7 @@ class OrganizationsController < ApplicationController
   # GET /organizations/1
   # GET /organizations/1.xml
   def show
-    @entry = @organization = Organization.find(params[:id])
+    @organization = @organization = Organization.find(params[:id])
     if not(@organization.latitude)
       @organization.save_ll
       @organization.save
@@ -65,9 +66,9 @@ class OrganizationsController < ApplicationController
 #TODO
 #      if current_user.member
 #        if params[:make_entry_private]
-#          @entry.member = current_user.member
+#          @organization.member = current_user.member
 #        else
-#          @entry.member = nil
+#          @organization.member = nil
 #        end
 #      end
 
@@ -90,9 +91,9 @@ class OrganizationsController < ApplicationController
 #TODO
 #      if current_user.member
 #        if params[:make_entry_private]
-#          @entry.member = current_user.member
+#          @organization.member = current_user.member
 #        else
-#          @entry.member = nil
+#          @organization.member = nil
 #        end
 #      end
 
@@ -121,26 +122,26 @@ class OrganizationsController < ApplicationController
   end
 
   def become_editor
-    @entry = Entry.find(params[:id])
+    @organization = Entry.find(params[:id])
     if request.method == :post
-      @entry.users << current_user
-      flash[:notice] = "You are now an editor for entry: #{@entry.name}"
-      redirect_to :action => 'show', :id => @entry
+      @organization.users << current_user
+      flash[:notice] = "You are now an editor for entry: #{@organization.name}"
+      redirect_to :action => 'show', :id => @organization
     end
   end
 
   def invite
-    @entry = Entry.find(params[:id])
+    @organization = Entry.find(params[:id])
     @user = User.find_by_login(params[:user_login])
     unless @user
       @user = User.create(:login => params[:user_login])
       @user.password_cleartext = `pwgen -a 6 1`.chomp
     end
-    @user.entries << @entry
+    @user.entries << @organization
     @user.save!
-    Email.deliver_invite_for_entry(@user, @entry)
+    Email.deliver_invite_for_entry(@user, @organization)
     flash[:notice] = "#{@user.login} has been invited"
-    redirect_to :action => 'show', :id => @entry
+    redirect_to :action => 'show', :id => @organization
   end
 
   protected

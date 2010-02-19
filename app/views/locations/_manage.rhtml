@@ -1,0 +1,39 @@
+<% unless @organization.locations.length == 0 then %>
+	<%= render :partial => 'locations/display', :locals => { :location => @organization.primary_location } %>
+	<% for loc in @organization.locations 
+		unless loc.id == @organization.primary_location.id %>
+			<%= render :partial => 'locations/display', :locals => { :location => loc } %>
+ 		<% end
+	end %>
+<% end %>
+<%= link_to_function('New location', "Element.toggle('block_location_new_form'); Element.hide('block_location_new_link');", 'id' => 'block_location_new_link') %>
+<div id="block_location_new_form" style="display:none" class="clearboth">
+	<% form_remote_tag :url => {:controller => 'locations', :action => 'ajax_new_location'}, 
+		:update => 'locations',
+		:loading => %(showSavingButton('newlocation_savebutton')),
+		:failure => %(resetSaveButton('newlocation_savebutton'); showFailure('Could not create location')),
+		:success => %(resetSaveButton('newlocation_savebutton'); Element.hide('block_location_new_form'); Element.show('block_location_new_link');) do %>
+		<%= hidden_field_tag 'id', @organization.id %>
+		[<%= link_to_function('cancel', "Element.hide('block_location_new_form'); Element.show('block_location_new_link');") %>]
+		<br/>Note: <%= text_field 'new_location', 'note', 'size' => 20 %> (Headquarters, branch, etc.)<br/>
+		<div class="option_group">
+			<div class="option_group_title">Physical Address</div>
+			Street 1: <%= text_field 'new_location', 'physical_address1', 'size' => 30 %><br/>
+			Street 2: <%= text_field 'new_location', 'physical_address2', 'size' => 30 %><br/>
+			City: <%= text_field 'new_location', 'physical_city', 'size' => 20 %>
+			State: <%= text_field 'new_location', 'physical_state', 'size' => 10 %>
+			Postal Code: <%= text_field 'new_location', 'physical_zip', 'size' => 10 %><br/>
+			Country: <%= text_field 'new_location', 'physical_country', 'size' => 20 %><br/>
+		</div>
+		<div class="option_group">
+			<div class="option_group_title">Mailing Address</div>
+			Street 1: <%= text_field 'new_location', 'mailing_address1', 'size' => 30 %><br/>
+			Street 2: <%= text_field 'new_location', 'mailing_address2', 'size' => 30 %><br/>
+			City: <%= text_field 'new_location', 'mailing_city', 'size' => 20 %>
+			State: <%= text_field 'new_location', 'mailing_state', 'size' => 10 %>
+			Postal Code: <%= text_field 'new_location', 'mailing_zip', 'size' => 10 %><br/>
+			Country: <%= text_field 'new_location', 'mailing_country', 'size' => 20 %><br/>
+		</div>
+		<%= submit_tag 'Save', :id => 'newlocation_savebutton' %>
+	<% end %>
+</div>

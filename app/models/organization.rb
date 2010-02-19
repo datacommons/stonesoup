@@ -64,4 +64,13 @@ class Organization < ActiveRecord::Base
                :limit => 15,
                :conditions => conditions)
   end
+  
+	def create_address(attr)
+		l = self.locations.create(attr)
+		l.save!
+		if self.locations.length == 1 then	# if this is the first address added, make it primary
+			self.primary_location_id = l.id
+			self.save(false)
+		end
+	end
 end

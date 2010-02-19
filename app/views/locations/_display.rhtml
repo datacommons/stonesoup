@@ -1,0 +1,7 @@
+<dl class="address">
+<dt><%= location.note.blank? ? 'Address' : location.note %></dt>
+<dd><%= location.physical_address1 %><% unless location.physical_address1.blank? and location.physical_address2.blank? %>, <% end %><%= location.physical_address2 %></dd>
+<dd><%= location.physical_city %></dd>
+<dd><%= location.physical_state %>, <%= location.physical_zip %></dd>
+<dd><%= location.physical_country %></dd>
+</dl class="address">

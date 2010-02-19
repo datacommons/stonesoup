@@ -1,56 +1,60 @@
-<h1><%= @entry.name %></h1>
+<h1><%= @organization.name %></h1>
 
   <%
   map = Mapstraction.new("the_map",current_map_type)
   map.control_init(:small => true)
-  pt = [Float(@entry.latitude),Float(@entry.longitude)]
+  pt = [Float(@organization.latitude),Float(@organization.longitude)]
   map.center_zoom_init(pt,14)
-  map.marker_init(Marker.new(pt, :info_bubble => @entry.name, :icon => "http://maps.google.com/mapfiles/marker.png"))
+  map.marker_init(Marker.new(pt, :info_bubble => @organization.name, :icon => "http://maps.google.com/mapfiles/marker.png"))
   %>
   <%= map.to_html %>
 
   <div id="surround_map">
-  Find organizations <%= link_to 'nearby', :action => 'near', :controller => 'search', :id => @entry %><br />
+  Find organizations <%= link_to 'nearby', :action => 'near', :controller => 'search', :id => @organization %><br />
   <%= map.div() %><br />
   <%= render :partial => "layouts/map_choice" %>
   </div>
 
-<p><%= simple_format @entry.description %></p>
+<p><%= simple_format @organization.description %></p>
 
 <div class="clearboth"></div>
 
 <div id="listing_info">
 
-<dl id="address">
-<dt>Address</dt>
-<dd><%= @entry.primary_location.physical_address1 %><% unless @entry.primary_location.physical_address1.blank? and @entry.primary_location.physical_address2.blank? %>, <% end %><%= @entry.primary_location.physical_address2 %></dd>
-<dd><%= @entry.primary_location.physical_city %></dd>
-<dd><%= @entry.primary_location.physical_state %>, <%= @entry.primary_location.physical_zip %></dd>
-<dd><%= @entry.primary_location.physical_country %></dd>
-</dl id="address">
+<%= render :partial => 'locations/display', :locals => {:location => @organization.primary_location}%>
 
-<dl id="address">
+<dl class="address">
 <dt>Phone</dt>
-<dd><%= @entry.phone %></dd>
-</dl id="address">
+<dd><%= @organization.phone %></dd>
+</dl class="address">
 
-<dl id="address">
+<dl class="address">
 <dt>Email</dt>
-<dd><A HREF=mailto:<%= @entry.email %>><%= @entry.email %></A></dd>
-</dl id="address">
+<dd><A HREF=mailto:<%= @organization.email %>><%= @organization.email %></A></dd>
+</dl class="address">
 </div id="listing_info">
+
+<% if @organization.locations.length > 1 %>
+	<div class="clearboth"></div>
+	<h2>Other Locations</h2>
+	<% @organization.locations.each do |loc| 
+		next if loc.id == @organization.primary_location.id %>
+		<%= render :partial => 'locations/display', :locals => {:location => loc}%>
+	<% end %>
+<% end %>
+
 
 <div class="clearboth"></div>
 <div id="attributes">
 <h2>Attributes</h2>
-<% if !@entry.year_founded.nil? %>
-Year Founded: <%= @entry.year_founded.year %><br />
+<% if !@organization.year_founded.nil? %>
+Year Founded: <%= @organization.year_founded.year %><br />
 <% end %>
 
-<% unless @entry.products_services.empty? %>
+<% unless @organization.products_services.empty? %>
 <h2>Products &quot; Services</h2>
 <ul id="attribute_list">
-	<% @entry.products_services.each do |ps| %>
+	<% @organization.products_services.each do |ps| %>
 <li><%= ps %></li>
 	<% end %>
 <% end %>
@@ -60,19 +64,19 @@ Year Founded: <%= @entry.year_founded.year %><br />
 
 <div class="clearboth"></div>
 <h2>Editors of this entry</h2>
-<% if @entry.users.any? %>
-<% for user in @entry.users %>
+<% if @organization.users.any? %>
+<% for user in @organization.users %>
 <p><%= user.login %><%= " (pending)" unless user.last_login %></p>
 <% end %>
 <% end %>
 
-<% if @entry.users.blank? %>
-<p>There is no current editor for this entry.  Would you like to <%= link_to 'become the editor for this entry', :action => 'become_editor', :id => @entry %>?</p>
+<% if @organization.users.blank? %>
+<p>There is no current editor for this entry.  Would you like to <%= link_to 'become the editor for this entry', :action => 'become_editor', :id => @organization %>?</p>
 <% end %>
 
-<% if @entry.users.include? current_user %>
+<% if @organization.users.include? current_user %>
 <p>Invite new editor for this entry:</p>
-<% form_tag :action => 'invite', :id => @entry do %>
+<% form_tag :action => 'invite', :id => @organization do %>
  <%= text_field_tag 'user_login' %>
  <%= submit_tag 'Invite' %>
 <% end %>
@@ -81,9 +85,9 @@ Year Founded: <%= @entry.year_founded.year %><br />
 <h2>Download this entry</h2>
 
 <ul>
-<li>Download as <%= link_to 'CSV', :action => 'show', :id => @entry, :format => 'csv' %> (suitable for spreadsheet programs)</li>
-<li>Download as <%= link_to 'XML', :action => 'show', :id => @entry, :format => 'xml' %></li>
+<li>Download as <%= link_to 'CSV', :action => 'show', :id => @organization, :format => 'csv' %> (suitable for spreadsheet programs)</li>
+<li>Download as <%= link_to 'XML', :action => 'show', :id => @organization, :format => 'xml' %></li>
 </ul>
 
-<%= link_to 'Edit', :action => 'edit', :id => @entry %> |
+<%= link_to 'Edit', :action => 'edit', :id => @organization %> |
 <%= link_to 'Back', :controller => 'search', :action => 'index' %>
