@@ -6,7 +6,7 @@ class Email < ActionMailer::Base
     body       :user => user, :member => member
   end
 
-  def invite_for_entry(user, entry)
+  def invite_for_org(user, entry)
     recipients user.login
     from       "Data Commons Project <no-reply@dcp.usworker.coop>"
     subject    "You have been invited to become a Data Commons entry editor"

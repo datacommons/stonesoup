@@ -122,24 +122,24 @@ class OrganizationsController < ApplicationController
   end
 
   def become_editor
-    @organization = Entry.find(params[:id])
+    @organization = Organization.find(params[:id])
     if request.method == :post
       @organization.users << current_user
-      flash[:notice] = "You are now an editor for entry: #{@organization.name}"
+      flash[:notice] = "You are now an editor for organization: #{@organization.name}"
       redirect_to :action => 'show', :id => @organization
     end
   end
 
   def invite
-    @organization = Entry.find(params[:id])
+    @organization = Organization.find(params[:id])
     @user = User.find_by_login(params[:user_login])
     unless @user
       @user = User.create(:login => params[:user_login])
       @user.password_cleartext = `pwgen -a 6 1`.chomp
     end
-    @user.entries << @organization
+    @user.organizations << @organization
     @user.save!
-    Email.deliver_invite_for_entry(@user, @organization)
+    Email.deliver_invite_for_org(@user, @organization)
     flash[:notice] = "#{@user.login} has been invited"
     redirect_to :action => 'show', :id => @organization
   end
@@ -150,7 +150,7 @@ class OrganizationsController < ApplicationController
     return true if current_user.is_admin?
 
     if %w[show edit update destroy become_editor invite].include? action_name
-      entry = Organization.find(params[:id])
+      organization = Organization.find(params[:id])
 #TODO
 #      if entry.member
 #        return entry.member == current_user.member
