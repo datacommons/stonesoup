@@ -60,9 +60,9 @@ public
   # POST /locations.xml
   def create
 		process_params(params)
-  		@organization = Organization.find(params[:id])
-  		@location = create_location_from_form(@organization, params)
-  		#TODO: catch validation errors
+		@organization = Organization.find(params[:id])
+		@location = create_location_from_form(@organization, params)
+		#TODO: catch validation errors
 
     respond_to do |format|
       if @location.save
@@ -73,7 +73,8 @@ public
       else
         format.html { render :action => "new" }
         format.xml  { render :xml => @location.errors, :status => :unprocessable_entity }
-        format.js   { render_text "couldn't create location: " + @location.errors }
+        format.js   { render :partial => 'manage' }
+#        format.js   { render_text "couldn't create location: " + @location.errors }
       end
     end
   end
@@ -82,15 +83,18 @@ public
   # PUT /locations/1.xml
   def update
     @location = Location.find(params[:id])
+    @organization = @location.organization
 
     respond_to do |format|
       if @location.update_attributes(params[:location])
         flash[:notice] = 'Location was successfully updated.'
         format.html { redirect_to(@location) }
         format.xml  { head :ok }
+        format.js   { render :partial => 'manage' }
       else
         format.html { render :action => "edit" }
         format.xml  { render :xml => @location.errors, :status => :unprocessable_entity }
+        format.js   { render :partial => 'manage' }
       end
     end
   end

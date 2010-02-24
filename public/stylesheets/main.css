@@ -151,6 +151,10 @@ dd {
 	color: #339966;
 	border-bottom: 1px solid #ccc;
 }
+.address dt .actions {
+	font-size: 60%;
+	text-decoration: underline;
+}
 
 .address dd {
 	font-size: 100%;
