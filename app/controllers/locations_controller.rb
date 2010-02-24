@@ -5,17 +5,19 @@ protected
 	def create_location_from_form(org, params)
 		# at least a city must be specified
 		return if params['new_location'].nil? or params['new_location']['physical_city'].blank?
-		org.create_address(params[:new_location])
+		return org.create_address(params[:new_location])
+	end
+	
+	def process_params(params)
+	  if params[:new_location_mailing_same_as_physical]
+	    Location::ADDRESS_FIELDS.each do |fld|
+  	    params[:new_location]['mailing_' + fld] = params[:new_location]['physical_' + fld]
+      end
+    end
+    params.delete(:new_location_mailing_same_as_physical)
 	end
 public
 
-  def ajax_new_location
-		@organization = Organization.find(params[:id])
-		create_location_from_form(@organization, params)
-		render :partial => 'manage'
-		#TODO: catch validation errors
-	end
-	
   # GET /locations
   # GET /locations.xml
   def index
@@ -57,16 +59,21 @@ public
   # POST /locations
   # POST /locations.xml
   def create
-    @location = Location.new(params[:location])
+		process_params(params)
+  		@organization = Organization.find(params[:id])
+  		@location = create_location_from_form(@organization, params)
+  		#TODO: catch validation errors
 
     respond_to do |format|
       if @location.save
         flash[:notice] = 'Location was successfully created.'
         format.html { redirect_to(@location) }
         format.xml  { render :xml => @location, :status => :created, :location => @location }
+        format.js   { render :partial => 'manage' }
       else
         format.html { render :action => "new" }
         format.xml  { render :xml => @location.errors, :status => :unprocessable_entity }
+        format.js   { render_text "couldn't create location: " + @location.errors }
       end
     end
   end
@@ -92,11 +99,13 @@ public
   # DELETE /locations/1.xml
   def destroy
     @location = Location.find(params[:id])
+    @organization = @location.organization
     @location.destroy
-
+    
     respond_to do |format|
       format.html { redirect_to(locations_url) }
       format.xml  { head :ok }
+      format.js { render :partial => 'manage' }
     end
   end
 end

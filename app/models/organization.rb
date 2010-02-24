@@ -72,5 +72,6 @@ class Organization < ActiveRecord::Base
 			self.primary_location_id = l.id
 			self.save(false)
 		end
+		return l
 	end
 end
