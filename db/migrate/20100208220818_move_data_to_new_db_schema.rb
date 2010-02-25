@@ -1,3 +1,8 @@
+class Entry < ActiveRecord::Base
+  has_and_belongs_to_many :users
+  belongs_to :member
+end
+
 class MoveDataToNewDbSchema < ActiveRecord::Migration
   def self.up
     # new tables have already been created

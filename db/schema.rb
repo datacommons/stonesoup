@@ -160,6 +160,7 @@ ActiveRecord::Schema.define(:version => 20100208220818) do
     t.integer  "primary_location_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "legal_structure_id"
     t.integer  "access_rule_id",      :null => false
   end
 
