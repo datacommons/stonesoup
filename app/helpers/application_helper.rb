@@ -12,6 +12,20 @@ module ApplicationHelper
     return :openlayers
   end
 
+  def make_pointer(loc)
+    # location latitude and longitude not always geocoded currently
+    if (loc.latitude.nil? or loc.longitude.nil?)
+      loc.save_ll
+      loc.save(false)
+    end
+    if not (loc.latitude.nil? or loc.longitude.nil?)
+      pt = [Float(loc.latitude),Float(loc.longitude)]    
+      return pt
+    else
+      return nil
+    end
+  end
+
   def current_map_type
     if params['map'] then
       v = :openlayers
