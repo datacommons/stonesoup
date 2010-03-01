@@ -100,34 +100,20 @@ class MoveDataToNewDbSchema < ActiveRecord::Migration
       org.org_types.push OrgType.find_by_name('Community Land Trust') if entry.community_land_trust
       org.org_types.push OrgType.find_by_name('Conservation/Agricultural Land Trust') if entry.conservation_ag_land_trust
       org.org_types.push OrgType.find_by_name('Cooperative, Consumer') if entry.consumer_coop
-#      org.org_types.push OrgType.find_by_name('') if entry.cooperative_financial_institution
+      org.org_types.push OrgType.find_by_name('Cooperative, Financial') if entry.cooperative_financial_institution
       org.org_types.push OrgType.find_by_name('ESOP') if entry.esop
       org.org_types.push OrgType.find_by_name('Fair Trade Organization or Business') if entry.fair_trade_organization
       org.org_types.push OrgType.find_by_name('Government Agency/Department/Program') if entry.government
       org.org_types.push OrgType.find_by_name('Cooperative, Housing') if entry.housing_coop
       org.org_types.push OrgType.find_by_name('Intentional Community or Ecovillage') if entry.intentional_community
       org.org_types.push OrgType.find_by_name('Majority Owned ESOP') if entry.majority_owned_esop
-#      org.org_types.push OrgType.find_by_name('') if entry.marketing_coop
+      org.org_types.push OrgType.find_by_name('Cooperative, Marketing') if entry.marketing_coop
       org.org_types.push OrgType.find_by_name('Mutual-aid/Self-help Group') if entry.mutual_aid_self_help_group
       org.org_types.push OrgType.find_by_name('Network, Association or Coalition') if entry.network_association
       org.org_types.push OrgType.find_by_name('Cooperative, Producer') if entry.producer_coop
       org.org_types.push OrgType.find_by_name('Support Organization') if entry.support_organization
       org.org_types.push OrgType.find_by_name('Union or Other Labor Organization') if entry.union_labor_organization
       org.org_types.push OrgType.find_by_name('Cooperative, Worker') if entry.worker_coop
-      #TODO: figure out entry.marketing_coop, entry.cooperative_financial_institution
-      # names to choose from for missing fields above:
-      #Academic Institution or Program
-      #Community Development Credit Union
-      #Community Garden Project
-      #Community Supported Agriculture (CSA) Program
-      #Community-Building Group
-      #Conventional Business
-      #Conventional Non-Profit
-      #Cooperative, Multi-Stakeholder
-      #Cooperative, Retail
-      #Credit Union
-      #Financial Institution Supporting Cooperatives
-      #Other Cooperative Financial Institution
       org.save(false)
       
       # TODONT: link Org to appropriate sectors

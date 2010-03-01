@@ -23,7 +23,9 @@ class CreateOrgTypes < ActiveRecord::Migration
     OrgType.new(:name => 'Conventional Business', :custom => false).save!
     OrgType.new(:name => 'Conventional Non-Profit', :custom => false).save!
     OrgType.new(:name => 'Cooperative, Consumer', :description => 'Member-owned and democratically-controlled association though which consumers collectively purchase and distribute goods/services', :custom => false).save!
+    OrgType.new(:name => 'Cooperative, Financial', :description => 'A financial institution that is a cooperative', :custom => false).save!
     OrgType.new(:name => 'Cooperative, Housing', :description => 'Multi-family/unit housing that is owned and democratically controlled by its residents', :custom => false).save!
+    OrgType.new(:name => 'Cooperative, Marketing', :custom => false).save!
     OrgType.new(:name => 'Cooperative, Multi-Stakeholder', :custom => false).save!
     OrgType.new(:name => 'Cooperative, Producer', :description => 'Producer owned and democratically- controlled organization that serves its members (who may or may not be themselves cooperatives) through cooperative marketing, support and/or purchasing', :custom => false).save!
     OrgType.new(:name => 'Cooperative, Retail', :custom => false).save!
