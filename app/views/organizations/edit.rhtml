@@ -1,24 +1,32 @@
 <h1>Editing entry</h1>
-
+<%= link_to 'View this entry.', :action => 'show', :id => @organization %>
+<br/>
 <% form_tag :action => 'update', :id => @organization do %>
   <%= render :partial => 'form' %>
-  <%= submit_tag 'Edit' %>
+  <%= submit_tag 'Update' %>
 <% end %>
 <br/>
+
 <div id="locations">
 	<%= render :partial => 'locations/manage' %>
 </div>
 
 <div class="clearboth">
-	#TODO: add products/services
-	#TODO: add legal_structure
-	#TODO: add access_rule
-	#TODO: add org_types
-	#TODO: add sectors
-	#TODO: add member_orgs
+	<div id="products_services" class="attribute_section">
+		<%= render :partial => 'product_services/manage'%>
+	</div>
+	<div id="org_types" class="attribute_section">
+		<%= render :partial => 'org_types/manage'%>
+	</div>
+	<div id="sectors" class="attribute_section">
+		<%= render :partial => 'sectors/manage'%>
+	</div>
+	<div id="member_orgs" class="attribute_section">
+		<%= render :partial => 'member_orgs/manage'%>
+	</div>
+
 	#TODO: add associated people
+	
 	#TODO: add user editors
 </div>
-
-<%= link_to 'Show', :action => 'show', :id => @organization %>
 

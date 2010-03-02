@@ -57,6 +57,12 @@ dd {
 	margin-left: 0px;
 }
 
+.attribute_section {
+	padding: 5px;
+	border-style: solid;
+	margin: 3px;
+}
+
 .option_group {
 	padding: 5px;
 	border-top-style: double;

@@ -4,11 +4,13 @@
 <table width="100%" cellpadding="0" cellspacing="0">
 	<tr>
 		<td colspan="2">
+			<label for="organization_access_type">Data Access</label>: #TODO: add AccessRule selection<br/>
 			<label for="organization_name">Organization Name</label>: <%= text_field 'organization', 'name'  %><br/>
 			<label for="organization_phone">Phone</label>: <%= text_field 'organization', 'phone'  %><br/>
 			<label for="organization_fax">Fax</label>: <%= text_field 'organization', 'fax'  %><br/>
 			<label for="organization_email">Email</label>: <%= text_field 'organization', 'email'  %><br/>
 			<label for="organization_website">Website</label>: <%= text_field 'organization', 'website'  %><br/>
+			<label for="organization_legal_structure_id">Legal Structure</label>: <%= select 'organization', 'legal_structure_id', [['',nil]] + LegalStructure.find(:all).collect{|ls| [ls.name, ls.id]}  %><br/>
 		</td>
 	</tr>
 </table>

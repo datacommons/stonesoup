@@ -62,19 +62,49 @@
 
 <div class="clearboth"></div>
 <div id="attributes">
-<h2>Attributes</h2>
-<% if !@organization.year_founded.nil? %>
-Year Founded: <%= @organization.year_founded.year %><br />
-<% end %>
-
-<% unless @organization.products_services.empty? %>
-<h2>Products &quot; Services</h2>
-<ul id="attribute_list">
-	<% @organization.products_services.each do |ps| %>
-<li><%= ps %></li>
+	<h2>Attributes</h2>
+	<% unless @organization.year_founded.nil? %>
+		Year Founded: <%= @organization.year_founded.year %><br />
 	<% end %>
-<% end %>
-</ul>
+	<% unless @organization.legal_structure.nil? %>
+		Legal Structure: <%= @organization.legal_structure.name %><br />
+	<% end %>
+
+	<% unless @organization.products_services.empty? %>
+		<h2>Products &amp; Services</h2>
+		<ul id="attribute_list">
+		<% @organization.products_services.each do |ps| %>
+			<li><%= ps.name %></li>
+		<% end %>
+		</ul>
+	<% end %>
+
+	<% unless @organization.org_types.empty? %>
+		<h2>Organizational Type</h2>
+		<ul id="attribute_list">
+		<% @organization.org_types.each do |ot| %>
+			<li><%= ot.name %></li>
+		<% end %>
+		</ul>
+	<% end %>
+
+	<% unless @organization.sectors.empty? %>
+		<h2>Business Sector(s)</h2>
+		<ul id="attribute_list">
+		<% @organization.sectors.each do |s| %>
+			<li><%= s.name %></li>
+		<% end %>
+		</ul>
+	<% end %>
+
+	<% unless @organization.member_orgs.empty? %>
+		<h2>Member Organization Affiliations</h2>
+		<ul id="attribute_list">
+		<% @organization.member_orgs.each do |mo| %>
+			<li><%= mo.name %></li>
+		<% end %>
+		</ul>
+	<% end %>
 
 </div>
 

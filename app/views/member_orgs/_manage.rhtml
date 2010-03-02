@@ -1,0 +1,30 @@
+<h2>Member Organization Affiliations</h2>
+<% unless @organization.member_orgs.length == 0 then %>
+	<% for ps in @organization.member_orgs %>
+		<%= render :partial => 'member_orgs/display', :locals => { :member_org => ps, :show_delete => true } %>
+	<% end %>
+<% end %>
+<%= link_to_function('Add Member Organization', "Element.toggle('block_member_org_new_form'); Element.hide('block_member_org_new_link');", 'id' => 'block_member_org_new_link') %>
+<div id="block_member_org_new_form" style="display:none" class="clearboth">
+	Adding Member Organization [<%= link_to_function('cancel', "Element.hide('block_member_org_new_form'); Element.show('block_member_org_new_link');") %>]
+	<% form_remote_tag :url => {:controller => 'member_orgs', :action => 'associate'}, 
+		:update => 'member_orgs',
+		:loading => %(showSavingButton('addmember_org_savebutton')),
+		:failure => %(resetSaveButton('addmember_org_savebutton'); showFailure('Could not select member_org')),
+		:success => %(resetSaveButton('addmember_org_savebutton'); Element.hide('block_member_org_new_form'); Element.show('block_member_org_new_link');) do %>
+		<%= hidden_field_tag 'organization_id', @organization.id %>
+		<%= select_tag 'member_org_id', options_from_collection_for_select(MemberOrg.find(:all, :conditions => 'custom = 0'), 'id', 'name', @organization.member_orgs) %>
+		<%= submit_tag 'Add', :id => 'addmember_org_savebutton' %>
+	<% end %>
+	- or -
+	<%= error_messages_for 'new_member_org' %>
+	<% form_remote_tag :url => {:controller => 'member_orgs', :action => 'create'}, 
+		:update => 'member_orgs',
+		:loading => %(showSavingButton('newmember_org_savebutton')),
+		:failure => %(resetSaveButton('newmember_org_savebutton'); showFailure('Could not create member_org')),
+		:success => %(resetSaveButton('newmember_org_savebutton'); Element.hide('block_member_org_new_form'); Element.show('block_member_org_new_link');) do %>
+		<%= hidden_field_tag 'organization_id', @organization.id %>
+		Member Organization: <%= text_field 'new_member_org', 'name', 'size' => 30 %>
+		<%= submit_tag 'Create', :id => 'newmember_org_savebutton' %>
+	<% end %>
+</div>

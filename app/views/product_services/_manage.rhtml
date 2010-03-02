@@ -1,0 +1,20 @@
+<h2>Products/Services</h2>
+<% unless @organization.products_services.length == 0 then %>
+	<% for ps in @organization.products_services %>
+		<%= render :partial => 'product_services/display', :locals => { :product_service => ps, :show_delete => true } %>
+	<% end %>
+<% end %>
+<%= link_to_function('New product/service', "Element.toggle('block_product_service_new_form'); Element.hide('block_product_service_new_link');", 'id' => 'block_product_service_new_link') %>
+<div id="block_product_service_new_form" style="display:none" class="clearboth">
+	<%= error_messages_for 'new_product_service' %>
+	<% form_remote_tag :url => {:controller => 'product_services', :action => 'create'}, 
+		:update => 'products_services',
+		:loading => %(showSavingButton('newproduct_service_savebutton')),
+		:failure => %(resetSaveButton('newproduct_service_savebutton'); showFailure('Could not create product_service')),
+		:success => %(resetSaveButton('newproduct_service_savebutton'); Element.hide('block_product_service_new_form'); Element.show('block_product_service_new_link');) do %>
+		<%= hidden_field_tag 'id', @organization.id %>
+		[<%= link_to_function('cancel', "Element.hide('block_product_service_new_form'); Element.show('block_product_service_new_link');") %>]
+		<br/>Product/service: <%= text_field 'new_product_service', 'name', 'size' => 30 %><br/>
+		<%= submit_tag 'Save', :id => 'newproduct_service_savebutton' %>
+	<% end %>
+</div>

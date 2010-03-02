@@ -1,4 +1,12 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :member_orgs
+
+  map.resources :sectors
+
+  map.resources :org_types
+
+  map.resources :product_services
+
   map.resources :locations
 
   map.resources :locations

@@ -1,6 +1,4 @@
 class LocationsController < ApplicationController
-  layout 'application'
-
 protected  
 	def create_location_from_form(org, params)
 		# at least a city must be specified
@@ -74,7 +72,6 @@ public
         format.html { render :action => "new" }
         format.xml  { render :xml => @location.errors, :status => :unprocessable_entity }
         format.js   { render :partial => 'manage' }
-#        format.js   { render_text "couldn't create location: " + @location.errors }
       end
     end
   end

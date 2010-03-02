@@ -1,0 +1,30 @@
+<h2>Type of Organization</h2>
+<% unless @organization.org_types.length == 0 then %>
+	<% for ps in @organization.org_types %>
+		<%= render :partial => 'org_types/display', :locals => { :org_type => ps, :show_delete => true } %>
+	<% end %>
+<% end %>
+<%= link_to_function('Add Organization Type', "Element.toggle('block_org_type_new_form'); Element.hide('block_org_type_new_link');", 'id' => 'block_org_type_new_link') %>
+<div id="block_org_type_new_form" style="display:none" class="clearboth">
+	Adding Organization Type [<%= link_to_function('cancel', "Element.hide('block_org_type_new_form'); Element.show('block_org_type_new_link');") %>]
+	<% form_remote_tag :url => {:controller => 'org_types', :action => 'associate'}, 
+		:update => 'org_types',
+		:loading => %(showSavingButton('addorg_type_savebutton')),
+		:failure => %(resetSaveButton('addorg_type_savebutton'); showFailure('Could not select org_type')),
+		:success => %(resetSaveButton('addorg_type_savebutton'); Element.hide('block_org_type_new_form'); Element.show('block_org_type_new_link');) do %>
+		<%= hidden_field_tag 'organization_id', @organization.id %>
+		<%= select_tag 'org_type_id', options_from_collection_for_select(OrgType.find(:all, :conditions => 'custom = 0'), 'id', 'name', @organization.org_types) %>
+		<%= submit_tag 'Add', :id => 'addorg_type_savebutton' %>
+	<% end %>
+	- or -
+	<%= error_messages_for 'new_org_type' %>
+	<% form_remote_tag :url => {:controller => 'org_types', :action => 'create'}, 
+		:update => 'org_types',
+		:loading => %(showSavingButton('neworg_type_savebutton')),
+		:failure => %(resetSaveButton('neworg_type_savebutton'); showFailure('Could not create org_type')),
+		:success => %(resetSaveButton('neworg_type_savebutton'); Element.hide('block_org_type_new_form'); Element.show('block_org_type_new_link');) do %>
+		<%= hidden_field_tag 'organization_id', @organization.id %>
+		Organization Type: <%= text_field 'new_org_type', 'name', 'size' => 30 %>
+		<%= submit_tag 'Create', :id => 'neworg_type_savebutton' %>
+	<% end %>
+</div>

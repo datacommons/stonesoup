@@ -22,7 +22,7 @@ class Location < ActiveRecord::Base
   
   def save_ll
     address = "#{self.physical_address1},#{self.physical_address2},#{self.physical_city},#{self.physical_state},#{self.physical_zip},#{self.physical_country}"
-    location=GoogleGeocoder.geocode(address)
+    location=GeoKit::Geocoders::GoogleGeocoder.geocode(address)
     coords = location.ll.scan(/[0-9\.\-\+]+/)
     if coords.length == 2
       self.longitude = coords[1]

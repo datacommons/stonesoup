@@ -1,0 +1,19 @@
+<h2>Business Sectors</h2>
+<% unless @organization.sectors.length == 0 then %>
+	<% for ps in @organization.sectors %>
+		<%= render :partial => 'sectors/display', :locals => { :sector => ps, :show_delete => true } %>
+	<% end %>
+<% end %>
+<%= link_to_function('Add Sector', "Element.toggle('block_sector_new_form'); Element.hide('block_sector_new_link');", 'id' => 'block_sector_new_link') %>
+<div id="block_sector_new_form" style="display:none" class="clearboth">
+	Adding Sector [<%= link_to_function('cancel', "Element.hide('block_sector_new_form'); Element.show('block_sector_new_link');") %>]
+	<% form_remote_tag :url => {:controller => 'sectors', :action => 'associate'}, 
+		:update => 'sectors',
+		:loading => %(showSavingButton('addsector_savebutton')),
+		:failure => %(resetSaveButton('addsector_savebutton'); showFailure('Could not select sector')),
+		:success => %(resetSaveButton('addsector_savebutton'); Element.hide('block_sector_new_form'); Element.show('block_sector_new_link');) do %>
+		<%= hidden_field_tag 'organization_id', @organization.id %>
+		<%= select_tag 'sector_id', options_from_collection_for_select(Sector.find(:all), 'id', 'name', @organization.sectors) %>
+		<%= submit_tag 'Add', :id => 'addsector_savebutton' %>
+	<% end %>
+</div>

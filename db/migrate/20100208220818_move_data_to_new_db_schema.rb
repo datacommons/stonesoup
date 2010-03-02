@@ -81,7 +81,7 @@ class MoveDataToNewDbSchema < ActiveRecord::Migration
         puts msg
       end
       if(structs.length > 0)
-        org.legal_structure = LegalStructure.find_by_name(structs[0])
+        org.legal_structure_id = LegalStructure.find_by_name(structs[0]).id
         org.save(false)
       end
       

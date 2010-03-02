@@ -1,0 +1,11 @@
+<dl class="attribute" id='org_type_<%=org_type.id%>'>
+	<dt><%= org_type.name %>
+		<span class="actions">
+		[ <%= link_to_remote( 'delete', 
+			:url => {:controller => 'org_types', :action => 'dissociate', :org_type_id => org_type.id, :organization_id => @organization.id},
+			:update => 'org_types',
+			:confirm => 'Remove Org Type association?') %>
+		]
+		</span>
+	</dt>
+</dl>
