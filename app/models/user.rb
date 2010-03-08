@@ -3,6 +3,7 @@ require 'digest/sha1'
 # this model expects a certain database layout and its based on the name/login pattern. 
 class User < ActiveRecord::Base
   has_and_belongs_to_many :organizations # as editor
+  belongs_to :person
   cattr_accessor :current_user
 
   attr_accessor :password_cleartext

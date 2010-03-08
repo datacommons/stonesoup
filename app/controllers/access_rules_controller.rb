@@ -1,4 +1,5 @@
 class AccessRulesController < ApplicationController
+  before_filter :login_required, :only => [:new, :create, :edit, :update, :destroy]
   # GET /access_rules
   # GET /access_rules.xml
   def index

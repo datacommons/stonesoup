@@ -1,4 +1,5 @@
 class LocationsController < ApplicationController
+  before_filter :login_required, :only => [:new, :create, :edit, :update, :destroy]
 protected  
 	def create_location_from_form(org, params)
 		# at least a city must be specified

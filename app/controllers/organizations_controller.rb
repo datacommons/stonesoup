@@ -1,5 +1,4 @@
 class OrganizationsController < ApplicationController
-  layout 'application'
   before_filter :login_required, :only => [:new, :create, :edit, :update, :destroy, :become_editor, :show]
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
   verify :method => :post, :only => [ :destroy, :create, :update ],
