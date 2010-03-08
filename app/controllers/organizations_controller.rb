@@ -61,6 +61,7 @@ class OrganizationsController < ApplicationController
   # POST /organizations.xml
   def create
     @organization = Organization.new(params[:organization])
+    @organization.access_rule = AccessRule.new(:access_type => AccessRule::ACCESS_TYPE_PUBLIC)  # TODO: data is public by default?
 
     respond_to do |format|
 #TODO
@@ -123,7 +124,7 @@ class OrganizationsController < ApplicationController
 
   def become_editor
     @organization = Organization.find(params[:id])
-    if request.method == :post
+    if request.method == :post and !current_user.nil?
       @organization.users << current_user
       flash[:notice] = "You are now an editor for organization: #{@organization.name}"
       redirect_to :action => 'show', :id => @organization
@@ -135,12 +136,17 @@ class OrganizationsController < ApplicationController
     @user = User.find_by_login(params[:user_login])
     unless @user
       @user = User.create(:login => params[:user_login])
-      @user.password_cleartext = `pwgen -a 6 1`.chomp
+      @user.password_cleartext = random_password(params[:user_login])
+      flash[:error] = "Malformed e-mail address"
     end
-    @user.organizations << @organization
-    @user.save!
-    Email.deliver_invite_for_org(@user, @organization)
-    flash[:notice] = "#{@user.login} has been invited"
+    if @user.organizations.include?(@organization)
+      flash[:notice] = "#{@user.login} is already an editor for this entry"
+    else
+      @user.organizations << @organization
+      @user.save!
+      Email.deliver_invite_for_org(@user, @organization)
+      flash[:notice] = "#{@user.login} has been invited"
+    end
     redirect_to :action => 'show', :id => @organization
   end
 

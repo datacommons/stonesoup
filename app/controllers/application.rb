@@ -6,6 +6,28 @@ class ApplicationController < ActionController::Base
   include LoginSystem
 
   before_filter :login_from_cookie, :set_current_user_on_model
+
+  def valid_password?(password, username)
+    return false unless password.match(/[A-Z]/)
+    return false unless password.match(/[a-z]/)
+    return false unless password.match(/[0-9\?\!\@\#\$\%\^\&\*\(\)\[\]\{\}\=\+\-]/)
+    return false if password.downcase == username.downcase
+    return false if password.match(/password/i)
+    return true
+  end
+  
+  PASSWORD_LENGTH = 6
+  PASSWORD_CHARS = 'abcdefghijkmnopqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ23456789'
+  def random_password(username)
+    password = ''
+    while(!valid_password?(password, username))
+      password = ''
+      PASSWORD_LENGTH.times do
+        password += PASSWORD_CHARS[rand(PASSWORD_CHARS.length), 1]
+      end
+    end
+    return password
+  end
   	
   def current_user
     if session[:user] && session[:user].instance_of?( User ) then

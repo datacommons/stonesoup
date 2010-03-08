@@ -123,7 +123,7 @@
 <% if @organization.users.include? current_user %>
 <p>Invite new editor for this entry:</p>
 <% form_tag :action => 'invite', :id => @organization do %>
- <%= text_field_tag 'user_login' %>
+E-mail: <%= text_field_tag 'user_login' %>
  <%= submit_tag 'Invite' %>
 <% end %>
 <% end %>
