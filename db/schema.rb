@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100208220818) do
+ActiveRecord::Schema.define(:version => 20100315230025) do
 
   create_table "access_rules", :force => true do |t|
     t.string "access_type"
@@ -164,7 +164,7 @@ ActiveRecord::Schema.define(:version => 20100208220818) do
     t.integer  "access_rule_id",      :null => false
   end
 
-  create_table "organizations_people", :id => false, :force => true do |t|
+  create_table "organizations_people", :force => true do |t|
     t.integer  "organization_id", :null => false
     t.integer  "person_id",       :null => false
     t.string   "role_name"
@@ -195,10 +195,9 @@ ActiveRecord::Schema.define(:version => 20100208220818) do
     t.string   "email"
     t.boolean  "phone_contact_preferred"
     t.boolean  "email_contact_preferred"
-    t.boolean  "postal_mail_contact_preferred"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "access_rule_id",                :null => false
+    t.integer  "access_rule_id",          :null => false
   end
 
   create_table "product_services", :force => true do |t|

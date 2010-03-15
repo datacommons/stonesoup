@@ -1,5 +1,5 @@
 class PeopleController < ApplicationController
-  before_filter :login_required, :only => [:new, :create, :edit, :update, :destroy, :me]
+  before_filter :login_required, :only => [:new, :create, :edit, :update, :destroy, :me, :show]
   def me
     if current_user.person.nil?
       redirect_to :action => 'new'

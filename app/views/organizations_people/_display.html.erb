@@ -1,0 +1,38 @@
+<%
+hide_person = false if hide_person.nil? 
+hide_org = false if hide_org.nil? 
+%>
+<div id='org_person_<%=org_person.id%>_edit' style="display:none" class="attribute">
+	<span class="actions">
+	[ <%= link_to_function( 'cancel', "Element.show('org_person_#{org_person.id}'); Element.hide('org_person_#{org_person.id}_edit');") %> 
+	]
+	</span>
+	<% remote_form_for(org_person, :update => 'organizations_people', :method => 'PUT') do |f| %>
+		<%= f.error_messages %>
+		<% @organizations_person = org_person %>
+		<%= render :partial => 'organizations_people/form', :locals => {:hide_org => hide_org, :hide_person => hide_person} %>
+    	<%= f.submit "Update" %>
+	<% end %>
+</div>
+<dl class="attribute" id='org_person_<%=org_person.id%>'>
+	<dt>
+<% unless hide_person %>
+		Person: <%= org_person.person.name%><br/>
+<% end %>
+<% unless hide_org %>
+		Organization: <%= link_to org_person.organization.name, organization_path(org_person.organization)%><br/>
+<% end %>
+		Role: <%= org_person.role_name%><br/>
+		Phone: <%= org_person.phone%><br/>
+		Email: <%= org_person.email%><br/>
+		<span class="actions">
+		[ <%= link_to_remote( 'delete', 
+			:url => {:controller => 'organizations_people', :action => 'destroy', :id => org_person.id},
+			:method => 'DELETE',
+			:update => 'organizations_people',
+			:confirm => 'Delete product/service?') %>
+		| 	<%= link_to_function( 'edit', "Element.hide('org_person_#{org_person.id}'); Element.show('org_person_#{org_person.id}_edit');") %> 
+		]
+		</span>
+	</dt>
+</dl>

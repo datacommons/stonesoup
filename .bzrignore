@@ -7,3 +7,6 @@ tmp/sessions
 tmp/sockets
 log/acts_as_ferret.log
 log/development.log
+index
+log
+log

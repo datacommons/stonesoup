@@ -14,6 +14,6 @@ or
 script/ferret_server -e development -R `pwd` start
 
 2) If the index has never been built (i.e. first installation, first run, etc.):
-script/runner -e production 'Entry.rebuild_index'
+script/runner -e production 'Organization.rebuild_index'
 or
-script/runner -e development 'Entry.rebuild_index'
+script/runner -e development 'Organization.rebuild_index'

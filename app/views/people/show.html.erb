@@ -1,3 +1,6 @@
+<%= link_to 'Edit', edit_person_path(@person) %> |
+<%= link_to 'Back to Directory of People', people_path %>
+<br/>
 <br/>First name: <%= @person.firstname %>
 <br/>Last name: <%= @person.lastname %>
 <% unless @person.phone_mobile.blank? and @person.phone_home.blank? %>
@@ -19,5 +22,6 @@
 <% end %>
 <br/>Data Access: <%= AccessRule::ACCESS_TYPE_DESCRIPTION[@person.access_rule.access_type] %>
 <br/><br/>
-<%= link_to 'Edit', edit_person_path(@person) %> |
-<%= link_to 'Back', people_path %>
+<div id="organizations_people">
+<%= render :partial => 'organizations_people/manage_for_person' %>
+</div>

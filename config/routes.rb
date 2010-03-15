@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :organizations_people
+
   map.resources :people
 
   map.resources :access_rules
