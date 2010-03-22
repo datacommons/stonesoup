@@ -37,7 +37,9 @@
 
 <div id="listing_info">
 
+<% if @organization.primary_location %>
 <%= render :partial => 'locations/display', :locals => {:location => @organization.primary_location}%>
+<% end %>
 
 <dl class="address">
 <dt>Phone</dt>

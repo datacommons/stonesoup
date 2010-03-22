@@ -34,11 +34,11 @@ class Organization < ActiveRecord::Base
   end
   
   def longitude
-    self.primary_location.longitude
+    self.primary_location.longitude if self.primary_location else nil
   end
   
   def latitude
-    self.primary_location.latitude
+    self.primary_location.latitude if self.primary_location else nil
   end
   
   def save_ll
