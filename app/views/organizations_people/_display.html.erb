@@ -11,6 +11,7 @@ hide_org = false if hide_org.nil?
 		<%= f.error_messages %>
 		<% @organizations_person = org_person %>
 		<%= render :partial => 'organizations_people/form', :locals => {:hide_org => hide_org, :hide_person => hide_person} %>
+		<%= hidden_field_tag 'context', context %>
     	<%= f.submit "Update" %>
 	<% end %>
 </div>
@@ -27,7 +28,7 @@ hide_org = false if hide_org.nil?
 		Email: <%= org_person.email%><br/>
 		<span class="actions">
 		[ <%= link_to_remote( 'delete', 
-			:url => {:controller => 'organizations_people', :action => 'destroy', :id => org_person.id},
+			:url => {:controller => 'organizations_people', :action => 'destroy', :id => org_person.id, :context => context},
 			:method => 'DELETE',
 			:update => 'organizations_people',
 			:confirm => 'Delete product/service?') %>

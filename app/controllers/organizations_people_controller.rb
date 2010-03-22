@@ -49,11 +49,11 @@ class OrganizationsPeopleController < ApplicationController
         flash[:notice] = 'OrganizationsPerson was successfully created.'
         format.html { redirect_to(@organizations_person) }
         format.xml  { render :xml => @organizations_person, :status => :created, :location => @organizations_person }
-        format.js   { render :partial => 'manage' }
+        format.js   { render :partial => 'manage' + '_for_' + params[:context] }
       else
         format.html { render :action => "new" }
         format.xml  { render :xml => @organizations_person.errors, :status => :unprocessable_entity }
-        format.js   { render :partial => 'manage' }
+        format.js   { render :partial => 'manage' + '_for_' + params[:context] }
       end
     end
   end
@@ -70,11 +70,11 @@ class OrganizationsPeopleController < ApplicationController
         flash[:notice] = 'OrganizationsPerson was successfully updated.'
         format.html { redirect_to(@organizations_person) }
         format.xml  { head :ok }
-        format.js   { render :partial => 'manage' }
+        format.js   { render :partial => 'manage' + '_for_' + params[:context] }
       else
         format.html { render :action => "edit" }
         format.xml  { render :xml => @organizations_person.errors, :status => :unprocessable_entity }
-        format.js   { render :partial => 'manage' }
+        format.js   { render :partial => 'manage' + '_for_' + params[:context] }
       end
     end
   end
@@ -90,7 +90,7 @@ class OrganizationsPeopleController < ApplicationController
     respond_to do |format|
       format.html { redirect_to(organizations_people_url) }
       format.xml  { head :ok }
-      format.js   { render :partial => 'manage' }
+      format.js   { render :partial => 'manage' + '_for_' + params[:context] }
     end
   end
 end

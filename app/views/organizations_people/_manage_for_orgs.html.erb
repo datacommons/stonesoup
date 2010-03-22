@@ -1,7 +1,7 @@
 <h2>Associated People</h2>
 <% unless @organization.organizations_people.length == 0 then %>
 	<% for op in @organization.organizations_people %>
-		<%= render :partial => 'organizations_people/display', :locals => { :org_person => op, :show_delete => true, :hide_org => true } %>
+		<%= render :partial => 'organizations_people/display', :locals => { :org_person => op, :show_delete => true, :hide_org => true, :context => 'orgs' } %>
 	<% end %>
 <% end %>
 <%= link_to_function('New person association', "Element.toggle('block_org_association_new_form'); Element.hide('block_org_association_new_link');", 'id' => 'block_org_association_new_link') %>
@@ -13,6 +13,7 @@
 		:failure => %(resetSaveButton('neworg_association_savebutton'); showFailure('Could not create association')),
 		:success => %(resetSaveButton('neworg_association_savebutton'); Element.hide('block_org_association_new_form'); Element.show('block_org_association_new_link');) do %>
 		<%= hidden_field_tag 'organizations_person[organization_id]', @organization.id %>
+		<%= hidden_field_tag 'context', 'orgs' %>
 		[<%= link_to_function('cancel', "Element.hide('block_org_association_new_form'); Element.show('block_org_association_new_link');") %>]
 		<%= render :partial => 'organizations_people/form', :locals => {:hide_org => true} %>
 		<%= submit_tag 'Save', :id => 'neworg_association_savebutton' %>
