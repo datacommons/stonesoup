@@ -6,7 +6,6 @@
  <h2>Search Results</h2>
   <% for entry in @entries %>
    <p><%= link_to entry.name, :controller => 'organizations', :action => 'show', :id => entry %>
-  <%= "(Private to #{entry.member.name})" if entry.member %></p>
   <% end %>
  <h2>Download Search Results</h2>
    <ul>  
