@@ -6,7 +6,7 @@
   at = 0
   markers = {}
   bounds = [10000, 10000, -10000, -10000]
-  target = @organization.id
+  target = @origin.id
   for entry in @entries
     if entry.id == target
       icon = "http://maps.google.com/mapfiles/marker.png"
@@ -20,7 +20,7 @@
               [bounds[1], pt[1]].min,
               [bounds[2], pt[0]].max,
               [bounds[3], pt[1]].max]
-    map.marker_init(Marker.new(pt, :info_bubble => entry.name, :icon => icon))
+    map.marker_init(Marker.new(pt, :info_bubble => entry.organization.name, :icon => icon))
   end
   map.center_zoom_on_bounds_init([[bounds[0],bounds[1]],
                                   [bounds[2],bounds[3]]])
@@ -49,8 +49,7 @@
  <% else %>
  <h2>Search Results</h2>
   <% for entry in @entries %>
-   <p><img src="<%= markers[entry.id] %>" width="20" height="34" /><%= link_to entry.name, :controller => 'organizations', :action => 'show', :id => entry %>
-  <%= "(Private to #{entry.member.name})" if entry.member %></p>
+   <p><img src="<%= markers[entry.id] %>" width="20" height="34" /><%= link_to entry.organization.name, :controller => 'organizations', :action => 'show', :id => entry.organization %>
   <% end %>
  <h2>Download Search Results</h2>
    <ul>  
@@ -62,7 +61,6 @@
 <h2>Latest Changes</h2>
 <% for entry in Organization.latest_changes %>
   <p><%= link_to entry.name, :controller => 'organizations', :action => 'show', :id => entry %>
-  <%= "(Private to #{entry.member.name})" if entry.member %>
   <% if entry.updated_at %>
     updated <%= time_ago_in_words entry.updated_at %> ago
   <% end %>

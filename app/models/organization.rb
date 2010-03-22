@@ -11,8 +11,6 @@ class Organization < ActiveRecord::Base
   has_many :people, :through => :organizations_people
   has_and_belongs_to_many :users
 
-  include GeoKit::Geocoders
-
   acts_as_ferret(:fields => {
                    :name => {:boost => 2.0, :store => :yes },
                    :description => { :store => :yes },
@@ -20,10 +18,6 @@ class Organization < ActiveRecord::Base
 #                   :public => { :store => :yes },
 #                   :member_id => { :store => :yes }
                  } )
-
-  acts_as_mappable :lat_column_name => 'latitude', 
-                   :lng_column_name => 'longitude',
-                   :distance_field_name => 'distance'
 
   acts_as_reportable
 

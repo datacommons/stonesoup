@@ -1,5 +1,11 @@
 class Location < ActiveRecord::Base
   belongs_to :organization
+
+  include GeoKit::Geocoders
+
+  acts_as_mappable :lat_column_name => 'latitude', 
+                   :lng_column_name => 'longitude',
+                   :distance_field_name => 'distance'
   
   Location::ADDRESS_FIELDS = ['address1', 'address2', 'city', 'state', 'zip', 'country']
   

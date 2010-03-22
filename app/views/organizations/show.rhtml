@@ -3,22 +3,21 @@
   <%
   map = Mapstraction.new("the_map",current_map_type)
   map.control_init(:small => true)
-  if @organization.locations.length > 1
+  if @organization.locations.length >= 1
+    pt = nil
     @organization.locations.each do |loc| 
       pt = make_pointer(loc)
       if not(pt.nil?)
         map.marker_init(Marker.new(pt, :info_bubble => @organization.name, :icon => "http://maps.google.com/mapfiles/marker.png"))
       end
     end
-    sorted_latitudes = @organization.locations.collect(&:latitude).compact.sort
-    sorted_longitudes = @organization.locations.collect(&:longitude).compact.sort
-    map.center_zoom_on_bounds_init([
-      [sorted_latitudes.first, sorted_longitudes.first], 
-      [sorted_latitudes.last, sorted_longitudes.last]])
-  else
-    pt = make_pointer(@organization)
-    if not(pt.nil?)
-      map.marker_init(Marker.new(pt, :info_bubble => @organization.name, :icon => "http://maps.google.com/mapfiles/marker.png"))
+    if @organization.locations.length > 1
+      sorted_latitudes = @organization.locations.collect(&:latitude).compact.sort
+      sorted_longitudes = @organization.locations.collect(&:longitude).compact.sort
+      map.center_zoom_on_bounds_init([
+        [sorted_latitudes.first, sorted_longitudes.first], 
+        [sorted_latitudes.last, sorted_longitudes.last]])
+    else 
       map.center_zoom_init(pt,14)
     end
   end

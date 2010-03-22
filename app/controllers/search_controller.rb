@@ -51,7 +51,9 @@ class SearchController < ApplicationController
       end
     end
     @organization = Organization.find(params[:id])
-    @entries = Organization.find(:all, :origin => @organization, :within=>within, :order=>'distance asc', :units=>:miles)
+    # for the moment, only look in the environs of one location
+    @origin = @organization.locations[0]
+    @entries = Location.find(:all, :origin => @origin, :within=>within, :order=>'distance asc', :units=>:miles)
     @within = within
 
     f = params[:format]
