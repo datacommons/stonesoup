@@ -8,3 +8,8 @@
 <br/>Email: <%= f.text_field 'email', :size => 20 %>
 	<%= f.check_box 'email_contact_preferred' %> Preferred contact method?
 <br/>Data Access: <%= select 'access_rule', 'access_type', AccessRule::ACCESS_TYPES.collect{|t| [AccessRule::ACCESS_TYPE_DESCRIPTION[t], t]} %>
+<% if @person.user.nil? %>
+<p>
+	<%= check_box_tag 'is_me', 'yes', params[:is_me] %> Associate this Person record with my login account (will replace any existing association).
+</p>
+<% end %>

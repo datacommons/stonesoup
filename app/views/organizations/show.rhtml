@@ -37,7 +37,7 @@
 <div id="listing_info">
 
 <% if @organization.primary_location %>
-<%= render :partial => 'locations/display', :locals => {:location => @organization.primary_location}%>
+<%= render :partial => 'locations/display', :locals => {:location => @organization.primary_location, :hide_links => true}%>
 <% end %>
 
 <dl class="address">
@@ -56,7 +56,7 @@
 	<h2>Other Locations</h2>
 	<% @organization.locations.each do |loc| 
 		next if loc.id == @organization.primary_location.id %>
-		<%= render :partial => 'locations/display', :locals => {:location => loc}%>
+		<%= render :partial => 'locations/display', :locals => {:location => loc, :hide_links => true}%>
 	<% end %>
 <% end %>
 
@@ -110,9 +110,14 @@
 </div>
 
 
-<div id="organizations_people" class="clearboth">
-<%= render :partial => 'organizations_people/manage_for_orgs' %>
-</div>
+<% unless @organization.organizations_people.empty? %>
+	<div id="organizations_people" class="clearboth">
+		<h2>People associated with this organization</h2>
+		<% for op in @organization.organizations_people %>
+			<%= render :partial => 'organizations_people/display', :locals => {:org_person => op, :hide_links => true} %>
+		<% end %>
+	</div>
+<% end %>
 
 <div class="clearboth"></div>
 <h2>Editors of this entry</h2>

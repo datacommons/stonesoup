@@ -1,5 +1,5 @@
 class OrganizationsController < ApplicationController
-  before_filter :login_required, :only => [:new, :create, :edit, :update, :destroy, :become_editor, :show]
+  before_filter :login_required, :only => [:new, :create, :edit, :update, :destroy, :become_editor]
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
   verify :method => :post, :only => [ :destroy, :create, :update ],
          :redirect_to => { :action => :list }
@@ -19,6 +19,11 @@ class OrganizationsController < ApplicationController
   # GET /organizations/1.xml
   def show
     @organization = @organization = Organization.find(params[:id])
+    unless @organization.accessible?(current_user)
+      flash[:error] = "You may not view that entry."
+      redirect_to :action => 'index' and return
+    end
+
     if not(@organization.latitude)
       @organization.save_ll
       @organization.save
@@ -60,7 +65,7 @@ class OrganizationsController < ApplicationController
   # POST /organizations.xml
   def create
     @organization = Organization.new(params[:organization])
-    @organization.access_rule = AccessRule.new(:access_type => AccessRule::ACCESS_TYPE_PUBLIC)  # TODO: data is public by default?
+    @organization.set_access_rule(AccessRule::ACCESS_TYPE_PUBLIC)  # TODO: data is public by default?
 
     respond_to do |format|
 #TODO

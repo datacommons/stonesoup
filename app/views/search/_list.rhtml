@@ -13,13 +13,14 @@
     <li>Download as <%= link_to 'XML', :action => 'search', :q => params[:q].to_s, :format => 'xml' %></li>
    </ul>
  <% end %>
-<% end %>
-<h2>Latest Changes</h2>
-<% for entry in Organization.latest_changes %>
-  <p><%= link_to entry.name, :controller => 'organizations', :action => 'show', :id => entry %>
-  <%# "(Private to #{entry.member.name})" if entry.member #TODO %>
-  <% if entry.updated_at %>
-    updated <%= time_ago_in_words entry.updated_at %> ago
-  <% end %>
-  </p>
+<% else %>
+	<h2>Latest Changes</h2>
+	<% for entry in Organization.latest_changes %>
+	  <p><%= link_to entry.name, :controller => 'organizations', :action => 'show', :id => entry %>
+	  <%# "(Private to #{entry.member.name})" if entry.member #TODO %>
+	  <% if entry.updated_at %>
+	    updated <%= time_ago_in_words entry.updated_at %> ago
+	  <% end %>
+	  </p>
+	<% end %>
 <% end %>

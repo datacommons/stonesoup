@@ -1,5 +1,5 @@
 class PeopleController < ApplicationController
-  before_filter :login_required, :only => [:new, :create, :edit, :update, :destroy, :me, :show]
+  before_filter :login_required, :only => [:new, :create, :edit, :update, :destroy, :me]
   def me
     if current_user.person.nil?
       redirect_to :action => 'new'
@@ -23,6 +23,10 @@ class PeopleController < ApplicationController
   # GET /people/1.xml
   def show
     @person = Person.find(params[:id])
+    unless @person.accessible?(current_user)
+      flash[:error] = "You may not view that entry."
+      redirect_to :action => 'index' and return
+    end
 
     respond_to do |format|
       format.html # show.html.erb
@@ -44,17 +48,22 @@ class PeopleController < ApplicationController
   # GET /people/1/edit
   def edit
     @person = Person.find(params[:id])
+    if !@person.user.nil? and @person.user != current_user
+      flash[:error] = "You may not edit this entry, it is owned by another user."
+      redirect_to :action => 'show', :id => @person and return
+    end
   end
 
   # POST /people
   # POST /people.xml
   def create
     @person = Person.new(params[:person])
-    @person.access_rule = AccessRule.new(params[:access_rule])
-    @person.user = current_user
+    @person.set_access_rule(params[:access_rule])
+    @person.user = current_user if params[:is_me]
 
     respond_to do |format|
       if @person.save
+        @person.access_rule.save
         flash[:notice] = 'Person was successfully created.'
         format.html { redirect_to(@person) }
         format.xml  { render :xml => @person, :status => :created, :location => @person }
@@ -69,9 +78,12 @@ class PeopleController < ApplicationController
   # PUT /people/1.xml
   def update
     @person = Person.find(params[:id])
+    @person.user = current_user if params[:is_me] and @person.user.nil?
+    @person.set_access_rule(params[:access_rule][:access_type]) unless params[:access_rule].nil?
 
     respond_to do |format|
       if @person.update_attributes(params[:person])
+        @person.access_rule.save
         flash[:notice] = 'Person was successfully updated.'
         format.html { redirect_to(@person) }
         format.xml  { head :ok }

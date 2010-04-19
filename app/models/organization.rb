@@ -14,6 +14,7 @@ class Organization < ActiveRecord::Base
   acts_as_ferret(:fields => {
                    :name => {:boost => 2.0, :store => :yes },
                    :description => { :store => :yes },
+                   :products_services_to_s => { :store => :yes }, # not working?
 #                   :physical_zip => { :store => :yes },
 #                   :public => { :store => :yes },
 #                   :member_id => { :store => :yes }
@@ -23,16 +24,51 @@ class Organization < ActiveRecord::Base
 
   before_save :save_ll
   
+  def products_services_to_s
+    self.products_services.collect{|ps| ps.name}.join(', ')
+  end
+  
+  def set_access_rule(access_type)
+    if self.access_rule.nil?
+      self.access_rule = AccessRule.new(:access_type => access_type)
+    else
+      self.access_rule.access_type = access_type
+    end
+  end
+  
+  def accessible?(current_user)
+    case self.access_rule.access_type
+    when AccessRule::ACCESS_TYPE_PUBLIC # public data, always visible
+      return true
+    when AccessRule::ACCESS_TYPE_LOGGEDIN # only visible if the current user is logged in
+      return true unless current_user.nil?
+    when AccessRule::ACCESS_TYPE_PRIVATE  # only visible to the entry's editor(s)
+      return true if self.users.include?(current_user)
+    else
+      throw "Unknown access type: '#{self.access_rule.access_type}'"
+    end
+    # if access was not grated above, it is denied by default
+    return false
+  end
+  
   def public
     self.access_rule.access_type == AccessRule::ACCESS_TYPE_PUBLIC
   end
   
   def longitude
-    self.primary_location.longitude if self.primary_location else nil
+    if self.primary_location
+      self.primary_location.longitude
+    else
+      nil
+    end
   end
   
   def latitude
-    self.primary_location.latitude if self.primary_location else nil
+    if self.primary_location
+      self.primary_location.latitude
+    else
+      nil
+    end
   end
   
   def save_ll

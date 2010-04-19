@@ -38,7 +38,7 @@
 		Logged in as: <%= current_user.login %> 
 		( <%= link_to 'Logout', :controller => 'users', :action => 'logout' %>
 		| 	<% if current_user.person.nil? %>
-				<%= link_to 'Create your personal entry', :controller => 'people', :action => 'new' %>
+				<%= link_to 'Create your personal entry', :controller => 'people', :action => 'new', 'is_me' => 'yes' %>
 			<% else %>
 				<%= link_to 'Edit your personal entry', :controller => 'people', :action => 'edit', :id => current_user.person %>
 			<% end %>
@@ -51,7 +51,8 @@
 <!-- end header div -->
 <!-- begin maincol div -->
 <div id="maincol">
-<p style="color: green"><%= flash[:notice] %></p>
+	<p style="color: green"><%= flash[:notice] %></p>
+	<p style="color: red"><%= flash[:error] %></p>
 
 <%= @content_for_layout %>
 </div>

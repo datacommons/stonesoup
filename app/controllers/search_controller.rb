@@ -22,7 +22,9 @@ class SearchController < ApplicationController
     end
 
     if params[:q]
-      @entries = Organization.find_with_ferret(query) 
+      @entries = Organization.find_with_ferret(query)
+      #searcher = Searcher.new(RAILS_ROOT + 'index')
+      #@entries = searcher.search(query, :filter_proc => Proc.new{|id,score,searcher| return Organization.find(id).accessible?(current_user)})
 
       f = params[:format]
       respond_to do |f| 

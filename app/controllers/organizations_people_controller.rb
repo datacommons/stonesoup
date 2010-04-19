@@ -46,7 +46,7 @@ class OrganizationsPeopleController < ApplicationController
 
     respond_to do |format|
       if @organizations_person.save
-        flash[:notice] = 'OrganizationsPerson was successfully created.'
+        flash[:notice] = 'Organizational Association was successfully created.'
         format.html { redirect_to(@organizations_person) }
         format.xml  { render :xml => @organizations_person, :status => :created, :location => @organizations_person }
         format.js   { render :partial => 'manage' + '_for_' + params[:context] }
@@ -67,7 +67,7 @@ class OrganizationsPeopleController < ApplicationController
 
     respond_to do |format|
       if @organizations_person.update_attributes(params[:organizations_person])
-        flash[:notice] = 'OrganizationsPerson was successfully updated.'
+        flash[:notice] = 'Organizational Association was successfully updated.'
         format.html { redirect_to(@organizations_person) }
         format.xml  { head :ok }
         format.js   { render :partial => 'manage' + '_for_' + params[:context] }
