@@ -1,5 +1,18 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+  def show_link(obj)
+    return '' if obj.nil?
+    if obj.respond_to?('link_name') and obj.respond_to?('link_hash')
+      if obj.link_hash.nil?
+        return obj.link_name
+      else
+        return link_to obj.link_name, obj.link_hash
+      end
+    else
+      return ''
+    end
+  end
+
   def current_user
     if session[:user] && session[:user].instance_of?( User ) then
       return session[:user]

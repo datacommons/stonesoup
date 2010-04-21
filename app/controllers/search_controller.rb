@@ -21,11 +21,18 @@ class SearchController < ApplicationController
 #      query += " +(public:true #{@member_clause})"
     end
 
-    if params[:q]
-      @entries = Organization.find_with_ferret(query)
-      #searcher = Searcher.new(RAILS_ROOT + 'index')
-      #@entries = searcher.search(query, :filter_proc => Proc.new{|id,score,searcher| return Organization.find(id).accessible?(current_user)})
+    @latest_changes = get_latest_changes()
 
+    if params[:q]
+      @entries = ActsAsFerret::find(
+                                  query,
+                                  [Organization, Person],
+                                  { :page => 1, :per_page => 15 },
+                                  {} # find options
+                                  )
+      # TODO: find a better way to filter entries based on access rules. To use the :conditions option in find_options above, we would need to join through organizations_users to current_user, or join Person directly to current_user - not sure how that works with the multi-table query...
+      @entries = AccessRule.cleanse(@entries, current_user)
+      
       f = params[:format]
       respond_to do |f| 
         f.html
@@ -56,7 +63,10 @@ class SearchController < ApplicationController
     # for the moment, only look in the environs of one location
     @origin = @organization.locations[0]
     @entries = Location.find(:all, :origin => @origin, :within=>within, :order=>'distance asc', :units=>:miles)
+    @entries = AccessRule.cleanse(@entries, current_user)
     @within = within
+    
+    @latest_changes = get_latest_changes()
 
     f = params[:format]
     respond_to do |f| 
@@ -73,5 +83,14 @@ class SearchController < ApplicationController
                   :disposition => ("attachment; filename=search.csv"))
       end
     end
+  end
+  
+protected
+  def get_latest_changes
+    data = Organization.latest_changes + Person.latest_changes
+    logger.debug("data=#{data}")
+    data = AccessRule.cleanse(data, current_user).sort{|a,b| b.updated_at <=> a.updated_at}[0..14]
+    logger.debug("returning data=#{data}")
+    return data
   end
 end

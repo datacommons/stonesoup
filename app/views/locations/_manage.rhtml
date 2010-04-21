@@ -1,3 +1,4 @@
+<h2>Locations</h2>
 <% unless @organization.locations.length == 0 then %>
 	<%= render :partial => 'locations/display', :locals => { :location => @organization.primary_location } %>
 	<% for loc in @organization.locations 

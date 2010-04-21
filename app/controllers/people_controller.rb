@@ -48,10 +48,11 @@ class PeopleController < ApplicationController
   # GET /people/1/edit
   def edit
     @person = Person.find(params[:id])
-    if !@person.user.nil? and @person.user != current_user
-      flash[:error] = "You may not edit this entry, it is owned by another user."
-      redirect_to :action => 'show', :id => @person and return
+    unless current_user.can_edit?(@person)
+      flash[:error] = "You may not edit that record."
+      redirect_to :action => 'show', :id => @person.id and return
     end
+    return true # success
   end
 
   # POST /people
@@ -77,7 +78,7 @@ class PeopleController < ApplicationController
   # PUT /people/1
   # PUT /people/1.xml
   def update
-    @person = Person.find(params[:id])
+    return unless edit
     @person.user = current_user if params[:is_me] and @person.user.nil?
     @person.set_access_rule(params[:access_rule][:access_type]) unless params[:access_rule].nil?
 
@@ -98,6 +99,10 @@ class PeopleController < ApplicationController
   # DELETE /people/1.xml
   def destroy
     @person = Person.find(params[:id])
+    unless current_user.can_edit?(@person)
+      flash[:error] = "You may not edit that record."
+      redirect_to :action => 'show', :id => @person.id and return
+    end
     @person.destroy
 
     respond_to do |format|

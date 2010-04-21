@@ -1,8 +1,8 @@
 class OrganizationsController < ApplicationController
   before_filter :login_required, :only => [:new, :create, :edit, :update, :destroy, :become_editor]
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  verify :method => :post, :only => [ :destroy, :create, :update ],
-         :redirect_to => { :action => :list }
+  verify :method => [:post, :put, :delete], :only => [ :destroy, :create, :update ],
+         :redirect_to => { :action => :index }
 
   # GET /organizations
   # GET /organizations.xml
@@ -68,7 +68,7 @@ class OrganizationsController < ApplicationController
     @organization.set_access_rule(AccessRule::ACCESS_TYPE_PUBLIC)  # TODO: data is public by default?
 
     respond_to do |format|
-#TODO
+#TODO: remove/handle member-related code
 #      if current_user.member
 #        if params[:make_entry_private]
 #          @organization.member = current_user.member
@@ -93,7 +93,8 @@ class OrganizationsController < ApplicationController
   # PUT /organizations/1.xml
   def update
     @organization = Organization.find(params[:id])
-#TODO
+    @organization.users << current_user if params[:associate_user_to_entry] and !@organization.users.include?(current_user)
+#TODO: remove/handle member-related code
 #      if current_user.member
 #        if params[:make_entry_private]
 #          @organization.member = current_user.member
@@ -161,7 +162,7 @@ class OrganizationsController < ApplicationController
 
     if %w[show edit update destroy become_editor invite].include? action_name
       organization = Organization.find(params[:id])
-#TODO
+#TODO: remove/handle member-related code
 #      if entry.member
 #        return entry.member == current_user.member
 #      end
@@ -171,7 +172,7 @@ class OrganizationsController < ApplicationController
   end
 
   def protect?(action)
-#TODO
+#TODO: remove/handle member-related code
 #    if action_name == 'show'
 #      entry = Organization.find(params[:id])
 #      return entry.member

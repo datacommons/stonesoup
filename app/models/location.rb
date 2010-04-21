@@ -6,6 +6,9 @@ class Location < ActiveRecord::Base
   acts_as_mappable :lat_column_name => 'latitude', 
                    :lng_column_name => 'longitude',
                    :distance_field_name => 'distance'
+
+  validates_presence_of :country
+  validates_presence_of :city  
   
   Location::ADDRESS_FIELDS = ['address1', 'address2', 'city', 'state', 'zip', 'country']
   

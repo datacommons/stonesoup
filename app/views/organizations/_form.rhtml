@@ -19,5 +19,9 @@
 
 <p><label for="organization_year_founded">Year founded</label>: <%= select_year ((@organization.year_founded.nil?) ? DateTime.now : @organization.year_founded), :prefix => 'organization', :field_name => 'year_founded(1i)', :start_year => (DateTime.now.year-200), :end_year => DateTime.now.year %></p>
 
+<p>
+	<%= check_box_tag 'associate_user_to_entry', "1", true %>
+	<label for="associate_user_to_entry">Make me an editor on this entry</label>
+</p>
 <!--[eoform:organization]-->
 

@@ -14,7 +14,8 @@ class Organization < ActiveRecord::Base
   acts_as_ferret(:fields => {
                    :name => {:boost => 2.0, :store => :yes },
                    :description => { :store => :yes },
-                   :products_services_to_s => { :store => :yes }, # not working?
+                   :products_services_to_s => { :store => :yes },
+                   :access_type => { :store => :yes }
 #                   :physical_zip => { :store => :yes },
 #                   :public => { :store => :yes },
 #                   :member_id => { :store => :yes }
@@ -23,6 +24,10 @@ class Organization < ActiveRecord::Base
   acts_as_reportable
 
   before_save :save_ll
+  
+  def access_type
+    self.access_rule.access_type
+  end
   
   def products_services_to_s
     self.products_services.collect{|ps| ps.name}.join(', ')
@@ -37,6 +42,7 @@ class Organization < ActiveRecord::Base
   end
   
   def accessible?(current_user)
+    return true if !current_user.nil? and current_user.is_admin? # admins can access everything
     case self.access_rule.access_type
     when AccessRule::ACCESS_TYPE_PUBLIC # public data, always visible
       return true
@@ -78,11 +84,11 @@ class Organization < ActiveRecord::Base
     end
   end
 
-  def self.latest_changes
+  def Organization.latest_changes
     user = User.current_user
     conditions = if user && user.is_admin?
                    nil
-#TODO
+#TODO: remove/handle member-related code
 #                 elsif user && user.member
 #                   ['member_id is NULL or member_id = ?', user.member.id]
 #                 else
@@ -103,4 +109,13 @@ class Organization < ActiveRecord::Base
 		end
 		return l
 	end
+
+  
+  def link_name
+    name
+  end
+  
+  def link_hash
+    {:controller => 'organizations', :action => 'show', :id => self.id}
+  end
 end

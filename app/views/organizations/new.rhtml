@@ -2,11 +2,6 @@
 
 <% form_tag :action => 'create' do %>
   <%= render :partial => 'form' %>
-
-<p><%= check_box_tag 'associate_user_to_entry', "1", true %>
-<label for="associate_user_to_entry">Make me an editor on this entry</label>
-</p>
-
   <%= submit_tag "Create" %>
 <% end %>
 

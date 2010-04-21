@@ -40,7 +40,7 @@
   </p>
 <% end %>
 
-<p>Current search is restricted to within <%= @within %> mile(s) of <%= @organization.name %>.<br /> [expand to <%= link_to (@within*10).to_s, :within => @within*10, :action => 'near', :controller => 'search', :id => @organization %> mile(s), contract to <%= link_to (@within/10).to_s, :within => @within/10, :action => 'near', :controller => 'search', :id => @organization %> mile(s)]</p>
+<p>Current search is restricted to within <%= @within %> mile(s) of <%= show_link @organization %>.<br /> [expand to <%= link_to (@within*10).to_s, :within => @within*10, :action => 'near', :controller => 'search', :id => @organization %> mile(s), contract to <%= link_to (@within/10).to_s, :within => @within/10, :action => 'near', :controller => 'search', :id => @organization %> mile(s)]</p>
 
 <% if @entries %>
  <% if @entries.blank? %>
@@ -49,7 +49,7 @@
  <% else %>
  <h2>Search Results</h2>
   <% for entry in @entries %>
-   <p><img src="<%= markers[entry.id] %>" width="20" height="34" /><%= link_to entry.organization.name, :controller => 'organizations', :action => 'show', :id => entry.organization %>
+   <p><img src="<%= markers[entry.id] %>" width="20" height="34" /><%= show_link entry %>
   <% end %>
  <h2>Download Search Results</h2>
    <ul>  
@@ -59,7 +59,7 @@
  <% end %>
 <% end %>
 <h2>Latest Changes</h2>
-<% for entry in Organization.latest_changes %>
+<% for entry in @latest_changes %>
   <p><%= link_to entry.name, :controller => 'organizations', :action => 'show', :id => entry %>
   <% if entry.updated_at %>
     updated <%= time_ago_in_words entry.updated_at %> ago

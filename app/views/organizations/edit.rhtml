@@ -1,13 +1,13 @@
 <h1>Editing entry</h1>
 <%= link_to 'View this entry.', :action => 'show', :id => @organization %>
 <br/>
-<% form_tag :action => 'update', :id => @organization do %>
+<% form_tag( {:action => 'update', :id => @organization}, :method => 'PUT') do %>
   <%= render :partial => 'form' %>
   <%= submit_tag 'Update' %>
 <% end %>
 <br/>
 
-<div id="locations">
+<div id="locations" class="option_group">
 	<%= render :partial => 'locations/manage' %>
 </div>
 
@@ -30,6 +30,13 @@
 	<div id="organizations_people" class="attribute_section">
 	<%= render :partial => 'organizations_people/manage_for_orgs' %>
 	</div>
-	#TODO: add user editors
+	<div id="editors" class="attribute_section">
+		<h2>Entry Editors</h2>
+		<ul>
+			<% @organization.users.each do |editor|%>
+				<li><%= show_link editor %></li>
+			<% end %>
+		</ul>
+	</div>
 </div>
 

@@ -123,7 +123,7 @@
 <h2>Editors of this entry</h2>
 <% if @organization.users.any? %>
 <% for user in @organization.users %>
-<p><%= user.login %><%= " (pending)" unless user.last_login %></p>
+<p><%= show_link user %><%= " (pending)" unless user.last_login %></p>
 <% end %>
 <% end %>
 

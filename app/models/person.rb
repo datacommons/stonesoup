@@ -3,11 +3,32 @@ class Person < ActiveRecord::Base
   has_many :organizations_people, :dependent => :destroy
   has_many :organizations, :through => :org_associations
   has_one :user
+
+  acts_as_ferret(:fields => {
+    :name => {:boost => 2.0, :store => :yes },
+    :access_type => { :store => :yes }
+  })
+
+  def access_type
+    self.access_rule.access_type
+  end
+  
+  def Person.latest_changes
+    user = User.current_user  # from Organization.latest_changes
+    conditions = if user && user.is_admin?
+      nil
+    end
+    Person.find(:all, :order => 'updated_at DESC', 
+               :limit => 15,
+               :conditions => conditions)
+  end
+
   def name
     firstname + ' ' + lastname
   end  
   
   def accessible?(current_user)
+    return true if !current_user.nil? and current_user.is_admin? # admins can access everything
     case self.access_rule.access_type
     when AccessRule::ACCESS_TYPE_PUBLIC # public data, always visible
       return true
@@ -29,5 +50,13 @@ class Person < ActiveRecord::Base
     else
       self.access_rule.access_type = access_type
     end
+  end
+  
+  def link_name
+    name
+  end
+  
+  def link_hash
+    {:controller => 'people', :action => 'show', :id => self.id}
   end
 end

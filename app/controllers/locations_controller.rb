@@ -2,8 +2,6 @@ class LocationsController < ApplicationController
   before_filter :login_required, :only => [:new, :create, :edit, :update, :destroy]
 protected  
 	def create_location_from_form(org, params)
-		# at least a city must be specified
-		return if params['new_location'].nil? or params['new_location']['physical_city'].blank?
 		return org.create_address(params[:new_location])
 	end
 	
@@ -61,19 +59,18 @@ public
 		process_params(params)
 		@organization = Organization.find(params[:id])
 		@location = create_location_from_form(@organization, params)
-		#TODO: catch validation errors
-
+    @location.save!
+    flash[:notice] = 'Location was successfully created.'
     respond_to do |format|
-      if @location.save
-        flash[:notice] = 'Location was successfully created.'
-        format.html { redirect_to(@location) }
-        format.xml  { render :xml => @location, :status => :created, :location => @location }
-        format.js   { render :partial => 'manage' }
-      else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @location.errors, :status => :unprocessable_entity }
-        format.js   { render :partial => 'manage' }
-      end
+      format.html { redirect_to(@location) }
+      format.xml  { render :xml => @location, :status => :created, :location => @location }
+      format.js   { render :partial => 'manage' }
+    end
+  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved
+    respond_to do |format|
+      format.html { render :action => "new" }
+      format.xml  { render :xml => @location.errors, :status => :unprocessable_entity }
+      format.js   { render :partial => 'manage' }
     end
   end
 
