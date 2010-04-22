@@ -178,15 +178,47 @@ dd {
 }
 
 #the_map { 
-              width: 300px;
-              height: 300px;
-              float: right; 
-              border: 1px solid #ccc;
+  width: 300px;
+  height: 300px;
+  float: right; 
+  border: 1px solid #ccc;
 }
 
-#surround_map { 
-              float: right; 
-              margin: 5px 0 20px 20px; 
+#surround_map {
+  display: block;
+  float: right; 
+  margin: 5px 0px 20px 20px; 
+  padding: 5px;
+  background-color: white;
+}
+
+.map_preamble { 
+  padding-bottom: 10px;
+}
+
+.map_offer { 
+  padding-top: 10px;
+}
+
+.mapstyle_select { 
+  font-size: 75%;
+}
+
+.mapstyle_select a { 
+  text-decoration: none;
+}
+
+.mapstyle_select_on { 
+  font-weight: bold;
+}
+
+.mapstyle_explain { 
+  font-size: 75%;
+  font-style: italic;
+}
+
+.mapstyle_explain a { 
+  text-decoration: none;
 }
 
 .clearboth {

@@ -41,4 +41,16 @@ class Location < ActiveRecord::Base
       self.latitude = "0"
     end
   end
+
+  def accessible?(current_user)
+    return self.organization.accessible?(current_user)
+  end
+
+ def link_name
+    organization.name + " (" + physical_address1 + ")"
+  end
+  
+  def link_hash
+    {:controller => 'organizations', :action => 'show', :id => organization.id}
+  end
 end

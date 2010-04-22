@@ -8,15 +8,21 @@
     @organization.locations.each do |loc| 
       pt = make_pointer(loc)
       if not(pt.nil?)
-        map.marker_init(Marker.new(pt, :info_bubble => @organization.name, :icon => "http://maps.google.com/mapfiles/marker.png"))
+        map.marker_init(Marker.new(pt, :info_bubble => show_link(loc), :icon => "http://maps.google.com/mapfiles/marker.png"))
       end
     end
     if @organization.locations.length > 1
       sorted_latitudes = @organization.locations.collect(&:latitude).compact.sort
       sorted_longitudes = @organization.locations.collect(&:longitude).compact.sort
+      x1 = sorted_latitudes.first
+      y1 = sorted_longitudes.first
+      x2 = sorted_latitudes.last
+      y2 = sorted_longitudes.last
+      dx = (x2-x1)/10
+      dy = (y2-y1)/10
       map.center_zoom_on_bounds_init([
-        [sorted_latitudes.first, sorted_longitudes.first], 
-        [sorted_latitudes.last, sorted_longitudes.last]])
+        [x1-dx,y1-dy], 
+        [x2+dx,y2+dy]])
     else 
       map.center_zoom_init(pt,14)
     end
@@ -25,9 +31,13 @@
   <%= map.to_html %>
 
   <div id="surround_map">
-  Find organizations <%= link_to 'nearby', :action => 'near', :controller => 'search', :id => @organization %><br />
-  <%= map.div() %><br />
+  <%= map.div() %>
+  <div class="clearboth">
+  </div>
   <%= render :partial => "layouts/map_choice" %>
+  <div class="map_offer">
+  Meet the neighbors - see what's <%= link_to 'nearby', :action => 'near', :controller => 'search', :id => @organization %>!
+  </div>
   </div>
 
 <p><%= simple_format @organization.description %></p>

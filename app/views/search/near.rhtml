@@ -20,14 +20,27 @@
               [bounds[1], pt[1]].min,
               [bounds[2], pt[0]].max,
               [bounds[3], pt[1]].max]
-    map.marker_init(Marker.new(pt, :info_bubble => entry.organization.name, :icon => icon))
+    map.marker_init(Marker.new(pt, :info_bubble => show_link(entry), :icon => icon))
   end
-  map.center_zoom_on_bounds_init([[bounds[0],bounds[1]],
-                                  [bounds[2],bounds[3]]])
+  x1 = bounds[0]
+  y1 = bounds[1]
+  x2 = bounds[2]
+  y2 = bounds[3]
+  dx = (x2-x1)/10
+  dy = (y2-y1)/10
+  map.center_zoom_on_bounds_init([[x1-dx,y1-dy],[x2+dx,y2+dy]])
   %>
   <%= map.to_html %>
   <div id="surround_map">
-  <%= map.div() %><br />
+  <div class="map_preamble">
+Range: 
+<span class="mapstyle_select_on"><%= @within %></span> miles
+<span class="mapstyle_select"><%= link_to "(shrink to " + (@within/10).to_s + ")", :within => @within/10, :action => 'near', :controller => 'search', :id => @organization %></span>
+<span class="mapstyle_select"><%= link_to "(expand to " + (@within*10).to_s + ")", :within => @within*10, :action => 'near', :controller => 'search', :id => @organization %></span>
+  </div>
+  <%= map.div() %>
+  <div class="clearboth">
+  </div>
   <%= render :partial => "layouts/map_choice" %>
   </div>
 
