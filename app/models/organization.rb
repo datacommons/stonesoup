@@ -23,6 +23,8 @@ class Organization < ActiveRecord::Base
 
   acts_as_reportable
 
+  validates_presence_of :name
+
   before_save :save_ll
   
   def access_type

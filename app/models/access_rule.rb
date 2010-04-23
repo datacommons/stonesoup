@@ -9,6 +9,7 @@ class AccessRule < ActiveRecord::Base
     ACCESS_TYPE_LOGGEDIN => 'Restricted - must be logged in to view',
     ACCESS_TYPE_PRIVATE => 'Private - only editor may view'
   }
+  validates_presence_of :access_type
   def AccessRule.cleanse(entries, user)
     entries.reject{|e| !e.accessible?(user)}
   end
