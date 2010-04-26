@@ -1,0 +1,18 @@
+<h1>Listing organizations_people</h1>
+
+<table>
+  <tr>
+  </tr>
+
+<% for organizations_person in @organizations_people %>
+  <tr>
+    <td><%= link_to 'Show', organizations_person %></td>
+    <td><%= link_to 'Edit', edit_organizations_person_path(organizations_person) %></td>
+    <td><%= link_to 'Destroy', organizations_person, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New organizations_person', new_organizations_person_path %>

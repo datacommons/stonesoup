@@ -2,11 +2,14 @@ require 'digest/sha1'
 
 # this model expects a certain database layout and its based on the name/login pattern. 
 class User < ActiveRecord::Base
-
+  has_and_belongs_to_many :organizations # as editor
+  belongs_to :person
   cattr_accessor :current_user
 
   attr_accessor :password_cleartext
   before_update :crypt_unless_empty
+  
+  attr_protected :is_admin
 
   before_validation_on_create :crypt_password
 
@@ -35,7 +38,7 @@ class User < ActiveRecord::Base
     find(id)
   end
     
-  protected
+protected
 
   def self.sha1(pass)
     Digest::SHA1.hexdigest("ROTFL--#{pass}--")
@@ -76,4 +79,38 @@ class User < ActiveRecord::Base
     end        
   end  
 
+public
+  def link_name
+    self.login
+  end
+
+  def link_hash
+    if self.person.nil?
+      nil
+    elsif self.person.respond_to?('link_hash')
+      self.person.link_hash
+    end
+  end
+  
+  def can_edit?(entry)
+    return true if self.is_admin? # admin's can edit anything
+    case entry.class.to_s
+    when Person.to_s
+      if entry.user.nil?  # if there's no login user associated with the Person record, anyone may edit it
+        return true
+      elsif entry.user == self # if there is, only that user may edit it
+        return true
+      else
+        return false
+      end
+    when Organization.to_s
+      if entry.users.include?(self) # only the entry's editors may edit the record
+        return true
+      else
+        return false
+      end
+    else
+      raise "Unknown entry type: #{entry.class}"
+    end
+  end
 end

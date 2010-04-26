@@ -1,0 +1,106 @@
+<% hide_links = false if hide_links.nil? %>
+<% unless hide_links %>
+	<div id='location_<%=location.id%>_edit' style="display:none" class="address">
+		<span class="actions">
+		[ <%= link_to_function( 'cancel', "Element.show('location_#{location.id}'); Element.hide('location_#{location.id}_edit');") %> 
+		]
+		</span>
+		<% remote_form_for(location, :update => 'locations', :method => 'PUT') do |f| %>
+			<%= f.error_messages %>
+			<table cellpadding="0" cellspacing="0">
+				<tr>
+					<td><label for="location_note">Location Name</label></td>
+					<td><%= f.text_field :note, :size => 10 %></td>
+				</tr>
+				<tr>
+					<td colspan="2">Physical Address</td>
+				</tr>
+				<tr>
+					<td><label for="location_physical_address1">Address 1</label></td>
+					<td><%= f.text_field :physical_address1, :size => 10 %></td>
+				</tr>
+				<tr>
+					<td><label for="location_physical_address2">Address 2</label></td>
+					<td><%= f.text_field :physical_address2, :size => 10 %></td>
+				</tr>
+				<tr>
+					<td><label for="location_physical_city">City</label></td>
+					<td><%= f.text_field :physical_city, :size => 10 %></td>
+				</tr>
+				<tr>
+					<td><label for="location_physical_state">State</label></td>
+					<td><%= f.text_field :physical_state, :size => 10 %></td>
+				</tr>
+				<tr>
+					<td><label for="location_physical_zip">Postal Code</label></td>
+					<td><%= f.text_field :physical_zip, :size => 10 %></td>
+				</tr>
+				<tr>
+					<td><label for="location_physical_country">Country</label></td>
+					<td><%= f.text_field :physical_country, :size => 10 %></td>
+				</tr>
+				<tr>
+					<td colspan="2">Mailing Address</td>
+				</tr>
+				<tr>
+					<td><label for="location_mailing_address1">Address 1</label></td>
+					<td><%= f.text_field :mailing_address1, :size => 10 %></td>
+				</tr>
+				<tr>
+					<td><label for="location_mailing_address2">Address 2</label></td>
+					<td><%= f.text_field :mailing_address2, :size => 10 %></td>
+				</tr>
+				<tr>
+					<td><label for="location_mailing_city">City</label></td>
+					<td><%= f.text_field :mailing_city, :size => 10 %></td>
+				</tr>
+				<tr>
+					<td><label for="location_mailing_state">State</label></td>
+					<td><%= f.text_field :mailing_state, :size => 10 %></td>
+				</tr>
+				<tr>
+					<td><label for="location_mailing_zip">Postal Code</label></td>
+					<td><%= f.text_field :mailing_zip, :size => 10 %></td>
+				</tr>
+				<tr>
+					<td><label for="location_mailing_country">Country</label></td>
+					<td><%= f.text_field :mailing_country, :size => 10 %></td>
+				</tr>
+			</table>
+	    	<%= f.submit "Update" %>
+		<% end %>
+	</div>
+<% end %>
+<dl class="address" id='location_<%=location.id%>'>
+	<dt><%= location.note.blank? ? 'Address' : location.note %>
+		<% unless hide_links %>
+			<span class="actions">
+			[ <%= link_to_remote( 'delete', 
+				:url => {:controller => 'locations', :action => 'destroy', :id => location.id},
+				:method => 'DELETE',
+				:update => 'locations',
+				:confirm => 'Delete address?') %>
+			| 	<%= link_to_function( 'edit', "Element.hide('location_#{location.id}'); Element.show('location_#{location.id}_edit');") %> 
+			]
+			</span>
+		<% end %>
+	</dt>
+<% unless location.mailing_same_as_physical? or location.mailing_address_blank? %>
+	<dd>Physical Address</dd>
+<% end %>
+	<dd><%= location.physical_address1 %></dd>
+	<% unless location.physical_address2.blank? %>
+		<dd><%= location.physical_address2 %></dd>
+	<% end %>
+	<dd><%= location.physical_city %>, <%= location.physical_state %> <%= location.physical_zip %></dd>
+	<dd><%= location.physical_country %></dd>
+<% unless location.mailing_same_as_physical? or location.mailing_address_blank? %>
+	<dd>Mailing Address</dd>
+	<dd><%= location.mailing_address1 %></dd>
+	<% unless location.mailing_address2.blank? %>
+		<dd><%= location.mailing_address2 %></dd>
+	<% end %>
+	<dd><%= location.mailing_city %>, <%= location.mailing_state %> <%= location.mailing_zip %></dd>
+	<dd><%= location.mailing_country %></dd>
+<% end %>
+</dl class="address">

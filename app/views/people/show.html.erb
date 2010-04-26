@@ -1,0 +1,27 @@
+<%= link_to 'Edit', edit_person_path(@person) %> |
+<%= link_to 'Back to Directory of People', people_path %>
+<br/>
+<br/>First name: <%= @person.firstname %>
+<br/>Last name: <%= @person.lastname %>
+<% unless @person.phone_mobile.blank? and @person.phone_home.blank? %>
+	<br/>Phone:
+	<% unless @person.phone_mobile.blank? %>
+		Mobile: <%= @person.phone_mobile %>
+	<% end %>
+	<% unless @person.phone_home.blank? %>
+		Home: <%= @person.phone_home %>
+	<% end %>
+	<% if @person.phone_contact_preferred %> <span class="preferred_contact">preferred contact method</span> <% end %>
+<% end %>
+<% unless @person.fax.blank? %>
+	<br/>Fax: <%= @person.fax %>
+<% end %>
+<% unless @person.email.blank? %>
+	<br/>Email: <%= @person.email %>
+		<% if @person.email_contact_preferred %> <span class="preferred_contact">preferred contact method</span> <% end %>
+<% end %>
+<br/>Data Access: <%= AccessRule::ACCESS_TYPE_DESCRIPTION[@person.access_rule.access_type] %>
+<br/><br/>
+<div id="organizations_people">
+<%= render :partial => 'organizations_people/manage_for_person' %>
+</div>

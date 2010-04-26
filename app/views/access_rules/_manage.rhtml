@@ -1,0 +1,11 @@
+<h2>Data Access</h2>
+Accessibility of data:
+<%= error_messages_for 'access_rule' %>
+<% form_remote_tag :url => {:controller => 'access_rules', :action => 'update', :id => @organization.access_rule}, :method => 'PUT', 
+	:update => 'access_rule',
+	:loading => %(showSavingButton('accessrule_service_savebutton')),
+	:failure => %(resetSaveButton('accessrule_service_savebutton'); showFailure('Could not update access rule')),
+	:success => %(resetSaveButton('accessrule_service_savebutton');) do %>
+	<%= select 'access_rule', 'access_type', AccessRule::ACCESS_TYPES.collect{|t| [AccessRule::ACCESS_TYPE_DESCRIPTION[t], t]} %>
+	<%= submit_tag 'Update', :id => 'accessrule_service_savebutton' %>
+<% end %>

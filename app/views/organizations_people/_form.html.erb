@@ -1,0 +1,30 @@
+<%
+hide_person = false if hide_person.nil?
+hide_org = false if hide_org.nil?
+%>
+<table cellpadding="0" cellspacing="0">
+<% unless hide_person %>
+	<tr>
+		<th><label for="organizations_person_person_id">Person:</label></th>
+		<td><%= select 'organizations_person', 'person_id', Person.find(:all).collect{|p| [p.name, p.id]} %></td>
+	</tr>
+<% end %>
+<% unless hide_org %>
+	<tr>
+		<th><label for="organizations_person_organization_id">Organization:</label></th>
+		<td><%= select 'organizations_person', 'organization_id', Organization.find(:all).collect{|o| [o.name, o.id]} %></td>
+	</tr>
+<% end %>
+	<tr>
+		<th><label for="organizations_person_role">Role:</label></th>
+		<td><%= text_field 'organizations_person', 'role_name' %></td>
+	</tr>
+	<tr>
+		<th><label for="organizations_person_phone">Phone:</label></th>
+		<td><%= text_field 'organizations_person', 'phone' %></td>
+	</tr>
+	<tr>
+		<th><label for="organizations_person_email">Email:</label></th>
+		<td><%= text_field 'organizations_person', 'email' %></td>
+	</tr>
+</table>

@@ -1,0 +1,22 @@
+<h1>Listing people</h1>
+
+<table>
+  	<thead>
+		<th>Name</th>
+	</thead>
+
+	<tbody>
+<% for person in @people %>
+  <tr>
+	<td><%= show_link person %>
+    <td><%= link_to 'Show', person %></td>
+    <td><%= link_to 'Edit', edit_person_path(person) %></td>
+    <td><%= link_to 'Destroy', person, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+	</tbody>
+</table>
+
+<br />
+
+<%= link_to 'New person', new_person_path %>

@@ -1,0 +1,160 @@
+<h1><%= @organization.name %></h1>
+
+  <%
+  map = Mapstraction.new("the_map",current_map_type)
+  map.control_init(:small => true)
+  if @organization.locations.length >= 1
+    pt = nil
+    @organization.locations.each do |loc| 
+      pt = make_pointer(loc)
+      if not(pt.nil?)
+        map.marker_init(Marker.new(pt, :info_bubble => show_link(loc), :icon => "http://maps.google.com/mapfiles/marker.png"))
+      end
+    end
+    if @organization.locations.length > 1
+      sorted_latitudes = @organization.locations.collect(&:latitude).compact.sort
+      sorted_longitudes = @organization.locations.collect(&:longitude).compact.sort
+      x1 = sorted_latitudes.first
+      y1 = sorted_longitudes.first
+      x2 = sorted_latitudes.last
+      y2 = sorted_longitudes.last
+      dx = (x2-x1)/10
+      dy = (y2-y1)/10
+      map.center_zoom_on_bounds_init([
+        [x1-dx,y1-dy], 
+        [x2+dx,y2+dy]])
+    else 
+      map.center_zoom_init(pt,14)
+    end
+  end
+  %>
+  <%= map.to_html %>
+
+  <div id="surround_map">
+  <%= map.div() %>
+  <div class="clearboth">
+  </div>
+  <%= render :partial => "layouts/map_choice" %>
+  <div class="map_offer">
+  Meet the neighbors - see what's <%= link_to 'nearby', :action => 'near', :controller => 'search', :id => @organization %>!
+  </div>
+  </div>
+
+<p><%= simple_format @organization.description %></p>
+
+<div class="clearboth"></div>
+
+<div id="listing_info">
+
+<% if @organization.primary_location %>
+<%= render :partial => 'locations/display', :locals => {:location => @organization.primary_location, :hide_links => true}%>
+<% end %>
+
+<dl class="address">
+<dt>Phone</dt>
+<dd><%= @organization.phone %></dd>
+</dl class="address">
+
+<dl class="address">
+<dt>Email</dt>
+<dd><A HREF=mailto:<%= @organization.email %>><%= @organization.email %></A></dd>
+</dl class="address">
+</div id="listing_info">
+
+<% if @organization.locations.length > 1 %>
+	<div class="clearboth"></div>
+	<h2>Other Locations</h2>
+	<% @organization.locations.each do |loc| 
+		next if loc.id == @organization.primary_location.id %>
+		<%= render :partial => 'locations/display', :locals => {:location => loc, :hide_links => true}%>
+	<% end %>
+<% end %>
+
+
+<div class="clearboth"></div>
+<div id="attributes">
+	<h2>Attributes</h2>
+	<% unless @organization.year_founded.nil? %>
+		Year Founded: <%= @organization.year_founded.year %><br />
+	<% end %>
+	<% unless @organization.legal_structure.nil? %>
+		Legal Structure: <%= @organization.legal_structure.name %><br />
+	<% end %>
+
+	<% unless @organization.products_services.empty? %>
+		<h2>Products &amp; Services</h2>
+		<ul id="attribute_list">
+		<% @organization.products_services.each do |ps| %>
+			<li><%= ps.name %></li>
+		<% end %>
+		</ul>
+	<% end %>
+
+	<% unless @organization.org_types.empty? %>
+		<h2>Organizational Type</h2>
+		<ul id="attribute_list">
+		<% @organization.org_types.each do |ot| %>
+			<li><%= ot.name %></li>
+		<% end %>
+		</ul>
+	<% end %>
+
+	<% unless @organization.sectors.empty? %>
+		<h2>Business Sector(s)</h2>
+		<ul id="attribute_list">
+		<% @organization.sectors.each do |s| %>
+			<li><%= s.name %></li>
+		<% end %>
+		</ul>
+	<% end %>
+
+	<% unless @organization.member_orgs.empty? %>
+		<h2>Member Organization Affiliations</h2>
+		<ul id="attribute_list">
+		<% @organization.member_orgs.each do |mo| %>
+			<li><%= mo.name %></li>
+		<% end %>
+		</ul>
+	<% end %>
+
+</div>
+
+
+<% unless @organization.organizations_people.empty? %>
+	<div id="organizations_people" class="clearboth">
+		<h2>People associated with this organization</h2>
+		<% for op in @organization.organizations_people %>
+			<%= render :partial => 'organizations_people/display', :locals => {:org_person => op, :hide_links => true} %>
+		<% end %>
+	</div>
+<% end %>
+
+<div class="clearboth"></div>
+<h2>Editors of this entry</h2>
+<% if @organization.users.any? %>
+<% for user in @organization.users %>
+<p><%= show_link user %><%= " (pending)" unless user.last_login %></p>
+<% end %>
+<% end %>
+
+<% if @organization.users.blank? %>
+<p>There is no current editor for this entry.  Would you like to <%= link_to 'become the editor for this entry', :action => 'become_editor', :id => @organization %>?</p>
+<% end %>
+
+<% if @organization.users.include? current_user %>
+<p>Invite new editor for this entry:</p>
+<% form_tag :action => 'invite', :id => @organization do %>
+E-mail: <%= text_field_tag 'user_login' %>
+ <%= submit_tag 'Invite' %>
+<% end %>
+<% end %>
+
+<h2>Download this entry</h2>
+
+<ul>
+<li>Download as <%= link_to 'CSV', :action => 'show', :id => @organization, :format => 'csv' %> (suitable for spreadsheet programs)</li>
+<li>Download as <%= link_to 'XML', :action => 'show', :id => @organization, :format => 'xml' %></li>
+</ul>
+
+<%= link_to 'Edit', :action => 'edit', :id => @organization %> |
+<%= link_to 'Back', :controller => 'search', :action => 'index' %>

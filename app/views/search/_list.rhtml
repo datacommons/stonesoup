@@ -1,12 +1,11 @@
 <% if @entries %>
  <% if @entries.blank? %>
   <p>No results were found for this search.</p>
-  <p><%= link_to 'Would you like to add an entry?', :controller => 'entries', :action => 'new' %></p>
+  <p><%= link_to 'Would you like to add a new organization?', :controller => 'organizations', :action => 'new' %></p>
  <% else %>
  <h2>Search Results</h2>
   <% for entry in @entries %>
-   <p><%= link_to entry.name, :controller => 'entries', :action => 'show', :id => entry %>
-  <%= "(Private to #{entry.member.name})" if entry.member %></p>
+   <p><%= show_link entry %>
   <% end %>
  <h2>Download Search Results</h2>
    <ul>  
@@ -14,13 +13,14 @@
     <li>Download as <%= link_to 'XML', :action => 'search', :q => params[:q].to_s, :format => 'xml' %></li>
    </ul>
  <% end %>
-<% end %>
-<h2>Latest Changes</h2>
-<% for entry in Entry.latest_changes %>
-  <p><%= link_to entry.name, :controller => 'entries', :action => 'show', :id => entry %>
-  <%= "(Private to #{entry.member.name})" if entry.member %>
-  <% if entry.updated_at %>
-    updated <%= time_ago_in_words entry.updated_at %> ago
-  <% end %>
-  </p>
+<% else %>
+	<h2>Latest Changes</h2>
+	<% for entry in @latest_changes %>
+	  <p><%= link_to show_link entry %>
+	  <%# "(Private to #{entry.member.name})" if entry.member #TODO %>
+	  <% if entry.updated_at %>
+	    updated <%= time_ago_in_words entry.updated_at %> ago
+	  <% end %>
+	  </p>
+	<% end %>
 <% end %>

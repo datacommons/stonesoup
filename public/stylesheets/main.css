@@ -1,0 +1,258 @@
+html, body {
+	margin:0;
+	padding:0;
+	text-align:center;
+	font-family:lucida grande,verdana, arial;
+	font-size:14px;
+	color:#222;
+	background-color: #a3c17b;
+} 
+
+body, p, ol, ul, td {
+  font-family:lucida grande,verdana, arial;
+  font-size:   14px;
+  line-height: 14px;
+}
+
+img { border: 0; }
+
+a:link{
+        color: #114499;
+}
+
+a:visited{
+           color: #114499;
+}
+
+a:hover{
+         color: red;
+} 
+
+h1 {
+	color: #339966;
+	font-size:19px;
+	border-bottom: 1px solid #ccc;
+}
+
+h2 {
+	color: #339966;
+	font-size:17px;
+	border-bottom: 1px solid #ccc;
+}
+
+h3 {
+	color: #339966;
+	font-size:15px;
+	border-bottom: 1px solid #ccc;
+}
+
+dl {
+	text-align: left;
+	}
+
+dd {
+	font-size: 85%;
+	text-align: left;
+	padding-left: 0px;
+	margin-left: 0px;
+}
+
+.attribute_section {
+	padding: 5px;
+	border-style: solid;
+	margin: 3px;
+}
+
+.option_group {
+	padding: 5px;
+	border-top-style: double;
+	border-right-style:double;
+	border-bottom-style:double;
+	border-left-style:double;
+	margin: 3px;
+}
+
+.option_group_title {
+	font-weight: bold;
+	margin-bottom: 15px;
+	border-bottom-style: solid;
+}
+/** Main Layout CSS **/
+ 
+#maincol {
+	position: relative;
+	margin: 0;
+	padding: 0;
+	width: 781px; /* was 686 */ /* was 701 */ 
+	text-align:left;
+	padding:0 15px 20px 15px; 
+}
+
+#footer {
+	font-size: 70%;
+	text-align: center;
+	vertical-align: middle;
+	height:60px;
+	clear:both;
+	padding: 0;
+	margin: 0;
+	border-top: 1px solid #339966; 
+        background-image: url(/images/footer-bg.gif);
+        background-position: top left;
+        background-repeat: repeat-x; 
+        background-color: #93b86d;
+}
+
+#bigwrapper {
+	background: url(/images/dcp-bg.gif) repeat-y top; 
+}
+
+#pagewidth {
+	padding:0;
+	width: 800px; /* was 716 */
+	text-align:left;
+	margin-left:auto;
+	margin-right:auto;
+	background-color: #f0f6d2;
+} 
+ 
+#header {
+	margin: 0;
+	padding: 0;
+	position:relative;
+	height:210px; /* was 151 */
+	width:100%;
+	border-bottom: 2px solid #23480d;
+	background-color: #fff;
+}
+
+#logo {
+	/*height:107px;*/
+	/*width:693px;*/
+        width: 788px;
+        height: 168px;
+	float:left;
+	margin: 8px 0 0 8px;
+}
+
+#userstatus {
+	float: left;
+	margin: 10px 0 0 15px;
+}
+
+#listing_info {
+	min-height: 130px;
+	margin-top: 0px;
+}
+
+.address {
+	padding: 25px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.address dt {
+	font-size: 140%;
+	color: #339966;
+	border-bottom: 1px solid #ccc;
+}
+.address dt .actions {
+	font-size: 60%;
+	text-decoration: underline;
+}
+
+.address dd {
+	font-size: 100%;
+}
+
+#loginform {
+	width: 320px;
+	margin: 0 0 20px 0;
+	padding: 0;
+}
+
+#signupform {
+	width: 320px;
+	margin: 0 0 20px 0;
+	padding: 0;
+}
+
+#the_map { 
+  width: 300px;
+  height: 300px;
+  float: right; 
+  border: 1px solid #ccc;
+}
+
+#surround_map {
+  display: block;
+  float: right; 
+  margin: 5px 0px 20px 20px; 
+  padding: 5px;
+  background-color: white;
+}
+
+.map_preamble { 
+  padding-bottom: 10px;
+}
+
+.map_offer { 
+  padding-top: 10px;
+}
+
+.mapstyle_select { 
+  font-size: 75%;
+}
+
+.mapstyle_select a { 
+  text-decoration: none;
+}
+
+.mapstyle_select_on { 
+  font-weight: bold;
+}
+
+.mapstyle_explain { 
+  font-size: 75%;
+  font-style: italic;
+}
+
+.mapstyle_explain a { 
+  text-decoration: none;
+}
+
+.clearboth {
+	clear: both;
+}
+
+div.uploadStatus {
+  margin: 5px;
+}
+
+div.progressBar {
+  margin: 5px;
+}
+
+div.progressBar div.border {
+  background-color: #fff;
+  border: 1px solid grey;
+  width: 100%;
+}
+
+div.progressBar div.background {
+  background-color: #333;
+  height: 18px;
+  width: 0%;
+}
+
+.preferred_contact {
+	font-weight: bold;
+}
+ul.menu_bar {
+	margin: 1em 0;
+	padding: 0;
+	list-style: none;
+}
+ul.menu_bar li {
+	display: inline;
+}

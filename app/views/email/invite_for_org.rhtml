@@ -1,0 +1,10 @@
+You have been invited by <%= User.current_user.login %> to become an editor of the <%= @organization.name %> entry on the Data Commons Project.
+
+<% unless @user.last_login %>
+An account has been created for you:
+Login: <%= @user.login %>
+Password: <%= @user.password_cleartext %>
+<% end %>
+
+To login and see the entry, go to:
+<%= url_for :controller => 'organizations', :action => 'show', :id => @organization %>

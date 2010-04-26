@@ -1,4 +1,7 @@
-<p><%= link_to 'Add New Entry', :controller => 'entries', :action => 'new' %></p>
+<ul class="menu_bar">
+	<li><%= link_to 'Add New Organization', :controller => 'organizations', :action => 'new' %></li>
+	<li><%= link_to 'Add New Person', :controller => 'people', :action => 'new' %></li>
+</ul>
 <% form_tag( {:action => 'search'}, :method => 'get' ) do %>
   <p><label for="q">Search:</label>
   <%= text_field_tag 'q' %>

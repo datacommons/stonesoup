@@ -9,7 +9,11 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 7) do
+ActiveRecord::Schema.define(:version => 20100315230025) do
+
+  create_table "access_rules", :force => true do |t|
+    t.string "access_type"
+  end
 
   create_table "entries", :force => true do |t|
     t.string   "name"
@@ -89,22 +93,133 @@ ActiveRecord::Schema.define(:version => 7) do
     t.string   "which_union"
   end
 
-  create_table "entries_users", :id => false, :force => true do |t|
-    t.integer "entry_id"
-    t.integer "user_id"
+  create_table "legal_structures", :force => true do |t|
+    t.text     "name"
+    t.boolean  "custom"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  create_table "members", :force => true do |t|
-    t.string "name"
+  create_table "locations", :force => true do |t|
+    t.integer  "organization_id",   :null => false
+    t.string   "note"
+    t.string   "physical_address1"
+    t.string   "physical_address2"
+    t.string   "physical_city"
+    t.string   "physical_state"
+    t.string   "physical_zip"
+    t.string   "physical_country"
+    t.string   "mailing_address1"
+    t.string   "mailing_address2"
+    t.string   "mailing_city"
+    t.string   "mailing_state"
+    t.string   "mailing_zip"
+    t.string   "mailing_country"
+    t.float    "latitude"
+    t.float    "longitude"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "member_orgs", :force => true do |t|
+    t.text     "name"
+    t.boolean  "custom"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "member_orgs_organizations", :id => false, :force => true do |t|
+    t.integer "member_org_id",   :null => false
+    t.integer "organization_id", :null => false
+  end
+
+  create_table "org_types", :force => true do |t|
+    t.string   "name"
+    t.text     "description"
+    t.boolean  "custom"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "org_types_organizations", :id => false, :force => true do |t|
+    t.integer "org_type_id",     :null => false
+    t.integer "organization_id", :null => false
+  end
+
+  create_table "organizations", :force => true do |t|
+    t.string   "name",                :null => false
+    t.text     "description"
+    t.integer  "created_by_id"
+    t.integer  "updated_by_id"
+    t.string   "phone"
+    t.string   "fax"
+    t.string   "email"
+    t.string   "website"
+    t.date     "year_founded"
+    t.boolean  "democratic"
+    t.integer  "primary_location_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "legal_structure_id"
+    t.integer  "access_rule_id",      :null => false
+  end
+
+  create_table "organizations_people", :force => true do |t|
+    t.integer  "organization_id", :null => false
+    t.integer  "person_id",       :null => false
+    t.string   "role_name"
+    t.string   "phone"
+    t.string   "email"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "organizations_sectors", :id => false, :force => true do |t|
+    t.integer "organization_id", :null => false
+    t.integer "sector_id",       :null => false
+  end
+
+  create_table "organizations_users", :id => false, :force => true do |t|
+    t.integer  "organization_id", :null => false
+    t.integer  "user_id",         :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "people", :force => true do |t|
+    t.string   "firstname"
+    t.string   "lastname"
+    t.string   "phone_mobile"
+    t.string   "phone_home"
+    t.string   "fax"
+    t.string   "email"
+    t.boolean  "phone_contact_preferred"
+    t.boolean  "email_contact_preferred"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "access_rule_id",          :null => false
+  end
+
+  create_table "product_services", :force => true do |t|
+    t.string   "name"
+    t.integer  "organization_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "sectors", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "users", :force => true do |t|
     t.string   "login",      :limit => 80
     t.string   "password",   :limit => 40
     t.boolean  "is_admin"
-    t.integer  "member_id"
     t.datetime "created_at"
     t.datetime "last_login"
+    t.integer  "person_id"
   end
 
 end

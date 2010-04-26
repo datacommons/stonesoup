@@ -1,0 +1,27 @@
+<%= error_messages_for 'organization' %>
+
+<!--[form:organization]-->
+<table width="100%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td colspan="2">
+			<label for="organization_name">Organization Name</label>: <%= text_field 'organization', 'name'  %><br/>
+			<label for="organization_phone">Phone</label>: <%= text_field 'organization', 'phone'  %><br/>
+			<label for="organization_fax">Fax</label>: <%= text_field 'organization', 'fax'  %><br/>
+			<label for="organization_email">Email</label>: <%= text_field 'organization', 'email'  %><br/>
+			<label for="organization_website">Website</label>: <%= text_field 'organization', 'website'  %><br/>
+			<label for="organization_legal_structure_id">Legal Structure</label>: <%= select 'organization', 'legal_structure_id', [['',nil]] + LegalStructure.find(:all).collect{|ls| [ls.name, ls.id]}  %><br/>
+		</td>
+	</tr>
+</table>
+
+<label for="organization_description">Description:</label><br/>
+<%= text_area 'organization', 'description', :rows => 5, :cols => 60  %><br/>
+
+<p><label for="organization_year_founded">Year founded</label>: <%= select_year ((@organization.year_founded.nil?) ? DateTime.now : @organization.year_founded), :prefix => 'organization', :field_name => 'year_founded(1i)', :start_year => (DateTime.now.year-200), :end_year => DateTime.now.year %></p>
+
+<p>
+	<%= check_box_tag 'associate_user_to_entry', "1", true %>
+	<label for="associate_user_to_entry">Make me an editor on this entry</label>
+</p>
+<!--[eoform:organization]-->
+

@@ -4,41 +4,29 @@ map_type = current_map_type
 page = request.request_uri 
 %>
 
+Set style:
+<span class="mapstyle_select<% if map_type == :openlayers %>_on<%end%>">
+<a href='<%= request.path %>?map=openlayers'>community</a>
+</span>
+<span class="mapstyle_select<% if map_type == :openstreetmap %>_on<%end%>">
+<a href='<%= request.path %>?map=openstreetmap'>mixed</a>
+</span>
+<span class="mapstyle_select<% if map_type == :google %>_on<%end%>">
+<a href='<%= request.path %>?map=google'>corporate</a>
+</span>
+
+<div class="mapstyle_explain">
 <% if map_type == :openlayers %>
-<a href='http://openlayers.org'>openlayers</a> viewer,
-<a href='http://www.openstreetmap.org'>openstreetmap</a> data
+(<a href='http://openlayers.org'>openlayers</a> viewer,
+<a href='http://www.openstreetmap.org'>openstreetmap</a> data)
 <% end %>
 
 <% if map_type == :openstreetmap %>
-<a href='http://maps.google.com'>Google</a> viewer with
-<a href='http://www.openstreetmap.org'>openstreetmap</a> data
+(<a href='http://maps.google.com'>Google</a> viewer with
+<a href='http://www.openstreetmap.org'>openstreetmap</a> data)
 <% end %>
 
 <% if map_type == :google %>
-<a href='http://maps.google.com'>Google</a> maps
+(<a href='http://maps.google.com'>Google</a> maps)
 <% end %>
-
-<br />Alternatives:
-
-<% if map_type != :google %>
-<a href='<%= request.path %>?map=google'>Google maps</a>
-<% end %>
-
-<% if map_type != :openstreetmap %>
-<% if map_type == :openlayers %>
-<a href='<%= request.path %>?map=openstreetmap'>Google viewer</a>
-<% else %>
-<a href='<%= request.path %>?map=openstreetmap'>Open data</a>
-<% end %>
-<% end %>
-
-<% if map_type != :openlayers %>
-<% if map_type == :google %>
-<a href='<%= request.path %>?map=openlayers'>Open everything</a>
-<% else %>
-<a href='<%= request.path %>?map=openlayers'>Open viewer</a>
-<% end %>
-<% end %>
-
-
-
+</div>

@@ -1,0 +1,29 @@
+<div id='product_service_<%=product_service.id%>_edit' style="display:none" class="attribute">
+	<span class="actions">
+	[ <%= link_to_function( 'cancel', "Element.show('product_service_#{product_service.id}'); Element.hide('product_service_#{product_service.id}_edit');") %> 
+	]
+	</span>
+	<% remote_form_for(product_service, :update => 'products_services', :method => 'PUT') do |f| %>
+		<%= f.error_messages %>
+		<table cellpadding="0" cellspacing="0">
+			<tr>
+				<td><label for="product_service_name">Product/Service</label></td>
+				<td><%= f.text_field :name, :size => 30 %></td>
+			</tr>
+		</table>
+    	<%= f.submit "Update" %>
+	<% end %>
+</div>
+<dl class="attribute" id='product_service_<%=product_service.id%>'>
+	<dt><%= product_service.name %>
+		<span class="actions">
+		[ <%= link_to_remote( 'delete', 
+			:url => {:controller => 'product_services', :action => 'destroy', :id => product_service.id},
+			:method => 'DELETE',
+			:update => 'products_services',
+			:confirm => 'Delete product/service?') %>
+		| 	<%= link_to_function( 'edit', "Element.hide('product_service_#{product_service.id}'); Element.show('product_service_#{product_service.id}_edit');") %> 
+		]
+		</span>
+	</dt>
+</dl>

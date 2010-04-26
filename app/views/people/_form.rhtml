@@ -1,0 +1,15 @@
+<br/>First Name: <%= f.text_field 'firstname', :size => 15 %>
+<br/>Last Name: <%= f.text_field 'lastname', :size => 15 %>
+<br/>Phone:
+	Mobile: <%= f.text_field 'phone_mobile', :size => 10 %>
+	Home: <%= f.text_field 'phone_home', :size => 10 %>
+	 <%= f.check_box 'phone_contact_preferred' %> Preferred contact method?
+<br/>Fax: <%= f.text_field 'fax', :size => 10 %>
+<br/>Email: <%= f.text_field 'email', :size => 20 %>
+	<%= f.check_box 'email_contact_preferred' %> Preferred contact method?
+<br/>Data Access: <%= select 'access_rule', 'access_type', AccessRule::ACCESS_TYPES.collect{|t| [AccessRule::ACCESS_TYPE_DESCRIPTION[t], t]} %>
+<% if @person.user.nil? %>
+<p>
+	<%= check_box_tag 'is_me', 'yes', params[:is_me] %> Associate this Person record with my login account (will replace any existing association).
+</p>
+<% end %>

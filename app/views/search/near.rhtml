@@ -6,7 +6,7 @@
   at = 0
   markers = {}
   bounds = [10000, 10000, -10000, -10000]
-  target = @entry.id
+  target = @origin.id
   for entry in @entries
     if entry.id == target
       icon = "http://maps.google.com/mapfiles/marker.png"
@@ -20,19 +20,32 @@
               [bounds[1], pt[1]].min,
               [bounds[2], pt[0]].max,
               [bounds[3], pt[1]].max]
-    map.marker_init(Marker.new(pt, :info_bubble => entry.name, :icon => icon))
+    map.marker_init(Marker.new(pt, :info_bubble => show_link(entry), :icon => icon))
   end
-  map.center_zoom_on_bounds_init([[bounds[0],bounds[1]],
-                                  [bounds[2],bounds[3]]])
+  x1 = bounds[0]
+  y1 = bounds[1]
+  x2 = bounds[2]
+  y2 = bounds[3]
+  dx = (x2-x1)/10
+  dy = (y2-y1)/10
+  map.center_zoom_on_bounds_init([[x1-dx,y1-dy],[x2+dx,y2+dy]])
   %>
   <%= map.to_html %>
   <div id="surround_map">
-  <%= map.div() %><br />
+  <div class="map_preamble">
+Range: 
+<span class="mapstyle_select_on"><%= @within %></span> miles
+<span class="mapstyle_select"><%= link_to "(shrink to " + (@within/10).to_s + ")", :within => @within/10, :action => 'near', :controller => 'search', :id => @organization %></span>
+<span class="mapstyle_select"><%= link_to "(expand to " + (@within*10).to_s + ")", :within => @within*10, :action => 'near', :controller => 'search', :id => @organization %></span>
+  </div>
+  <%= map.div() %>
+  <div class="clearboth">
+  </div>
   <%= render :partial => "layouts/map_choice" %>
   </div>
 
 
-<p><%= link_to 'Add New Entry', :controller => 'entries', :action => 'new' %></p>
+<p><%= link_to 'Add New Organization', :controller => 'organizations', :action => 'new' %></p>
 <% form_tag( {:action => 'search'}, :method => 'get' ) do %>
   <p><label for="q">Search:</label>
   <%= text_field_tag 'q' %>
@@ -40,29 +53,27 @@
   </p>
 <% end %>
 
-<p>Current search is restricted to within <%= @within %> mile(s) of <%= @entry.name %>.<br /> [expand to <%= link_to (@within*10).to_s, :within => @within*10, :action => 'near', :controller => 'search', :id => @entry %> mile(s), contract to <%= link_to (@within/10).to_s, :within => @within/10, :action => 'near', :controller => 'search', :id => @entry %> mile(s)]</p>
+<p>Current search is restricted to within <%= @within %> mile(s) of <%= show_link @organization %>.<br /> [expand to <%= link_to (@within*10).to_s, :within => @within*10, :action => 'near', :controller => 'search', :id => @organization %> mile(s), contract to <%= link_to (@within/10).to_s, :within => @within/10, :action => 'near', :controller => 'search', :id => @organization %> mile(s)]</p>
 
 <% if @entries %>
  <% if @entries.blank? %>
   <p>No results were found for this search.</p>
-  <p><%= link_to 'Would you like to add an entry?', :controller => 'entries', :action => 'new' %></p>
+  <p><%= link_to 'Would you like to add an entry?', :controller => 'organizations', :action => 'new' %></p>
  <% else %>
  <h2>Search Results</h2>
   <% for entry in @entries %>
-   <p><img src="<%= markers[entry.id] %>" width="20" height="34" /><%= link_to entry.name, :controller => 'entries', :action => 'show', :id => entry %>
-  <%= "(Private to #{entry.member.name})" if entry.member %></p>
+   <p><img src="<%= markers[entry.id] %>" width="20" height="34" /><%= show_link entry %>
   <% end %>
  <h2>Download Search Results</h2>
    <ul>  
-    <li>Download as <%= link_to 'CSV', :action => 'near', :id => @entry, :format => 'csv' %> (suitable for spreadsheet programs)</li>
-    <li>Download as <%= link_to 'XML', :action => 'near', :id => @entry, :format => 'xml' %></li>
+    <li>Download as <%= link_to 'CSV', :action => 'near', :id => @organization, :format => 'csv' %> (suitable for spreadsheet programs)</li>
+    <li>Download as <%= link_to 'XML', :action => 'near', :id => @organization, :format => 'xml' %></li>
    </ul>
  <% end %>
 <% end %>
 <h2>Latest Changes</h2>
-<% for entry in Entry.latest_changes %>
-  <p><%= link_to entry.name, :controller => 'entries', :action => 'show', :id => entry %>
-  <%= "(Private to #{entry.member.name})" if entry.member %>
+<% for entry in @latest_changes %>
+  <p><%= link_to entry.name, :controller => 'organizations', :action => 'show', :id => entry %>
   <% if entry.updated_at %>
     updated <%= time_ago_in_words entry.updated_at %> ago
   <% end %>

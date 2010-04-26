@@ -1,0 +1,12 @@
+<h1>Editing member_org</h1>
+
+<% form_for(@member_org) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @member_org %> |
+<%= link_to 'Back', member_orgs_path %>

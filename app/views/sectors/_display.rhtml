@@ -1,0 +1,11 @@
+<dl class="attribute" id='sector_<%=sector.id%>'>
+	<dt><%= sector.name %>
+		<span class="actions">
+		[ <%= link_to_remote( 'delete', 
+			:url => {:controller => 'sectors', :action => 'dissociate', :sector_id => sector.id, :organization_id => @organization.id},
+			:update => 'sectors',
+			:confirm => 'Remove Sector association?') %>
+		]
+		</span>
+	</dt>
+</dl>
