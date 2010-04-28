@@ -1,4 +1,7 @@
 config/database.yml
+tmp
 tmp/*
+log
 log/*
+index
 index/*
