@@ -6,7 +6,7 @@ module ApplicationHelper
       if obj.link_hash.nil?
         return obj.link_name
       else
-        return link_to obj.link_name, obj.link_hash
+        return link_to(obj.link_name, obj.link_hash)
       end
     else
       return ''

@@ -45,6 +45,7 @@ class Organization < ActiveRecord::Base
   
   def accessible?(current_user)
     return true if !current_user.nil? and current_user.is_admin? # admins can access everything
+    return false if self.access_rule.nil?
     case self.access_rule.access_type
     when AccessRule::ACCESS_TYPE_PUBLIC # public data, always visible
       return true
