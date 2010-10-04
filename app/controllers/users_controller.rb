@@ -58,7 +58,12 @@ class UsersController < ApplicationController
   end
 
   def list
-    @user_pages, @users = paginate :users, :per_page => 10
+    @users = User.find(:all)
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.xml  { render :xml => @users }
+    end
   end
 
   def show
