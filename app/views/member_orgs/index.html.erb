@@ -1,18 +1,25 @@
-<h1>Listing member_orgs</h1>
+<h1>Listing Member Organizations</h1>
 
 <table>
-  <tr>
-  </tr>
-
-<% for member_org in @member_orgs %>
-  <tr>
-    <td><%= link_to 'Show', member_org %></td>
-    <td><%= link_to 'Edit', edit_member_org_path(member_org) %></td>
-    <td><%= link_to 'Destroy', member_org, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
+	<thead>
+		<tr>
+			<th>Organization Type</th>
+			<th>Custom entry?</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% for member_org in @member_orgs %>
+			<tr>
+				<td><%=member_org.name%></td>
+				<td><%=member_org.custom%></td>
+			    <td><%= link_to 'Show', member_org %></td>
+			    <td><%= link_to 'Edit', edit_member_org_path(member_org) %></td>
+			    <td><%= link_to 'Destroy', member_org, :confirm => 'Are you sure?', :method => :delete %></td>
+  			</tr>
+		<% end %>
+	</tbody>
 </table>
 
 <br />
 
-<%= link_to 'New member_org', new_member_org_path %>
+<%= link_to 'New Member Organization', new_member_org_path %>

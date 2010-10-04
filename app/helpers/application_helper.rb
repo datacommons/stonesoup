@@ -1,5 +1,26 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
+  
+  def date_format_long(date)
+    return '' if date.nil?
+    return date.strftime('%B %d, %Y') # "July 20, 2009"
+  end
+
+  def date_format_short(date)
+    return '' if date.nil?
+    return date.strftime("%Y-%m-%d") # "2009-07-20"
+  end
+  
+  def datetime_format_long(datetime)
+    return '' if datetime.nil?
+    return datetime.strftime("%b %d, %Y %I:%M %p") # "Jul 20, 2009 06:40 PM"
+  end
+  
+  def datetime_format_short(datetime)
+    return '' if datetime.nil?
+    return datetime.strftime("%Y-%m-%d %I:%M %p") # "2009-07-20 06:37 PM"
+  end
+  
   def show_link(obj)
     return '' if obj.nil?
     if obj.respond_to?('link_name') and obj.respond_to?('link_hash')

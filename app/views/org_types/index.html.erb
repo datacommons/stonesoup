@@ -1,18 +1,27 @@
-<h1>Listing org_types</h1>
+<h1>Listing Organization Types</h1>
 
 <table>
-  <tr>
-  </tr>
-
-<% for org_type in @org_types %>
-  <tr>
-    <td><%= link_to 'Show', org_type %></td>
-    <td><%= link_to 'Edit', edit_org_type_path(org_type) %></td>
-    <td><%= link_to 'Destroy', org_type, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
+	<thead>
+		<tr>
+			<th>Organization Type</th>
+			<th>Description</th>
+			<th>Custom entry?</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% for org_type in @org_types %>
+			<tr>
+				<td><%=org_type.name%></td>
+				<td><%=org_type.description%></td>
+				<td><%=org_type.custom%></td>
+			    <td><%= link_to 'Show', org_type %></td>
+			    <td><%= link_to 'Edit', edit_org_type_path(org_type) %></td>
+			    <td><%= link_to 'Destroy', org_type, :confirm => 'Are you sure?', :method => :delete %></td>
+  			</tr>
+		<% end %>
+	</tbody>
 </table>
 
 <br />
 
-<%= link_to 'New org_type', new_org_type_path %>
+<%= link_to 'New Organization Type', new_org_type_path %>

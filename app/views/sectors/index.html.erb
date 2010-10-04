@@ -1,16 +1,21 @@
-<h1>Listing sectors</h1>
+<h1>Listing Business Sectors</h1>
 
 <table>
-  <tr>
-  </tr>
-
-<% for sector in @sectors %>
-  <tr>
-    <td><%= link_to 'Show', sector %></td>
-    <td><%= link_to 'Edit', edit_sector_path(sector) %></td>
-    <td><%= link_to 'Destroy', sector, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
+	<thead>
+		<tr>
+			<th>Business Sector Name</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% for sector in @sectors %>
+			<tr>
+				<td><%=sector.name%></td>
+			    <td><%= link_to 'Show', sector %></td>
+			    <td><%= link_to 'Edit', edit_sector_path(sector) %></td>
+			    <td><%= link_to 'Destroy', sector, :confirm => 'Are you sure?', :method => :delete %></td>
+  			</tr>
+		<% end %>
+	</tbody>
 </table>
 
 <br />

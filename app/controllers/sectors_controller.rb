@@ -18,7 +18,7 @@ class SectorsController < ApplicationController
   # GET /sectors
   # GET /sectors.xml
   def index
-    @sectors = Sector.find(:all)
+    @sectors = Sector.find(:all, :order => 'name ASC')
 
     respond_to do |format|
       format.html # index.html.erb

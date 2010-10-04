@@ -1,0 +1,12 @@
+<table width="100%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td colspan="2">
+			<label for="org_type_name">Name</label>: <%= text_field 'org_type', 'name'  %><br/>
+			<label for="org_type_description">Description</label>:
+			<br/> <%= text_area 'org_type', 'description', :rows => 5, :cols => 60 %><br/>
+			<label for="org_type_custom">Custom?</label>: <%= check_box 'org_type', 'custom'  %>
+			<span class="note"><span class="label">Note:</span> Custom entries will NOT appear in the drop-down list on the Organization form.</span>
+			<br/>
+		</td>
+	</tr>
+</table>

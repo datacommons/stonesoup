@@ -1,8 +1,8 @@
-<h1>New member_org</h1>
+<h1>New Member Organization</h1>
 
 <% form_for(@member_org) do |f| %>
   <%= f.error_messages %>
-
+	<%= render :partial => 'form' %>
   <p>
     <%= f.submit "Create" %>
   </p>

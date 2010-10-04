@@ -1,22 +1,27 @@
 <h1>Listing users</h1>
 
 <table>
-  <tr>
-  <% for column in User.content_columns %>
-    <th><%= column.human_name %></th>
-  <% end %>
-  </tr>
-  
-<% for user in @users %>
-  <tr>
-  <% for column in User.content_columns %>
-    <td><%=h user.send(column.name) %></td>
-  <% end %>
-    <td><%= link_to 'Show', :action => 'show', :id => user %></td>
-    <td><%= link_to 'Edit', :action => 'edit', :id => user %></td>
-    <td><%= link_to 'Destroy', { :action => 'destroy', :id => user }, :confirm => 'Are you sure?', :post => true %></td>
-  </tr>
-<% end %>
+	<thead>
+  		<tr>
+			<th>Login</th>
+			<th>Admin?</th>
+			<th>User Since</th>
+			<th>Last Login</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% for user in @users %>
+	  		<tr>
+				<td><%= user.login %></td>
+				<td><%= user.is_admin %></td>
+				<td><%= datetime_format_short user.created_at %></td>
+				<td><%= datetime_format_short user.last_login %></td>
+				<td><%= link_to 'Show', :action => 'show', :id => user %></td>
+				<td><%= link_to 'Edit', :action => 'edit', :id => user %></td>
+				<td><%= link_to 'Destroy', { :action => 'destroy', :id => user }, :confirm => 'Are you sure?', :post => true %></td>
+			</tr>
+		<% end %>
+	</tbody>
 </table>
 
 <%# link_to 'Previous page', { :page => @user_pages.current.previous } if @user_pages.current.previous %>

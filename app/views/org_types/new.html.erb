@@ -1,7 +1,8 @@
-<h1>New org_type</h1>
+<h1>New Organization Type</h1>
 
 <% form_for(@org_type) do |f| %>
   <%= f.error_messages %>
+	<%= render :partial => 'form' %>
 
   <p>
     <%= f.submit "Create" %>

@@ -260,3 +260,42 @@ ul.menu_bar {
 ul.menu_bar li {
 	display: inline;
 }
+ul.menu_bar li a {
+	padding: 5px;
+	text-decoration: none;
+}
+
+#admin_menu {
+	position: absolute;
+	top: 0;
+	left: 0;
+	border: 2px solid black;
+	background-color: #FFF;
+}
+#admin_menu .title {
+	padding: 5px;
+	font-weight: bold;
+}
+#admin_menu ul.menu_bar {
+	display: inline-block;
+}
+
+#admin_menu .menu_item a {
+	background: #ABABAB;
+	color: #000;
+	border: none;
+}
+#admin_menu .menu_item a:hover {
+	color: #FFF;
+	background: #000;
+}
+
+.note {
+	margin: 0.25em 0 0.5em 0;
+	color: #606060;
+}
+
+.note .label {
+	font-weight: bold;
+	text-transform: uppercase;
+}
