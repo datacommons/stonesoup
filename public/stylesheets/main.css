@@ -177,6 +177,10 @@ dd {
 	padding: 0;
 }
 
+body.page-users-login #signupform {
+	float:right;
+}
+
 #the_map { 
   width: 300px;
   height: 300px;

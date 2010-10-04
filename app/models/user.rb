@@ -17,6 +17,8 @@ class User < ActiveRecord::Base
   belongs_to :member
   #attr_protected :member_id  #will want this for security soon...
 
+  VALID_EMAIL_REGEX = /^[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
+
   def self.authenticate(login, pass)
     find(:first, :conditions =>["login = ? AND password = ?", login, sha1(pass)])
   end  
@@ -53,6 +55,7 @@ protected
   validates_length_of :login, :within => 3..40
   #validates_length_of :password, :within => 5..40
   validates_presence_of :login, :password
+  validates_format_of :login, :with => VALID_EMAIL_REGEX, :message => 'should be a valid e-mail address'
   validates_uniqueness_of :login, :on => :create
   validates_confirmation_of :password_cleartext, :on => :create     
 
