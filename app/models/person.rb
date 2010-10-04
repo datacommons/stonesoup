@@ -13,7 +13,7 @@ class Person < ActiveRecord::Base
     self.access_rule.access_type
   end
   
-  def Person.latest_changes
+  def Person.latest_changes(filters)
     user = User.current_user  # from Organization.latest_changes
     conditions = if user && user.is_admin?
       nil

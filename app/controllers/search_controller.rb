@@ -112,7 +112,7 @@ class SearchController < ApplicationController
   
 protected
   def get_latest_changes
-    data = Organization.latest_changes + Person.latest_changes
+    data = Organization.latest_changes(session[:filters]) + Person.latest_changes(session[:filters])
     logger.debug("data=#{data}")
     data = AccessRule.cleanse(data, current_user).sort{|a,b| b.updated_at <=> a.updated_at}[0..14]
     logger.debug("returning data=#{data}")

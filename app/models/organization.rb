@@ -87,20 +87,34 @@ class Organization < ActiveRecord::Base
     end
   end
 
-  def Organization.latest_changes
+  def Organization.latest_changes(filters)
     user = User.current_user
-    conditions = if user && user.is_admin?
-                   nil
-#TODO: remove/handle member-related code
-#                 elsif user && user.member
-#                   ['member_id is NULL or member_id = ?', user.member.id]
-#                 else
-#                   ['member_id is NULL']
-                 end
+    conditions = nil
+    unless filters.nil?
+      condSQLs = []
+      condParams = []
+      joinSQL = nil
+      filters.each do |k,v|
+        if k == 'locations.physical_state'
+          joinSQL = 'INNER JOIN locations ON locations.organization_id = organizations.id'
+          if v.is_a?(Array)
+            condSQLs << 'locations.physical_state IN (' + v.collect{'?'}.join(',') + ')'
+            condParams += v
+          else
+            condSQLs = 'locations.physical_state IN '
+            condParams << v
+          end
+        else
+          raise "Unknown session filter: [#{k}=#{v}]"
+        end
+        conditions = [condSQLs.join(' AND ')] + condParams unless condSQLs.empty?
+      end
+    end
 
-    Organization.find(:all, :order => 'updated_at DESC', 
+    Organization.find(:all, :select => 'organizations.*', :order => 'updated_at DESC', 
                :limit => 15,
-               :conditions => conditions)
+               :conditions => conditions,
+               :joins => joinSQL)
   end
   
 	def create_address(attr)
