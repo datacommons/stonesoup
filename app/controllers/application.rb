@@ -5,7 +5,39 @@ require_dependency "login_system"
 class ApplicationController < ActionController::Base
   include LoginSystem
 
-  before_filter :login_from_cookie, :set_current_user_on_model
+  before_filter :login_from_cookie, :set_current_user_on_model, :set_custom_filters
+  
+  layout :custom_layout
+  
+private
+  def custom_layout
+    #return appropriate layout depending on value of request.host (domain name)
+    # you can also do other dependent filtering, setting session variables, etc.
+    logger.debug("Determining template based on request.host[#{request.host}]")
+    if ['ca.find.coop', 'california.find.coop', 'testca.find.coop'].include?(request.host)
+      logger.debug("... using custom template for: california")
+      # use custom template
+      return 'california'
+    else
+      logger.debug("... using default template.")
+      session[:filters] = nil
+      return 'default'
+    end
+  end
+public
+  def set_custom_filters
+    logger.debug("Determining custom filters based on request.host[#{request.host}]")
+    if ['ca.find.coop', 'california.find.coop', 'testca.find.coop'].include?(request.host)
+      logger.debug("... using custom settings for: california")
+      # set custom filters for CA
+      session[:filters] = {
+        'locations.physical_state' => ['CA', 'California']
+      }
+    else
+      logger.debug("... using default template.")
+      session[:filters] = nil
+    end
+  end
 
   def valid_password?(password, username)
     return false unless password.match(/[A-Z]/)

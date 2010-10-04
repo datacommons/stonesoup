@@ -22,7 +22,7 @@ class SearchController < ApplicationController
     end
 
     @latest_changes = get_latest_changes()
-
+    
     if params[:q]
       @entries = ActsAsFerret::find(
                                   query,
@@ -32,6 +32,31 @@ class SearchController < ApplicationController
                                   )
       # TODO: find a better way to filter entries based on access rules. To use the :conditions option in find_options above, we would need to join through organizations_users to current_user, or join Person directly to current_user - not sure how that works with the multi-table query...
       @entries = AccessRule.cleanse(@entries, current_user)
+      
+      # TODO: find a better way to apply session filters
+      unless session[:filters].nil?
+        logger.debug("applying session filters to search results: #{session[:filters].inspect}")
+        @entries.each do |e|
+          logger.debug("############## a: #{e.class}")
+          next unless e.is_a?(Organization) # only Orgs have Locations
+          session[:filters].each do |k,v|
+            if k == 'locations.physical_state'
+              logger.debug("############## b")
+              matches = false
+              e.locations.each do |location|
+                logger.debug("############## c")
+                if session[:filters]['locations.physical_state'].collect{|a| a.downcase}.include?(location.physical_state.downcase)
+                  logger.debug("############## d")
+                  matches = true
+                end
+              end
+              @entries.delete(e) unless matches
+            else
+              raise "Unknown session filter: [#{k}=#{v}]"
+            end
+          end
+        end
+      end
       
       f = params[:format]
       respond_to do |f| 
