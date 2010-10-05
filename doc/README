@@ -1,3 +1,6 @@
+============================================================================
+== Dependencies
+
 This application requires the following gems:
 	rails v2.2.2
 	ruport
@@ -6,6 +9,38 @@ This application requires the following gems:
 	geokit
 	mysql
 
+Installation on a generic debian/ubuntu machine:
+  apt-get install rubygems
+  gem install --version 2.2.2 --no-rdoc --no-ri rails
+  apt-get install ruby-dev # needed for building native extensions
+  gem install --no-rdoc --no-ri ruport acts_as_reportable ferret geokit
+  apt-get install libmysqlclient-dev
+  gem install --no-rdoc --no-ri mysql
+  apt-get install ruby
+  apt-get install rake 
+
+============================================================================
+== Configuration
+
+Fetch repository with:
+  bzr branch lp:datacommons
+  cd datacommons
+
+Set up database:
+  cd config
+  cp database.yml.dist database.yml # edit this to taste
+  cd ..
+
+Then (do "rake -T" to see all options):
+  rake db:create
+  rake db:reset  # may have to have someone fix db/schema.rb
+  rake db:migrate
+
+At this point, running a test server should work:
+  ./script/server 
+
+============================================================================
+== Searches
 
 To get Searches working in the DCP Directory:
 1) Start up the Ferret Server:
@@ -17,3 +52,9 @@ script/ferret_server -e development -R `pwd` start
 script/runner -e production 'Organization.rebuild_index'
 or
 script/runner -e development 'Organization.rebuild_index'
+
+============================================================================
+== Development
+
+
+
