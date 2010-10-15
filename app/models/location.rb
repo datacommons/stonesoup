@@ -30,7 +30,7 @@ class Location < ActiveRecord::Base
   end
   
   def save_ll
-    address = "#{self.physical_address1},#{self.physical_address2},#{self.physical_city},#{self.physical_state},#{self.physical_zip},#{self.physical_country}"
+    address = self.to_s
     location=GeoKit::Geocoders::GoogleGeocoder.geocode(address)
     coords = location.ll.scan(/[0-9\.\-\+]+/)
     if coords.length == 2
@@ -40,6 +40,10 @@ class Location < ActiveRecord::Base
       self.longitude = "0"
       self.latitude = "0"
     end
+  end
+
+  def to_s
+    return "#{self.physical_address1},#{self.physical_address2},#{self.physical_city},#{self.physical_state},#{self.physical_zip},#{self.physical_country}"
   end
 
   def accessible?(current_user)

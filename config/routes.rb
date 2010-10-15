@@ -8,6 +8,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :product_services
   map.resources :locations
   map.resources :organizations
+  map.resources :plumbing
 
   # The priority is based upon order of creation: first created -> highest priority.
   

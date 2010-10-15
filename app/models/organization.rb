@@ -15,6 +15,8 @@ class Organization < ActiveRecord::Base
                    :name => {:boost => 2.0, :store => :yes },
                    :description => { :store => :yes },
                    :products_services_to_s => { :store => :yes },
+                   :location => { :via => :locations_to_s,
+                     :store => :yes },
                    :access_type => { :store => :yes }
 #                   :physical_zip => { :store => :yes },
 #                   :public => { :store => :yes },
@@ -33,6 +35,10 @@ class Organization < ActiveRecord::Base
   
   def products_services_to_s
     self.products_services.collect{|ps| ps.name}.join(', ')
+  end
+
+  def locations_to_s
+    self.locations.collect{|loc| loc.to_s}.join(', ')
   end
   
   def set_access_rule(access_type)

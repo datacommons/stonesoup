@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100315230025) do
+ActiveRecord::Schema.define(:version => 20101015015634) do
 
   create_table "access_rules", :force => true do |t|
     t.string "access_type"
@@ -121,6 +121,8 @@ ActiveRecord::Schema.define(:version => 20100315230025) do
     t.datetime "updated_at"
   end
 
+  add_index "locations", ["organization_id"], :name => "index_locations_on_organization_id"
+
   create_table "member_orgs", :force => true do |t|
     t.text     "name"
     t.boolean  "custom"
@@ -206,6 +208,8 @@ ActiveRecord::Schema.define(:version => 20100315230025) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "product_services", ["organization_id"], :name => "index_product_services_on_organization_id"
 
   create_table "sectors", :force => true do |t|
     t.string   "name"
