@@ -299,3 +299,16 @@ ul.menu_bar li a {
 	font-weight: bold;
 	text-transform: uppercase;
 }
+
+.example_preamble, .example_bubble {
+    font-size: 80%;
+    float: left;
+    margin-right:5px;
+    padding-right:5px;
+}
+
+.example_bubble  {
+    background: #fff;
+    margin:5px;
+    padding:5px;
+}
