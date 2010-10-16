@@ -103,7 +103,7 @@
 		<h2>Business Sector(s)</h2>
 		<ul id="attribute_list">
 		<% @organization.sectors.each do |s| %>
-			<li><%= s.name %></li>
+			<li><%= link_to s.name, :action => 'search', :controller => 'search', :q => 'sector:\'' + s.name + '\'' %></li>
 		<% end %>
 		</ul>
 	<% end %>
