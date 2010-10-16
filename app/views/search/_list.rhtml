@@ -4,6 +4,7 @@
   <p><%= link_to 'Would you like to add a new organization?', :controller => 'organizations', :action => 'new' %></p>
  <% else %>
  <h2>Search Results</h2>
+  <%= will_paginate @entries %>
   <% for entry in @entries %>
    <p><%= show_link entry %>
   <% end %>
