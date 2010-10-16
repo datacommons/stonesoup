@@ -6,8 +6,22 @@
  <h2>Search Results</h2>
   <%= will_paginate @entries %>
   <% for entry in @entries %>
-   <p><%= show_link entry %>
+   <div class='listing'>
+   <%= show_link entry %><br >
+   <% if entry.respond_to? "primary_location" %>
+     <% loc = entry.primary_location %>
+     <%= loc.physical_address1 %>
+     <% unless loc.physical_address2.blank? %>
+       <br /><%= loc.physical_address2 %>
+     <% end %>
+     <br />
+     <%= loc.physical_city %> <%= loc.physical_state %> <%= loc.physical_zip %>
+     <br />
+     <%= loc.physical_country %>
+   <% end %>
+   </div>
   <% end %>
+  <div class='clearboth'></div>
   <%= will_paginate @entries %>
  <h2>Download Search Results</h2>
    <ul>  

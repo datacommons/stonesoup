@@ -313,6 +313,22 @@ ul.menu_bar li a {
     padding:5px;
 }
 
+.listing {
+ 	display: block;
+	float: left;
+	margin: 10px;
+	border: 1px solid #ccc;
+	padding: 5px;
+	width: 28%;
+	height: 135px;
+	background-color: #FFF;
+	overflow: auto;
+	-moz-border-radius-topleft: 9px;	
+	-moz-border-radius-topright: 9px;
+	-moz-border-radius-bottomleft: 9px;	
+	-moz-border-radius-bottomright: 9px;
+
+}
 
 .pagination {
   text-align: center;
