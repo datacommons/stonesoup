@@ -24,14 +24,27 @@ class SearchController < ApplicationController
     @latest_changes = get_latest_changes()
     
     if params[:q]
+      params[:page] = 1 unless params[:page]
       @entries = ActsAsFerret::find(
                                   query,
                                   [Organization, Person],
-                                  { :page => 1, :per_page => 15 },
-                                  {} # find options
-                                  )
+                                    { :page => params[:page], :per_page => 15,
+                                    },
+                                  { 
+                                      :limit => :all,
+#                                      :conditions => 
+#                                      ["((access_rules.access_type = 'PUBLIC') OR (access_rules.access_type = 'LOGGED_IN') OR (access_rules.access_type = 'PRIVATE'))"],
+                                      #["(access_rules.access_type = 'PUBLIC' OR (access_rules.access_type = 'LOGGED_IN') OR (access_rules.access_type = 'PRIVATE')"],
+                                      # be careful with joins not to mention organization or person
+                                      # the organizations_users join doesn't do anything useful for people, but does not cause harm
+#                                      :joins => ["LEFT JOIN organizations_users ON organizations_users.organization_id = id", "INNER JOIN access_rules ON access_rules.id = access_rule_id"]
+                                    }
+                                    )
+
       # TODO: find a better way to filter entries based on access rules. To use the :conditions option in find_options above, we would need to join through organizations_users to current_user, or join Person directly to current_user - not sure how that works with the multi-table query...
-      @entries = AccessRule.cleanse(@entries, current_user)
+
+      ## Had to remove this, it was killing pagination
+      # @entries = AccessRule.cleanse(@entries, current_user)
       
       # TODO: find a better way to apply session filters
       unless session[:filters].nil?
@@ -118,4 +131,22 @@ protected
     logger.debug("returning data=#{data}")
     return data
   end
+
+ def windowed_pagination_links(pagingEnum, options)
+    link_to_current_page = options[:link_to_current_page]
+    always_show_anchors = options[:always_show_anchors]
+    padding = options[:window_size] 
+    current_page = pagingEnum.page
+    html = ''
+    padding = padding < 0 ? 0 : padding
+    first = pagingEnum.page_exists?(current_page  - padding) ? current_page - padding : 1
+    last = pagingEnum.page_exists?(current_page + padding) ? current_page + padding : pagingEnum.last_page
+    html << yield(1) if always_show_anchors and not first == 1
+    first.upto(last) do |page|
+      (current_page == page && !link_to_current_page) ? html << page : html << yield(page)
+    end
+    html << yield(pagingEnum.last_page) if always_show_anchors and not last == pagingEnum.last_page
+    html
+  end
+
 end

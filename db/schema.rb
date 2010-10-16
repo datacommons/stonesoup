@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101015015634) do
+ActiveRecord::Schema.define(:version => 20101016151850) do
 
   create_table "access_rules", :force => true do |t|
     t.string "access_type"
@@ -180,6 +180,9 @@ ActiveRecord::Schema.define(:version => 20101015015634) do
     t.integer "organization_id", :null => false
     t.integer "sector_id",       :null => false
   end
+
+  add_index "organizations_sectors", ["organization_id"], :name => "index_organizations_sectors_on_organization_id"
+  add_index "organizations_sectors", ["sector_id"], :name => "index_organizations_sectors_on_sector_id"
 
   create_table "organizations_users", :id => false, :force => true do |t|
     t.integer  "organization_id", :null => false

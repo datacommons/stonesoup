@@ -17,6 +17,11 @@ class Organization < ActiveRecord::Base
                    :products_services_to_s => { :store => :yes },
                    :location => { :via => :locations_to_s,
                      :store => :yes },
+                   # some different tags to enable more selective searches
+                   :state => { :via => :states_to_s },
+                   :zip => { :via => :zips_to_s },
+                   :country => { :via => :countries_to_s },
+                   :sector => { :via => :sectors_to_s },
                    :access_type => { :store => :yes }
 #                   :physical_zip => { :store => :yes },
 #                   :public => { :store => :yes },
@@ -39,6 +44,22 @@ class Organization < ActiveRecord::Base
 
   def locations_to_s
     self.locations.collect{|loc| loc.to_s}.join(', ')
+  end
+  
+  def states_to_s
+    self.locations.collect{|loc| loc.physical_state}.join(', ')
+  end
+  
+  def zips_to_s
+    self.locations.collect{|loc| loc.physical_zip}.join(', ')
+  end
+  
+  def countries_to_s
+    self.locations.collect{|loc| loc.physical_country}.join(', ')
+  end
+  
+  def sectors_to_s
+    self.sectors.collect{|sect| sect.name}.join(', ')
   end
   
   def set_access_rule(access_type)
@@ -141,4 +162,27 @@ class Organization < ActiveRecord::Base
   def link_hash
     {:controller => 'organizations', :action => 'show', :id => self.id}
   end
+
+  def Organization.paginating_ferret_search(options)
+    count = find_by_contents(options[:q], {:lazy => true}).total_hits
+    
+    PagingEnumerator.new(options[:page_size], count, false, options[:current], 1) do |page|
+      offset = (options[:current].to_i - 1) * options[:page_size]
+      limit = options[:page_size]
+      
+      res = find_by_contents(options[:q], {:offset => offset, :limit => limit})
+    end
+  end
+  
+  def Organization.paginating_ferret_multi_search(options)
+    count = ActsAsFerret::find(options[:q], [Organization, Person], {:limit => :all, :lazy => true}).total_hits
+    
+    PagingEnumerator.new(options[:page_size], count, false, options[:current], 1) do |page|
+      offset = (options[:current].to_i - 1) * options[:page_size]
+      limit = options[:page_size]
+      
+      ActsAsFerret::find(options[:q], [Organization, Person], {:offset => offset, :limit => limit})
+    end
+  end
+  
 end

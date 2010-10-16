@@ -8,7 +8,7 @@
 <% end %>
 
 <div class='example_preamble'>Example<br />searches:</div>
-<% for example in ['organic','"Northeast Biodiesel"','02139','Connecticut','cooperative'] %>
+<% for example in ['"Northeast Biodiesel"','02139','Connecticut','cooperative','sector:consumer', 'sector:nonprofit AND state:massachusetts', 'tech*', 'sector:food AND (organic OR local)'] %>
 <div class='example_bubble'><%= link_to example, :action => 'search', :q => example %></div>
 <% end %>
 <br class="clearboth" />

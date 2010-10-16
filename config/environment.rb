@@ -110,3 +110,5 @@ GeoKit::Geocoders::GEOCODER_CA=false
 # various geocoders.  Make sure you read up on relevant Terms of Use for each
 # geocoder you are going to use.
 GeoKit::Geocoders::PROVIDER_ORDER=[:google,:us]
+
+require "will_paginate"

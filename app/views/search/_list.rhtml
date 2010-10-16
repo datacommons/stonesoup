@@ -7,6 +7,7 @@
   <% for entry in @entries %>
    <p><%= show_link entry %>
   <% end %>
+  <%= will_paginate @entries %>
  <h2>Download Search Results</h2>
    <ul>  
     <li>Download as <%= link_to 'CSV', :action => 'search', :q => params[:q].to_s, :format => 'csv' %> (suitable for spreadsheet programs)</li>
