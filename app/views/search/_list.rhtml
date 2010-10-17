@@ -18,6 +18,8 @@
      <%= loc.physical_city %> <%= loc.physical_state %> <%= loc.physical_zip %>
      <br />
      <%= loc.physical_country %>
+   <% else %>
+     <%= OrganizationsPerson.find_all_by_person_id(entry.id).collect{|op| [op.organization.name]}.join(", ") %>
    <% end %>
    </div>
   <% end %>
