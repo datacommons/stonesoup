@@ -10,6 +10,7 @@ xml.rss "version" => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/" do
 
    @entries.each do |entry|
      xml.item do
+       xml.pubDate entry.updated_at.to_s(:rfc822)
        if entry.respond_to? "primary_location"
          xml.title       entry.name
          xml.link        url_for :only_path => false, :controller => 'organizations', :action => 'show', :id => entry.id
