@@ -122,6 +122,12 @@ class SearchController < ApplicationController
       end
     end
   end
+
+  def recent
+    @entries = get_latest_changes
+    render :layout => false
+    response.headers["Content-Type"] = "application/xml; charset=utf-8"
+  end
   
 protected
   def get_latest_changes

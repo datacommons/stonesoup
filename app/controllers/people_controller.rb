@@ -59,7 +59,8 @@ class PeopleController < ApplicationController
   # POST /people.xml
   def create
     @person = Person.new(params[:person])
-    @person.set_access_rule(params[:access_rule])
+    logger.debug("The access rule should be " + params[:access_rule].to_s)
+    @person.set_access_rule(params[:access_rule][:access_type])
     @person.user = current_user if params[:is_me]
 
     respond_to do |format|
