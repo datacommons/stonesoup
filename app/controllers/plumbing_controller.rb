@@ -12,6 +12,13 @@ class PlumbingController < ApplicationController
     end
   end
 
+  def ppl
+    @data = Person.find(:all)
+    @data.each do |datum|
+      datum.ferret_update
+    end
+  end
+
   def show
     @locs = Location.find_all_by_latitude(nil, :limit => 10)
     @locs.each do |l|
