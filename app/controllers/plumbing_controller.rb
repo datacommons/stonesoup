@@ -27,5 +27,9 @@ class PlumbingController < ApplicationController
     end
   end
 
+  def email
+    ModeratorMailer::deliver_mail("paulfitz@localhost")
+  end
+
 end
 
