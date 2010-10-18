@@ -1,4 +1,5 @@
-<p>This is a directory of organizations looking to build a cooperative economy.</p>
+<p>This is a directory of organizations looking to build a cooperative economy.
+Formerly <a href="http://regina.eggplant.coop">REGINA</a>.</p>
 
 <% form_tag( {:action => 'search'}, :method => 'get' ) do %>
   <p><label for="q">Search for an organization:</label>
@@ -18,7 +19,9 @@ The Data Commons Project is a collaborative effort among a diverse array of orga
 </p>
 
 <p>
-Want to help out? <%= link_to 'Add your organization', :controller => 'organizations', :action => 'new' %>!</p>
+Want to help out? <%= link_to 'Add your organization', :controller => 'organizations', :action => 'new' %>!
+</p>
 
 
 <%= render :partial => "list" %>
+
