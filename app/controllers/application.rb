@@ -18,7 +18,7 @@ private
       logger.debug("... using custom template for: california")
       # use custom template
       return 'california'
-    elsif ['main.find.coop'].include?(request.host)
+    elsif ['main.find.coop','find.coop'].include?(request.host)
       return 'regina'
     else
       logger.debug("... using default template.")
