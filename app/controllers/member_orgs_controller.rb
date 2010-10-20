@@ -1,4 +1,6 @@
 class MemberOrgsController < ApplicationController
+  before_filter :login_required
+  before_filter :admin_required, :only => [:index, :show, :new, :edit, :update, :destroy]
   def dissociate
     @member_org = MemberOrg.find(params[:member_org_id])
     @organization = Organization.find(params[:organization_id])
@@ -56,9 +58,17 @@ class MemberOrgsController < ApplicationController
   # POST /member_orgs
   # POST /member_orgs.xml
   def create
-    @member_org = MemberOrg.new(params[:new_member_org].merge(:custom => true))
-    @organization = Organization.find(params[:organization_id])
-    @member_org.organizations.push(@organization)
+    #AJAX:   Parameters: {"member_org"=>{"name"=>"memorg1"}, "commit"=>"Create", "organization_id"=>"796"}
+    #HTTP:   Parameters: {"member_org"=>{"name"=>"newmemberorg1", "custom"=>"1"}, "commit"=>"Create"}
+    #HTTP:   Parameters: {"member_org"=>{"name"=>"newmemberorg1", "custom"=>"0"}, "commit"=>"Create"}
+    if params[:member_org][:custom].nil?  # no "custom" value vas provided, so that means this is being submitted via AJAX
+      params[:member_org].merge!(:custom => true)  # make it a custom entry
+    end
+    @member_org = MemberOrg.new(params[:member_org])
+    unless params[:organization_id].blank?  # as invoked via admin interface
+      @organization = Organization.find(params[:organization_id])
+      @member_org.organizations.push(@organization)
+    end
 
     respond_to do |format|
       if @member_org.save

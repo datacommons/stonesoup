@@ -1,4 +1,6 @@
 class SectorsController < ApplicationController
+  before_filter :login_required
+  before_filter :admin_required, :only => [:index, :show, :new, :create, :edit, :update, :destroy]
   def dissociate
     @sector = Sector.find(params[:sector_id])
     @organization = Organization.find(params[:organization_id])

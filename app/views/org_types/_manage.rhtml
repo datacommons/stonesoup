@@ -17,14 +17,14 @@
 		<%= submit_tag 'Add', :id => 'addorg_type_savebutton' %>
 	<% end %>
 	- or -
-	<%= error_messages_for 'new_org_type' %>
+	<%= error_messages_for 'org_type' %>
 	<% form_remote_tag :url => {:controller => 'org_types', :action => 'create'}, 
 		:update => 'org_types',
 		:loading => %(showSavingButton('neworg_type_savebutton')),
 		:failure => %(resetSaveButton('neworg_type_savebutton'); showFailure('Could not create org_type')),
 		:success => %(resetSaveButton('neworg_type_savebutton'); Element.hide('block_org_type_new_form'); Element.show('block_org_type_new_link');) do %>
 		<%= hidden_field_tag 'organization_id', @organization.id %>
-		Organization Type: <%= text_field 'new_org_type', 'name', 'size' => 30 %>
+		Organization Type: <%= text_field 'org_type', 'name', 'size' => 30 %>
 		<%= submit_tag 'Create', :id => 'neworg_type_savebutton' %>
 	<% end %>
 </div>

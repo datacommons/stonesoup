@@ -1,10 +1,7 @@
 class LocationsController < ApplicationController
-  before_filter :login_required, :only => [:new, :create, :edit, :update, :destroy]
+  before_filter :login_required
+  before_filter :admin_required, :only => [:index, :show]
 protected  
-	def create_location_from_form(org, params)
-		return org.create_address(params[:new_location])
-	end
-	
 	def process_params(params)
 	  if params[:new_location_mailing_same_as_physical]
 	    Location::ADDRESS_FIELDS.each do |fld|
@@ -58,19 +55,25 @@ public
   def create
 		process_params(params)
 		@organization = Organization.find(params[:id])
-		@location = create_location_from_form(@organization, params)
-    @location.save!
+		@location = @organization.locations.create(params[:new_location])
+		@location.save!
+		if @organization.primary_location.nil?  # if this is the first location added, assign it as the primary location
+      @organization.primary_location = @location
+      @organization.save(false)
+    end
     flash[:notice] = 'Location was successfully created.'
     respond_to do |format|
       format.html { redirect_to(@location) }
       format.xml  { render :xml => @location, :status => :created, :location => @location }
-      format.js   { render :partial => 'manage' }
+      format.js   { render :partial => 'manage', :locals => {:location => @location, :expanded => true} }
     end
   rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved
+		logger.debug("error caught in locations#create. @location=#{@location}")
+		@new_location = @location
     respond_to do |format|
       format.html { render :action => "new" }
       format.xml  { render :xml => @location.errors, :status => :unprocessable_entity }
-      format.js   { render :partial => 'manage' }
+      format.js   { render :partial => 'manage', :locals => {:location => @location, :expanded => true} }
     end
   end
 

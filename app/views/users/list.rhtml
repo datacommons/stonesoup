@@ -18,7 +18,7 @@
 				<td><%= datetime_format_short user.last_login %></td>
 				<td><%= link_to 'Show', :action => 'show', :id => user %></td>
 				<td><%= link_to 'Edit', :action => 'edit', :id => user %></td>
-				<td><%= link_to 'Destroy', { :action => 'destroy', :id => user }, :confirm => 'Are you sure?', :post => true %></td>
+				<td><%= button_to 'Destroy', { :action => 'destroy', :id => user }, :confirm => 'Are you sure?', :post => true %></td>
 			</tr>
 		<% end %>
 	</tbody>
