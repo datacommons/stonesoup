@@ -330,6 +330,11 @@ ul.menu_bar li a {
 
 }
 
+.private {
+	border: 1px dotted #ccc;
+	background-color: transparent;
+}
+
 .pagination {
   text-align: center;
   padding: .3em; }
