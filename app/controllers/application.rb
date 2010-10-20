@@ -19,7 +19,11 @@ private
       # use custom template
       return 'california'
     elsif ['main.find.coop','find.coop'].include?(request.host)
+      logger.debug("... using custom template for: find.coop")
       return 'regina'
+    elsif ['maine.find.coop'].include?(request.host)
+      logger.debug("... using custom template for: cooperative maine")
+      return 'maine'
     else
       logger.debug("... using default template.")
       session[:filters] = nil
