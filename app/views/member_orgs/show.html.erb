@@ -1,3 +1,16 @@
-
-<%= link_to 'Edit', edit_member_org_path(@member_org) %> |
-<%= link_to 'Back', member_orgs_path %>
+<h1><%=h @member_org.name%></h1>
+<%= @member_org.custom? ? '<h2>NOTE: Custom Entry</h2>' : '' %>
+<% unless @member_org.synonyms.empty? %>
+	Synonyms: <%= @member_org.synonyms.collect{|mo| mo.name}.join(', ') %>
+	<br/>
+<% end %>
+<% unless current_user.is_admin? %>
+	<br/>
+	<%= link_to 'Edit', edit_member_org_path(@member_org) %> |
+	<%= link_to 'List Member Orgs', member_orgs_path %>
+<% end %>
+<hr/>
+Organizations who are Members:
+<br/>
+<% @organizations = @member_org.get_organizations %>
+<%= render :file => 'organizations/index' %>

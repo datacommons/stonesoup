@@ -4,7 +4,10 @@
 			<label for="member_org_name">Name</label>: <%= text_field 'member_org', 'name'  %><br/>
 			<label for="member_org_custom">Custom?</label>: <%= check_box 'member_org', 'custom'  %>
 			<span class="note"><span class="label">Note:</span> Custom entries will NOT appear in the drop-down list on the Organization form.</span>
-			<br/>
+			<hr/>
+			<h2>Merge this entry with another</h2>
+			When two names are merged, the primary name is shown whenever either is displayed.<br/>
+			Merge into: <%= select 'member_org', 'effective_id', [['','']] + MemberOrg.get_available.reject{|mo| mo.id==@member_org.id}.collect{|mo| [mo.name, mo.id]} %>
 		</td>
 	</tr>
 </table>

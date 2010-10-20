@@ -33,6 +33,14 @@ class Organization < ActiveRecord::Base
 
   before_save :save_ll
   
+  def get_org_types
+    org_types.collect{|ot| ot.root_term}.uniq
+  end
+  
+  def get_member_orgs
+    member_orgs.collect{|mo| mo.root_term}.uniq
+  end
+  
   def access_type
     self.access_rule.access_type
   end

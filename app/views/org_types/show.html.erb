@@ -1,3 +1,17 @@
+<h1><%=h @org_type.name%></h1>
+<%= @org_type.custom? ? '<h2>NOTE: Custom Entry</h2>' : '' %>
+<% unless @org_type.synonyms.empty? %>
+	Synonyms: <%= @org_type.synonyms.collect{|ot| ot.name}.join(', ') %>
+	<br/>
+<% end %>
+<% unless current_user.is_admin? %>
+	<br/>
+	<%= link_to 'Edit', edit_org_type_path(@org_type) %> |
+	<%= link_to 'List org Types', org_types_path %>
+<% end %>
+<hr/>
+Organizations with this Org Type:
+<br/>
+<% @organizations = @org_type.get_organizations %>
+<%= render :file => 'organizations/index' %>
 
-<%= link_to 'Edit', edit_org_type_path(@org_type) %> |
-<%= link_to 'Back', org_types_path %>
