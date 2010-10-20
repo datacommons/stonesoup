@@ -1,5 +1,5 @@
 class PlumbingController < ApplicationController
-  before_filter :login_required, :only => [:index, :show]
+  before_filter :admin_required
 
   def index
     Organization.rebuild_index
