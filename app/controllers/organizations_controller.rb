@@ -68,15 +68,6 @@ class OrganizationsController < ApplicationController
     @organization.set_access_rule(AccessRule::ACCESS_TYPE_PUBLIC)  # TODO: data is public by default?
 
     respond_to do |format|
-#TODO: remove/handle member-related code
-#      if current_user.member
-#        if params[:make_entry_private]
-#          @organization.member = current_user.member
-#        else
-#          @organization.member = nil
-#        end
-#      end
-
       if @organization.save
         @organization.users << current_user if params[:associate_user_to_entry]
         flash[:notice] = 'Organization was successfully created.'
@@ -94,15 +85,6 @@ class OrganizationsController < ApplicationController
   def update
     @organization = Organization.find(params[:id])
     @organization.users << current_user if params[:associate_user_to_entry] and !@organization.users.include?(current_user)
-#TODO: remove/handle member-related code
-#      if current_user.member
-#        if params[:make_entry_private]
-#          @organization.member = current_user.member
-#        else
-#          @organization.member = nil
-#        end
-#      end
-
     respond_to do |format|
       if @organization.update_attributes(params[:organization])
         flash[:notice] = 'Organization was successfully updated.'
@@ -162,23 +144,8 @@ class OrganizationsController < ApplicationController
 
     if %w[show edit update destroy become_editor invite].include? action_name
       organization = Organization.find(params[:id])
-#TODO: remove/handle member-related code
-#      if entry.member
-#        return entry.member == current_user.member
-#      end
     end
 
     true
   end
-
-  def protect?(action)
-#TODO: remove/handle member-related code
-#    if action_name == 'show'
-#      entry = Organization.find(params[:id])
-#      return entry.member
-#    end
-
-    true
-  end
-
 end

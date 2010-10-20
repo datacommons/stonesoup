@@ -25,7 +25,6 @@ class Organization < ActiveRecord::Base
                    :access_type => { :store => :yes }
 #                   :physical_zip => { :store => :yes },
 #                   :public => { :store => :yes },
-#                   :member_id => { :store => :yes }
                  } )
 
   acts_as_reportable
