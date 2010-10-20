@@ -10,7 +10,6 @@
 		<% for sector in @sectors %>
 			<tr>
 				<td><%=sector.name%></td>
-			    <td><%= link_to 'Show', sector %></td>
 			    <td><%= link_to 'Edit', edit_sector_path(sector) %></td>
 			    <td><%= link_to 'Destroy', sector, :confirm => 'Are you sure?', :method => :delete %></td>
   			</tr>

@@ -1,4 +1,6 @@
 class OrgTypesController < ApplicationController
+  before_filter :login_required
+  before_filter :admin_required, :only => [:index, :show, :new, :edit, :update, :destroy]
   def dissociate
     @org_type = OrgType.find(params[:org_type_id])
     @organization = Organization.find(params[:organization_id])
@@ -56,9 +58,14 @@ class OrgTypesController < ApplicationController
   # POST /org_types
   # POST /org_types.xml
   def create
-    @org_type = OrgType.new(params[:new_org_type].merge(:custom => true))
-    @organization = Organization.find(params[:organization_id])
-    @org_type.organizations.push(@organization)
+    if params[:org_type][:custom].nil?  # no "custom" value vas provided, so that means this is being submitted via AJAX
+      params[:org_type].merge!(:custom => true)  # make it a custom entry
+    end
+    @org_type = OrgType.new(params[:org_type])
+    unless params[:organization_id].blank?  # as invoked via admin interface
+      @organization = Organization.find(params[:organization_id])
+      @org_type.organizations.push(@organization)
+    end
 
     respond_to do |format|
       if @org_type.save

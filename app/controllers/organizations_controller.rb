@@ -80,7 +80,7 @@ class OrganizationsController < ApplicationController
       if @organization.save
         @organization.users << current_user if params[:associate_user_to_entry]
         flash[:notice] = 'Organization was successfully created.'
-        format.html { redirect_to :controller => 'search', :action => 'search' }
+        format.html { redirect_to :action => 'edit', :id => @organization }
         format.xml  { render :xml => @organization, :status => :created, :location => @organization }
       else
         format.html { render :action => "new" }

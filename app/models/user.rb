@@ -13,10 +13,6 @@ class User < ActiveRecord::Base
 
   before_validation_on_create :crypt_password
 
-  has_and_belongs_to_many :entries
-  belongs_to :member
-  #attr_protected :member_id  #will want this for security soon...
-
   VALID_EMAIL_REGEX = /^[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
 
   def self.authenticate(login, pass)

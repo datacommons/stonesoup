@@ -7,8 +7,9 @@ class Location < ActiveRecord::Base
                    :lng_column_name => 'longitude',
                    :distance_field_name => 'distance'
 
-  validates_presence_of :country
-  validates_presence_of :city  
+  validates_presence_of :organization_id
+  validates_presence_of :physical_country
+  validates_presence_of :physical_city  
   
   Location::ADDRESS_FIELDS = ['address1', 'address2', 'city', 'state', 'zip', 'country']
   

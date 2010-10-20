@@ -117,17 +117,6 @@ class Organization < ActiveRecord::Base
                :joins => joinSQL)
   end
   
-	def create_address(attr)
-		l = self.locations.create(attr)
-		l.save!
-		if self.locations.length == 1 then	# if this is the first address added, make it primary
-			self.primary_location_id = l.id
-			self.save(false)
-		end
-		return l
-	end
-
-  
   def link_name
     name
   end

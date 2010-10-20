@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_filter :login_required, :only => [:new, :create, :edit, :update, :destroy, :index, :list, :show]
+  before_filter :admin_required, :only => [:index, :list, :new, :create, :edit, :update, :destroy]
 
   def index
     list

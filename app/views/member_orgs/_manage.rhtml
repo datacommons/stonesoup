@@ -17,14 +17,14 @@
 		<%= submit_tag 'Add', :id => 'addmember_org_savebutton' %>
 	<% end %>
 	- or -
-	<%= error_messages_for 'new_member_org' %>
+	<%= error_messages_for 'member_org' %>
 	<% form_remote_tag :url => {:controller => 'member_orgs', :action => 'create'}, 
 		:update => 'member_orgs',
 		:loading => %(showSavingButton('newmember_org_savebutton')),
 		:failure => %(resetSaveButton('newmember_org_savebutton'); showFailure('Could not create member_org')),
 		:success => %(resetSaveButton('newmember_org_savebutton'); Element.hide('block_member_org_new_form'); Element.show('block_member_org_new_link');) do %>
 		<%= hidden_field_tag 'organization_id', @organization.id %>
-		Member Organization: <%= text_field 'new_member_org', 'name', 'size' => 30 %>
+		Member Organization: <%= text_field 'member_org', 'name', 'size' => 30 %>
 		<%= submit_tag 'Create', :id => 'newmember_org_savebutton' %>
 	<% end %>
 </div>
