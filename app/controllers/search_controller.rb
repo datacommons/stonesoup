@@ -14,27 +14,25 @@ class SearchController < ApplicationController
     
     if params[:q]
       params[:page] = 1 unless params[:page]
-      @entries = ActsAsFerret::find(
-                                  query,
-                                  [Organization, Person],
-                                    { :page => params[:page], :per_page => 15,
+      if current_user
+          access_condition = ["access_rules.access_type IN (\'PUBLIC\',\'LOGGED_IN\') OR users.id = ?", current_user.id]
+      else
+          access_condition = "access_rules.access_type = \'PUBLIC\'"
+      end
+          
+      @entries = ActsAsFerret::find(query,
+                                    [Organization, Person],
+                                    { 
+                                      :page => params[:page], 
+                                      :per_page => 15,
                                     },
-                                  { 
+                                    { 
                                       :limit => :all,
-#                                      :conditions => 
-#                                      ["((access_rules.access_type = 'PUBLIC') OR (access_rules.access_type = 'LOGGED_IN') OR (access_rules.access_type = 'PRIVATE'))"],
-                                      #["(access_rules.access_type = 'PUBLIC' OR (access_rules.access_type = 'LOGGED_IN') OR (access_rules.access_type = 'PRIVATE')"],
-                                      # be careful with joins not to mention organization or person
-                                      # the organizations_users join doesn't do anything useful for people, but does not cause harm
-#                                      :joins => ["LEFT JOIN organizations_users ON organizations_users.organization_id = id", "INNER JOIN access_rules ON access_rules.id = access_rule_id"]
-                                    }
-                                    )
+                                      :conditions => access_condition,
+                                      :include => [:access_rule,
+                                                   :users]
+                                    })
 
-      # TODO: find a better way to filter entries based on access rules. To use the :conditions option in find_options above, we would need to join through organizations_users to current_user, or join Person directly to current_user - not sure how that works with the multi-table query...
-
-      ## Had to remove this, it was killing pagination
-      # @entries = AccessRule.cleanse(@entries, current_user)
-      
       # TODO: find a better way to apply session filters
       unless session[:filters].nil?
         logger.debug("applying session filters to search results: #{session[:filters].inspect}")
