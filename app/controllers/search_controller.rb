@@ -13,15 +13,26 @@ class SearchController < ApplicationController
     @latest_changes = get_latest_changes()
     
     if params[:q]
-      @entries = ActsAsFerret::find(
-                                  query,
-                                  [Organization, Person],
-                                  { :page => 1, :per_page => 15 },
-                                  {} # find options
-                                  )
-      # TODO: find a better way to filter entries based on access rules. To use the :conditions option in find_options above, we would need to join through organizations_users to current_user, or join Person directly to current_user - not sure how that works with the multi-table query...
-      @entries = AccessRule.cleanse(@entries, current_user)
-      
+      params[:page] = 1 unless params[:page]
+      if current_user
+          access_condition = ["access_rules.access_type IN (\'PUBLIC\',\'LOGGED_IN\') OR users.id = ?", current_user.id]
+      else
+          access_condition = "access_rules.access_type = \'PUBLIC\'"
+      end
+          
+      @entries = ActsAsFerret::find(query,
+                                    [Organization, Person],
+                                    { 
+                                      :page => params[:page], 
+                                      :per_page => 15,
+                                    },
+                                    { 
+                                      :limit => :all,
+                                      :conditions => access_condition,
+                                      :include => [:access_rule,
+                                                   :users]
+                                    })
+
       # TODO: find a better way to apply session filters
       unless session[:filters].nil?
         logger.debug("applying session filters to search results: #{session[:filters].inspect}")
@@ -98,6 +109,12 @@ class SearchController < ApplicationController
       end
     end
   end
+
+  def recent
+    @entries = get_latest_changes
+    render :layout => false
+    response.headers["Content-Type"] = "application/xml; charset=utf-8"
+  end
   
 protected
   def get_latest_changes
@@ -107,4 +124,5 @@ protected
     logger.debug("returning data=#{data}")
     return data
   end
+
 end

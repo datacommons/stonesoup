@@ -15,6 +15,13 @@ class Organization < ActiveRecord::Base
                    :name => {:boost => 2.0, :store => :yes },
                    :description => { :store => :yes },
                    :products_services_to_s => { :store => :yes },
+                   :location => { :via => :locations_to_s,
+                     :store => :yes },
+                   # some different tags to enable more selective searches
+                   :state => { :via => :states_to_s },
+                   :zip => { :via => :zips_to_s },
+                   :country => { :via => :countries_to_s },
+                   :sector => { :via => :sectors_to_s },
                    :access_type => { :store => :yes }
 #                   :physical_zip => { :store => :yes },
 #                   :public => { :store => :yes },
@@ -40,6 +47,26 @@ class Organization < ActiveRecord::Base
   
   def products_services_to_s
     self.products_services.collect{|ps| ps.name}.join(', ')
+  end
+
+  def locations_to_s
+    self.locations.collect{|loc| loc.to_s}.join(', ')
+  end
+  
+  def states_to_s
+    self.locations.collect{|loc| loc.physical_state}.join(', ')
+  end
+  
+  def zips_to_s
+    self.locations.collect{|loc| loc.physical_zip}.join(', ')
+  end
+  
+  def countries_to_s
+    self.locations.collect{|loc| loc.physical_country}.join(', ')
+  end
+  
+  def sectors_to_s
+    self.sectors.collect{|sect| sect.name}.join(', ')
   end
   
   def set_access_rule(access_type)
@@ -131,4 +158,5 @@ class Organization < ActiveRecord::Base
   def link_hash
     {:controller => 'organizations', :action => 'show', :id => self.id}
   end
+
 end

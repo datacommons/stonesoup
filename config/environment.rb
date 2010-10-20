@@ -110,3 +110,12 @@ GeoKit::Geocoders::GEOCODER_CA=false
 # various geocoders.  Make sure you read up on relevant Terms of Use for each
 # geocoder you are going to use.
 GeoKit::Geocoders::PROVIDER_ORDER=[:google,:us]
+
+require "will_paginate"
+
+email_config_file = "#{RAILS_ROOT}/config/email.yml"
+if FileTest.exist?(email_config_file)
+  email_settings = YAML::load(File.open(email_config_file))
+  ActionMailer::Base.smtp_settings = email_settings[RAILS_ENV] unless email_settings[RAILS_ENV].nil?
+end
+

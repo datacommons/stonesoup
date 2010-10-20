@@ -23,9 +23,18 @@ ActionController::Routing::Routes.draw do |map|
   # -- just remember to delete public/index.html.
   map.connect '', :controller => "search"
 
+  map.connect 'feed.rss', :controller => "search", :action => "recent"
+
   # Allow downloading Web Service WSDL as a file with an extension
   # instead of a file named 'wsdl'
   #map.connect ':controller/service.wsdl', :action => 'wsdl'
+
+  # workaround for not having access to ferret_server
+  map.connect 'plumbing/org', :controller => 'plumbing', :action => 'org'
+  map.connect 'plumbing/ppl', :controller => 'plumbing', :action => 'ppl'
+  map.connect 'plumbing/loc', :controller => 'plumbing', :action => 'show'
+  map.connect 'plumbing/index', :controller => 'plumbing', :action => 'index'
+  map.connect 'plumbing/email', :controller => 'plumbing', :action => 'email'
 
   # Install the default route as the lowest priority.
   map.connect ':controller/:action/:id'

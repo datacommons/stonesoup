@@ -121,6 +121,8 @@ ActiveRecord::Schema.define(:version => 20101020195112) do
     t.datetime "updated_at"
   end
 
+  add_index "locations", ["organization_id"], :name => "index_locations_on_organization_id"
+
   create_table "member_orgs", :force => true do |t|
     t.text     "name"
     t.boolean  "custom"
@@ -176,10 +178,16 @@ ActiveRecord::Schema.define(:version => 20101020195112) do
     t.datetime "updated_at"
   end
 
+  add_index "organizations_people", ["organization_id"], :name => "index_organizations_people_on_organization_id"
+  add_index "organizations_people", ["person_id"], :name => "index_organizations_people_on_person_id"
+
   create_table "organizations_sectors", :id => false, :force => true do |t|
     t.integer "organization_id", :null => false
     t.integer "sector_id",       :null => false
   end
+
+  add_index "organizations_sectors", ["organization_id"], :name => "index_organizations_sectors_on_organization_id"
+  add_index "organizations_sectors", ["sector_id"], :name => "index_organizations_sectors_on_sector_id"
 
   create_table "organizations_users", :id => false, :force => true do |t|
     t.integer  "organization_id", :null => false
@@ -208,6 +216,8 @@ ActiveRecord::Schema.define(:version => 20101020195112) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "product_services", ["organization_id"], :name => "index_product_services_on_organization_id"
 
   create_table "sectors", :force => true do |t|
     t.string   "name"

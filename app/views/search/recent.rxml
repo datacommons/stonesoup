@@ -1,0 +1,30 @@
+
+xml.instruct!
+
+xml.rss "version" => "2.0", "xmlns:dc" => "http://purl.org/dc/elements/1.1/" do
+ xml.channel do
+
+   xml.title       "find.coop updates"
+   xml.link        url_for :only_path => false
+   xml.description "find.coop changes to organizations and people"
+
+   @entries.each do |entry|
+     xml.item do
+       xml.pubDate entry.updated_at.to_s(:rfc822)
+       if entry.respond_to? "primary_location"
+         xml.title       entry.name
+         xml.link        url_for :only_path => false, :controller => 'organizations', :action => 'show', :id => entry.id
+         xml.description entry.description
+         xml.guid        url_for :only_path => false, :controller => 'organizations', :action => 'show', :id => entry.id
+       else
+         xml.title       (entry.firstname + " " + entry.lastname)
+         xml.link        url_for :only_path => false, :controller => 'people', :action => 'show', :id => entry.id
+         xml.description ("Information about " + entry.firstname + " " + entry.lastname)
+         xml.guid        url_for :only_path => false, :controller => 'people', :action => 'show', :id => entry.id
+       end
+     end
+   end
+
+ end
+end
+

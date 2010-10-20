@@ -59,7 +59,7 @@ class PeopleController < ApplicationController
   # POST /people.xml
   def create
     @person = Person.new(params[:person])
-    @person.set_access_rule(params[:access_rule])
+    @person.set_access_rule(params[:access_rule][:access_type])
     @person.user = current_user if params[:is_me]
 
     respond_to do |format|

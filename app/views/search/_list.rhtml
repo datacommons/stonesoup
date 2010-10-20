@@ -4,9 +4,39 @@
   <p><%= link_to 'Would you like to add a new organization?', :controller => 'organizations', :action => 'new' %></p>
  <% else %>
  <h2>Search Results</h2>
+  <%= will_paginate @entries %>
   <% for entry in @entries %>
-   <p><%= show_link entry %>
+   <% if entry.accessible? current_user %>
+    <div class='listing'>
+    <%= show_link entry %><br >
+    <% if entry.respond_to? "primary_location" %>
+     <% loc = entry.primary_location %>
+     <%= loc.physical_address1 %>
+     <% unless loc.physical_address2.blank? %>
+       <br /><%= loc.physical_address2 %>
+     <% end %>
+     <br />
+     <%= loc.physical_city %> <%= loc.physical_state %> <%= loc.physical_zip %>
+     <br />
+     <%= loc.physical_country %>
+    <% else %>
+     <%= OrganizationsPerson.find_all_by_person_id(entry.id).collect{|op| [op.organization.name]}.join(", ") %>
+    <% end %>
+    </div>
+   <% else %>
+    <div class="listing private">
+    Result withheld.<br />
+    <% if entry.access_rule.access_type == 'PRIVATE' %>
+    Only editors may view this.
+    <% end %>
+    <% if entry.access_rule.access_type == 'LOGGEDIN' %>
+    Visible only when logged in.
+    <% end %>
+    </div>
+   <% end %>
   <% end %>
+  <div class='clearboth'></div>
+  <%= will_paginate @entries %>
  <h2>Download Search Results</h2>
    <ul>  
     <li>Download as <%= link_to 'CSV', :action => 'search', :q => params[:q].to_s, :format => 'csv' %> (suitable for spreadsheet programs)</li>
