@@ -6,7 +6,10 @@
 			<br/> <%= text_area 'org_type', 'description', :rows => 5, :cols => 60 %><br/>
 			<label for="org_type_custom">Custom?</label>: <%= check_box 'org_type', 'custom'  %>
 			<span class="note"><span class="label">Note:</span> Custom entries will NOT appear in the drop-down list on the Organization form.</span>
-			<br/>
+			<hr/>
+			<h2>Merge this entry with another</h2>
+			When two names are merged, the primary name is shown whenever either is displayed.<br/>
+			Merge into: <%= select 'org_type', 'effective_id', [['','']] + OrgType.get_available.reject{|ot| ot.id==@org_type.id}.collect{|ot| [ot.name, ot.id]} %>
 		</td>
 	</tr>
 </table>

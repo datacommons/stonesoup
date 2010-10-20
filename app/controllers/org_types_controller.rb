@@ -1,5 +1,5 @@
 class OrgTypesController < ApplicationController
-  before_filter :login_required
+  before_filter :login_required, :only => [:associate, :dissociate]
   before_filter :admin_required, :only => [:index, :show, :new, :edit, :update, :destroy]
   def dissociate
     @org_type = OrgType.find(params[:org_type_id])
@@ -32,6 +32,9 @@ class OrgTypesController < ApplicationController
   # GET /org_types/1.xml
   def show
     @org_type = OrgType.find(params[:id])
+    unless @org_type.root_term == @org_type
+      redirect_to org_type_path(@org_type.root_term) and return
+    end
 
     respond_to do |format|
       format.html # show.html.erb

@@ -13,7 +13,7 @@
 		:failure => %(resetSaveButton('addmember_org_savebutton'); showFailure('Could not select member_org')),
 		:success => %(resetSaveButton('addmember_org_savebutton'); Element.hide('block_member_org_new_form'); Element.show('block_member_org_new_link');) do %>
 		<%= hidden_field_tag 'organization_id', @organization.id %>
-		<%= select_tag 'member_org_id', options_from_collection_for_select(MemberOrg.find(:all, :conditions => 'custom = 0'), 'id', 'name', @organization.member_orgs) %>
+		<%= select_tag 'member_org_id', options_from_collection_for_select(MemberOrg.get_available, 'id', 'name', @organization.member_orgs) %>
 		<%= submit_tag 'Add', :id => 'addmember_org_savebutton' %>
 	<% end %>
 	- or -

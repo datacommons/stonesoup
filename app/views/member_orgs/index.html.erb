@@ -12,6 +12,7 @@
 			<tr>
 				<td><%=member_org.name%></td>
 				<td><%=member_org.custom%></td>
+			    <td><%= link_to 'View Members', member_org %></td>
 			    <td><%= link_to 'Edit', edit_member_org_path(member_org) %></td>
 			    <td><%= link_to 'Destroy', member_org, :confirm => 'Are you sure?', :method => :delete %></td>
   			</tr>

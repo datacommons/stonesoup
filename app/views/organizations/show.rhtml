@@ -90,10 +90,10 @@
 		</ul>
 	<% end %>
 
-	<% unless @organization.org_types.empty? %>
+	<% unless @organization.get_org_types.empty? %>
 		<h2>Organizational Type</h2>
 		<ul id="attribute_list">
-		<% @organization.org_types.each do |ot| %>
+		<% @organization.get_org_types.each do |ot| %>
 			<li><%= ot.name %></li>
 		<% end %>
 		</ul>
@@ -108,11 +108,11 @@
 		</ul>
 	<% end %>
 
-	<% unless @organization.member_orgs.empty? %>
+	<% unless @organization.get_member_orgs.empty? %>
 		<h2>Member Organization Affiliations</h2>
 		<ul id="attribute_list">
-		<% @organization.member_orgs.each do |mo| %>
-			<li><%= mo.name %></li>
+		<% @organization.get_member_orgs.each do |mo| %>
+			<li><%= show_link mo %></li>
 		<% end %>
 		</ul>
 	<% end %>
