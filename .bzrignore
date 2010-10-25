@@ -6,3 +6,4 @@ log
 log/*
 index
 index/*
+doc/plugins/

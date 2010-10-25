@@ -22,8 +22,8 @@ class Organization < ActiveRecord::Base
                    :zip => { :via => :zips_to_s },
                    :country => { :via => :countries_to_s },
                    :sector => { :via => :sectors_to_s },
+                   :org_type => { :via => :org_types_to_s },
                    :access_type => { :store => :yes }
-#                   :physical_zip => { :store => :yes },
 #                   :public => { :store => :yes },
                  } )
 
@@ -67,6 +67,10 @@ class Organization < ActiveRecord::Base
   
   def sectors_to_s
     self.sectors.collect{|sect| sect.name}.join(', ')
+  end
+  
+  def org_types_to_s
+    self.org_types.collect{|org_type| org_type.name}.join(', ')
   end
   
   def set_access_rule(access_type)

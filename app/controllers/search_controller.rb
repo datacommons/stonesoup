@@ -13,26 +13,76 @@ class SearchController < ApplicationController
     @latest_changes = get_latest_changes()
     
     if params[:q]
+      record_types = [Organization, Person]
       params[:page] = 1 unless params[:page]
       if current_user
-          access_condition = ["access_rules.access_type IN (\'PUBLIC\',\'LOGGED_IN\') OR users.id = ?", current_user.id]
+        access_conditionSQL = "access_rules.access_type IN (\'#{AccessRule::ACCESS_TYPE_PUBLIC}\',\'#{AccessRule::ACCESS_TYPE_LOGGEDIN}\')"
+        # NOTE: this broke when doing the query on the People table since there is no organizations.id in that query
+        #access_conditionSQL = "access_rules.access_type IN (\'#{AccessRule::ACCESS_TYPE_PUBLIC}\',\'#{AccessRule::ACCESS_TYPE_LOGGEDIN}\') OR organizations_users.user_id = ?"
+        #access_conditionParams = [current_user.id]
       else
-          access_condition = "access_rules.access_type = \'PUBLIC\'"
+        access_conditionSQL = "access_rules.access_type = \'#{AccessRule::ACCESS_TYPE_PUBLIC}\'"
       end
-          
+      
+      proximity_conditionSQL = nil
+      if params[:advanced] == '1'
+        query = '' if query.blank? # give it something to force the query, even if the actual "search terms" are blank
+        # process advanced params...
+        unless params[:org_type_id].blank?
+          org_type = OrgType.find_by_id(params[:org_type_id])
+          query << " org_type:'#{org_type.name}'" unless org_type.nil?
+        end
+        unless params[:sector_id].blank?
+          sector = Sector.find_by_id(params[:sector_id])
+          query << " sector:'#{sector.name}'" unless sector.nil?
+        end
+        unless params[:county].blank?
+          query << " county:'#{params[:county]}'"
+        end
+        unless params[:state].blank?
+          query << " state:'#{params[:state]}'"
+        end
+        unless params[:within].blank? or params[:origin].blank?
+          record_types.delete(Person) # doesn't makes sense since Person records have no location
+          within = params[:within].to_f
+          if (within-within.to_i).abs<0.001
+            within = within.to_i
+          end
+          origin = params[:origin]
+          #TODO: is there a better way to do this? tried implementing it as a conditionSQL "conditions.id IN ()" but that broke when doing the query on the People table since there is no organizations.id in that query
+          locations = Location.find(:all, :origin => origin, :within=>within, :order=>'distance asc', :units=>:miles)
+          close_organization_ids = locations.collect{|location| location.organization.id}.uniq
+          proximity_conditionSQL = 'organizations.id IN ('+close_organization_ids.join(',')+')'
+          logger.debug("close_organization_ids = #{close_organization_ids.inspect}")
+        end
+        logger.debug("After adding advanced search terms, query is: #{query}")
+      end
+      condSQL = [access_conditionSQL, proximity_conditionSQL].compact.collect{|sql| '('+sql+')'}.join(' AND ')
+      #condParams = access_conditionParams
+      #condSQL = access_conditionSQL
+      condParams = []#access_conditionParams
+      logger.debug("conditions: #{([condSQL] + condParams).inspect}")
       @entries = ActsAsFerret::find(query,
-                                    [Organization, Person],
+                                    record_types,
                                     { 
                                       :page => params[:page], 
                                       :per_page => 15,
                                     },
                                     { 
                                       :limit => :all,
-                                      :conditions => access_condition,
+                                      :conditions => [condSQL] + condParams,
                                       :include => [:access_rule,
                                                    :users]
                                     })
-
+=begin
+      # filter results by proximity filter, if specified
+      unless close_organization_ids.nil?
+        @entries.reject! do |entry|
+          return false if entry.is_a?(Organization) and !close_organization_ids.include?(entry.id)
+          return true
+        end
+      end
+=end
       # TODO: find a better way to apply session filters
       unless session[:filters].nil?
         logger.debug("applying session filters to search results: #{session[:filters].inspect}")
