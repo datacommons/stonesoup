@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101020195112) do
+ActiveRecord::Schema.define(:version => 20101025185032) do
 
   create_table "access_rules", :force => true do |t|
     t.string "access_type"
@@ -119,6 +119,8 @@ ActiveRecord::Schema.define(:version => 20101020195112) do
     t.float    "longitude"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "mailing_county"
+    t.string   "physical_county"
   end
 
   add_index "locations", ["organization_id"], :name => "index_locations_on_organization_id"

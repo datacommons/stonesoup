@@ -1,32 +1,23 @@
-<% expanded = false if expanded.nil? %>
-<script>
-var location_fields = new Array(<%= Location::ADDRESS_FIELDS.collect{|f| "'mailing_#{f}'"}.join(', ')%>);
-function set_disabled(status) {
-	for (var i=0; i<location_fields.length; i++) {
-		field = location_fields[i];
-		document.getElementById('new_location_'+field).disabled = status;
-	}
-}
-function check_same() {
-	if(document.getElementById('new_location_mailing_same_as_physical').checked) {
-		set_disabled(true);
-	} else {
-		set_disabled(false);
-	}
-}
-</script>
+<% existing_expanded = 0 if existing_expanded.nil? %>
+<% new_expanded = false if new_expanded.nil? %>
 <h2>Locations</h2>
 <% unless @organization.locations.length == 0 then %>
 	<%= render :partial => 'locations/display', :locals => { :location => @organization.primary_location } unless @organization.primary_location.nil? %>
 	<% for loc in @organization.locations 
 		unless loc.id == @organization.primary_location_id %>
-			<%= render :partial => 'locations/display', :locals => { :location => loc, :show_delete => true } %>
+			<% if !@location.nil? and @location.id == loc.id %>
+				<%# if @location == loc then we want to make sure to display the errors from the @location model... %>
+				<%= render :partial => 'locations/display', :locals => { :location => @location, :show_delete => true, :expanded => (loc.id == existing_expanded) } %>
+			<% else %>
+				<%= render :partial => 'locations/display', :locals => { :location => loc, :show_delete => true } %>
+			<% end %>
  		<% end
 	end %>
 <% end %>
-<%= link_to_function('New location', "Element.toggle('block_location_new_form'); Element.hide('block_location_new_link');", 'id' => 'block_location_new_link', :style => (expanded ? 'display:none' : '')) %>
-<div id="block_location_new_form" style="<%=expanded ? '' : 'display:none'%>" class="clearboth">
-	<%= error_messages_for 'location' %>
+<%= link_to_function('New location', "Element.toggle('block_location_new_form'); Element.hide('block_location_new_link');", 'id' => 'block_location_new_link', :style => (new_expanded ? 'display:none' : '')) %>
+<div id="block_location_new_form" style="<%=new_expanded ? '' : 'display:none'%>" class="clearboth">
+	<% new_location = ((@location.nil? or @location.new_record?) ? @location : Location.new) %>
+	<%= error_messages_for 'new_location' %>
 	<% form_remote_tag :url => {:controller => 'locations', :action => 'create'}, 
 		:update => 'locations',
 		:loading => %(showSavingButton('newlocation_savebutton')),
@@ -34,30 +25,8 @@ function check_same() {
 		:success => %(resetSaveButton('newlocation_savebutton'); Element.hide('block_location_new_form'); Element.show('block_location_new_link');) do %>
 		<%= hidden_field_tag 'id', @organization.id %>
 		[<%= link_to_function('cancel', "Element.hide('block_location_new_form'); Element.show('block_location_new_link');") %>]
-		<br/>Note: <%= text_field 'new_location', 'note', 'size' => 20 %> (Headquarters, branch, etc.)<br/>
-		<div class="option_group">
-			<div class="option_group_title">Physical Address</div>
-			Street 1: <%= text_field 'new_location', 'physical_address1', 'size' => 30 %><br/>
-			Street 2: <%= text_field 'new_location', 'physical_address2', 'size' => 30 %><br/>
-			City: <%= text_field 'new_location', 'physical_city', 'size' => 20 %>
-			State: <%= text_field 'new_location', 'physical_state', 'size' => 10 %>
-			Postal Code: <%= text_field 'new_location', 'physical_zip', 'size' => 10 %><br/>
-			Country: <%= text_field 'new_location', 'physical_country', 'size' => 20 %><br/>
-		</div>
-		<div class="option_group">
-			<div class="option_group_title">Mailing Address</div>
-			<%= check_box_tag 'new_location_mailing_same_as_physical', '1', false, :onChange => 'check_same()' %><label for="new_location_mailing_same_as_physical"> Same as Physical Address</label>
-			<br/>
-			Street 1: <%= text_field 'new_location', 'mailing_address1', 'size' => 30 %><br/>
-			Street 2: <%= text_field 'new_location', 'mailing_address2', 'size' => 30 %><br/>
-			City: <%= text_field 'new_location', 'mailing_city', 'size' => 20 %>
-			State: <%= text_field 'new_location', 'mailing_state', 'size' => 10 %>
-			Postal Code: <%= text_field 'new_location', 'mailing_zip', 'size' => 10 %><br/>
-			Country: <%= text_field 'new_location', 'mailing_country', 'size' => 20 %><br/>
-		</div>
+		<br/>
+		<%= render :partial => 'locations/form', :locals => { :location => new_location} %>
 		<%= submit_tag 'Save', :id => 'newlocation_savebutton' %>
 	<% end %>
 </div>
-<script>
-check_same();
-</script>

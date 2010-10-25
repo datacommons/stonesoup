@@ -12,13 +12,9 @@ class Location < ActiveRecord::Base
     record.errors.add attr, "and country or mailing city & country must be specified" unless \
       (!record.physical_city.blank? and !record.physical_country.blank?) or \
       (!record.mailing_city.blank? and !record.mailing_country.blank?)
-#      
-#      (record.physical_city.blank? and record.mailing_city.blank?) or \
-#      (record.physical_country.blank? and record.mailing_country.blank?) or \
-#      (record.physical_city.blank? and record.mailing_city.blank?)
   end
   
-  Location::ADDRESS_FIELDS = ['address1', 'address2', 'city', 'state', 'zip', 'country']
+  Location::ADDRESS_FIELDS = ['address1', 'address2', 'city', 'state', 'zip', 'county', 'country']
   
   def mailing_address_blank?
     ADDRESS_FIELDS.each do |fld|

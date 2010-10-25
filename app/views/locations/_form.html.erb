@@ -1,0 +1,28 @@
+<% oldloc = @location ; @location = location%>
+		Note: <%= text_field 'location', 'note', 'size' => 20 %> (Headquarters, branch, etc.)<br/>
+		<div class="option_group">
+			<div class="option_group_title">Physical Address</div>
+			Street 1: <%= text_field 'location', 'physical_address1', 'size' => 30 %><br/>
+			Street 2: <%= text_field 'location', 'physical_address2', 'size' => 30 %><br/>
+			City: <%= text_field 'location', 'physical_city', 'size' => 20 %>
+			State: <%= text_field 'location', 'physical_state', 'size' => 10 %>
+			Postal Code: <%= text_field 'location', 'physical_zip', 'size' => 10 %><br/>
+			Country: <%= text_field 'location', 'physical_county', 'size' => 10 %><br/>
+			Country: <%= text_field 'location', 'physical_country', 'size' => 20 %><br/>
+		</div>
+		<div class="option_group">
+			<div class="option_group_title">Mailing Address</div>
+			<%= check_box_tag 'location'+((location.nil? or location.new_record?) ? '' : location.id.to_s)+'_mailing_same_as_physical', '1', false, :onChange => 'check_locations_same('+((location.nil? or location.new_record?) ? '' : location.id.to_s)+')' %><label for="location_mailing_same_as_physical"> Same as Physical Address</label>
+			<br/>
+			Street 1: <%= text_field 'location', 'mailing_address1', 'size' => 30 %><br/>
+			Street 2: <%= text_field 'location', 'mailing_address2', 'size' => 30 %><br/>
+			City: <%= text_field 'location', 'mailing_city', 'size' => 20 %>
+			State: <%= text_field 'location', 'mailing_state', 'size' => 10 %>
+			Postal Code: <%= text_field 'location', 'mailing_zip', 'size' => 10 %><br/>
+			County: <%= text_field 'location', 'mailing_county', 'size' => 10 %><br/>
+			Country: <%= text_field 'location', 'mailing_country', 'size' => 20 %><br/>
+		</div>
+<script>
+check_locations_same(<%=(location.nil? or location.new_record?) ? '' : location.id.to_s%>);
+</script>
+<% @location = oldloc %>

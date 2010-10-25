@@ -5,6 +5,7 @@
 <link rel="shortcut icon" href="/images/dcp.ico" type="image/x-icon" />
 <link rel="alternate" type="application/rss+xml" title="find.coop changes" href="<%= url_for :controller => 'search', :action => 'recent' %>" /> 
 <%= javascript_include_tag :defaults %>
+<%= content_tag("script", "", { "type" => "text/javascript", "src" => url_for(:controller => '/search', :action => 'render_js', 'src' => 'app_js') })%>
 <script language="JavaScript">
 	function showSavingButton(buttonname) {
 		var button = document.getElementById(buttonname);

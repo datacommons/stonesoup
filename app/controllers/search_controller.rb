@@ -116,6 +116,12 @@ class SearchController < ApplicationController
     response.headers["Content-Type"] = "application/xml; charset=utf-8"
   end
   
+  def render_js
+#    render :file => 'main/render_js', :use_full_path => true
+    #<%= render :file => 'rendered_includes/' + params[:src] + '.rhtml' %>
+    render :file => 'rendered_includes/' + params[:src] + '.rhtml'
+  end
+  
 protected
   def get_latest_changes
     data = Organization.latest_changes(session[:filters]) + Person.latest_changes(session[:filters])
