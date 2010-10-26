@@ -15,18 +15,29 @@ class SearchController < ApplicationController
     if params[:q]
       record_types = [Organization, Person]
       params[:page] = 1 unless params[:page]
+
+      conditionSQL = {}
+      conditionParams = {}
+      for t in [:organization,:person]
+        conditionSQL[t] = []
+        conditionParams[t] = []
+      end
+      
       if current_user
-        access_conditionSQL = "access_rules.access_type IN (\'#{AccessRule::ACCESS_TYPE_PUBLIC}\',\'#{AccessRule::ACCESS_TYPE_LOGGEDIN}\')"
-        # NOTE: this broke when doing the query on the People table since there is no organizations.id in that query
-        #access_conditionSQL = "access_rules.access_type IN (\'#{AccessRule::ACCESS_TYPE_PUBLIC}\',\'#{AccessRule::ACCESS_TYPE_LOGGEDIN}\') OR organizations_users.user_id = ?"
-        #access_conditionParams = [current_user.id]
+        basic_access_conditionSQL = "access_rules.access_type IN (\'#{AccessRule::ACCESS_TYPE_PUBLIC}\',\'#{AccessRule::ACCESS_TYPE_LOGGEDIN}\')"
+        full_access_conditionSQL = "access_rules.access_type IN (\'#{AccessRule::ACCESS_TYPE_PUBLIC}\',\'#{AccessRule::ACCESS_TYPE_LOGGEDIN}\') OR organizations_users.user_id = ?"
+        conditionSQL[:person] <<= basic_access_conditionSQL
+        conditionSQL[:organization] <<= full_access_conditionSQL
+        conditionParams[:organization] <<= current_user.id
       else
         access_conditionSQL = "access_rules.access_type = \'#{AccessRule::ACCESS_TYPE_PUBLIC}\'"
+        conditionSQL[:person] <<= access_conditionSQL
+        conditionSQL[:organization] <<= access_conditionSQL
       end
       
       proximity_conditionSQL = nil
       if params[:advanced] == '1'
-        query = '' if query.blank? # give it something to force the query, even if the actual "search terms" are blank
+        query = '*' if query.blank? # give it something to force the query, even if the actual "search terms" are blank
         # process advanced params...
         unless params[:org_type_id].blank?
           org_type = OrgType.find_by_id(params[:org_type_id])
@@ -57,11 +68,19 @@ class SearchController < ApplicationController
         end
         logger.debug("After adding advanced search terms, query is: #{query}")
       end
-      condSQL = [access_conditionSQL, proximity_conditionSQL].compact.collect{|sql| '('+sql+')'}.join(' AND ')
-      #condParams = access_conditionParams
-      #condSQL = access_conditionSQL
-      condParams = []#access_conditionParams
-      logger.debug("conditions: #{([condSQL] + condParams).inspect}")
+      
+      unless proximity_conditionSQL.nil?
+        conditionSQL[:organization] <<= proximity_conditionSQL
+      end
+
+      flatSQL = {}
+      for t in conditionSQL.keys
+        flatSQL[t] = [conditionSQL[t].collect{|sql| '('+sql+')'}.join(' AND ')]
+        flatSQL[t] += conditionParams[t]
+      end
+      
+      #condSQL = [access_conditionSQL, proximity_conditionSQL].compact.collect{|sql| '('+sql+')'}.join(' AND ')
+      logger.debug("flat conditions: #{flatSQL.inspect}")
       @entries = ActsAsFerret::find(query,
                                     record_types,
                                     { 
@@ -70,7 +89,7 @@ class SearchController < ApplicationController
                                     },
                                     { 
                                       :limit => :all,
-                                      :conditions => [condSQL] + condParams,
+                                      :conditions => flatSQL,
                                       :include => [:access_rule,
                                                    :users]
                                     })
