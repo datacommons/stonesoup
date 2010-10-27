@@ -45,13 +45,16 @@ class SearchController < ApplicationController
         end
         unless params[:sector_id].blank?
           sector = Sector.find_by_id(params[:sector_id])
-          query << " sector:'#{sector.name}'" unless sector.nil?
+          newterm = "sector:'#{sector.name}'"
+          query << ' ' + newterm unless sector.nil? or query.include?(newterm)
         end
         unless params[:county].blank?
-          query << " county:'#{params[:county]}'"
+          newterm = "county:'#{params[:county]}'"
+          query << ' ' + newterm unless query.include?(newterm)
         end
         unless params[:state].blank?
-          query << " state:'#{params[:state]}'"
+          newterm = "state:'#{params[:state]}'"
+          query << ' ' + newterm unless query.include?(newterm)
         end
         unless params[:within].blank? or params[:origin].blank?
           record_types.delete(Person) # doesn't makes sense since Person records have no location
