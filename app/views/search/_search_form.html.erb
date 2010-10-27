@@ -4,7 +4,7 @@
 	<br/>
 	<% form_tag( {:action => 'search'}, :method => 'get' ) do %>
 		<p><label for="q">Search for an organization:</label>
-		<%= text_field_tag 'q', params[:q], :size => 30 %>
+		<%= text_field_tag 'q', @query, :size => 30 %>
 		<%= submit_tag 'Go' %>
 		</p>
 	<% end %>
@@ -23,7 +23,7 @@
 		<label for="q">Search for an organization:</label>
 		<div class="option_group">
 			<div class="option_group_title">Org name, description and products/services:</div>
-			<%= text_field_tag 'q', params[:q], :size => 40 %>
+			<%= text_field_tag 'q', @query, :size => 40 %>
 		</div>
 		<div class="option_group">
 			<div class="option_group_title">Type and Sector:</div>

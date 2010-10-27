@@ -9,7 +9,7 @@ class SearchController < ApplicationController
   end
 
   def search
-    query = params[:q].to_s
+    @query = params[:q].to_s
     @latest_changes = get_latest_changes()
     
     if params[:q]
@@ -37,24 +37,23 @@ class SearchController < ApplicationController
       
       proximity_conditionSQL = nil
       if params[:advanced] == '1'
-        query = '*' if query.blank? # give it something to force the query, even if the actual "search terms" are blank
         # process advanced params...
         unless params[:org_type_id].blank?
           org_type = OrgType.find_by_id(params[:org_type_id])
-          query << " org_type:'#{org_type.name}'" unless org_type.nil?
+          @query << " org_type:'#{org_type.name}'" unless org_type.nil?
         end
         unless params[:sector_id].blank?
           sector = Sector.find_by_id(params[:sector_id])
           newterm = "sector:'#{sector.name}'"
-          query << ' ' + newterm unless sector.nil? or query.include?(newterm)
+          @query << ' ' + newterm unless sector.nil? or @query.include?(newterm)
         end
         unless params[:county].blank?
           newterm = "county:'#{params[:county]}'"
-          query << ' ' + newterm unless query.include?(newterm)
+          @query << ' ' + newterm unless @query.include?(newterm)
         end
         unless params[:state].blank?
           newterm = "state:'#{params[:state]}'"
-          query << ' ' + newterm unless query.include?(newterm)
+          @query << ' ' + newterm unless @query.include?(newterm)
         end
         unless params[:within].blank? or params[:origin].blank?
           record_types.delete(Person) # doesn't makes sense since Person records have no location
@@ -69,7 +68,8 @@ class SearchController < ApplicationController
           proximity_conditionSQL = 'organizations.id IN ('+close_organization_ids.join(',')+')'
           logger.debug("close_organization_ids = #{close_organization_ids.inspect}")
         end
-        logger.debug("After adding advanced search terms, query is: #{query}")
+        @query = '*' if @query.blank? # give it something to force the query, even if the actual "search terms" are blank
+        logger.debug("After adding advanced search terms, query is: #{@query}")
       end
       
       unless proximity_conditionSQL.nil?
@@ -84,7 +84,7 @@ class SearchController < ApplicationController
       
       #condSQL = [access_conditionSQL, proximity_conditionSQL].compact.collect{|sql| '('+sql+')'}.join(' AND ')
       logger.debug("flat conditions: #{flatSQL.inspect}")
-      @entries = ActsAsFerret::find(query,
+      @entries = ActsAsFerret::find(@query,
                                     record_types,
                                     { 
                                       :page => params[:page], 
