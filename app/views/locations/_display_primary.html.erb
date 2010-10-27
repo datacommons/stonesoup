@@ -1,0 +1,9 @@
+	 <% primary = location.get_primary %>
+     <%= location.send(primary+'_address1') %>
+     <% unless location.send(primary+'_address2').blank? %>
+       <br /><%= location.send(primary+'_address2') %>
+     <% end %>
+     <br />
+     <%= location.send(primary+'_city') %> <%= location.send(primary+'_state') %> <%= location.send(primary+'_zip') %>
+     <br />
+     <%= location.send(primary+'_country') %>

@@ -10,16 +10,9 @@
    <% if entry.accessible? current_user %>
     <div class='listing'>
     <%= show_link entry %><br >
-    <% if entry.respond_to? "primary_location" %>
-     <% loc = entry.primary_location %>
-     <%= loc.physical_address1 %>
-     <% unless loc.physical_address2.blank? %>
-       <br /><%= loc.physical_address2 %>
-     <% end %>
-     <br />
-     <%= loc.physical_city %> <%= loc.physical_state %> <%= loc.physical_zip %>
-     <br />
-     <%= loc.physical_country %>
+    <% if entry.respond_to? "primary_location" and !entry.primary_location.nil? %>
+     	<% loc = entry.primary_location %>
+		<%= render :partial => 'locations/display_primary', :locals => {:location => loc} %>
     <% else %>
      <%= OrganizationsPerson.find_all_by_person_id(entry.id).collect{|op| [op.organization.name]}.join(", ") %>
     <% end %>

@@ -57,10 +57,6 @@ public
 		@organization = Organization.find(params[:id])
 		@location = @organization.locations.create(params[:location])
 		@location.save!
-		if @organization.primary_location.nil?  # if this is the first location added, assign it as the primary location
-      @organization.primary_location = @location
-      @organization.save(false)
-    end
     flash[:notice] = 'Location was successfully created.'
     respond_to do |format|
       format.html { redirect_to(@location) }

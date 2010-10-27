@@ -27,15 +27,17 @@
 			</span>
 		<% end %>
 	</dt>
-<% unless location.mailing_same_as_physical? or location.mailing_address_blank? %>
+<% unless location.mailing_same_as_physical? or location.physical_address_blank? %>
 	<dd>Physical Address</dd>
 <% end %>
+<% unless location.physical_address_blank? %>
 	<dd><%= location.physical_address1 %></dd>
 	<% unless location.physical_address2.blank? %>
 		<dd><%= location.physical_address2 %></dd>
 	<% end %>
 	<dd><%= location.physical_city %>, <%= location.physical_state %> <%= location.physical_zip %></dd>
 	<dd><%= location.physical_country %></dd>
+<% end %>
 <% unless location.mailing_same_as_physical? or location.mailing_address_blank? %>
 	<dd>Mailing Address</dd>
 	<dd><%= location.mailing_address1 %></dd>
