@@ -45,20 +45,28 @@
 <div class="clearboth"></div>
 
 <div id="listing_info">
+	<% if @organization.primary_location %>
+		<%= render :partial => 'locations/display', :locals => {:location => @organization.primary_location, :hide_links => true}%>
+	<% end %>
 
-<% if @organization.primary_location %>
-<%= render :partial => 'locations/display', :locals => {:location => @organization.primary_location, :hide_links => true}%>
-<% end %>
-
-<dl class="address">
-<dt>Phone</dt>
-<dd><%= @organization.phone %></dd>
-</dl class="address">
-
-<dl class="address">
-<dt>Email</dt>
-<dd><A HREF=mailto:<%= @organization.email %>><%= @organization.email %></A></dd>
-</dl class="address">
+	<% unless @organization.phone.blank? %>
+		<dl class="address">
+			<dt>Phone</dt>
+			<dd><%= @organization.phone %></dd>
+		</dl>
+	<% end %>
+	<% unless @organization.fax.blank? %>
+		<dl class="address">
+			<dt>Fax</dt>
+			<dd><%= @organization.fax %></dd>
+		</dl>
+	<% end %>
+	<% unless @organization.email.blank? %>
+		<dl class="address">
+		<dt>Email</dt>
+		<dd><A HREF=mailto:<%= @organization.email %>><%= @organization.email %></A></dd>
+		</dl class="address">
+	<% end %>
 </div id="listing_info">
 
 <% if @organization.locations.length > 1 %>
