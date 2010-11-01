@@ -84,7 +84,22 @@ class SearchController < ApplicationController
       
       #condSQL = [access_conditionSQL, proximity_conditionSQL].compact.collect{|sql| '('+sql+')'}.join(' AND ')
       logger.debug("flat conditions: #{flatSQL.inspect}")
-      @entries = ActsAsFerret::find(@query,
+      filtered_query = @query
+      unless session[:state_filter].blank?
+        logger.debug("applying session state filters to search results: #{session[:state_filter].inspect}")
+        addl_criteria = []
+        [session[:state_filter]].flatten.each do |state|
+          if state.length == 2  # abbreviation, make sure it's qualified with USA country:
+            addl_criteria << "(state:#{state} AND (country:'united states' OR country:usa))"
+          else
+            addl_criteria << "state:'#{state}'"
+          end
+        end
+        filtered_query = "+(#{@query}) +(#{addl_criteria.join(' OR ')})"
+        logger.debug("After adding state filter to query, query is: #{filtered_query}")
+      end
+      
+      @entries = ActsAsFerret::find(filtered_query,
                                     record_types,
                                     { 
                                       :page => params[:page], 
@@ -105,31 +120,7 @@ class SearchController < ApplicationController
         end
       end
 =end
-      # TODO: find a better way to apply session filters
-      unless session[:filters].nil?
-        logger.debug("applying session filters to search results: #{session[:filters].inspect}")
-        @entries.each do |e|
-          logger.debug("############## a: #{e.class}")
-          next unless e.is_a?(Organization) # only Orgs have Locations
-          session[:filters].each do |k,v|
-            if k == 'locations.physical_state'
-              logger.debug("############## b")
-              matches = false
-              e.locations.each do |location|
-                logger.debug("############## c")
-                if session[:filters]['locations.physical_state'].collect{|a| a.downcase}.include?(location.physical_state.downcase)
-                  logger.debug("############## d")
-                  matches = true
-                end
-              end
-              @entries.delete(e) unless matches
-            else
-              raise "Unknown session filter: [#{k}=#{v}]"
-            end
-          end
-        end
-      end
-      
+
       f = params[:format]
       respond_to do |f| 
         f.html
@@ -196,7 +187,7 @@ class SearchController < ApplicationController
   
 protected
   def get_latest_changes
-    data = Organization.latest_changes(session[:filters]) + Person.latest_changes(session[:filters])
+    data = Organization.latest_changes(session[:state_filter]) + Person.latest_changes(session[:state_filter])
     logger.debug("data=#{data}")
     data = AccessRule.cleanse(data, current_user).sort{|a,b| b.updated_at <=> a.updated_at}[0..14]
     logger.debug("returning data=#{data}")

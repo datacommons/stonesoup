@@ -125,28 +125,20 @@ class Organization < ActiveRecord::Base
     end
   end
 
-  def Organization.latest_changes(filters)
+  def Organization.latest_changes(state_filter = [])
     user = User.current_user
     conditions = nil
-    unless filters.nil?
+    unless state_filter.nil? or state_filter.empty?
       condSQLs = []
       condParams = []
       joinSQL = nil
-      filters.each do |k,v|
-        if k == 'locations.physical_state'
-          joinSQL = 'INNER JOIN locations ON locations.organization_id = organizations.id'
-          if v.is_a?(Array)
-            condSQLs << 'locations.physical_state IN (' + v.collect{'?'}.join(',') + ')'
-            condParams += v
-          else
-            condSQLs = 'locations.physical_state IN '
-            condParams << v
-          end
-        else
-          raise "Unknown session filter: [#{k}=#{v}]"
-        end
-        conditions = [condSQLs.join(' AND ')] + condParams unless condSQLs.empty?
-      end
+      logger.debug("applying session state filters to search results: #{state_filter.inspect}")
+      joinSQL = 'INNER JOIN locations ON locations.organization_id = organizations.id'
+      states = [state_filter].flatten
+      condSQLs << "(locations.physical_state IN (#{states.collect{'?'}.join(',')})) OR (locations.mailing_state IN (#{states.collect{'?'}.join(',')}))"
+      condParams += states + states
+      conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
+      logger.debug("After applying state_filter, conditions = #{conditions.inspect}")
     end
 
     Organization.find(:all, :select => 'organizations.*', :order => 'updated_at DESC', 
