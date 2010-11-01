@@ -54,15 +54,15 @@ class Organization < ActiveRecord::Base
   end
   
   def states_to_s
-    self.locations.collect{|loc| loc.physical_state}.join(', ')
+    self.locations.collect{|loc| [loc.physical_state, loc.mailing_state]}.compact.uniq.join(', ')
   end
   
   def zips_to_s
-    self.locations.collect{|loc| loc.physical_zip}.join(', ')
+    self.locations.collect{|loc| loc.physical_zip}.uniq.join(', ')
   end
   
   def countries_to_s
-    self.locations.collect{|loc| loc.physical_country}.join(', ')
+    self.locations.collect{|loc| [loc.physical_country, loc.mailing_country]}.compact.uniq.join(', ')
   end
   
   def sectors_to_s
