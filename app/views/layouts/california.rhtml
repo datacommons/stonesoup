@@ -1,10 +1,47 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>California Cooperative Directory: <%= controller.action_name %></title>
 	<%=render :partial => 'layouts/common_header'%>
+	<link href="http://cccd.coop/css/front.css" rel="stylesheet" type="text/css" />
+	<style>
+/* CCCD color palette:
+	#91a327		greenish
+	#d04f0b		orange
+*/
+		#pagewidth {
+			background-color: white;
+			border-right: 1px solid #d04f0b;
+			border-left: 1px solid #d04f0b;
+		}
+		#footer {
+			background-image: none;
+			background-color: white;
+			border-top: 1px solid #cccccc;
+		}
+		html, body {
+			background-color: white;
+		}
+		a, a:link, a:hover, a:visited {
+			color: #993300;
+			background-color: white;
+		}
+		#userstatus {
+			color: white;
+		}
+		#userstatus a {
+			text-decoration: none;
+			background-color: #d04f0b;	/* orange */
+			color: white;
+			padding: 2px;
+		}
+		h1, h2, h3, .address dt {
+			color: #91a327;
+		}
+	</style>
 </head>
-<body class="section-<%=params[:controller]%> page-<%=params[:controller]%>-<%=params[:action]%>">
+<body class="frontpage section-<%=params[:controller]%> page-<%=params[:controller]%>-<%=params[:action]%>">
 
 <!-- begin wrapper div -->
 <div id="bigwrapper">
@@ -12,12 +49,16 @@
 <!-- begin pagewidth div -->
 <div id="pagewidth">
 
-<!-- begin header div -->
-<div id="header"><a href="/">
-	<animg src="/images/..." alt="California Cooperative Directory" width="788" height="168" border="0" id="logo"/></a>
-	<%=render :partial => 'layouts/usermenu'%>
-</div>
-<!-- end header div -->
+	<div id="header">
+		<a href="/"><img src="http://cccd.coop/images/mastHeadLogo.gif" alt="California Center for Cooperative Development" width="451" height="119" /></a>
+	  	<div id="topMenuBar">
+			<a href="https://www.networkforgood.org/donation/ExpressDonation.aspx?ORGID2=392065673" target="_blank"><img src="http://cccd.coop/images/donate.gif" alt="Donate button" name="donate" width="167" height="24" id="donate" /></a>
+			<br class="clearfloat" />
+		</div>
+		<%=render :partial => 'layouts/usermenu'%>
+	</div>
+
+
 <!-- begin maincol div -->
 <div id="maincol">
 	<p style="color: green"><%= flash[:notice] %></p>
