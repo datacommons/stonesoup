@@ -1,0 +1,47 @@
+<% hide_examples = false if hide_examples.nil? %>
+<div id="basic_search" style="<%= params[:advanced] ? 'display:none' : ''%>">
+	<%= link_to_function('Switch to Advanced Search', "Element.show('advanced_search'); Element.hide('basic_search')") %>
+	<br/>
+	<% form_tag( {:action => 'search'}, :method => 'get' ) do %>
+		<p><label for="q">Search for an organization:</label>
+		<%= text_field_tag 'q', @query, :size => 30 %>
+		<%= submit_tag 'Go' %>
+		</p>
+	<% end %>
+	<% unless hide_examples %>
+		<div class='example_preamble'>Example<br />searches:</div>
+		<% for example in ['"Northeast Biodiesel"','Connecticut','cooperative','zip:02139','sector:consumer', 'sector:nonprofit AND state:massachusetts', 'tech*', 'sector:food AND (organic OR local)','sector:food -organic','Noemi Giszpenc'] %>
+		<div class='example_bubble'><%= link_to example, :action => 'search', :q => example %></div>
+		<% end %>
+	<% end %>
+</div>
+<div id="advanced_search" style="<%= params[:advanced] ? '' : 'display:none'%>">
+	<%= link_to_function('Switch to Basic Search', "Element.hide('advanced_search'); Element.show('basic_search')") %>
+	<br/>
+	<% form_tag( {:action => 'search'}, :method => 'get' ) do %>
+		<%= hidden_field_tag 'advanced', 1 %>
+		<label for="q">Search for an organization:</label>
+		<div class="option_group">
+			<div class="option_group_title">Org name, description and products/services:</div>
+			<%= text_field_tag 'q', @query, :size => 40 %>
+		</div>
+		<div class="option_group">
+			<div class="option_group_title">Type and Sector:</div>
+			Organization Type: <%= select_tag 'org_type_id', '<option></option>' + options_from_collection_for_select(OrgType.get_available, 'id', 'name', params[:org_type_id].to_i) %>
+			<br/>Business Sector:<%= select_tag 'sector_id', '<option></option>' + options_from_collection_for_select(Sector.get_available, 'id', 'name', params[:sector_id].to_i) %>
+		</div>
+		<div class="option_group">
+			<div class="option_group_title">Geographically:</div>
+			<% if !session[:filters].nil? and !session[:filters]['locations.physical_state'].nil? and session[:filters]['locations.physical_state'].include?('CA') %>
+				Within the county: <%# select_tag "county", [['','']] + options_from_collection_for_select(Location.unique_counties) %>
+			<% end %>
+			Within the state: <%= select_tag "state", '<option></option>' + options_for_select(Location::STATES, params[:state]) %><br/>
+			Within <%= select_tag 'within', options_for_select([['',''], ['1 mile', 1], ['5 miles', 5], ['10 miles', 10], ['20 miles', 20]], params[:within].to_i)%>
+			of <%= text_field_tag 'origin', params[:origin] %> (zipcode)<br/>
+        </div>
+		<%= submit_tag 'Search' %>
+		</p>
+	<% end %>
+	<br/>
+	<br/>
+</div>

@@ -22,8 +22,8 @@ class Organization < ActiveRecord::Base
                    :zip => { :via => :zips_to_s },
                    :country => { :via => :countries_to_s },
                    :sector => { :via => :sectors_to_s },
+                   :org_type => { :via => :org_types_to_s },
                    :access_type => { :store => :yes }
-#                   :physical_zip => { :store => :yes },
 #                   :public => { :store => :yes },
                  } )
 
@@ -54,19 +54,23 @@ class Organization < ActiveRecord::Base
   end
   
   def states_to_s
-    self.locations.collect{|loc| loc.physical_state}.join(', ')
+    self.locations.collect{|loc| [loc.physical_state, loc.mailing_state]}.compact.uniq.join(', ')
   end
   
   def zips_to_s
-    self.locations.collect{|loc| loc.physical_zip}.join(', ')
+    self.locations.collect{|loc| loc.physical_zip}.uniq.join(', ')
   end
   
   def countries_to_s
-    self.locations.collect{|loc| loc.physical_country}.join(', ')
+    self.locations.collect{|loc| [loc.physical_country, loc.mailing_country]}.compact.uniq.join(', ')
   end
   
   def sectors_to_s
     self.sectors.collect{|sect| sect.name}.join(', ')
+  end
+  
+  def org_types_to_s
+    self.org_types.collect{|org_type| org_type.name}.join(', ')
   end
   
   def set_access_rule(access_type)
@@ -121,28 +125,20 @@ class Organization < ActiveRecord::Base
     end
   end
 
-  def Organization.latest_changes(filters)
+  def Organization.latest_changes(state_filter = [])
     user = User.current_user
     conditions = nil
-    unless filters.nil?
+    unless state_filter.nil? or state_filter.empty?
       condSQLs = []
       condParams = []
       joinSQL = nil
-      filters.each do |k,v|
-        if k == 'locations.physical_state'
-          joinSQL = 'INNER JOIN locations ON locations.organization_id = organizations.id'
-          if v.is_a?(Array)
-            condSQLs << 'locations.physical_state IN (' + v.collect{'?'}.join(',') + ')'
-            condParams += v
-          else
-            condSQLs = 'locations.physical_state IN '
-            condParams << v
-          end
-        else
-          raise "Unknown session filter: [#{k}=#{v}]"
-        end
-        conditions = [condSQLs.join(' AND ')] + condParams unless condSQLs.empty?
-      end
+      logger.debug("applying session state filters to search results: #{state_filter.inspect}")
+      joinSQL = 'INNER JOIN locations ON locations.organization_id = organizations.id'
+      states = [state_filter].flatten
+      condSQLs << "(locations.physical_state IN (#{states.collect{'?'}.join(',')})) OR (locations.mailing_state IN (#{states.collect{'?'}.join(',')}))"
+      condParams += states + states
+      conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
+      logger.debug("After applying state_filter, conditions = #{conditions.inspect}")
     end
 
     Organization.find(:all, :select => 'organizations.*', :order => 'updated_at DESC', 
@@ -159,26 +155,4 @@ class Organization < ActiveRecord::Base
     {:controller => 'organizations', :action => 'show', :id => self.id}
   end
 
-  def Organization.paginating_ferret_search(options)
-    count = find_by_contents(options[:q], {:lazy => true}).total_hits
-    
-    PagingEnumerator.new(options[:page_size], count, false, options[:current], 1) do |page|
-      offset = (options[:current].to_i - 1) * options[:page_size]
-      limit = options[:page_size]
-      
-      res = find_by_contents(options[:q], {:offset => offset, :limit => limit})
-    end
-  end
-  
-  def Organization.paginating_ferret_multi_search(options)
-    count = ActsAsFerret::find(options[:q], [Organization, Person], {:limit => :all, :lazy => true}).total_hits
-    
-    PagingEnumerator.new(options[:page_size], count, false, options[:current], 1) do |page|
-      offset = (options[:current].to_i - 1) * options[:page_size]
-      limit = options[:page_size]
-      
-      ActsAsFerret::find(options[:q], [Organization, Person], {:offset => offset, :limit => limit})
-    end
-  end
-  
 end

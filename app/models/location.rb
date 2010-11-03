@@ -1,6 +1,7 @@
 class Location < ActiveRecord::Base
   belongs_to :organization
-
+  after_save :set_organizations_primary_location
+  
   include GeoKit::Geocoders
 
   acts_as_mappable :lat_column_name => 'latitude', 
@@ -8,10 +9,27 @@ class Location < ActiveRecord::Base
                    :distance_field_name => 'distance'
 
   validates_presence_of :organization_id
-  validates_presence_of :physical_country
-  validates_presence_of :physical_city  
+  validates_each :physical_city do |record, attr, value|
+    record.errors.add attr, "and country or mailing city & country must be specified" unless \
+      (!record.physical_city.blank? and !record.physical_country.blank?) or \
+      (!record.mailing_city.blank? and !record.mailing_country.blank?)
+  end
   
-  Location::ADDRESS_FIELDS = ['address1', 'address2', 'city', 'state', 'zip', 'country']
+  Location::ADDRESS_FIELDS = ['address1', 'address2', 'city', 'state', 'zip', 'county', 'country']
+  Location::STATES = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District of Columbia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Northern Marianas Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Puerto Rico', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Virgin Islands', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming']
+  
+  def set_organizations_primary_location
+    if organization.primary_location.nil?  # if this is the first location added, assign it as the primary location
+      organization.primary_location = self
+      organization.send(:update_without_callbacks)
+    end
+  end
+  
+  def physical_address_blank?
+    ADDRESS_FIELDS.each do |fld|
+      return false unless self.send('physical_'+fld).blank?
+    end
+  end
   
   def mailing_address_blank?
     ADDRESS_FIELDS.each do |fld|
@@ -42,17 +60,49 @@ class Location < ActiveRecord::Base
       self.latitude = "0"
     end
   end
-
+  
+  def get_primary(field = nil)
+    primary = 'physical'  # default
+    # find which address (physical or mailing) has the most complete info
+    # first check for address1
+    unless physical_address1.blank?
+      primary = 'physical'
+    else
+      unless mailing_address1.blank?
+        primary = 'mailing'
+      else
+        # if address1 is blank for both, check city
+        unless physical_city.blank?
+          primary = 'physical'
+        else
+          primary = 'mailing'
+        end
+      end
+    end
+    return primary
+  end
+  
   def to_s
-    return "#{self.physical_address1},#{self.physical_address2},#{self.physical_city},#{self.physical_state},#{self.physical_zip},#{self.physical_country}"
+    primary = get_primary
+    #return "#{self.physical_address1},#{self.physical_address2},#{self.physical_city},#{self.physical_state},#{self.physical_zip},#{self.physical_country}"
+    return ADDRESS_FIELDS.reject{|f| f=='county'}.collect{|f| self.send(primary+'_'+f)}.join(',')
   end
 
   def accessible?(current_user)
     return self.organization.accessible?(current_user)
   end
 
- def link_name
-    organization.name + " (" + physical_address1 + ")"
+  def link_name
+    unless physical_address1.blank?
+      addr = physical_address1 
+    else
+      unless mailing_address1.blank?
+        addr = mailing_address1 
+      else
+        addr = ''
+      end
+    end
+    organization.name + " (" + addr + ")"
   end
   
   def link_hash

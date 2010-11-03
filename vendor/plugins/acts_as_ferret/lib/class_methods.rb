@@ -132,7 +132,8 @@ module ActsAsFerret
     #
     # +find_options+ is a hash passed on to active_record's find when
     # retrieving the data from db, useful to i.e. prefetch relationships with
-    # :include or to specify additional filter criteria with :conditions.
+    # :include or to specify additional filter criteria with :conditions (only string and array syntax supported).
+    # You can also call find_with_ferret inside named or dynamic scopes, if you like the conditions hash syntax more.
     #
     # This method returns a +SearchResults+ instance, which really is an Array that has 
     # been decorated with a total_hits attribute holding the total number of hits.
@@ -143,14 +144,10 @@ module ActsAsFerret
     # +limit+ if you specify any active record conditions that further limit 
     # the result. Use +limit+ and +offset+ as AR find_options instead.
     # +page+ and +per_page+ are supposed to work regardless of any 
-    # +conitions+ present in +find_options+.
+    # +conditions+ present in +find_options+.
     def find_with_ferret(q, options = {}, find_options = {})
       if respond_to?(:scope) && scope(:find, :conditions)
-        if find_options[:conditions]
-          find_options[:conditions] = "(#{find_options[:conditions]}) AND (#{scope(:find, :conditions)})"
-        else
-          find_options[:conditions] = scope(:find, :conditions)
-        end
+        find_options[:conditions] ||= '1=1' # treat external scope the same as if :conditions present (i.e. when it comes to counting results)
       end
       return ActsAsFerret::find q, self, options, find_options
     end 
@@ -169,7 +166,7 @@ module ActsAsFerret
     # Useful e.g. if you want to search across models or do not want to fetch
     # all result records (yet).
     #
-    # Options are the same as for find_by_contents
+    # Options are the same as for find_with_ferret
     #
     # A block can be given too, it will be executed with every result:
     # find_ids_with_ferret(q, options) do |model, id, score|

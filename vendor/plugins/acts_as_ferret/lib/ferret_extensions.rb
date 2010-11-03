@@ -78,7 +78,7 @@ module Ferret
     # use for this document (which may be nil).
     def update_batch(document_analyzer_pairs)
       ids = document_analyzer_pairs.collect {|da| da.first[@id_field] }
-      @dir.synchrolock do
+      @dir.synchronize do
         batch_delete(ids)
         ensure_writer_open()
         document_analyzer_pairs.each do |doc, analyzer|
@@ -94,6 +94,20 @@ module Ferret
         flush()
       end      
     end
+
+    # search for the first document with +arg+ in the +id+ field and return it's internal document number. 
+    # The +id+ field is either :id or whatever you set
+    # :id_field parameter to when you create the Index object.
+    def doc_number(id)
+      @dir.synchronize do
+        ensure_reader_open()
+        term_doc_enum = @reader.term_docs_for(@id_field, id.to_s)
+        return term_doc_enum.next? ? term_doc_enum.doc : nil
+      end
+    end
+    
+    private
+    
     
     # If +docs+ is a Hash or an Array then a batch delete will be performed.
     # If +docs+ is an Array then it will be considered an array of +id+'s. If
@@ -115,9 +129,9 @@ module Ferret
       terms = []
       docs.each do |doc|
         case doc
-        when String: terms << doc
-        when Symbol: terms << doc.to_s
-        when Integer: ids << doc
+        when String   then terms << doc
+        when Symbol   then terms << doc.to_s
+        when Integer  then ids << doc
         else
           raise ArgumentError, "Cannot delete for arg of type #{id.class}"
         end
@@ -134,17 +148,7 @@ module Ferret
       end
       return self
     end
-
-    # search for the first document with +arg+ in the +id+ field and return it's internal document number. 
-    # The +id+ field is either :id or whatever you set
-    # :id_field parameter to when you create the Index object.
-    def doc_number(id)
-      @dir.synchronize do
-        ensure_reader_open()
-        term_doc_enum = @reader.term_docs_for(@id_field, id.to_s)
-        return term_doc_enum.next? ? term_doc_enum.doc : nil
-      end
-    end
+    
   end
 
   # add marshalling support to SortFields
@@ -155,11 +159,11 @@ module Ferret
 
     def self._load(string)
       case string
-        when /<DOC(_ID)?>!/         : Ferret::Search::SortField::DOC_ID_REV
-        when /<DOC(_ID)?>/          : Ferret::Search::SortField::DOC_ID
-        when '<SCORE>!'             : Ferret::Search::SortField::SCORE_REV
-        when '<SCORE>'              : Ferret::Search::SortField::SCORE
-        when /^(\w+):<(\w+)>(!)?$/ : new($1.to_sym, :type => $2.to_sym, :reverse => !$3.nil?)
+        when /<DOC(_ID)?>!/         then Ferret::Search::SortField::DOC_ID_REV
+        when /<DOC(_ID)?>/          then Ferret::Search::SortField::DOC_ID
+        when '<SCORE>!'             then Ferret::Search::SortField::SCORE_REV
+        when '<SCORE>'              then Ferret::Search::SortField::SCORE
+        when /^(\w+):<(\w+)>(!)?$/  then new($1.to_sym, :type => $2.to_sym, :reverse => !$3.nil?)
         else raise "invalid value: #{string}"
       end
     end
@@ -175,7 +179,7 @@ module Ferret
       # we exclude the last <DOC> sorting as it is appended by new anyway
       if string =~ /^Sort\[(.*?)(<DOC>(!)?)?\]$/
         sort_fields = $1.split(',').map do |value| 
-        value.strip!
+          value.strip!
           Ferret::Search::SortField._load value unless value.blank?
         end
         new sort_fields.compact

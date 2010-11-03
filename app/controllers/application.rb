@@ -34,14 +34,12 @@ public
   def set_custom_filters
     logger.debug("Determining custom filters based on request.host[#{request.host}]")
     if ['ca.find.coop', 'california.find.coop', 'testca.find.coop'].include?(request.host)
-      logger.debug("... using custom settings for: california")
       # set custom filters for CA
-      session[:filters] = {
-        'locations.physical_state' => ['CA', 'California']
-      }
+      session[:state_filter] = ['CA', 'California']
+      logger.debug("... using custom settings for: california :: set session filters to: #{session[:state_filter].inspect}")
     else
       logger.debug("... using default template.")
-      session[:filters] = nil
+      session[:state_filter] = nil
     end
   end
 

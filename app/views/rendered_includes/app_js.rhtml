@@ -1,0 +1,15 @@
+var location_fields = new Array(<%= Location::ADDRESS_FIELDS.collect{|f| "'mailing_#{f}'"}.join(', ')%>);
+function set_locations_disabled(status) {
+	for (var i=0; i<location_fields.length; i++) {
+		field = location_fields[i];
+		document.getElementById('location_'+field).disabled = status;
+	}
+}
+function check_locations_same(id) {
+	if(id == null) id = '';
+	if(document.getElementById('location' + id + '_mailing_same_as_physical').checked) {
+		set_locations_disabled(true);
+	} else {
+		set_locations_disabled(false);
+	}
+}
