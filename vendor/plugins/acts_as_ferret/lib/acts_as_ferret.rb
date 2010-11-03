@@ -60,7 +60,7 @@ require 'rdig_adapter'
 # include the following in your model class (specifiying the fields you want to get indexed):
 # acts_as_ferret :fields => [ :title, :description ]
 #
-# now you can use ModelClass.find_by_contents(query) to find instances of your model
+# now you can use ModelClass.find_with_ferret(query) to find instances of your model
 # whose indexed fields match a given query. All query terms are required by default, but 
 # explicit OR queries are possible. This differs from the ferret default, but imho is the more
 # often needed/expected behaviour (more query terms result in less results).
@@ -105,6 +105,7 @@ module ActsAsFerret
 
   # mapping from class name to index name
   @@index_using_classes = {}
+  def self.index_using_classes; @@index_using_classes end
 
   @@logger = Logger.new "#{RAILS_ROOT}/log/acts_as_ferret.log"
   @@logger.level = ActiveRecord::Base.logger.level rescue Logger::DEBUG
@@ -144,10 +145,15 @@ module ActsAsFerret
   remote?
 
 
-  # Globally declares an index.
+  # Declares an index.
   #
-  # This method is also used to implicitly declare an index when you use the
-  # acts_as_ferret call in your class. Returns the created index instance.
+  # Use this method to define your indexes in a global initializer (i.e. config/initializers/aaf.rb).
+  # This is especially useful if you want to have multiple classes share the same index for cross-model
+  # searching as you only need a single call to declare the index for all models.
+  #
+  # This method is also used internally to declare an index when you use the
+  # acts_as_ferret call inside your class (which in turn can be omitted if the initializer is used).
+  # Returns the created index instance.
   #
   # === Options are:
   #
@@ -450,6 +456,8 @@ module ActsAsFerret
     # get objects for each model
     id_arrays.each do |model, id_array|
       next if id_array.empty?
+      # logger.debug "id array from index: #{id_array.inspect}"
+      
       model_class = model.constantize
 
       # merge conditions
@@ -478,20 +486,21 @@ module ActsAsFerret
     
     # order results as they were found by ferret, unless an AR :order
     # option was given
+    # logger.debug "unsorted result: #{result.map{|a| "#{a.id} / #{a.title} / #{a.ferret_rank}"}.inspect}"
     result.sort! { |a, b| a.ferret_rank <=> b.ferret_rank } unless find_options[:order]
+    # logger.debug "sorted result: #{result.map{|a| "#{a.id} / #{a.ferret_rank}"}.inspect}"
     return result
   end
   
   # combine our conditions with those given by user, if any
   def self.combine_conditions(conditions, additional_conditions = [])
-    returning conditions do
-      if additional_conditions && additional_conditions.any?
-        cust_opts = (Array === additional_conditions) ? additional_conditions.dup : [ additional_conditions ]
-        logger.debug "cust_opts: #{cust_opts.inspect}"
-        conditions.first << " and " << cust_opts.shift
-        conditions.concat(cust_opts)
-      end
+    if additional_conditions && additional_conditions.any?
+      cust_opts = (Array === additional_conditions) ? additional_conditions.dup : [ additional_conditions ]
+      logger.debug "cust_opts: #{cust_opts.inspect}"
+      conditions.first << " and " << cust_opts.shift
+      conditions.concat(cust_opts)
     end
+    return conditions
   end
 
   def self.build_field_config(fields)

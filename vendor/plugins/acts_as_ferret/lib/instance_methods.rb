@@ -125,7 +125,7 @@ module ActsAsFerret #:nodoc:
     # fieldname => value pairs)
     def to_doc
       logger.debug "creating doc for class: #{self.ferret_key}"
-      returning Ferret::Document.new do |doc|
+      Ferret::Document.new.tap do |doc|
         # store the id and class name of each item, and the unique key used for identifying the record
         # even in multi-class indexes.
         doc[:key] = self.ferret_key
@@ -156,7 +156,8 @@ module ActsAsFerret #:nodoc:
     end
 
     def content_for_field_name(field, via = field, dynamic_boost = nil)
-      field_data = (respond_to?(via) ? send(via) : instance_variable_get("@#{via}")).to_s
+      field_data = (respond_to?(via) ? send(via) : instance_variable_get("@#{via}"))
+      field_data = (field_data.is_a?(Array) ? field_data.map{|d| d.to_s} : field_data.to_s)
       # field_data = self.send(via) || self.instance_variable_get("@#{via}")
       if (dynamic_boost && boost_value = self.send(dynamic_boost))
         field_data = Ferret::Field.new(field_data)

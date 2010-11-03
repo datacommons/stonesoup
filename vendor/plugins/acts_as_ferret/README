@@ -6,41 +6,92 @@ It is heavily based on the original acts_as_ferret plugin done by
 Kasper Weibel and a modified version done by Thomas Lockney, which 
 both can be found on http://ferret.davebalmain.com/trac/wiki/FerretOnRails
 
+== Project Wiki and Issue tracker
+
+http://wiki.github.com/jkraemer/acts_as_ferret/
+http://j-k.lighthouseapp.com/projects/45560-acts-as-ferret
+
 == Installation
+
+Aaf is available as a gem (gem install acts_as_ferret), or via git from github.com.
+Github also offers tarball downloads, check out
+http://github.com/jkraemer/acts_as_ferret/tree/master .
+
+=== Set up your Rails > 2.1 project to use the acts_as_ferret gem.
+
+Add this to your project's config/environment.rb (inside the Rails::Initializer.run block):
+
+<tt>
+  config.gem 'acts_as_ferret', :version => '~> 0.4.8'
+  config.after_initialize { ActsAsFerret::load_config }
+  config.to_prepare       { ActsAsFerret::load_config }  
+</tt>
+
+With the gem installed, change into your RAILS_ROOT and run the supplied aaf_install script.
+This will copy rake tasks, capistrano recipes and the ferret server config and startup script
+into your project.
+
+In order to have the capistrano recipe loaded you'll have to patch your Capfile a bit. I use to have
+a line like that in my Capfiles, loading everything found below RAILS_ROOT/lib/recipes:
+
+<tt>Dir['lib/recipes/**/*.rb'].each { |plugin| load(plugin) }</tt>
+
 
 === Installation inside your Rails project via script/plugin
 
-script/plugin install svn://projects.jkraemer.net/acts_as_ferret/trunk/plugin/acts_as_ferret
+script/plugin install git://github.com/jkraemer/acts_as_ferret.git
 
-Aaf is is also available via git from Rubyforge:
-git clone git://rubyforge.org/actsasferret.git
-
-=== System-wide installation with Rubygems
-
-<tt>sudo gem install acts_as_ferret</tt>
-
-To use acts_as_ferret in your project, add the following line to your
-project's config/environment.rb:
-
-<tt>require 'acts_as_ferret'</tt>
-
-Call the aaf_install script inside your project directory to install the sample
-config file and the drb server start/stop script.
+No additional setup needed.
 
 
 == Usage
 
+There are two ways to make your models searchable with aaf. The option to configure acts_as_ferret with
+a single configuration file has been introduced because it makes more sense when a single index holds multiple
+models - it's simply more logicl to define that index and tell which models should go into it than to call
+acts_as_ferret in each model pointing to the same index every time.
+
+=== central configuration file
+
+With this option, all acts_as_ferret indexes are configured in a single file, RAILS_ROOT/config/aaf.rb:
+
+ActsAsFerret::define_index( 'my_index',
+                            :models => {
+                              SomeModel => {
+                                :fields => {
+                                  :name => { :boost => 4, :store => :yes, :via => :ferret_title },
+                                  :foo => { :store => :no,  :index => :untokenized },
+                                  :baz => { :store => :yes, :via => :ferret_content }
+                                }
+                              }
+                            } )
+
+ActsAsFerret::define_index( 'some_other_index',
+                            :models => {
+                              Foo => { :fields => { ... } },
+                              Bar => { ... },
+                            } )
+
+
+As you can see for every index you want to define there's a single call, and each model that should go
+into the index gets it's own ferret options hash (see the acts_as_ferret class method docs for all available options).
+
+=== In your models (the old fashioned way)
 include the following in your model class (specifiying the fields you want to get indexed):
 
 <tt>acts_as_ferret :fields => [ :title, :description ]</tt>
 
-now you can use ModelClass.find_by_contents(query) to find instances of your model
+now you can use ModelClass.find_with_ferret(query) to find instances of your model
 whose indexed fields match a given query. All query terms are required by default, 
 but explicit OR queries are possible. This differs from the ferret default, but 
 imho is the more often needed/expected behaviour (more query terms result in 
 less results).
 
 Please see ActsAsFerret::ActMethods#acts_as_ferret for more information.
+
+== Known issues
+
+aaf is not yet ready for Rails3. Feel free to submit patches!
 
 == License
 
