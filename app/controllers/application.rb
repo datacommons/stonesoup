@@ -10,36 +10,46 @@ class ApplicationController < ActionController::Base
   layout :custom_layout
   
 private
-  def custom_layout
-    #return appropriate layout depending on value of request.host (domain name)
-    # you can also do other dependent filtering, setting session variables, etc.
-    logger.debug("Determining template based on request.host[#{request.host}]")
+  def get_site
+    logger.debug("Determining custom filters based on request.host[#{request.host}]")
     if ['ca.find.coop', 'california.find.coop', 'testca.find.coop'].include?(request.host)
       logger.debug("... using custom template for: california")
       # use custom template
-      return 'california'
+      return :california
     elsif ['main.find.coop','find.coop'].include?(request.host)
       logger.debug("... using custom template for: find.coop")
-      return 'regina'
-    elsif ['maine.find.coop'].include?(request.host)
+      return :regina
+    elsif ['me.find.coop','maine.find.coop','testme.find.coop'].include?(request.host)
       logger.debug("... using custom template for: cooperative maine")
-      return 'maine'
+      return :maine
     else
-      logger.debug("... using default template.")
-      session[:filters] = nil
-      return 'default'
+      return :default
     end
   end
+
+  def custom_layout
+    #return appropriate layout depending on value of request.host (domain name)
+    # you can also do other dependent filtering, setting session variables, etc.
+    site = get_site
+    case site
+    when :default
+      # is this needed? preserved from existing code.
+      session[:filters] = nil
+    end
+    return site.to_s
+  end
+
 public
   def set_custom_filters
-    logger.debug("Determining custom filters based on request.host[#{request.host}]")
-    if ['ca.find.coop', 'california.find.coop', 'testca.find.coop'].include?(request.host)
+    site = get_site
+    case site
+    when :california
       # set custom filters for CA
       session[:state_filter] = ['CA', 'California']
-      logger.debug("... using custom settings for: california :: set session filters to: #{session[:state_filter].inspect}")
+    when :maine
+      session[:state_filter] = ['ME', 'Maine']
     else
-      logger.debug("... using default template.")
-      session[:state_filter] = nil
+      session[:filters] = nil
     end
   end
 
