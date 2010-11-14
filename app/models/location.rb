@@ -92,7 +92,7 @@ class Location < ActiveRecord::Base
     return self.organization.accessible?(current_user)
   end
 
-  def link_name
+  def address_summary
     unless physical_address1.blank?
       addr = physical_address1 
     else
@@ -102,7 +102,11 @@ class Location < ActiveRecord::Base
         addr = ''
       end
     end
-    organization.name + " (" + addr + ")"
+    addr
+  end
+
+  def link_name
+    organization.name + " (" + address_summary + ")"
   end
   
   def link_hash
