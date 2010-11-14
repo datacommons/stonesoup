@@ -89,11 +89,14 @@ class SearchController < ApplicationController
         logger.debug("applying session state filters to search results: #{session[:state_filter].inspect}")
         addl_criteria = []
         [session[:state_filter]].flatten.each do |state|
-          if state.length == 2  # abbreviation, make sure it's qualified with USA country:
-            addl_criteria << "(state:#{state} AND (country:'united states' OR country:usa))"
-          else
-            addl_criteria << "state:'#{state}'"
-          end
+          # Nested parentheses do not seem to work, omit for now.
+          # could solve during indexing with a virtual field.
+          #if state.length == 2  # abbreviation, make sure it's qualified with USA country:
+            # addl_criteria << "(state:#{state} AND (country:'united states' OR country:usa))"
+          #else
+          #  addl_criteria << "state:'#{state}'"
+          #end
+          addl_criteria << "state:'#{state}'"
         end
         filtered_query = "+(#{@query}) +(#{addl_criteria.join(' OR ')})"
         logger.debug("After adding state filter to query, query is: #{filtered_query}")
