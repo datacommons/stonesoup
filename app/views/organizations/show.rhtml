@@ -55,6 +55,18 @@
 			<dd><%= @organization.phone %></dd>
 		</dl>
 	<% end %>
+	<% unless @organization.website.blank? %>
+		<dl class="address">
+			<dt>Website</dt>
+			<dd>
+			<% if /https?:\/\/(.*)/.match(@organization.website)==nil %>
+			  <%= link_to @organization.website, "http://#{@organization.website}" %>
+			<% else %>
+			  <%= link_to @organization.website, "#{@organization.website}" %>
+			<% end %>
+			</dd>
+		</dl>
+	<% end %>
 	<% unless @organization.fax.blank? %>
 		<dl class="address">
 			<dt>Fax</dt>
