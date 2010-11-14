@@ -34,8 +34,8 @@
   <div id="surround_map">
   <div class="map_preamble">
 Range: 
-<span class="mapstyle_select_on"><%= @within %></span> miles
-<span class="mapstyle_select"><%= link_to "(shrink to " + (@within/10).to_s + ")", :within => @within/10, :action => 'near', :controller => 'search', :id => @organization %></span>
+<span class="mapstyle_select_on"><%= @within %></span> mile<%= ((@within-1).abs<0.01)?"":"s" %>
+<% if @within>5 %><span class="mapstyle_select"><%= link_to "(shrink to " + (@within/10).to_s + ")", :within => @within/10, :action => 'near', :controller => 'search', :id => @organization %></span><% end %>
 <span class="mapstyle_select"><%= link_to "(expand to " + (@within*10).to_s + ")", :within => @within*10, :action => 'near', :controller => 'search', :id => @organization %></span>
   </div>
   <%= map.div() %>
@@ -53,7 +53,7 @@ Range:
   </p>
 <% end %>
 
-<p>Current search is restricted to within <%= @within %> mile(s) of <%= show_link @organization %>.<br /> [expand to <%= link_to (@within*10).to_s, :within => @within*10, :action => 'near', :controller => 'search', :id => @organization %> mile(s), contract to <%= link_to (@within/10).to_s, :within => @within/10, :action => 'near', :controller => 'search', :id => @organization %> mile(s)]</p>
+<p>Searching within <%= @within %> mile<%= ((@within-1).abs<0.01)?"":"s" %> of <%= show_link @organization %>.<br /> [expand to <%= link_to (@within*10).to_s, :within => @within*10, :action => 'near', :controller => 'search', :id => @organization %> mile<%= ((@within*10-1).abs<0.01)?"":"s"%><% if @within>5 %>, contract to <%= link_to (@within/10).to_s, :within => @within/10, :action => 'near', :controller => 'search', :id => @organization %> mile<%= ((@within/10-1).abs<0.01)?"":"s"%><% end %>]</p>
 
 <% if @entries %>
  <% if @entries.blank? %>
@@ -62,7 +62,11 @@ Range:
  <% else %>
  <h2>Search Results</h2>
   <% for entry in @entries %>
-   <p><img src="<%= markers[entry.id] %>" width="20" height="34" /><%= show_link entry %>
+   <div class="location_result">
+   <img src="<%= markers[entry.id] %>" width="20" height="34" align="top" />
+   <%= show_link entry.organization %><br />
+   <span class="qualifier"><%= entry.address_summary %></span>
+   </div>
   <% end %>
  <h2>Download Search Results</h2>
    <ul>  
