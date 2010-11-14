@@ -80,7 +80,17 @@ protected
 
 public
   def link_name
-    self.login
+    if self.person.nil?
+      reg = /^[A-Z0-9._%+-]+@/i
+      prefix = self.login.scan(reg)
+      if prefix.length
+        prefix[0] + "..."
+      else
+        "(hidden)"
+      end
+    elsif self.person.respond_to?('link_name')
+      self.person.link_name
+    end
   end
 
   def link_hash
