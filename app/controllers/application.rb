@@ -26,6 +26,10 @@ private
       @site_searches = ['food','local sprouts','zip:04412','*']
       @site_layout = :maine
       @site_show_latest_people = false
+    elsif ['oh.find.coop','ohio.find.coop','testoh.find.coop'].include?(request.host)
+      @site_searches = ['grocery','zip:43202','*']
+      @site_layout = :ohio
+      @site_show_latest_people = false
     end
     return @site_layout
   end
@@ -34,11 +38,6 @@ private
     #return appropriate layout depending on value of request.host (domain name)
     # you can also do other dependent filtering, setting session variables, etc.
     site = get_site
-    case site
-    when :default
-      # is this needed? preserved from existing code.
-      session[:filters] = nil
-    end
     return site.to_s
   end
 
@@ -51,8 +50,10 @@ public
       session[:state_filter] = ['CA', 'California']
     when :maine
       session[:state_filter] = ['ME', 'Maine']
+    when :ohio
+      session[:state_filter] = ['OH', 'Ohio']
     else
-      session[:filters] = nil
+      session[:state_filter] = nil
     end
   end
 

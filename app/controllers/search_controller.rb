@@ -195,7 +195,10 @@ protected
       data = data + Person.latest_changes(session[:state_filter])
     end
     logger.debug("data=#{data}")
-    data = AccessRule.cleanse(data, current_user).sort{|a,b| b.updated_at <=> a.updated_at}[0..14]
+    data = AccessRule.cleanse(data, current_user).sort{|a,b| b.updated_at <=> a.updated_at rescue 0}
+    if data.length>15
+      data = data[0..14]
+    end
     logger.debug("returning data=#{data}")
     return data
   end
