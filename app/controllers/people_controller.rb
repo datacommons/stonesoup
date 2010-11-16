@@ -25,7 +25,7 @@ class PeopleController < ApplicationController
     @person = Person.find(params[:id])
     unless @person.accessible?(current_user)
       flash[:error] = "You may not view that entry."
-      redirect_to :action => 'index' and return
+      redirect_to :action => 'index', :controller => "search" and return
     end
 
     respond_to do |format|
