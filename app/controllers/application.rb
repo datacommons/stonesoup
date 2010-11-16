@@ -10,21 +10,24 @@ class ApplicationController < ActionController::Base
   layout :custom_layout
   
 private
+
   def get_site
-    logger.debug("Determining custom filters based on request.host[#{request.host}]")
+    # These variables customize the layout
+
+    @site_searches = ['"Northeast Biodiesel"','Connecticut','cooperative','zip:02139','sector:consumer', 'sector:nonprofit AND state:massachusetts', 'tech*', 'sector:food AND (organic OR local)','sector:food -organic','Noemi Giszpenc']
+    @site_layout = :default
+    # showing recently modified people is optional, since it is hard to
+    # filter geographically right now
+    @site_show_latest_people = true
+
     if ['ca.find.coop', 'california.find.coop', 'testca.find.coop'].include?(request.host)
-      logger.debug("... using custom template for: california")
-      # use custom template
-      return :california
-    elsif ['main.find.coop','find.coop'].include?(request.host)
-      logger.debug("... using custom template for: find.coop")
-      return :regina
+      @site_layout = :california
     elsif ['me.find.coop','maine.find.coop','testme.find.coop'].include?(request.host)
-      logger.debug("... using custom template for: cooperative maine")
-      return :maine
-    else
-      return :default
+      @site_searches = ['food','local sprouts','zip:04412','*']
+      @site_layout = :maine
+      @site_show_latest_people = false
     end
+    return @site_layout
   end
 
   def custom_layout
