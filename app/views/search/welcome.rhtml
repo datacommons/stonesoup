@@ -1,12 +1,12 @@
-<p>This is a directory of organizations looking to build a cooperative economy.
-Formerly <a href="http://regina.eggplant.coop">REGINA</a>.</p>
+
+<p><%= render "layouts/summary/#{@site_layout}" %></p>
 
 <%= render :partial => 'search_form' %>
 <br class="clearboth" />
 
 <p>
-The Data Commons Project is a collaborative effort among a diverse array of organizations in the U.S. and Canada who share a mission of building and supporting the development of a cooperative economy.  Our goal is to develop an accurate, comprehensive, public database of cooperative economic initiatives in North America. (<a href='http://dcp.usworker.coop'>read more</a>...)
-</p>
+<%= render "layouts/welcome/#{@site_layout}" %>
+<p>
 
 <p>
 Want to help out? <%= link_to 'Add your organization', :controller => 'organizations', :action => 'new' %>!

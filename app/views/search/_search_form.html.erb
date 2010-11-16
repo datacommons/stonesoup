@@ -10,7 +10,7 @@
 	<% end %>
 	<% unless hide_examples %>
 		<div class='example_preamble'>Example<br />searches:</div>
-		<% for example in ['"Northeast Biodiesel"','Connecticut','cooperative','zip:02139','sector:consumer', 'sector:nonprofit AND state:massachusetts', 'tech*', 'sector:food AND (organic OR local)','sector:food -organic','Noemi Giszpenc'] %>
+		<% for example in @site_searches %>
 		<div class='example_bubble'><%= link_to example, :action => 'search', :q => example %></div>
 		<% end %>
 	<% end %>
