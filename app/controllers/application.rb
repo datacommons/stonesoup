@@ -21,15 +21,20 @@ private
     @site_show_latest_people = true
 
     if ['ca.find.coop', 'california.find.coop', 'testca.find.coop'].include?(request.host)
+      Email.website_base_url = 'http://california.find.coop'
       @site_layout = :california
     elsif ['me.find.coop','maine.find.coop','testme.find.coop'].include?(request.host)
+      Email.website_base_url = 'http://maine.find.coop'
       @site_searches = ['food','local sprouts','zip:04412','*']
       @site_layout = :maine
       @site_show_latest_people = false
     elsif ['oh.find.coop','ohio.find.coop','testoh.find.coop'].include?(request.host)
+      Email.website_base_url = 'http://ohio.find.coop'
       @site_searches = ['grocery','zip:43202','*']
       @site_layout = :ohio
       @site_show_latest_people = false
+    else
+      Email.website_base_url = 'http://find.coop'
     end
     return @site_layout
   end

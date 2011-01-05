@@ -32,6 +32,15 @@ class Organization < ActiveRecord::Base
   validates_presence_of :name
 
   before_save :save_ll
+  after_update :send_notifications
+  
+  def send_notifications
+    # send notifications to all the other editors on this entry, except the person making the update
+    self.users.reject{|u| u == User.current_user}.each do |user|
+      next unless user.update_notifications_enabled?  # skip if notifications are disabled
+      Email.deliver_update_notification(user, self)
+    end
+  end
   
   def get_org_types
     org_types.collect{|ot| ot.root_term}.uniq

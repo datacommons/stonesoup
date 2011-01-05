@@ -1,0 +1,13 @@
+You are being notified that one of the entries for which you are an editor has been updated.
+Entry: <%= @organization.name %>
+
+To see the updated entry, go to:
+<%= Email.website_base_url %><%= url_for :controller => 'organizations', :action => 'show', :id => @organization %>
+
+From there, you may log in and make further updates or corrections as necessary.
+
+If you believe this update may have been malicious in nature, please contact us immediately.
+
+Cheers,
+The Data Commons Project Staff
+http://find.coop

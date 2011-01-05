@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101025185032) do
+ActiveRecord::Schema.define(:version => 20110105200106) do
 
   create_table "access_rules", :force => true do |t|
     t.string "access_type"
@@ -228,12 +228,13 @@ ActiveRecord::Schema.define(:version => 20101025185032) do
   end
 
   create_table "users", :force => true do |t|
-    t.string   "login",      :limit => 80
-    t.string   "password",   :limit => 40
+    t.string   "login",                        :limit => 80
+    t.string   "password",                     :limit => 40
     t.boolean  "is_admin"
     t.datetime "created_at"
     t.datetime "last_login"
     t.integer  "person_id"
+    t.boolean  "update_notifications_enabled",               :default => true
   end
 
 end

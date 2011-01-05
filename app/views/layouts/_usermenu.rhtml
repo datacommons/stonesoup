@@ -1,7 +1,8 @@
 <%- if current_user -%>
 	<div id="userstatus">
 		Logged in as: <%= current_user.login %> 
-		( <%= link_to 'Logout', :controller => 'users', :action => 'logout' %>
+		( <%= link_to 'Preferences', :controller => 'users', :action => 'prefs' %>
+		| <%= link_to 'Logout', :controller => 'users', :action => 'logout' %>
 		| 	<% if current_user.person.nil? %>
 				<%= link_to 'Create your personal entry', :controller => 'people', :action => 'new', 'is_me' => 'yes' %>
 			<% else %>

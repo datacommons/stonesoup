@@ -1,0 +1,8 @@
+<h1>Editing Preferences</h1>
+
+<% form_tag :action => 'update_prefs' do %>
+  <%= render :partial => 'form', :locals => {:prefs_mode => true} %>
+  <%= submit_tag 'Update' %>
+<% end %>
+
+<%= button_to 'Cancel', :controller => 'search', :action => 'index' %>

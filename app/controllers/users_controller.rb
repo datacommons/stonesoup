@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_filter :login_required, :only => [:new, :create, :edit, :update, :destroy, :index, :list, :show]
+  before_filter :login_required, :only => [:new, :create, :edit, :update, :destroy, :index, :list, :show, :prefs, :update_prefs]
   before_filter :admin_required, :only => [:index, :list, :new, :create, :edit, :update, :destroy]
 
   def index
@@ -8,7 +8,7 @@ class UsersController < ApplicationController
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  verify :method => :post, :only => [ :destroy, :create, :update ],
+  verify :method => :post, :only => [ :destroy, :create, :update, :update_prefs ],
          :redirect_to => { :action => :list }
 
   def login
@@ -89,6 +89,10 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
   end
 
+  def prefs
+    @user = User.current_user
+  end
+
   def update
     @user = User.find(params[:id])
     if @user.update_attributes(params[:user])
@@ -99,6 +103,21 @@ class UsersController < ApplicationController
     end
   end
 
+  def update_prefs
+    @user = User.current_user
+    if params[:user].nil? # bad form submission
+      redirect_to :action => 'prefs' and return
+    end
+    params[:user].delete(:login) # not user-editable at this time. is_admin is already attr_protected
+    params[:user].delete(:password_cleartext) if params[:user][:password_cleartext].blank?  # make sure password is not updated if left blank
+    if @user.update_attributes(params[:user])
+      flash[:notice] = 'Your preferences were successfully updated.'
+      redirect_to :controller => 'search', :action => 'index'
+    else
+      render :action => 'prefs'
+    end
+  end
+  
   def destroy
     User.find(params[:id]).destroy
     redirect_to :action => 'list'
@@ -107,7 +126,9 @@ class UsersController < ApplicationController
   protected
 
   def authorize?(user)
-    user.is_admin?
+    return true if user.is_admin? # all access
+    return true if params[:action].match('prefs$')  # user can edit own prefs
+    return false  # otherwise, no
   end
 
 end
