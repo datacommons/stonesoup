@@ -1,0 +1,31 @@
+The DCP Coop Directory includes the ability to create custom views of the website which include a custom visual template and pre-defined search filters.
+
+Current implementations include US state-specific views which will use a custom visual theme and restrict directory entries to only entities within the specified state.
+
+FEATURES:
+* Activated based on a hostname or set of hostnames (e.g. me.find.coop or maine.find.coop)
+* Custom visual template & styling
+* The featured "example searches" can be customized
+* Enable or Disable the inclusion of "People" in the "Recent Changes" list
+
+DEVELOPMENT:
+In order to add a new custom view, the following updates must be made:
+
+# app/controllers/application.rb
+-- in #get_site
+Add a configuration section for the new view.
+-- in #set_custom_filters
+Define custom search filters for the new view.
+
+# config/gmaps_api_key.yml
+Add a line for any new hostnames which the website may be served from.
+
+# Create app/views/layouts/[viewname].rhtml
+where [viewname] is defined by @site_layout in #get_site above
+This is the visual template for the new site.
+
+# Create app/views/layouts/summary/[viewname].rhtml 
+# Create app/views/layouts/welcome/[viewname].rhtml
+These files are used for the main "home" page for the new site.
+
+# Create directory public/images/[viewname] and upload images as relevant for the new view's visual layout.
