@@ -21,7 +21,7 @@ class Location < ActiveRecord::Base
   def Location.unique_counties(state)
     pcs = Location.find(:all, :select => 'DISTINCT physical_county AS county', :conditions => ['physical_state = ?', state]).collect{|loc| loc.county}
     mcs = Location.find(:all, :select => 'DISTINCT mailing_county AS county', :conditions => ['mailing_state = ?', state]).collect{|loc| loc.county}
-    (pcs + mcs).sort
+    (pcs + mcs).compact.sort
   end
   
   def set_organizations_primary_location
