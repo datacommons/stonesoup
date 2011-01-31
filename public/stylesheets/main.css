@@ -376,3 +376,7 @@ ul.menu_bar li a {
     color: #aaa;
 }
 
+#organization_editors form, 
+#organization_editors form div {
+	display: inline;
+}

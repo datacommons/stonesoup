@@ -108,7 +108,17 @@ class OrganizationsController < ApplicationController
       format.xml  { head :ok }
     end
   end
-
+  
+  def remove_editor
+    @organization = Organization.find(params[:id])
+    user = User.find(params[:user_id])
+    if request.method == :post and !current_user.nil?
+      @organization.users.delete(user)
+      flash[:notice] = "The user #{user.login} has been removed as an editor for the organization: #{@organization.name}"
+      redirect_to :action => 'show', :id => @organization
+    end
+  end
+  
   def become_editor
     @organization = Organization.find(params[:id])
     if request.method == :post and !current_user.nil?

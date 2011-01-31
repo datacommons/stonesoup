@@ -149,25 +149,32 @@
 	</div>
 <% end %>
 
-<div class="clearboth"></div>
-<h2>Editors of this entry</h2>
-<% if @organization.users.any? %>
-<% for user in @organization.users %>
-<p><%= show_link user %><%= " (pending)" unless user.last_login %></p>
-<% end %>
-<% end %>
+<div class="clearboth" id="organization_editors">
+	<h2>Editors of this entry</h2>
+	<% if @organization.users.any? %>
+	<ul>
+	<% for user in @organization.users %>
+	<li><%= show_link user %><%= " (pending)" unless user.last_login %>
+		<%- if User.current_user -%>
+			<%= button_to 'Remove Editor', {:action => 'remove_editor', :id => @organization, :user_id => user}, :confirm => 'Are you sure you want to remove this editor?', :method => :post %>
+		<%- end -%>
+	</li>
+	<% end %>
+	</ul>
+	<% end %>
 
-<% if @organization.users.blank? %>
-<p>There is no current editor for this entry.  Would you like to <%= link_to 'become the editor for this entry', :action => 'become_editor', :id => @organization %>?</p>
-<% end %>
+	<% if @organization.users.blank? %>
+	<p>There is no current editor for this entry.  Would you like to <%= link_to 'become the editor for this entry', :action => 'become_editor', :id => @organization %>?</p>
+	<% end %>
 
-<% if @organization.users.include? current_user %>
-<p>Invite new editor for this entry:</p>
-<% form_tag :action => 'invite', :id => @organization do %>
-E-mail: <%= text_field_tag 'user_login' %>
- <%= submit_tag 'Invite' %>
-<% end %>
-<% end %>
+	<% if @organization.users.include? current_user %>
+	<p>Invite new editor for this entry:</p>
+	<% form_tag :action => 'invite', :id => @organization do %>
+	E-mail: <%= text_field_tag 'user_login' %>
+	 <%= submit_tag 'Invite' %>
+	<% end %>
+	<% end %>
+</div>
 
 <h2>Download this entry</h2>
 
