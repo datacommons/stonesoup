@@ -22,7 +22,7 @@
 		<%= hidden_field_tag 'advanced', 1 %>
 		<label for="q">Search for an organization:</label>
 		<div class="option_group">
-			<div class="option_group_title">Org name, description and products/services:</div>
+			<div class="option_group_title">Keyword search for Organization name, description and products/services:</div>
 			<%= text_field_tag 'q', @query, :size => 40 %>
 		</div>
 		<div class="option_group">
@@ -32,10 +32,12 @@
 		</div>
 		<div class="option_group">
 			<div class="option_group_title">Geographically:</div>
-			<% if !session[:filters].nil? and !session[:filters]['locations.physical_state'].nil? and session[:filters]['locations.physical_state'].include?('CA') %>
-				Within the county: <%# select_tag "county", [['','']] + options_from_collection_for_select(Location.unique_counties) %>
-			<% end %>
-			Within the state: <%= select_tag "state", '<option></option>' + options_for_select(Location::STATES, params[:state]) %><br/>
+			<%- if !session[:state_filter].nil? and session[:state_filter].include?('CA') -%>
+				Within the county: <%= select_tag "county", options_for_select([''] + Location.unique_counties('CA')) %><br/>
+			<%- end -%>
+			<%- if session[:state_filter].nil? -%>
+				Within the state: <%= select_tag "state", '<option></option>' + options_for_select(Location::STATES, params[:state]) %><br/>
+			<%- end -%>
 			Within <%= select_tag 'within', options_for_select([['',''], ['1 mile', 1], ['5 miles', 5], ['10 miles', 10], ['20 miles', 20]], params[:within].to_i)%>
 			of <%= text_field_tag 'origin', params[:origin] %> (zipcode)<br/>
         </div>
