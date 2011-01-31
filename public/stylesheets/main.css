@@ -278,6 +278,7 @@ ul.menu_bar li a {
 	left: 0;
 	border: 2px solid black;
 	background-color: #FFF;
+	padding: 0px 4px;
 }
 #admin_menu .title {
 	padding: 5px;
