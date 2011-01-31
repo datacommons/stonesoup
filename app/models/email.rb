@@ -14,4 +14,11 @@ class Email < ActionMailer::Base
     body :user => user, :organization => org, :change_msg => change_msg
     body[:by_line] = " by #{User.current_user.login}" unless User.current_user.nil?
   end
+  
+  def password_reset(user, password_cleartext)
+    recipients user.login
+    from "Data Commons Project <no-reply@dcp.usworker.coop>"
+    subject "Password reset for #{user.login}"
+    body :user => user, :password => password_cleartext
+  end
 end

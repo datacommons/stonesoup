@@ -57,6 +57,13 @@ dd {
 	margin-left: 0px;
 }
 
+.message {
+	border: 2px dotted black;
+	font-style: bold;
+	padding: 5px;
+	margin: 4px 2px;
+}
+
 .attribute_section {
 	padding: 5px;
 	border-style: solid;

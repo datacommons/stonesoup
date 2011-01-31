@@ -1,4 +1,29 @@
 module Common
+  PASSWORD_MIN_LENGTH = 6
+  INVALID_PASSWORD_MESSAGE = "is invalid. Password must be at least #{PASSWORD_MIN_LENGTH} characters long, contain at least one upper-case letter, one lower-case letter and one number or special character; and must not contain 'password' or the username."
+  def Common.valid_password?(password, username = '')
+    return false if password.blank?
+    return false unless PASSWORD_MIN_LENGTH <= password.length
+    return false unless password.match(/[A-Z]/)
+    return false unless password.match(/[a-z]/)
+    return false unless password.match(/[0-9\?\!\@\#\$\%\^\&\*\(\)\[\]\{\}\=\+\-]/)
+    return false if password.downcase == username.downcase
+    return false if password.match(/password/i)
+    return true
+  end
+  
+  PASSWORD_CHARS = 'abcdefghijkmnopqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ23456789'
+  def Common::random_password(username, size = 6)
+    password = ''
+    while(!valid_password?(password, username))
+      password = ''
+      size.times do
+        password += PASSWORD_CHARS[rand(PASSWORD_CHARS.length), 1]
+      end
+    end
+    return password
+  end
+  
   def Common::detect_changes(old, attr_hash)
     # NOTE: old may be either a model or a hash. all fields are referenced through object[]
     # go through each parameter in attr_hash and if present in object and value is different, add to results
