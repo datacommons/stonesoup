@@ -4,6 +4,8 @@ class Person < ActiveRecord::Base
   has_many :organizations, :through => :org_associations
   has_one :user
 
+  validates_presence_of :firstname
+
   acts_as_ferret(:fields => {
     :name => {:boost => 2.0, :store => :yes },
     :access_type => { :store => :yes }
