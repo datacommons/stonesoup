@@ -124,7 +124,7 @@ class OrganizationsController < ApplicationController
     unless @user
       @user = User.create(:login => params[:user_login])
       @user.password_cleartext = random_password(params[:user_login])
-      flash[:error] = "Malformed e-mail address"
+      flash[:error] = "Login user account created for #{params[:user_login]}"
     end
     if @user.organizations.include?(@organization)
       flash[:notice] = "#{@user.login} is already an editor for this entry"

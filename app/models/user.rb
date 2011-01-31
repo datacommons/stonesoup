@@ -101,6 +101,10 @@ public
     end
   end
   
+  def to_s
+    self.login
+  end
+  
   def can_edit?(entry)
     return true if self.is_admin? # admin's can edit anything
     case entry.class.to_s
