@@ -43,6 +43,11 @@ private
     #return appropriate layout depending on value of request.host (domain name)
     # you can also do other dependent filtering, setting session variables, etc.
     site = get_site
+    
+    if params[:iframe]
+      logger.debug("setting session's IFRAME status to: #{params[:iframe]}")
+      session[:iframe] = (params[:iframe] == 1)
+    end
     return site.to_s
   end
 

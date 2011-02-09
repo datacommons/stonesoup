@@ -29,6 +29,8 @@
 		}
 		#userstatus {
 			color: white;
+			float:none;
+			clear:both;
 		}
 		#userstatus a {
 			text-decoration: none;
@@ -39,6 +41,19 @@
 		h1, h2, h3, .address dt {
 			color: #91a327;
 		}
+		#header {
+			height:147px;
+		}
+<%- if session[:iframe] -%>
+		#maincol,
+		#pagewidth {
+			width: auto;
+		}
+		#admin_menu {
+			position: relative;
+			margin-top: 5px;
+		}
+<%- end -%>
 	</style>
 </head>
 <body class="frontpage section-<%=params[:controller]%> page-<%=params[:controller]%>-<%=params[:action]%>">
@@ -49,15 +64,16 @@
 <!-- begin pagewidth div -->
 <div id="pagewidth">
 
+<%- unless session[:iframe] -%>
 	<div id="header">
 		<a href="/"><img src="http://cccd.coop/images/mastHeadLogo.gif" alt="California Center for Cooperative Development" width="451" height="119" /></a>
 	  	<div id="topMenuBar">
 			<a href="https://www.networkforgood.org/donation/ExpressDonation.aspx?ORGID2=392065673" target="_blank"><img src="http://cccd.coop/images/donate.gif" alt="Donate button" name="donate" width="167" height="24" id="donate" /></a>
 			<br class="clearfloat" />
 		</div>
-		<%=render :partial => 'layouts/usermenu'%>
 	</div>
-
+<%- end -%>
+	<%=render :partial => 'layouts/usermenu'%>
 
 <!-- begin maincol div -->
 <div id="maincol">
