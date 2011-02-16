@@ -20,29 +20,37 @@
 	<br/>
 	<% form_tag( {:action => 'search'}, :method => 'get' ) do %>
 		<%= hidden_field_tag 'advanced', 1 %>
-		<label for="q">Search for an organization:</label>
-		<div class="option_group">
-			<div class="option_group_title">Keyword search for Organization name, description and products/services:</div>
-			<%= text_field_tag 'q', @query, :size => 40 %>
-		</div>
-		<div class="option_group">
-			<div class="option_group_title">Type and Sector:</div>
-			Organization Type: <%= select_tag 'org_type_id', '<option></option>' + options_from_collection_for_select(OrgType.get_available, 'id', 'name', params[:org_type_id].to_i) %>
-			<br/>Business Sector:<%= select_tag 'sector_id', '<option></option>' + options_from_collection_for_select(Sector.get_available, 'id', 'name', params[:sector_id].to_i) %>
-		</div>
-		<div class="option_group">
-			<div class="option_group_title">Geographically:</div>
-			<%- if !session[:state_filter].nil? and session[:state_filter].include?('CA') -%>
-				Within the county: <%= select_tag "county", options_for_select([''] + Location.unique_counties('CA')) %><br/>
-			<%- end -%>
-			<%- if session[:state_filter].nil? -%>
-				Within the state: <%= select_tag "state", '<option></option>' + options_for_select(Location::STATES, params[:state]) %><br/>
-			<%- end -%>
-			Within <%= select_tag 'within', options_for_select([['',''], ['1 mile', 1], ['5 miles', 5], ['10 miles', 10], ['20 miles', 20]], params[:within].to_i)%>
-			of <%= text_field_tag 'origin', params[:origin] %> (zipcode)<br/>
-        </div>
+		<table id="advsearch">
+			<tr><th><label for="q">Keyword search</label></th>
+				<td><%= text_field_tag 'q', @query, :size => 60 %>
+					<br/><span class="note">searches Organization's name, description and products/services</span>
+				</td>
+			</tr>
+			<tr>
+				<th>Organizational Details</th>
+				<td>
+					<table cellspacing="0" cellpadding="0" class="inner">
+						<tr><td>Organization Type:</td><td><%= select_tag 'org_type_id', '<option></option>' + options_from_collection_for_select(OrgType.get_available, 'id', 'name', params[:org_type_id].to_i) %></td></tr>
+						<tr><td>Business Sector:</td><td><%= select_tag 'sector_id', '<option></option>' + options_from_collection_for_select(Sector.get_available, 'id', 'name', params[:sector_id].to_i) %></td></tr>
+					</table>
+				</td>
+			</tr>
+			<tr><th>Geographically</th>
+				<td>
+					<table cellspacing="0" cellpadding="0" class="inner">
+					<%- if !session[:state_filter].nil? and session[:state_filter].include?('CA') -%>
+						<tr><td>Within the county:</td><td><%= select_tag "county", options_for_select([''] + Location.unique_counties('CA')) %></td></tr>
+					<%- end -%>
+					<%- if session[:state_filter].nil? -%>
+						<tr><td>Within the state:</td><td><%= select_tag "state", '<option></option>' + options_for_select(Location::STATES, params[:state]) %></td></tr>
+					<%- end -%>
+					<tr><td>Within <%= select_tag 'within', options_for_select([['',''], ['1 mile', 1], ['5 miles', 5], ['10 miles', 10], ['20 miles', 20]], params[:within].to_i)%>
+					of</td><td><%= text_field_tag 'origin', params[:origin] %> (zipcode)</td></tr>
+					</table>
+				</td>
+			</tr>
+		</table>
 		<%= submit_tag 'Search' %>
-		</p>
 	<% end %>
 	<br/>
 	<br/>
