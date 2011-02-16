@@ -154,7 +154,7 @@ class SearchController < ApplicationController
     @organization = Organization.find(params[:id])
     # for the moment, only look in the environs of one location
     @origin = @organization.locations[0]
-    @entries = Location.find(:all, :origin => @origin, :within=>within, :order=>'distance asc', :units=>:miles)
+    @entries = Location.find(:all, :origin => @origin, :within=>within, :order=>'distance asc', :units=>:miles).map {|l| l.organization}.uniq
     @entries = AccessRule.cleanse(@entries, current_user)
     @within = within
     
