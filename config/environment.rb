@@ -121,3 +121,88 @@ if FileTest.exist?(email_config_file)
   ActionMailer::Base.smtp_settings = email_settings[RAILS_ENV] unless email_settings[RAILS_ENV].nil?
 end
 
+
+# add "essentially the same" operator to relevant classes, for the change_message method in Common
+class String
+  def same_value?(other)
+    if other.blank?
+      return self.empty?  #same as self.blank? since self is obviously not nil
+    end
+    self == other.to_s
+  end
+end
+
+class Numeric
+  def same_value?(other)
+    if (other.is_a?(String) and other.blank?) or other.nil?
+      return self.zero?
+    end
+    self == other.to_i
+  end
+end
+
+class Float
+  def same_value?(other)
+    if (other.is_a?(String) and other.blank?) or other.nil?
+      return self.zero?
+    end
+    self == other.to_s.to_f
+  end
+end
+
+class Date
+  def same_value?(other)
+    if (other.is_a?(String) and other.blank?) or other.nil?
+      return self.jd.zero?
+    end
+    self === Date.parse(other.to_s)
+  end
+end
+
+class Time
+  def same_value?(other)
+    if (other.is_a?(String) and other.blank?) or other.nil?
+      return self.to_i.zero?
+    end
+    self === Time.parse(other.to_s)
+  end
+end
+
+class DateTime
+  def same_value?(other)
+    if (other.is_a?(String) and other.blank?) or other.nil?
+      return self.jd.zero?
+    end
+    self === DateTime.parse(other.to_s)
+  end
+end
+
+class TrueClass
+  def same_value?(other)
+    if (other.is_a?(String) and other.blank?) or other.nil?
+      return false
+    end
+    self == Common::value_to_boolean(other)
+  end
+end
+
+class FalseClass
+  def same_value?(other)
+    if (other.is_a?(String) and other.blank?) or other.nil?
+      return true
+    end
+    self == Common::value_to_boolean(other)
+  end
+end
+
+class DateTime
+  def datepart
+    Date.new(self.year, self.month, self.mday)
+  end
+end
+
+class Time
+  def datepart
+    Date.new(self.year, self.month, self.mday)
+  end
+end

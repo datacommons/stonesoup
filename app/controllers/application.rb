@@ -21,15 +21,20 @@ private
     @site_show_latest_people = true
 
     if ['ca.find.coop', 'california.find.coop', 'testca.find.coop'].include?(request.host)
+      Email.website_base_url = 'http://california.find.coop'
       @site_layout = :california
     elsif ['me.find.coop','maine.find.coop','testme.find.coop'].include?(request.host)
+      Email.website_base_url = 'http://maine.find.coop'
       @site_searches = ['food','local sprouts','zip:04412','*']
       @site_layout = :maine
       @site_show_latest_people = false
     elsif ['oh.find.coop','ohio.find.coop','testoh.find.coop'].include?(request.host)
+      Email.website_base_url = 'http://ohio.find.coop'
       @site_searches = ['grocery','zip:43202','*']
       @site_layout = :ohio
       @site_show_latest_people = false
+    else
+      Email.website_base_url = 'http://find.coop'
     end
     return @site_layout
   end
@@ -38,6 +43,11 @@ private
     #return appropriate layout depending on value of request.host (domain name)
     # you can also do other dependent filtering, setting session variables, etc.
     site = get_site
+    
+    if params[:iframe]
+      logger.debug("setting session's IFRAME status to: #{params[:iframe]}")
+      session[:iframe] = (params[:iframe] == 1)
+    end
     return site.to_s
   end
 

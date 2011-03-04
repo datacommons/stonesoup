@@ -1,0 +1,11 @@
+<h1>New legal_structure</h1>
+
+<% form_for(@legal_structure) do |f| %>
+  <%= f.error_messages %>
+	<%= render :partial => 'form' %>
+  <p>
+    <%= f.submit "Create" %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', legal_structures_path %>

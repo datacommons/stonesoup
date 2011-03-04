@@ -21,4 +21,10 @@ class OrgType < ActiveRecord::Base
    def OrgType.get_available
      OrgType.find(:all, :conditions => 'custom = 0 AND (effective_id IS NULL OR effective_id = id)', :order => 'name')
    end
+   def to_s
+     self.name
+   end
+   def <=>(other)
+     self.to_s <=> other.to_s
+   end
 end

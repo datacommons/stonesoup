@@ -57,6 +57,13 @@ dd {
 	margin-left: 0px;
 }
 
+.message {
+	border: 2px dotted black;
+	font-style: bold;
+	padding: 5px;
+	margin: 4px 2px;
+}
+
 .attribute_section {
 	padding: 5px;
 	border-style: solid;
@@ -253,7 +260,7 @@ div.progressBar div.background {
 	font-weight: bold;
 }
 ul.menu_bar {
-	margin: 1em 0;
+	margin: 6px 0 7px 0;
 	padding: 0;
 	list-style: none;
 }
@@ -271,6 +278,7 @@ ul.menu_bar li a {
 	left: 0;
 	border: 2px solid black;
 	background-color: #FFF;
+	padding: 0px 4px;
 }
 #admin_menu .title {
 	padding: 5px;
@@ -313,6 +321,27 @@ ul.menu_bar li a {
     padding:5px;
 }
 
+#advsearch {
+	margin-top: 20px;
+}
+#advsearch th,
+#advsearch td {
+	vertical-align: top;
+}
+#advsearch th {
+	font-weight: bold;
+	padding-right: 10px;
+	margin-top: 10px;
+}
+#advsearch {
+	border-spacing: 10px;
+}
+#advsearch .inner td {
+	padding-right: 4px;
+}
+#advsearch .note {
+	font-style: italic;
+}
 .listing {
  	display: block;
 	float: left;
@@ -376,3 +405,7 @@ ul.menu_bar li a {
     color: #aaa;
 }
 
+#organization_editors form, 
+#organization_editors form div {
+	display: inline;
+}

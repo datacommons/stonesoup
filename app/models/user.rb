@@ -49,11 +49,17 @@ protected
   end
 
   validates_length_of :login, :within => 3..40
-  #validates_length_of :password, :within => 5..40
   validates_presence_of :login, :password
   validates_format_of :login, :with => VALID_EMAIL_REGEX, :message => 'should be a valid e-mail address'
   validates_uniqueness_of :login, :on => :create
   validates_confirmation_of :password_cleartext, :on => :create     
+  validates_length_of :password_cleartext, :within => Common::PASSWORD_MIN_LENGTH..40, :message => 'must be at least %d characters', :if => Proc.new { |user| user.new_record? or (!user.new_record? and !user.password_cleartext.nil?) }
+  validates_each :password_cleartext do |record, attr, value|
+    # validate password only for new user creation or existing user password update
+    if record.new_record? or (!record.new_record? and !value.nil?)
+      record.errors.add attr, Common::INVALID_PASSWORD_MESSAGE unless Common::valid_password?(value, record.login)
+    end
+  end
 
   # Before saving the record to database we will crypt the password 
   # using SHA1. 
@@ -99,6 +105,10 @@ public
     elsif self.person.respond_to?('link_hash')
       self.person.link_hash
     end
+  end
+  
+  def to_s
+    self.login
   end
   
   def can_edit?(entry)

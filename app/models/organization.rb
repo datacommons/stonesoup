@@ -32,6 +32,49 @@ class Organization < ActiveRecord::Base
   validates_presence_of :name
 
   before_save :save_ll
+  before_update :save_old_values
+  after_update :send_notifications
+  
+  UPDATE_NOTIFICATION_IGNORED_COLUMNS = ['id', 'created_at', 'created_by_id', 'updated_at', 'updated_by_id']
+  UPDATE_NOTIFICATION_HAS_ONE_COLUMNS = ['legal_structure', 'access_rule']
+#  UPDATE_NOTIFICATION_INCLUDED_ASSOCIATIONS = ['locations', 'products_services', 'org_types', 'sectors', 'member_orgs', 'organizations_people', 'users', 'legal_structure', 'access_rule']
+  def get_value_hash
+    oldvalues = Hash[*self.class.columns.reject{|c| UPDATE_NOTIFICATION_IGNORED_COLUMNS.include?(c.name)}.collect {|c| [c.name, self.send(c.name)]}.flatten]
+    UPDATE_NOTIFICATION_HAS_ONE_COLUMNS.each do |hasone|
+      unless self.respond_to?(hasone)
+        logger.error("ERROR: Organization has no method '#{hasone}' -- please update Organization::UPDATE_NOTIFICATION_HAS_ONE_COLUMNS")
+        next
+      end
+      oldvalues.delete(hasone + '_id')
+      value = self.send(hasone)
+      oldvalues[hasone] = value.to_s unless value.nil?
+    end
+    #logger.debug("returning value_hash as : #{oldvalues.inspect}")
+    return oldvalues
+  end
+  
+  def save_old_values
+    org = self.class.find(self.id)
+    @oldvalues = org.get_value_hash
+    #logger.debug("#{self.class}#save_old_values: Saving @oldvalues=#{@oldvalues.inspect}")
+    return true
+  end
+  
+  def send_notifications
+    newvalues = self.get_value_hash
+    log_msg = Common::change_message("Organization Record changed: ", @oldvalues, newvalues)
+    if log_msg.nil? # if no changes, stop here
+      logger.debug("No changes to report")
+      return true
+    end
+    logger.debug("sending update notification for: #{log_msg}")
+    # send notifications to all the other editors on this entry, except the person making the update
+    self.users.reject{|u| u == User.current_user}.each do |user|
+      next unless user.update_notifications_enabled?  # skip if notifications are disabled
+      Email.deliver_update_notification(user, self, log_msg)
+    end
+    return true
+  end
   
   def get_org_types
     org_types.collect{|ot| ot.root_term}.uniq
@@ -155,4 +198,7 @@ class Organization < ActiveRecord::Base
     {:controller => 'organizations', :action => 'show', :id => self.id}
   end
 
+  def to_s
+    self.name
+  end
 end

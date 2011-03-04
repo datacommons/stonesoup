@@ -1,0 +1,2 @@
+module LegalStructuresHelper
+end

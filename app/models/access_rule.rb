@@ -13,4 +13,12 @@ class AccessRule < ActiveRecord::Base
   def AccessRule.cleanse(entries, user)
     entries.reject{|e| !e.accessible?(user)}
   end
+
+  def to_s
+    self.access_type
+  end
+
+  def <=>(other)
+    self.to_s <=> other.to_s
+  end
 end

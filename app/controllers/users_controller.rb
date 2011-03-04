@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_filter :login_required, :only => [:new, :create, :edit, :update, :destroy, :index, :list, :show]
+  before_filter :login_required, :only => [:new, :create, :edit, :update, :destroy, :index, :list, :show, :prefs, :update_prefs]
   before_filter :admin_required, :only => [:index, :list, :new, :create, :edit, :update, :destroy]
 
   def index
@@ -8,21 +8,41 @@ class UsersController < ApplicationController
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  verify :method => :post, :only => [ :destroy, :create, :update ],
+  verify :method => :post, :only => [ :destroy, :create, :update, :update_prefs ],
          :redirect_to => { :action => :list }
 
   def login
     case request.method
       when :post
-        if session[:user] = User.authenticate(params['user_login'], params['user_password'])
+        if params[:login] # attempting a login
+          if session[:user] = User.authenticate(params['user_login'], params['user_password'])
 
-          session[:user].update_attribute('last_login', DateTime.now)
-          flash['notice']  = "Login successful"
-          redirect_back_or_default :controller => 'search', :action => "index"
-        else
-          @login    = params['user_login']
-          @message  = "Login unsuccessful"
-      end
+            session[:user].update_attribute('last_login', DateTime.now)
+            flash['notice']  = "Login successful"
+            redirect_back_or_default :controller => 'search', :action => "index"
+          else
+            @login    = params['user_login']
+            @message  = "Login unsuccessful"
+          end
+        elsif params[:forgot_pass] # requesting password reset
+          if params[:user_login].blank?
+            @login    = params['user_login']
+            @message  = "Enter your e-mail address to reset your password."
+          else
+            user = User.find_by_login(params[:user_login])
+            if user.nil?
+              @login    = params['user_login']
+              @message  = "No user was found with for that e-mail address."
+            else
+              # reset password and send e-mail
+              newpass = Common::random_password(user.login)
+              user.password_cleartext = newpass
+              user.save!
+              Email.deliver_password_reset(user, newpass)
+              @message = "A new password was e-mailed to #{user.login}"
+            end
+          end
+        end
     end
   end
   
@@ -89,6 +109,10 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
   end
 
+  def prefs
+    @user = User.current_user
+  end
+
   def update
     @user = User.find(params[:id])
     if @user.update_attributes(params[:user])
@@ -99,6 +123,21 @@ class UsersController < ApplicationController
     end
   end
 
+  def update_prefs
+    @user = User.current_user
+    if params[:user].nil? # bad form submission
+      redirect_to :action => 'prefs' and return
+    end
+    params[:user].delete(:login) # not user-editable at this time. is_admin is already attr_protected
+    params[:user].delete(:password_cleartext) if params[:user][:password_cleartext].blank?  # make sure password is not updated if left blank
+    if @user.update_attributes(params[:user])
+      flash[:notice] = 'Your preferences were successfully updated.'
+      redirect_to :controller => 'search', :action => 'index'
+    else
+      render :action => 'prefs'
+    end
+  end
+  
   def destroy
     User.find(params[:id]).destroy
     redirect_to :action => 'list'
@@ -107,7 +146,9 @@ class UsersController < ApplicationController
   protected
 
   def authorize?(user)
-    user.is_admin?
+    return true if user.is_admin? # all access
+    return true if params[:action].match('prefs$')  # user can edit own prefs
+    return false  # otherwise, no
   end
 
 end

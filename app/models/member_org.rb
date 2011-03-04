@@ -29,4 +29,12 @@ class MemberOrg < ActiveRecord::Base
   def link_hash
     {:controller => 'member_orgs', :action => 'show', :id => self}
   end
+
+  def to_s
+    self.name
+  end
+
+  def <=>(other)
+    self.to_s <=> other.to_s
+  end
 end

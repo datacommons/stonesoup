@@ -108,7 +108,17 @@ class OrganizationsController < ApplicationController
       format.xml  { head :ok }
     end
   end
-
+  
+  def remove_editor
+    @organization = Organization.find(params[:id])
+    user = User.find(params[:user_id])
+    if request.method == :post and !current_user.nil?
+      @organization.users.delete(user)
+      flash[:notice] = "The user #{user.login} has been removed as an editor for the organization: #{@organization.name}"
+      redirect_to :action => 'show', :id => @organization
+    end
+  end
+  
   def become_editor
     @organization = Organization.find(params[:id])
     if request.method == :post and !current_user.nil?
@@ -124,7 +134,7 @@ class OrganizationsController < ApplicationController
     unless @user
       @user = User.create(:login => params[:user_login])
       @user.password_cleartext = random_password(params[:user_login])
-      flash[:error] = "Malformed e-mail address"
+      flash[:error] = "Login user account created for #{params[:user_login]}"
     end
     if @user.organizations.include?(@organization)
       flash[:notice] = "#{@user.login} is already an editor for this entry"

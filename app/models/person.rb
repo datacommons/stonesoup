@@ -4,6 +4,8 @@ class Person < ActiveRecord::Base
   has_many :organizations, :through => :org_associations
   has_one :user
 
+  validates_presence_of :firstname
+
   acts_as_ferret(:fields => {
     :name => {:boost => 2.0, :store => :yes },
     :access_type => { :store => :yes }
@@ -59,5 +61,13 @@ class Person < ActiveRecord::Base
   
   def link_hash
     {:controller => 'people', :action => 'show', :id => self.id}
+  end
+
+  def to_s
+    self.name
+  end
+
+  def <=>(other)
+    self.to_s <=> other.to_s
   end
 end

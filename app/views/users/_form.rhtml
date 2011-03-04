@@ -1,12 +1,19 @@
+<%- prefs_mode = false if prefs_mode.nil? -%>
 <%= error_messages_for 'user' %>
 
 <!--[form:user]-->
-<p><label for="user_login">Login</label><br/>
+<%- unless prefs_mode -%>
+<p><label for="user_login">E-mail address</label><br/>
 <%= text_field 'user', 'login'  %></p>
+<%- end -%>
 
 <p><label for="user_password_cleartext">Password</label><br/>
-<%= text_field 'user', 'password_cleartext'  %></p>
+<%= password_field 'user', 'password_cleartext' %> Leave blank to keep current password.</p>
 
+<p><%= check_box 'user', 'update_notifications_enabled' %><label for="user_update_notifications_enabled">Editor notifications</label> - if enabled, you will receive an e-mail notification whenever an entry is updated for which you are an editor.</p>
+
+<%- unless prefs_mode -%>
 <p><%= check_box 'user', 'is_admin' %><label for="user_is_admin">This user is an administrator</label></p>
+<%- end -%>
 <!--[eoform:user]-->
 
