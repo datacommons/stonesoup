@@ -102,12 +102,21 @@ class SearchController < ApplicationController
         filtered_query = "+(#{search_query}) +(#{addl_criteria.join(' OR ')})"
         logger.debug("After adding state filter to query, query is: #{filtered_query}")
       end
+
+      per_page_limit = 15
+      if params[:format]=='xml' or params[:format]=='csv'
+        # When providing xml or csv, there should be no
+        # effective limit on the download size.  However,
+        # depending on server load, we might want to 
+        # restrict this to logged in users?
+        per_page_limit = 15000
+      end
       
       @entries = ActsAsFerret::find(filtered_query,
                                     record_types,
                                     { 
                                       :page => params[:page], 
-                                      :per_page => 15,
+                                      :per_page => per_page_limit,
                                     },
                                     { 
                                       :limit => :all,
