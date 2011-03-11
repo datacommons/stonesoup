@@ -85,6 +85,7 @@ class OrganizationsController < ApplicationController
   def update
     @organization = Organization.find(params[:id])
     @organization.users << current_user if params[:associate_user_to_entry] and !@organization.users.include?(current_user)
+    @organization.users.delete(current_user) if params[:disassociate_user_from_entry]
     respond_to do |format|
       if @organization.update_attributes(params[:organization])
         flash[:notice] = 'Organization was successfully updated.'
