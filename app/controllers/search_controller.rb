@@ -104,7 +104,7 @@ class SearchController < ApplicationController
       end
 
       per_page_limit = 15
-      if params[:format]=='xml' or params[:format]=='csv'
+      if params[:format]=='xml' or params[:format]=='csv' or params[:format]=='pdf'
         # When providing xml or csv, there should be no
         # effective limit on the download size.  However,
         # depending on server load, we might want to 
@@ -147,6 +147,16 @@ class SearchController < ApplicationController
           send_data table.to_csv,
           :type => 'text/csv; charset=iso-8859-1; header=present',
           :disposition => ("attachment; filename=search.csv")
+        end
+        f.pdf do
+          data = [@entries].flatten
+          data = data.map {|r| r.reportable_data}.flatten
+          cols = Organization.column_names
+          report = SearchReport.new(:data => data,
+                                    :column_names => cols)
+          send_data report.to_pdf, :filename => "search.pdf",
+          :type => "application/pdf",
+          :disposition => 'inline'
         end
       end
     end
