@@ -33,9 +33,9 @@
   <%= will_paginate @entries %>
  <h2>Download Search Results</h2>
    <ul>  
-    <li>Download as <%= link_to 'CSV', :action => 'search', :q => params[:q].to_s, :format => 'csv' %> (suitable for spreadsheet programs)</li>
-    <li>Download as <%= link_to 'XML', :action => 'search', :q => params[:q].to_s, :format => 'xml' %></li>
-    <li>Download as <%= link_to 'PDF', :action => 'search', :q => params[:q].to_s, :format => 'pdf' %></li>
+    <li>Download as <%= link_to 'CSV', params.merge(:format => 'csv') %> (suitable for spreadsheet programs)</li>
+    <li>Download as <%= link_to 'XML', params.merge(:format => 'xml') %></li>
+    <li>Download as <%= link_to 'PDF', params.merge(:format => 'pdf') %></li>
    </ul>
  <% end %>
 <% else %>
