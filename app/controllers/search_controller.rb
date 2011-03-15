@@ -10,6 +10,7 @@ class SearchController < ApplicationController
 
   def search
     @query = params[:q].to_s + ''
+    @search_text = @query
     search_query = params[:q].to_s + '' # apparently the (+ '') is needed to make these distinct variables
     @latest_changes = get_latest_changes()
     
@@ -149,11 +150,7 @@ class SearchController < ApplicationController
           :disposition => ("attachment; filename=search.csv")
         end
         f.pdf do
-          data = [@entries].flatten
-          data = data.map {|r| r.reportable_data}.flatten
-          cols = Organization.column_names
-          report = SearchReport.new(:data => data,
-                                    :column_names => cols)
+          report = SearchReport.new(:data => @entries, :search => @search_text)
           send_data report.to_pdf, :filename => "search.pdf",
           :type => "application/pdf",
           :disposition => 'inline'

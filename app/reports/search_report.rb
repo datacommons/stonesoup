@@ -1,77 +1,63 @@
 class SearchReport < Prawn::Document
   def initialize(params)
-    super()
+    super(:page_layout => :landscape)
+    @search = params[:search]
     @data = params[:data]
-    # @column_names = params[:column_names]
-    @column_names = ['name', 'phone', 'email', 'website']
+    @column_names = ['name', 'address', 'phone', 'email', 'description']
+    @column_widths = [120,100,70,120]
+    @column_widths << (self.bounds.top_right[0] - self.bounds.top_left[0] - @column_widths.inject(0){|sum,item| sum + item})
+  end
+
+  def fonter(sz,str)
+    return "<font size='" + sz.to_s + "'>" + str + "</font>"
   end
 
   def to_pdf
-    text "Basis PDF search results (terse format)"
+    text("find.coop search results for " + @search,
+         :inline_format => true,
+         :align => :center)
+    move_down 6
     #text @column_names
 
     rows = [@column_names]
     for d in @data
-      rows = rows << @column_names.map{|x| d[x].to_s}
+      row = []
+      sz = 8
+      row << fonter(sz,d['name'])
+      location = ""
+      for l in d.locations
+        unless l.physical_address1.blank?
+          location = location + l.physical_address1 + "\n"
+        end
+        unless l.physical_address2.blank?
+          location = location + l.physical_address2 + "\n"
+        end
+        unless l.physical_city.blank?
+          location = location + l.physical_city + "\n"
+        end
+        unless l.physical_country.blank?
+          location = location + l.physical_country + "\n"
+        end
+      end
+      row << fonter(sz,location)
+      row << fonter(sz,d['phone'])
+      row << fonter(sz,d['email'])
+      row << fonter(sz,d['description'])      
+      # @column_names.map{|x| "<font size='8'>" + d[x].to_s + "</font>"}
+      rows = rows << row
     end
     #rows = rows + [@data]
     #rows = [%w[head 1 2 3 4]]
     #data = data + [%w[Some data in a table]]*50
-    table(rows, :header => true, :row_colors => %w[cccccc ffffff]) do
+    table(rows, :header => true, :row_colors => %w[cccccc ffffff],
+          :cell_style => {:inline_format => true},
+          :column_widths => @column_widths) do
       row(0).style :background_color => '000000', :text_color => 'ffffff'
       cells.style :borders => []
     end
 
-    if false
 
-    font_size = 9
-
-    widths = [50, 170]
-
-    headers = ["Name","Address"]
-
-      head = make_table([headers], :column_widths => widths)
-
-    data = []
-
-    def row(date, pt, charges, portion_due, balance, widths)
-      rows = charges.map { |c| ["", "", c[0], c[1], "", ""] }
-
-      # Date and Patient Name go on the first line.
-      rows[0][0] = date
-      rows[0][1] = pt
-
-      # Due and Balance go on the last line.
-      rows[-1][4] = portion_due
-      rows[-1][5] = balance
-
-      # Return a Prawn::Table object to be used as a subtable.
-      make_table(rows) do |t|
-        t.column_widths = widths
-        t.cells.style :borders => [:left, :right], :padding => 2
-        t.columns(4..5).align = :right
-      end
-
-    end
-
-    data << row("1/1/2010", "", [["Balance Forward", ""]], "0.00", "0.00",
-                widths)
-    50.times do
-      data << row("1/1/2010", "John", [["Foo", "Bar"], 
-                                       ["Foo", "Bar"]], "5.00", "0.00",
-                  widths)
-    end
-
-    # Wrap head and each data element in an Array -- the outer table has only one
-    # column.
-    table([[head], *(data.map{|d| [d]})], :header => true,
-          :row_colors => %w[cccccc ffffff]) do
-      
-      row(0).style :background_color => '000000', :text_color => 'ffffff'
-      cells.style :borders => []
-    end
-
-    end
+    number_pages "Page <page> of <total>", [bounds.right - 50, -20]
 
     render
   end
