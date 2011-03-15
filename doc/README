@@ -56,5 +56,8 @@ script/runner -e development 'Organization.rebuild_index'
 ============================================================================
 == Development
 
-
-
+Plugins in vendor directory:
+  ./script/plugin install git://github.com/sandal/prawn.git -r stable
+  ./script/plugin install https://github.com/yob/pdf-reader.git
+  ./script/plugin install git://rubyforge.org/ascii85.git
+  ./script/plugin install https://github.com/sandal/ttfunk.git

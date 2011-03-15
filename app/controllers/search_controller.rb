@@ -10,6 +10,7 @@ class SearchController < ApplicationController
 
   def search
     @query = params[:q].to_s + ''
+    @search_text = @query
     search_query = params[:q].to_s + '' # apparently the (+ '') is needed to make these distinct variables
     @latest_changes = get_latest_changes()
     
@@ -104,7 +105,7 @@ class SearchController < ApplicationController
       end
 
       per_page_limit = 15
-      if params[:format]=='xml' or params[:format]=='csv'
+      if params[:format]=='xml' or params[:format]=='csv' or params[:format]=='pdf'
         # When providing xml or csv, there should be no
         # effective limit on the download size.  However,
         # depending on server load, we might want to 
@@ -147,6 +148,12 @@ class SearchController < ApplicationController
           send_data table.to_csv,
           :type => 'text/csv; charset=iso-8859-1; header=present',
           :disposition => ("attachment; filename=search.csv")
+        end
+        f.pdf do
+          report = SearchReport.new(:data => @entries, :search => @search_text)
+          send_data report.to_pdf, :filename => "search.pdf",
+          :type => "application/pdf",
+          :disposition => 'inline'
         end
       end
     end

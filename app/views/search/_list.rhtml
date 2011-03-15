@@ -35,6 +35,7 @@
    <ul>  
     <li>Download as <%= link_to 'CSV', :action => 'search', :q => params[:q].to_s, :format => 'csv' %> (suitable for spreadsheet programs)</li>
     <li>Download as <%= link_to 'XML', :action => 'search', :q => params[:q].to_s, :format => 'xml' %></li>
+    <li>Download as <%= link_to 'PDF', :action => 'search', :q => params[:q].to_s, :format => 'pdf' %></li>
    </ul>
  <% end %>
 <% else %>
