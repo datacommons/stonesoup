@@ -7,20 +7,20 @@
   markers = {}
   bounds = [10000, 10000, -10000, -10000]
   target = @origin.id
-  for entry in @entries
-    if entry.id == target
+  for location in @locations
+    if location.id == target
       icon = "http://maps.google.com/mapfiles/marker.png"
     else
       icon = "http://maps.google.com/mapfiles/marker"+((at+"A"[0]).chr)+".png"
       at = (at + 1)%26
     end
-    pt = [Float(entry.latitude), Float(entry.longitude)]
-    markers[entry.id] = icon
+    pt = [Float(location.latitude), Float(location.longitude)]
+    markers[location.id] = icon
     bounds = [[bounds[0], pt[0]].min,
               [bounds[1], pt[1]].min,
               [bounds[2], pt[0]].max,
               [bounds[3], pt[1]].max]
-    map.marker_init(Marker.new(pt, :info_bubble => show_link(entry), :icon => icon))
+    map.marker_init(Marker.new(pt, :info_bubble => show_link(location.organization), :icon => icon))
   end
   x1 = bounds[0]
   y1 = bounds[1]
@@ -55,17 +55,17 @@ Range:
 
 <p>Searching within <%= @within %> mile<%= ((@within-1).abs<0.01)?"":"s" %> of <%= show_link @organization %>.<br /> [expand to <%= link_to (@within*10).to_s, :within => @within*10, :action => 'near', :controller => 'search', :id => @organization %> mile<%= ((@within*10-1).abs<0.01)?"":"s"%><% if @within>5 %>, contract to <%= link_to (@within/10).to_s, :within => @within/10, :action => 'near', :controller => 'search', :id => @organization %> mile<%= ((@within/10-1).abs<0.01)?"":"s"%><% end %>]</p>
 
-<% if @entries %>
- <% if @entries.blank? %>
+<% if @locations %>
+ <% if @locations.blank? %>
   <p>No results were found for this search.</p>
   <p><%= link_to 'Would you like to add an entry?', :controller => 'organizations', :action => 'new' %></p>
  <% else %>
  <h2>Search Results</h2>
-  <% for entry in @entries %>
+  <% for location in @locations %>
    <div class="location_result">
-   <img src="<%= markers[entry.id] %>" width="20" height="34" align="top" />
-   <%= show_link entry.organization %><br />
-   <span class="qualifier"><%= entry.address_summary %></span>
+   <img src="<%= markers[location.id] %>" width="20" height="34" align="top" />
+   <%= show_link location.organization %><br />
+   <span class="qualifier"><%= location.address_summary %></span>
    </div>
   <% end %>
  <h2>Download Search Results</h2>
