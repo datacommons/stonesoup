@@ -170,8 +170,14 @@ class SearchController < ApplicationController
     @organization = Organization.find(params[:id])
     # for the moment, only look in the environs of one location
     @origin = @organization.locations[0]
-    @entries = Location.find(:all, :origin => @origin, :within=>within, :order=>'distance asc', :units=>:miles).map {|l| l.organization}.uniq
-    @entries = AccessRule.cleanse(@entries, current_user)
+
+    # search results need to be specific locations, otherwise could end up
+    # with "nearby" results in another state
+    # @entries = Location.find(:all, :origin => @origin, :within=>within, :order=>'distance asc', :units=>:miles).map {|l| l.organization}.uniq
+
+    @locations = Location.find(:all, :origin => @origin, :within=>within, :order=>'distance asc', :units=>:miles)
+
+    @locations = AccessRule.cleanse(@locations, current_user)
     @within = within
     
     @latest_changes = get_latest_changes()
@@ -179,8 +185,14 @@ class SearchController < ApplicationController
     f = params[:format]
     respond_to do |f| 
       f.html
-      f.xml { render :xml => @entries }
+      f.xml { 
+        # To do: generate good XML for locations.  For now, give organizations
+        @entries = @locations.map {|l| l.organization}.uniq
+        render :xml => @entries 
+      }
       f.csv do
+        # To do: generate good CSV for locations.  For now, give organizations
+        @entries = @locations.map {|l| l.organization}.uniq
         data = [@entries].flatten
         data = data.map {|r| r.reportable_data}.flatten
         cols = Organization.column_names
