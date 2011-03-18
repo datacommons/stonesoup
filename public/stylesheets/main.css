@@ -195,6 +195,28 @@ body.page-users-login #signupform {
   border: 1px solid #ccc;
 }
 
+#near_map { 
+  width: 400px;
+  height: 300px;
+  float: right; 
+  border: 1px solid #ccc;
+}
+
+#wide_map { 
+  width: 730px;
+  height: 400px;
+  margin-left:auto;
+  margin-right:auto;
+  border: 1px solid #ccc;
+}
+
+#surround_wide_map {
+  width: 735px;
+  margin-top: 10px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
 #surround_map {
   display: block;
   float: right; 

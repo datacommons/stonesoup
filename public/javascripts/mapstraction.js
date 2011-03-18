@@ -1139,6 +1139,18 @@ Mapstraction.prototype.addMarker = function(marker,old) {
       marker.setChild(olmarker);
       this.layers['markers'].addMarker(olmarker);
       if (! old) { this.markers.push(marker); }
+
+      var markerClick = function (evt) {
+          popup = this.createPopup(true);
+          map.addPopup(popup,true);
+          popup.show();
+          currentPopup = this.popup;
+          OpenLayers.Event.stop(evt);
+      };
+      //olmarker.events.register("mousedown", olmarker.feat, markerClick);
+      olmarker.events.register("mouseover", olmarker.feat, markerClick);
+      //olmarker.events.register("mouseout", olmarker.feat, markerClick);
+
       break;
     case 'multimap':
       var mmpin = marker.toMultiMap();
@@ -3092,8 +3104,17 @@ Marker.prototype.toOpenLayers = function() {
     var icon = new OpenLayers.Icon('http://boston.openguides.org/markers/AQUA.png', size, anchor);
   }
 
-  var marker = new OpenLayers.Marker(this.location.toOpenLayers(), icon);
-  return marker;
+    var feature = new OpenLayers.Feature(this.markers, this.location.toOpenLayers()); 
+    feature.closeBox = true;
+    feature.data.icon = icon;
+    feature.popupClass = OpenLayers.Class(OpenLayers.Popup.Anchored, {
+        'autoSize': true
+    });
+    feature.data.popupContentHTML = this.infoBubble;
+    feature.data.overflow = "auto";
+    var marker = feature.createMarker();
+    marker.feat = feature;
+    return marker;
 }
 
 /**
@@ -3251,7 +3272,6 @@ Marker.prototype.setAttribute = function(key,value) {
 Marker.prototype.getAttribute = function(key) {
   return this.attributes[key];
 }
-
 
 
 /**

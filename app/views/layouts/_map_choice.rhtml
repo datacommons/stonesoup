@@ -6,13 +6,13 @@ page = request.request_uri
 
 Set style:
 <span class="mapstyle_select<% if map_type == :openlayers %>_on<%end%>">
-<a href='<%= request.path %>?map=openlayers'>community</a>
+<%= link_to 'community', params.merge(:map => 'openlayers') %>
 </span>
 <span class="mapstyle_select<% if map_type == :openstreetmap %>_on<%end%>">
-<a href='<%= request.path %>?map=openstreetmap'>mixed</a>
+<%= link_to 'mixed', params.merge(:map => 'openstreetmap') %>
 </span>
 <span class="mapstyle_select<% if map_type == :google %>_on<%end%>">
-<a href='<%= request.path %>?map=google'>corporate</a>
+<%= link_to 'corporate', params.merge(:map => 'google') %>
 </span>
 
 <div class="mapstyle_explain">
