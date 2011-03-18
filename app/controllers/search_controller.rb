@@ -159,6 +159,10 @@ class SearchController < ApplicationController
     end
   end
 
+  def map
+    search
+  end
+
   def near
     within = 10
     if params[:within]
