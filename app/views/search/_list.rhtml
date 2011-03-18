@@ -31,8 +31,9 @@
   <% end %>
   <div class='clearboth'></div>
   <%= will_paginate @entries %>
- <h2>Download Search Results</h2>
+ <h2>View Options</h2>
    <ul>  
+    <li>View results on a <%= link_to 'map', params.merge(:action => 'map') %></li>
     <li>Download as <%= link_to 'CSV', params.merge(:format => 'csv') %> (suitable for spreadsheet programs)</li>
     <li>Download as <%= link_to 'XML', params.merge(:format => 'xml') %></li>
    </ul>

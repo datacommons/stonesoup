@@ -1,0 +1,40 @@
+
+<div>
+<%= link_to 'Return to search', params.merge(:action => 'search') %>
+</div>
+
+  <%
+  map = Mapstraction.new("wide_map",current_map_type)
+  map.control_init(:small => true)
+  at = 0
+  markers = {}
+  bounds = [10000, 10000, -10000, -10000]
+  for e in @entries
+  for location in e.locations
+    icon = "http://maps.google.com/mapfiles/marker.png"
+    pt = [Float(location.latitude), Float(location.longitude)]
+    markers[location.id] = icon
+    bounds = [[bounds[0], pt[0]].min,
+              [bounds[1], pt[1]].min,
+              [bounds[2], pt[0]].max,
+              [bounds[3], pt[1]].max]
+    map.marker_init(Marker.new(pt, :info_bubble => show_link(location.organization), :icon => icon))
+  end
+  end
+  x1 = bounds[0]
+  y1 = bounds[1]
+  x2 = bounds[2]
+  y2 = bounds[3]
+  dx = (x2-x1)/10
+  dy = (y2-y1)/10
+  map.center_zoom_on_bounds_init([[x1-dx,y1-dy],[x2+dx,y2+dy]])
+  %>
+  <%= map.to_html %>
+  <div id="surround_wide_map">
+  <%= map.div() %>
+  <div class="clearboth">
+  </div>
+  <%= render :partial => "layouts/map_choice" %>
+  </div>
+
+
