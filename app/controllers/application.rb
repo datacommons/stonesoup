@@ -46,7 +46,7 @@ private
     
     if params[:iframe]
       logger.debug("setting session's IFRAME status to: #{params[:iframe]}")
-      session[:iframe] = (params[:iframe] == 1)
+      session[:iframe] = (params[:iframe].to_i == 1)
     end
     return site.to_s
   end
