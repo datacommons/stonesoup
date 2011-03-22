@@ -22,6 +22,7 @@ private
 
     if ['ca.find.coop', 'california.find.coop', 'testca.find.coop'].include?(request.host)
       Email.website_base_url = 'http://california.find.coop'
+      @site_searches = ['housing','tech*','Arizmendi','zip:941*','*']
       @site_layout = :california
     elsif ['me.find.coop','maine.find.coop','testme.find.coop'].include?(request.host)
       Email.website_base_url = 'http://maine.find.coop'
