@@ -173,18 +173,9 @@ class Location < ActiveRecord::Base
   end
 
   def summary_zip
-    zip = nil
-    if physical_zip
-      if physical_zip.length>0
-        zip = physical_zip
-      end
-    end
+    zip = blank_is_nil(physical_zip)
     unless zip
-      if mailing_zip
-        if mailing_zip.length>0
-          zip = mailing_zip
-        end
-      end
+      zip = blank_is_nil(mailing_zip)
     end
     if zip
       return zip.gsub(/-.*/,'')
@@ -193,11 +184,11 @@ class Location < ActiveRecord::Base
   end
 
   def summary_state
-    state = physical_state
-    country = physical_country
+    state = blank_is_nil(physical_state)
+    country = blank_is_nil(physical_country)
     unless state
-      state = mailing_state
-      country = mailing_country
+      state = blank_is_nil(mailing_state)
+      country = blank_is_nil(mailing_country)
     end
     unless state
       return nil
@@ -210,11 +201,20 @@ class Location < ActiveRecord::Base
   end
 
   def summary_city
-    city = physical_city
+    city = blank_is_nil(physical_city)
     unless city
-      city = mailing_city
+      city = blank_is_nil(mailing_city)
     end
     return city
+  end
+
+  def blank_is_nil(x)
+    if x
+      if x.length==0
+        x = nil
+      end
+    end
+    return x
   end
 
   def link_name
