@@ -78,4 +78,7 @@ module ApplicationHelper
     end
   end
 
+  def core_zip_code(code)
+    return code.gsub(/-.*/,'')
+  end
 end
