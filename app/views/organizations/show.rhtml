@@ -40,11 +40,17 @@
   <ul>
    <li>Within <%= link_to '1', :action => 'near', :controller => 'search', :id => @organization, :params => { :within => 1 } %>, <%= link_to '10', :action => 'near', :controller => 'search', :id => @organization, :params => { :within => 10 } %>, or <%= link_to '100', :action => 'near', :controller => 'search', :id => @organization, :params => { :within => 100 } %> miles</li>
   <% if @organization.primary_location %>
-     <% if @organization.primary_location.physical_zip %>
-       <li>In zip code <%= link_to core_zip_code(@organization.primary_location.physical_zip), :controller => 'search', :action => 'map', :params => { :q => "zip:"+ core_zip_code(@organization.primary_location.physical_zip) } %></li>
+     <% @zip = @organization.primary_location.summary_zip %>
+     <% @city = @organization.primary_location.summary_city %>
+     <% @state = @organization.primary_location.summary_state %>
+     <% if @city and @state %>
+      <li>In <%= link_to @city, :controller => 'search', :action => 'map', :params => { :q => "location:'" + @city + "' state:'" + @state + "'" } %></li>
      <% end %>
-     <% if @organization.primary_location.physical_state %>
-       <li>In <%= link_to @organization.primary_location.physical_state, :controller => 'search', :action => 'search', :params => { :q => "state:'" + @organization.primary_location.physical_state + "'" } %></li>
+     <% if @zip %>
+      <li>In zip code <%= link_to @zip, :controller => 'search', :action => 'map', :params => { :q => "zip:"+ @zip + "*" } %></li>
+     <% end %>
+     <% if @state %>
+       <li>In <%= link_to @state, :controller => 'search', :action => 'search', :params => { :q => "state:'" + @state + "'" } %></li>
      <% end %>
   <% end %>
   </ul>

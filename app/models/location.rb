@@ -17,7 +17,68 @@ class Location < ActiveRecord::Base
   
   Location::ADDRESS_FIELDS = ['address1', 'address2', 'city', 'state', 'zip', 'county', 'country']
   Location::STATES = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District of Columbia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Northern Marianas Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Puerto Rico', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Virgin Islands', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming']
-  
+
+  Location::STATE_SHORT = {
+    'AL' => 'Alabama',
+    'AK' => 'Alaska',
+    'AS' => 'America Samoa',
+    'AZ' => 'Arizona',
+    'AR' => 'Arkansas',
+    'CA' => 'California',
+    'CO' => 'Colorado',
+    'CT' => 'Connecticut',
+    'DE' => 'Delaware',
+    'DC' => 'District of Columbia',
+    'FM' => 'Micronesia',
+    'FL' => 'Florida',
+    'GA' => 'Georgia',
+    'GU' => 'Guam',
+    'HI' => 'Hawaii',
+    'ID' => 'Idaho',
+    'IL' => 'Illinois',
+    'IN' => 'Indiana',
+    'IA' => 'Iowa',
+    'KS' => 'Kansas',
+    'KY' => 'Kentucky',
+    'LA' => 'Louisiana',
+    'ME' => 'Maine',
+    'MH' => 'Marshal Islands',
+    'MD' => 'Maryland',
+    'MA' => 'Massachusetts',
+    'MI' => 'Michigan',
+    'MN' => 'Minnesota',
+    'MS' => 'Mississippi',
+    'MO' => 'Missouri',
+    'MT' => 'Montana',
+    'NE' => 'Nebraska',
+    'NV' => 'Nevada',
+    'NH' => 'New Hampshire',
+    'NJ' => 'New Jersey',
+    'NM' => 'New Mexico',
+    'NY' => 'New York',
+    'NC' => 'North Carolina',
+    'ND' => 'North Dakota',
+    'OH' => 'Ohio',
+    'OK' => 'Oklahoma',
+    'OR' => 'Oregon',
+    'PW' => 'Palau',
+    'PA' => 'Pennsylvania',
+    'PR' => 'Puerto Rico',
+    'RI' => 'Rhode Island',
+    'SC' => 'South Carolina',
+    'SD' => 'South Dakota',
+    'TN' => 'Tennessee',
+    'TX' => 'Texas',
+    'UT' => 'Utah',
+    'VT' => 'Vermont',
+    'VI' => 'Virgin Island',
+    'VA' => 'Virginia',
+    'WA' => 'Washington',
+    'WV' => 'West Virginia',
+    'WI' => 'Wisconsin',
+    'WY' => 'Wyoming'
+  }  
+
   def Location.unique_counties(state)
     pcs = Location.find(:all, :select => 'DISTINCT physical_county AS county', :conditions => ['physical_state = ?', state]).collect{|loc| loc.county}
     mcs = Location.find(:all, :select => 'DISTINCT mailing_county AS county', :conditions => ['mailing_state = ?', state]).collect{|loc| loc.county}
@@ -109,6 +170,51 @@ class Location < ActiveRecord::Base
       end
     end
     addr
+  end
+
+  def summary_zip
+    zip = nil
+    if physical_zip
+      if physical_zip.length>0
+        zip = physical_zip
+      end
+    end
+    unless zip
+      if mailing_zip
+        if mailing_zip.length>0
+          zip = mailing_zip
+        end
+      end
+    end
+    if zip
+      return zip.gsub(/-.*/,'')
+    end
+    return nil
+  end
+
+  def summary_state
+    state = physical_state
+    country = physical_country
+    unless state
+      state = mailing_state
+      country = mailing_country
+    end
+    unless state
+      return nil
+    end
+    alt = STATE_SHORT[state]
+    if alt
+      return alt
+    end
+    return state
+  end
+
+  def summary_city
+    city = physical_city
+    unless city
+      city = mailing_city
+    end
+    return city
   end
 
   def link_name
