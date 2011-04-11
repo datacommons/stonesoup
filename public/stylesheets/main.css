@@ -6,6 +6,9 @@ html, body {
 	font-size:14px;
 	color:#222;
 	background-color: #a3c17b;
+        background-image: url('/images/dcp_gradient.png');
+        background-position: center; 
+        background-repeat: repeat-y; 
 } 
 
 body, p, ol, ul, td {
