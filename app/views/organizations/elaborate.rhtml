@@ -1,0 +1,20 @@
+<h1>Locations and categories</h1>
+
+<div>
+Thanks for entering this organization.  It would be very useful if 
+you could also specify its location or locations,
+and what kind of organization it is.
+You may also
+<%= link_to 'view the entry', :action => 'show', :id => @organization %>
+based on what you've entered so far.  You may return to edit this
+information at any time.
+</div>
+
+<br/>
+<%= render :partial => 'parts' %>
+
+<% form_tag( {:action => 'update', :id => @organization}, :method => 'PUT') do %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Update' %>
+<% end %>
+<br/>

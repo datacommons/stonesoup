@@ -7,36 +7,4 @@
 <% end %>
 <br/>
 
-<div id="locations" class="attribute_section">
-	<%= render :partial => 'locations/manage' %>
-</div>
-
-<div class="clearboth">
-	<div id="access_rule" class="attribute_section">
-		<%= render :partial => 'access_rules/manage' %>
-	</div>
-	<div id="products_services" class="attribute_section">
-		<%= render :partial => 'product_services/manage'%>
-	</div>
-	<div id="org_types" class="attribute_section">
-		<%= render :partial => 'org_types/manage'%>
-	</div>
-	<div id="sectors" class="attribute_section">
-		<%= render :partial => 'sectors/manage'%>
-	</div>
-	<div id="member_orgs" class="attribute_section">
-		<%= render :partial => 'member_orgs/manage'%>
-	</div>
-	<div id="organizations_people" class="attribute_section">
-	<%= render :partial => 'organizations_people/manage_for_orgs' %>
-	</div>
-	<div id="editors" class="attribute_section">
-		<h2>Entry Editors</h2>
-		<ul>
-			<% @organization.users.each do |editor|%>
-				<li><%= show_link editor %></li>
-			<% end %>
-		</ul>
-	</div>
-</div>
-
+<%= render :partial => 'parts' %>

@@ -8,9 +8,9 @@ class Location < ActiveRecord::Base
                    :lng_column_name => 'longitude',
                    :distance_field_name => 'distance'
 
-  validates_presence_of :organization_id
-  validates_each :physical_city do |record, attr, value|
-    record.errors.add attr, "and country or mailing city & country must be specified" unless \
+  validates_presence_of :organization_id, :on => :save
+  validates_each :physical_city, :physical_country do |record, attr, value|
+    record.errors.add attr, "must be specified (or mailing)" unless \
       (!record.physical_city.blank? and !record.physical_country.blank?) or \
       (!record.mailing_city.blank? and !record.mailing_country.blank?)
   end
