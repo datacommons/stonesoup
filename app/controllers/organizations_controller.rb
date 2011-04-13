@@ -61,6 +61,11 @@ class OrganizationsController < ApplicationController
     @organization = Organization.find(params[:id])
   end
 
+  # GET /organizations/1/elaborate
+  def elaborate
+    @organization = Organization.find(params[:id])
+  end
+
   # POST /organizations
   # POST /organizations.xml
   def create
@@ -71,7 +76,7 @@ class OrganizationsController < ApplicationController
       if @organization.save
         @organization.users << current_user if params[:associate_user_to_entry]
         flash[:notice] = 'Organization was successfully created.'
-        format.html { redirect_to :action => 'edit', :id => @organization }
+        format.html { redirect_to :action => 'elaborate', :id => @organization }
         format.xml  { render :xml => @organization, :status => :created, :location => @organization }
       else
         format.html { render :action => "new" }
