@@ -1,8 +1,8 @@
-begin
-  require 'rdig'
-rescue LoadError
-  puts "RDig gem not found, searching and indexing static pages won't work."
-end
+#begin
+#  require 'rdig'
+#rescue LoadError
+#  puts "RDig gem not found, searching and indexing static pages won't work."
+#end
 require 'digest/md5'
 
 module ActsAsFerret
