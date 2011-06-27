@@ -10,6 +10,10 @@ RAILS_GEM_VERSION = '2.2.2'
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
 
+# Geokit-gem vendored in to avoid broken rubygem on recent Ubuntu
+# Thanks Levi Turner
+require "geokit"
+
 require "ruport"
 require "ruport/acts_as_reportable"
 
@@ -49,7 +53,6 @@ Rails::Initializer.run do |config|
   # config.active_record.default_timezone = :utc
   
   # See Rails::Configuration for more options
-  config.gem "geokit"
 end
 
 # Add new inflection rules using the following format 

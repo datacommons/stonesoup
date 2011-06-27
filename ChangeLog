@@ -1,3 +1,8 @@
+2011-06-27  Paul Fitzpatrick  <paulfitz@alum.mit.edu>
+
+	* config/environment.rb: Geokit-gem vendored in to avoid broken 
+	rubygem on recent Ubuntu [thanks Levi Turner]
+
 2009-10-05  Paul Fitzpatrick  <paulfitz@alum.mit.edu>
 
 	* vendor/plugins/ym4r_mapstraction/README: mapstraction plugin added
