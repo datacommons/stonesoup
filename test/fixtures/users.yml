@@ -4,3 +4,8 @@ admin:
   password: <%= User.hashify('password') %>
   is_admin: 1
 
+normal:
+  id: 2
+  login: normal
+  password: <%= User.hashify('password') %>
+
