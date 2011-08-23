@@ -1,9 +1,9 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
-  org_type: 1
+  org_type_id: 1
   organization_id: 1
 
 two:
-  org_type: 1
+  org_type_id: 1
   organization_id: 1

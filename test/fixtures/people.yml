@@ -9,7 +9,7 @@ one:
   email: MyString
   phone_contact_preferred: false
   email_contact_preferred: false
-  postal_mail_contact_preferred: false
+#  postal_mail_contact_preferred: false
 
 two:
   firstname: MyString
@@ -20,4 +20,4 @@ two:
   email: MyString
   phone_contact_preferred: false
   email_contact_preferred: false
-  postal_mail_contact_preferred: false
+#  postal_mail_contact_preferred: false
