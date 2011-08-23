@@ -132,4 +132,8 @@ public
       raise "Unknown entry type: #{entry.class}"
     end
   end
+
+  def self.hashify(pass)
+    sha1(pass)
+  end
 end

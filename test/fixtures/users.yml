@@ -1,0 +1,6 @@
+admin:
+  id: 1
+  login: admin
+  password: <%= User.hashify('password') %>
+  is_admin: 1
+
