@@ -12,12 +12,14 @@
 		<% for organization in @organizations %>
 			<tr>
 				<td><%= organization.name %></td>
-				<td><a href="@organization.website"><%= organization.website %></a></td>
+				<td><a href="<%= organization.website %>"><%= organization.website %></a></td>
 				<td><%= organization.year_founded %></td>
 				<td><%= link_to 'Show', :controller => 'organizations', :action => 'show', :id => organization %></td>
-				<% if current_user.is_admin? %>
+				<% if current_user %>
+				   <% if current_user.is_admin? %>
 					<td><%= link_to 'Edit', :controller => 'organizations', :action => 'edit', :id => organization %></td>
 					<td><%= link_to 'Destroy', { :controller => 'organizations', :action => 'destroy', :id => organization }, :confirm => 'Are you sure?', :post => true %></td>
+				   <% end %>
 				<% end %>
   			</tr>
 		<% end %>
