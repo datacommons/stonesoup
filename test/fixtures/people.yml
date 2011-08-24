@@ -1,6 +1,7 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
+  id: 5001
   firstname: MyString
   lastname: MyString
   phone_mobile: MyString
@@ -10,8 +11,10 @@ one:
   phone_contact_preferred: false
   email_contact_preferred: false
 #  postal_mail_contact_preferred: false
+  access_rule_id: 3
 
 two:
+  id: 5002
   firstname: MyString
   lastname: MyString
   phone_mobile: MyString
@@ -21,3 +24,4 @@ two:
   phone_contact_preferred: false
   email_contact_preferred: false
 #  postal_mail_contact_preferred: false
+  access_rule_id: 3

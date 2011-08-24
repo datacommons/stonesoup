@@ -14,7 +14,7 @@ class ProductServicesControllerTest < ActionController::TestCase
 
   test "should create product_service" do
     assert_difference('ProductService.count') do
-      post :create, :product_service => { }
+      post :create, :product_service => { }, :id => 1, :new_product_service => { :name => "Zigaliganol" }
     end
 
     assert_redirected_to product_service_path(assigns(:product_service))

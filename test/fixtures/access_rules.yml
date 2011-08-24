@@ -1,7 +1,20 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
+public:
+  id: 1
+  access_type: PUBLIC
+
+login:
+  id: 2
+  access_type: LOGGEDIN
+
+login:
+  id: 3
+  access_type: PRIVATE
+
 one:
   access_type: MyString
 
 two:
   access_type: MyString
+

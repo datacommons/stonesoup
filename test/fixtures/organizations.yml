@@ -1,6 +1,7 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
+  id: 1
   name: MyString
   description: MyText
   created_by_id: 1
@@ -12,8 +13,10 @@ one:
   year_founded: 2010-02-08
   democratic: false
   primary_location_id: 1
+  access_rule_id: 1
 
 two:
+  id: 2
   name: MyString
   description: MyText
   created_by_id: 1
@@ -25,3 +28,4 @@ two:
   year_founded: 2010-02-08
   democratic: false
   primary_location_id: 1
+  access_rule_id: 1

@@ -1,11 +1,22 @@
 admin:
-  id: 1
+  id: 1000
   login: admin
   password: <%= User.hashify('password') %>
   is_admin: 1
 
 normal:
-  id: 2
+  id: 1001
   login: normal
   password: <%= User.hashify('password') %>
 
+one:
+  id: 1
+  login: one
+  password: <%= User.hashify('password') %>
+  person_id: 5001
+
+two:
+  id: 2
+  login: two
+  password: <%= User.hashify('password') %>
+  person_id: 5002
