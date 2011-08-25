@@ -20,7 +20,7 @@ class MemberOrgsControllerTest < DirectoryTestCase
     assert_redirected_to member_org_path(assigns(:member_org)) unless blocked
   end
 
-  test_admin "should show member_org" do
+  test_any "should show member_org" do
     get :show, :id => member_orgs(:one).id
     assert_response :success unless blocked
   end

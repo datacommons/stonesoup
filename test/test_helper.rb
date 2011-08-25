@@ -67,6 +67,10 @@ def test_admin(name, &block)
   test_users([:admin], [:normal, :anon], name, &block)
 end
 
+def test_any(name, &block)
+  test_users([:admin, :normal, :anon], [], name, &block)
+end
+
 def test_logged_in(name, &block)
   test_users([:normal], [:anon], name, &block)
 end
