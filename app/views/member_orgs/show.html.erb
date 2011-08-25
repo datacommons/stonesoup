@@ -4,7 +4,7 @@
 	Synonyms: <%= @member_org.synonyms.collect{|mo| mo.name}.join(', ') %>
 	<br/>
 <% end %>
-<% unless current_user.is_admin? %>
+<% if current_user and current_user.is_admin? %>
 	<br/>
 	<%= link_to 'Edit', edit_member_org_path(@member_org) %> |
 	<%= link_to 'List Member Orgs', member_orgs_path %>
