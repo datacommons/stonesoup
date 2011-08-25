@@ -1,0 +1,12 @@
+
+To run the main test set:
+
+  # Make sure you are not running the server locally, e.g.:
+  #killall ruby
+  #killall -9 ruby
+  #rm -rf index
+  #rm -rf log
+
+  script/ferret_server -e test -R `pwd` start
+  script/runner -e test 'Organization.rebuild_index'
+  rake test:functionals
