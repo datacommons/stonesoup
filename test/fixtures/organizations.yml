@@ -29,3 +29,13 @@ two:
   democratic: false
   primary_location_id: 1
   access_rule_id: 1
+
+happycoop:
+  id: 3
+  name: HappyCoop
+  access_rule_id: 1
+
+hungrycoop:
+  id: 4
+  name: HungryCoop
+  access_rule_id: 1

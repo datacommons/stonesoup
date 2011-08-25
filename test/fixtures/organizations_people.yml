@@ -1,5 +1,10 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
+hungry_coop_man:
+  organization_id: 4
+  person_id: 5003
+  role_name: Hungerifier
+
 # one:
 #   column: value
 #

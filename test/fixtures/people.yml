@@ -25,3 +25,10 @@ two:
   email_contact_preferred: false
 #  postal_mail_contact_preferred: false
   access_rule_id: 3
+
+hungryman:
+  id: 5003
+  firstname: Hungry
+  lastname: Man
+  access_rule_id: 1
+  
