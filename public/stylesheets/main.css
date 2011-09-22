@@ -87,8 +87,110 @@ dd {
 	margin-bottom: 15px;
 	border-bottom-style: solid;
 }
+
+div.actions {
+	display: inline-block;
+}
+
+form.button-to {
+	display: inline-block;
+}
+
 /** Main Layout CSS **/
- 
+
+/* tabs */
+.tab-content {
+	border: 1px solid #666;
+	background: white; /*#FFF3B3;*/
+	color: black;
+	padding: 0.5em;
+}
+
+
+.tab-header {
+	position: relative;
+	height: 3em;
+	width: 50em; /* a width is required for Opera, older Mozilla browsers, and Konqueror browsers */
+	margin-bottom: 0px;
+	padding-bottom: 0px;
+}
+
+.tab-header ul.tab-list {
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	bottom: -1px;
+	width: 50em; /* a width is required for Opera, older Mozilla browsers, and Konqueror browsers */
+}
+
+.tab-header ul.tab-list li  {
+	display: inline;
+	list-style: none;
+	margin: 0;
+}
+
+.tab-header ul.tab-list a,.tab-header ul.tab-list span,.tab-header ul.tab-list a.tab-active {
+	width: 8em;
+	display: block;
+	float: left;
+	padding: 4px 0;
+	margin: 1px 2px 0 0;
+	text-align: center;
+	font-family: tahoma, verdana, sans-serif;
+	font-size: 85%;
+	text-decoration: none;
+	color: #333;
+}
+
+.tab-header ul.tab-list span,.tab-header ul.tab-list a.tab-active,.tab-header ul.tab-list a.tab-active:hover {
+	border-top: 1px solid #666;
+	border-left: 1px solid #666;
+	border-right: 1px solid #666;
+	border-bottom: none;
+	background: #99F;
+	color: black;
+	padding-bottom: 6px;
+	margin-top: 0;
+}
+
+/* a link in a background tab */
+.tab-header ul.tab-list a {
+	background: #ddd;
+	border-top: 1px solid #AAA;
+	border-left: 1px solid #AAA;
+	border-right: 1px solid #AAA;
+	border-bottom: none;
+}
+
+/* hover on a background tab */
+.tab-header ul.tab-list a:hover {
+	margin-top: 0;
+	border-color: #666;
+	background: #bbb;
+	color: black;
+	padding-bottom: 5px;
+}
+
+.tab  /* the heading that became the li */
+{
+	display: none;
+}
+
+/* DSO specific */
+#dso_admin,
+#dso_status {
+	display: block;
+	clear:both;
+	border: 1px solid black;
+	padding: 4px;
+}
+#dso_admin h2 {
+	white-space: nowrap;
+	margin: -4px -4px 4px -4px;
+	padding: 4px;
+	border-bottom: 2px solid black;
+
+}
 #maincol {
 	position: relative;
 	margin: 0;
@@ -339,6 +441,10 @@ ul.menu_bar li a {
 	text-transform: uppercase;
 }
 
+.popup {
+	border-bottom: 1px gray dashed;
+}
+
 .example_preamble, .example_bubble {
     font-size: 80%;
     float: left;
@@ -435,7 +541,11 @@ ul.menu_bar li a {
     font-size: 75%;
     color: #aaa;
 }
-
+#last_updated {
+	font-style: italic;
+	color: #666;
+	margin-bottom: 10px;
+}
 #organization_editors form, 
 #organization_editors form div {
 	display: inline;

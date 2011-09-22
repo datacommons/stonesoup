@@ -49,6 +49,11 @@
 					</table>
 				</td>
 			</tr>
+			<tr><th>Data Verification</th>
+				<td><%= check_box_tag 'verified', 1, params[:verified] %>
+					<label for='verified'>Verified entries only</label>
+				</td>
+			</tr>
 		</table>
 		<%= submit_tag 'Search' %>
 	<% end %>

@@ -39,6 +39,9 @@ class SearchController < ApplicationController
       proximity_conditionSQL = nil
       if params[:advanced] == '1'
         # process advanced params...
+        unless params[:verified].blank?
+          search_query << ' verified:yes' if params[:verified]
+        end
         unless params[:org_type_id].blank?
           org_type = OrgType.find_by_id(params[:org_type_id])
           search_query << " org_type:'#{org_type.name}'" unless org_type.nil?

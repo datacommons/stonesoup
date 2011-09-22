@@ -1,0 +1,56 @@
+<h1>Data Sharing Organization</h1>
+<p>
+  <b>Name:</b>
+  <%=h @data_sharing_org.name %>
+</p>
+<p><b>Statistics:</b>
+	<ul>
+		<li><%= @data_sharing_org.organizations.length %> total organizations in the data pool.</li>
+		<li><%= @data_sharing_org.unverified_orgs.length %> unverified organizations.</li>
+	</ul>
+</p>
+<%= link_to 'Edit DSO Details', edit_data_sharing_org_path(@data_sharing_org) %> |
+<%= link_to 'Back to DSO List', data_sharing_orgs_path %>
+<br/>
+<br/>
+<div id='tab-container'>
+	<div class="tab-content">
+			<h1 class="tab" title="Unverified Entries">Unverified Entries</h1>
+			<p>
+				<%- if @data_sharing_org.unverified_orgs.empty? -%>
+					There are no unverified entries in the data pool.
+				<%- else -%>
+					To approve an entry, view the Organization's record and click the "VERIFY" button on that screen.
+					<ul>
+					<%- @data_sharing_org.unverified_orgs.each do |org| %>
+						<li><%= link_to org.name, org %></li>
+					<%- end -%>
+					</ul>
+				<%- end -%>
+			</p>
+	</div>
+	<div class="tab-content">
+		<h1 class="tab" title="Member Editors">Member Editors</h1>
+		<p>
+			<%= form_tag :controller => 'data_sharing_orgs', :action => 'link_user', :data_sharing_org_id => @data_sharing_org.id %>
+				Link an existing user to this DSO as a Member Editor: 
+				<%= select_tag 'user_id', options_from_collection_for_select(User.get_all, "id", "login") %>
+				<%= submit_tag 'Link' %>
+			</form>
+
+			<%- if @data_sharing_org.users.empty? -%>
+				There are no member editors for this DSO. 
+			<%- else -%>
+				<ul>
+				<%- @data_sharing_org.users.each do |user| -%>
+					<li><%= link_to user.login, :controller => 'users', :action => 'show', :id => user.id %>
+						<div class="actions">
+							<%= button_to "Unlink", :controller => 'data_sharing_orgs', :action => 'unlink_user', :data_sharing_org_id => @data_sharing_org.id, :user_id => user.id %>
+						</div>
+					</li>
+				<%- end -%>
+				</ul>
+			<%- end -%>
+		</p>
+	</div>
+</div>

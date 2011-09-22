@@ -1,0 +1,16 @@
+<h1>Editing data sharing organization</h1>
+
+<% form_for(@data_sharing_org) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @data_sharing_org %> |
+<%= link_to 'Back', data_sharing_orgs_path %>

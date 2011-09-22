@@ -9,10 +9,31 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110105200106) do
+ActiveRecord::Schema.define(:version => 20110921203529) do
 
   create_table "access_rules", :force => true do |t|
     t.string "access_type"
+  end
+
+  create_table "data_sharing_orgs", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "data_sharing_orgs_organizations", :force => true do |t|
+    t.integer  "data_sharing_org_id",                    :null => false
+    t.integer  "organization_id",                        :null => false
+    t.boolean  "verified",            :default => false, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "data_sharing_orgs_users", :id => false, :force => true do |t|
+    t.integer  "data_sharing_org_id", :null => false
+    t.integer  "user_id",             :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "entries", :force => true do |t|

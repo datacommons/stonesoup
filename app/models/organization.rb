@@ -10,6 +10,10 @@ class Organization < ActiveRecord::Base
   has_many :organizations_people, :dependent => :destroy
   has_many :people, :through => :organizations_people
   has_and_belongs_to_many :users
+  has_many :data_sharing_orgs_organizations
+  has_many :data_sharing_orgs, :through => :data_sharing_orgs_organizations
+  belongs_to :updated_by, :class_name => 'User', :foreign_key => 'updated_by_id'
+  belongs_to :created_by, :class_name => 'User', :foreign_key => 'created_by_id'
 
   acts_as_ferret(:fields => {
                    :name => {:boost => 2.0, :store => :yes },
@@ -23,7 +27,8 @@ class Organization < ActiveRecord::Base
                    :country => { :via => :countries_to_s },
                    :sector => { :via => :sectors_to_s },
                    :org_type => { :via => :org_types_to_s },
-                   :access_type => { :store => :yes }
+                   :access_type => { :store => :yes },
+                   :verified => { :via => :verified_to_s },
 #                   :public => { :store => :yes },
                  } )
 
@@ -31,13 +36,31 @@ class Organization < ActiveRecord::Base
 
   validates_presence_of :name
 
-  before_save :save_ll
+  before_save :save_ll, :record_acting_user
   before_update :save_old_values
   after_update :send_notifications
   
   UPDATE_NOTIFICATION_IGNORED_COLUMNS = ['id', 'created_at', 'created_by_id', 'updated_at', 'updated_by_id']
   UPDATE_NOTIFICATION_HAS_ONE_COLUMNS = ['legal_structure', 'access_rule']
-#  UPDATE_NOTIFICATION_INCLUDED_ASSOCIATIONS = ['locations', 'products_services', 'org_types', 'sectors', 'member_orgs', 'organizations_people', 'users', 'legal_structure', 'access_rule']
+  #UPDATE_NOTIFICATION_INCLUDED_ASSOCIATIONS = ['locations', 'products_services', 'org_types', 'sectors', 'member_orgs', 'organizations_people', 'users', 'legal_structure', 'access_rule']
+  
+  def record_acting_user
+    return unless User.current_user  # should never happen, but lets check just in case
+    if self.new_record?
+      self.created_by_id = User.current_user.id
+    else
+      self.updated_by_id = User.current_user.id
+    end
+  end
+  
+  def verified_to_s
+    verified_dsos.any? ? 'yes' : 'no'
+  end
+  
+  def verified_dsos
+    self.data_sharing_orgs_organizations.select{|link| link.verified}.map{|link| link.data_sharing_org}
+  end
+
   def get_value_hash
     oldvalues = Hash[*self.class.columns.reject{|c| UPDATE_NOTIFICATION_IGNORED_COLUMNS.include?(c.name)}.collect {|c| [c.name, self.send(c.name)]}.flatten]
     UPDATE_NOTIFICATION_HAS_ONE_COLUMNS.each do |hasone|

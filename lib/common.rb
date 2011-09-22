@@ -62,4 +62,13 @@ module Common
       return msg + change_msgs.join('; ')
     end
   end
+
+  def Common.value_to_boolean(value)
+    return false if value.nil?
+    return value if value == true || value == false
+    case value.to_s.downcase
+    when "true", "t", "1", "y", "yes", "on" then true
+    else false
+    end
+  end
 end

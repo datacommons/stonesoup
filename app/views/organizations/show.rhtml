@@ -1,4 +1,62 @@
 <h1><%= @organization.name %></h1>
+<div id="last_updated">
+	This entry was last updated on <%= date_format_long(@organization.updated_at) %>
+	<%- unless @organization.updated_by.nil? -%>
+		by <%= @organization.updated_by.login %>
+		<%- if @organization.updated_by.data_sharing_orgs.any? -%>
+			(manager for <%= @organization.updated_by.data_sharing_orgs.map(&:name).to_sentence %>)
+		<%- end -%>
+	<%- end -%>
+</div>
+<%- if current_user and current_user.data_sharing_orgs.any? # DSO MEMBER VIEW -%>
+	<div id="dso_admin">
+		<h2>DSO Admin Menu</h2>
+		<%- if (current_user.data_sharing_orgs - @organization.data_sharing_orgs).any? # offer to add to DSO's data pool '%>
+			<p>
+				<%= form_tag :controller => 'data_sharing_orgs', :action => 'link_org' %>
+					<%= hidden_field_tag 'organization_id', @organization.id %>
+					Add To DSO Data Pool for: 
+					<%= select_tag 'data_sharing_org_id', options_from_collection_for_select((current_user.data_sharing_orgs - @organization.data_sharing_orgs), "id", "name") %>
+					<%= check_box_tag 'verified', 1 %>
+					<label for="verified">Verified?</label>
+					<%= submit_tag 'Add' %>
+				</form>
+			</p>
+		<%- else 	# no other DSO's to add to, offer to change current status -%>
+			DSO: Current Status
+			<ul>
+			<%- (current_user.data_sharing_orgs & @organization.data_sharing_orgs).each do |dso| -%>
+				<li>
+					<%= dso.name %>: 
+					<%- if dso.status_for(@organization) -%>
+						verified
+						<%= button_to 'UNverify', :controller => 'data_sharing_orgs', :action => 'link_org', :data_sharing_org_id => dso.id, :organization_id => @organization.id, :verified => false %>
+					<%- else -%>
+						UNverified
+						<%= button_to 'verify', :controller => 'data_sharing_orgs', :action => 'link_org', :data_sharing_org_id => dso.id, :organization_id => @organization.id, :verified => true %>
+					<%- end -%>
+					<%= button_to 'Remove From Data Pool', :controller => 'data_sharing_orgs', :action => 'unlink_org', :data_sharing_org_id => dso.id, :organization_id => @organization.id %>
+				</li>
+			<%- end -%>
+			</ul>
+		<%- end -%>
+	</div>
+<%- end # NON-DSO MEMBER VIEW -%>
+
+<%- verified_nonuser_dsos = (@organization.verified_dsos - ( (current_user and current_user.data_sharing_orgs.any?) ? current_user.data_sharing_orgs : [])) -%>
+<%- if verified_nonuser_dsos.any? -%>
+	<div id="dso_status">
+		This record is in the 
+		<span class="popup" title="The listed organization(s) have verified this entry as accurate and current.">data pool</span> of... 
+		<ul>
+			<%- verified_nonuser_dsos.each do |dso| -%>
+				<li><%= dso.name %></li>
+			<%- end -%>
+		</ul>
+	</div>
+<%- end -%>
+
+
 
   <%
   map = Mapstraction.new("the_map",current_map_type)

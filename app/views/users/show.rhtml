@@ -1,8 +1,40 @@
-<% for column in User.content_columns %>
-<p>
-  <b><%= column.human_name %>:</b> <%=h @user.send(column.name) %>
-</p>
-<% end %>
+<h1>Viewing User</h1>
+<div>
+	<p>
+		<b>Login:</b>
+		<%= @user.login %>
+	</p>
+	<p>
+		<b>Admin?:</b>
+		<%= @user.is_admin? ? 'yes' : 'no' %>
+	</p>
+	<p>
+		<b>User Since:</b>
+		<%= date_format_long(@user.created_at) %>
+	</p>
+	<p>
+		<b>Last Login:</b>
+		<%= datetime_format_long(@user.last_login) %>
+	</p>
+	<p>
+		<b>Update Notifications:</b>
+		<%= @user.update_notifications_enabled? ? 'enabled' : 'disabled' %>
+	</p>
+	<p>
+		<b>Data Sharing Organizations</b>
+		<br/>
+		<%- if @user.data_sharing_orgs.empty? -%>
+			This user is not linked to any DSOs.
+			<br/>To establish a link, edit the DSO record.
+		<%- else -%>
+			This user is a member of the following Data Sharing Orgs:
+			<ul>
+				<%- @user.data_sharing_orgs.each do |dso| -%>
+					<li><%= link_to dso.name, dso %></li>
+				<%- end -%>
+			</ul>
+		<%- end -%>
+</div>
 
 <%= link_to 'Edit', :action => 'edit', :id => @user %> |
-<%= link_to 'Back', :action => 'list' %>
+<%= link_to 'Back to User List', :action => 'list' %>

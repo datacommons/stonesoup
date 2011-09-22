@@ -1,0 +1,20 @@
+<h1>Listing data sharing organizations</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+  </tr>
+
+<% for data_sharing_org in @data_sharing_orgs %>
+  <tr>
+    <td><%=h data_sharing_org.name %></td>
+    <td><%= link_to 'Show', data_sharing_org %></td>
+    <td><%= link_to 'Edit', edit_data_sharing_org_path(data_sharing_org) %></td>
+    <td><%= link_to 'Destroy', data_sharing_org, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New data_sharing_org', new_data_sharing_org_path %>

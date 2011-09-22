@@ -4,6 +4,7 @@ require 'digest/sha1'
 class User < ActiveRecord::Base
   has_and_belongs_to_many :organizations # as editor
   belongs_to :person
+  has_and_belongs_to_many :data_sharing_orgs
   cattr_accessor :current_user
 
   attr_accessor :password_cleartext
@@ -14,7 +15,11 @@ class User < ActiveRecord::Base
   before_validation_on_create :crypt_password
 
   VALID_EMAIL_REGEX = /^[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
-
+  
+  def member_of_dso?(dso)
+    self.data_sharing_orgs.include?(dso)
+  end
+  
   def self.authenticate(login, pass)
     find(:first, :conditions =>["login = ? AND password = ?", login, sha1(pass)])
   end  
@@ -135,5 +140,9 @@ public
 
   def self.hashify(pass)
     sha1(pass)
+  end
+  
+  def User.get_all
+    User.find(:all, :order => 'login')
   end
 end
