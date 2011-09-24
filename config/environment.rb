@@ -53,6 +53,13 @@ Rails::Initializer.run do |config|
   # config.active_record.default_timezone = :utc
   
   # See Rails::Configuration for more options
+
+  # Geokit-gem vendored in to avoid broken rubygem on recent Ubuntu
+  # Thanks Levi Turner
+  require "geokit" 
+  # config.gem "geokit"
+
+  config.load_paths << "#{RAILS_ROOT}/app/reports"
 end
 
 # Add new inflection rules using the following format 

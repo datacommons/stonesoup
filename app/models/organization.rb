@@ -29,6 +29,7 @@ class Organization < ActiveRecord::Base
                    :org_type => { :via => :org_types_to_s },
                    :access_type => { :store => :yes },
                    :verified => { :via => :verified_to_s },
+                   :city => { :via => :cities_to_s },
 #                   :public => { :store => :yes },
                  } )
 
@@ -123,6 +124,10 @@ class Organization < ActiveRecord::Base
     self.locations.collect{|loc| [loc.physical_state, loc.mailing_state, loc.summary_state]}.compact.uniq.join(', ')
   end
   
+  def cities_to_s
+    self.locations.collect{|loc| [loc.physical_city, loc.mailing_city, loc.summary_city]}.compact.uniq.join(', ')
+  end
+  
   def zips_to_s
     self.locations.collect{|loc| [loc.physical_zip, loc.mailing_zip, loc.summary_zip]}.compact.uniq.join(', ')
   end
@@ -191,7 +196,7 @@ class Organization < ActiveRecord::Base
     end
   end
 
-  def Organization.latest_changes(state_filter = [])
+  def Organization.latest_changes(state_filter = [], city_filter = [])
     user = User.current_user
     conditions = nil
     unless state_filter.nil? or state_filter.empty?
@@ -205,6 +210,19 @@ class Organization < ActiveRecord::Base
       condParams += states + states
       conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
       logger.debug("After applying state_filter, conditions = #{conditions.inspect}")
+    end
+
+    unless city_filter.nil? or city_filter.empty?
+      condSQLs = []
+      condParams = []
+      joinSQL = nil
+      logger.debug("applying session city filters to search results: #{city_filter.inspect}")
+      joinSQL = 'INNER JOIN locations ON locations.organization_id = organizations.id'
+      cities = [city_filter].flatten
+      condSQLs << "(locations.physical_city IN (#{cities.collect{'?'}.join(',')})) OR (locations.mailing_city IN (#{cities.collect{'?'}.join(',')}))"
+      condParams += cities + cities
+      conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
+      logger.debug("After applying city_filter, conditions = #{conditions.inspect}")
     end
 
     Organization.find(:all, :select => 'organizations.*', :order => 'updated_at DESC', 

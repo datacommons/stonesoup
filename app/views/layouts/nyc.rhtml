@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<title>NYC Cooperates: <%= controller.action_name %></title>
+	<%=render :partial => 'layouts/common_header'%>
+</head>
+<body class="section-<%=params[:controller]%> page-<%=params[:controller]%>-<%=params[:action]%>">
+
+<!-- begin wrapper div -->
+<div id="bigwrapper">
+
+<!-- begin pagewidth div -->
+<div id="pagewidth">
+
+<!-- begin header div -->
+<div id="header">
+	<a href="/"><img src="/images/nyc/nyc_banner.jpg" alt="NYC Cooperates" width="788" height="168" border="0" id="logo"></a>
+	<%=render :partial => 'layouts/usermenu'%>
+</div>
+<!-- end header div -->
+<!-- begin maincol div -->
+<div id="maincol">
+	<p style="color: green"><%= flash[:notice] %></p>
+	<p style="color: red"><%= flash[:error] %></p>
+
+<%= @content_for_layout %>
+</div>
+<!-- end maincol div -->
+<!-- begin footer div -->
+<div id="footer">
+	<%=render :partial => 'layouts/common_footer'%>
+</div>
+<!-- end footer div -->
+</div>
+<!-- end pagewidth div -->
+</div>
+<!-- end wrapper div -->
+</body>
+</html>

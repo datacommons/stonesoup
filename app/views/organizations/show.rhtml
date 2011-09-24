@@ -102,13 +102,15 @@
      <% @city = @organization.primary_location.summary_city %>
      <% @state = @organization.primary_location.summary_state %>
      <% if @city and @state %>
-      <li>In <%= link_to @city, :controller => 'search', :action => 'map', :params => { :q => "location:'" + @city + "' state:'" + @state + "'" } %></li>
+      <li>In <%= link_to @city, :controller => 'search', :action => 'map', :params => { :q => "city:\"" + @city + "\" state:\"" + @state + "\"" } %></li>
      <% end %>
      <% if @zip %>
       <li>In zip code <%= link_to @zip, :controller => 'search', :action => 'map', :params => { :q => "zip:"+ @zip + "*" } %></li>
      <% end %>
+     <% if not(session[:city_filter]) %>
      <% if @state %>
-       <li>In <%= link_to @state, :controller => 'search', :action => 'search', :params => { :q => "state:'" + @state + "'" } %></li>
+       <li>In <%= link_to @state, :controller => 'search', :action => 'search', :params => { :q => "state:\"" + @state + "\"" } %></li>
+     <% end %>
      <% end %>
   <% end %>
   </ul>
