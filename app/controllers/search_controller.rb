@@ -87,21 +87,34 @@ class SearchController < ApplicationController
       #condSQL = [access_conditionSQL, proximity_conditionSQL].compact.collect{|sql| '('+sql+')'}.join(' AND ')
       logger.debug("flat conditions: #{flatSQL.inspect}")
       filtered_query = search_query
-      unless session[:state_filter].blank?
-        logger.debug("applying session state filters to search results: #{session[:state_filter].inspect}")
-        addl_criteria = []
-        [session[:state_filter]].flatten.each do |state|
-          # Nested parentheses do not seem to work, omit for now.
-          # could solve during indexing with a virtual field.
-          #if state.length == 2  # abbreviation, make sure it's qualified with USA country:
+
+      if not(params[:unrestricted])
+        unless session[:state_filter].blank?
+          logger.debug("applying session state filters to search results: #{session[:state_filter].inspect}")
+          addl_criteria = []
+          [session[:state_filter]].flatten.each do |state|
+            # Nested parentheses do not seem to work, omit for now.
+            # could solve during indexing with a virtual field.
+            #if state.length == 2  # abbreviation, make sure it's qualified with USA country:
             # addl_criteria << "(state:#{state} AND (country:'united states' OR country:usa))"
-          #else
-          #  addl_criteria << "state:'#{state}'"
-          #end
-          addl_criteria << "state:'#{state}'"
+            #else
+            #  addl_criteria << "state:'#{state}'"
+            #end
+            addl_criteria << "state:\"#{state}\""
+          end
+          filtered_query = "+(#{search_query}) +(#{addl_criteria.join(' OR ')})"
+          logger.debug("After adding state filter to query, query is: #{filtered_query}")
         end
-        filtered_query = "+(#{search_query}) +(#{addl_criteria.join(' OR ')})"
-        logger.debug("After adding state filter to query, query is: #{filtered_query}")
+
+        unless session[:city_filter].blank?
+          logger.debug("applying city filters to search results: #{session[:city_filter].inspect}")
+          addl_criteria = []
+          [session[:city_filter]].flatten.each do |city|
+            addl_criteria << "city:\"#{city}\""
+          end
+          filtered_query = "+(#{search_query}) +(#{addl_criteria.join(' OR ')})"
+          logger.debug("After adding city filter to query, query is: #{filtered_query}")
+        end
       end
 
       pagination = { 
@@ -224,7 +237,7 @@ class SearchController < ApplicationController
   
 protected
   def get_latest_changes
-    data = Organization.latest_changes(session[:state_filter])
+    data = Organization.latest_changes(session[:state_filter],session[:city_filter])
     if @site_show_latest_people
       data = data + Person.latest_changes(session[:state_filter])
     end
