@@ -1,6 +1,19 @@
 <% if @entries %>
  <% if @entries.blank? %>
-  <p>No results were found for this search.</p>
+  <p>
+  No results were found for this search.
+    <% if not(params[:unrestricted]) %>
+    <% if session[:state_filter] or session[:state_filter] %>
+      Would you like to try an <%= link_to 'unrestricted search', params.merge(:unrestricted => true) %>?
+    <% end %>
+    <% if session[:state_filter] %>
+    <br />The state was restricted to: <%= session[:state_filter].join(" / ") %>.
+    <% end %>
+    <% if session[:city_filter] %>
+    <br />The city was restricted to: <%= session[:city_filter].join(" / ") %>.
+    <% end %>
+    <% end %>
+  </p>
   <p><%= link_to 'Would you like to add a new organization?', :controller => 'organizations', :action => 'new' %></p>
  <% else %>
  <h2>Search Results</h2>
