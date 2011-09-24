@@ -34,6 +34,11 @@ private
       @site_searches = ['grocery','zip:43202','*']
       @site_layout = :ohio
       @site_show_latest_people = false
+    elsif ['nyc.find.coop','testnyc.find.coop'].include?(request.host)
+      Email.website_base_url = 'http://nyc.find.coop'
+      @site_searches = ['food','zip:10036','*']
+      @site_layout = :nyc
+      @site_show_latest_people = false
     else
       Email.website_base_url = 'http://find.coop'
     end
@@ -63,6 +68,9 @@ public
       session[:state_filter] = ['ME', 'Maine']
     when :ohio
       session[:state_filter] = ['OH', 'Ohio']
+    when :nyc
+      session[:state_filter] = ['NY', 'New York']
+      session[:city_filter] = ['NY', 'New York', 'NYC']
     else
       session[:state_filter] = nil
     end
