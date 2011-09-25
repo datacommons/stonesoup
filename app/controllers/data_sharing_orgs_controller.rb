@@ -1,7 +1,31 @@
 class DataSharingOrgsController < ApplicationController
-  before_filter :login_required, :only => [:show, :link_org, :unlink_org]
-  before_filter :admin_required, :only => [:index, :new, :create, :edit, :update, :destroy, :link_user, :unlink_user]
-  
+  before_filter :admin_or_DSOmembership_required, :only => [:show, :edit, :update, :link_org, :unlink_org]
+  before_filter :admin_required, :only => [:index, :new, :create, :destroy, :link_user, :unlink_user]
+protected
+  def admin_or_DSOmembership_required
+    if session[:user] # must be logged in
+      # admin's can access everything
+      return true if session[:user] and session[:user].is_admin?
+      # user is not admin, checking data access
+      if(!params[:data_sharing_org_id].blank?)
+        dso_id = params[:data_sharing_org_id]
+      elsif(!params[:id].blank?)
+        dso_id = params[:id]
+      else
+        logger.error("no DSO ID found, denying access by default")
+        access_denied and return false
+      end
+      dso = DataSharingOrg.find(dso_id)
+      if current_user.member_of_dso?(dso)
+        return true
+      else
+        access_denied("You must be a member of the DSO to access that page.") and return false
+      end
+    else
+      access_denied and return false
+    end
+  end
+public
   def link_org
     dso = DataSharingOrg.find(params[:data_sharing_org_id])
     org = Organization.find(params[:organization_id])

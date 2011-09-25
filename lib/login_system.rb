@@ -61,9 +61,7 @@ module LoginSystem
 
   def admin_required
     return true if session[:user] and session[:user].is_admin?
-    logger.debug("# user is not admin, access denied")
-    flash[:error] = "Access to that function is restricted to site administrators."
-    redirect_to :controller => 'search'
+    access_denied
     return false 
   end
   
@@ -72,15 +70,15 @@ module LoginSystem
   # the default action is to redirect to the login screen
   # example use :
   # a popup window might just close itself for instance
-  def access_denied
-    logger.debug("# access is denied")
-    flash[:error] = "Access to that function is restricted."
+  def access_denied(msg = "Access to that function is restricted.")
+    logger.debug("# access is denied: #{msg}")
+    flash[:error] = msg
     unless session[:user]
       redirect_to :controller=>"users", :action =>"login" # redirect to login form if not logged in yet
     else
       redirect_to :controller=>"search"
     end
-  end  
+  end
   
   # store current uri in  the session.
   # we can return to this location by calling return_location

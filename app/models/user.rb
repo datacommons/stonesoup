@@ -17,7 +17,11 @@ class User < ActiveRecord::Base
   VALID_EMAIL_REGEX = /^[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
   
   def member_of_dso?(dso)
-    self.data_sharing_orgs.include?(dso)
+    if(dso == :any)
+      self.data_sharing_orgs.any?
+    else
+      self.data_sharing_orgs.include?(dso)
+    end
   end
   
   def self.authenticate(login, pass)

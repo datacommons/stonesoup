@@ -11,19 +11,6 @@
 		| <a href='http://datacommons.find.coop/contact'>Report problem</a>
 		)
 	</div>
-	<% if current_user.is_admin? %>
-		<div id="admin_menu">
-			<span class="title">Administration:</span>
-			<ul class="menu_bar">
-				<li class="menu_item"><%= link_to 'Legal Structures', :controller => 'legal_structures' %></li>
-				<li class="menu_item"><%= link_to 'Member Organizations', :controller => 'member_orgs' %></li>
-				<li class="menu_item"><%= link_to 'Organization Types', :controller => 'org_types' %></li>
-				<li class="menu_item"><%= link_to 'Sectors', :controller => 'sectors' %></li>
-				<li class="menu_item"><%= link_to 'Users', :controller => 'users', :action => 'list' %></li>
-				<li class="menu_item"><%= link_to 'DSOs', data_sharing_orgs_path %></li>
-			</ul>
-		</div>
-	<% end %>
 <%- else -%>
 <div id="userstatus"><%= link_to 'Login', :controller => 'users', :action => 'login' %> | <a href='http://datacommons.find.coop/contact'>Report problem</a></div>
 <% end %>
