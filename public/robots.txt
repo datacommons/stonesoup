@@ -7,3 +7,6 @@ Disallow: /search/search*format=csv*
 Disallow: /search/near/*
 Disallow: *.csv
 Disallow: *.xml
+
+Disallow: *
+# NOTE: all bots are also blocked in .htaccess - 2011-09-26
