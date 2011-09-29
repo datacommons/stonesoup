@@ -10,13 +10,6 @@ RAILS_GEM_VERSION = '2.2.2'
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
 
-# Geokit-gem vendored in to avoid broken rubygem on recent Ubuntu
-# Thanks Levi Turner
-require "geokit"
-
-require "ruport"
-require "ruport/acts_as_reportable"
-
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence those specified here
   
