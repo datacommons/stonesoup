@@ -1,17 +1,4 @@
 
-<p><%= render "layouts/summary/#{@site_layout}" %></p>
+<%= render :partial => "layouts/#{@site.name}/index" %>
 
-<%= render :partial => 'search_form' %>
-<br class="clearboth" />
-
-<p>
-<%= render "layouts/welcome/#{@site_layout}" %>
-<p>
-
-<p>
-Want to help out? <%= link_to 'Add your organization', :controller => 'organizations', :action => 'new' %>!
-</p>
-
-
-<%= render :partial => "list" %>
 

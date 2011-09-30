@@ -1,10 +1,11 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-	<title>Ohio! <%= controller.action_name %></title>
+	<title><%= @site.title %>: <%= controller.action_name %></title>
 	<%=render :partial => 'layouts/common_header'%>
 </head>
 <body class="section-<%=params[:controller]%> page-<%=params[:controller]%>-<%=params[:action]%>">
+
 <%=render :partial => 'layouts/adminmenu'%>
 
 <!-- begin wrapper div -->
@@ -15,7 +16,7 @@
 
 <!-- begin header div -->
 <div id="header">
-	<a href="/"><img src="/images/ohio/ohio_banner.jpg" alt="Ohio!" width="788" height="168" border="0" id="logo"></a>
+	<a href="/"><img src="/images/<%= @site.name %>/logo.png" alt="<%= @site.title %>" width="788" height="168" border="0" id="logo"></a>
 	<%=render :partial => 'layouts/usermenu'%>
 </div>
 <!-- end header div -->
@@ -29,7 +30,7 @@
 <!-- end maincol div -->
 <!-- begin footer div -->
 <div id="footer">
-	<%=render :partial => 'layouts/common_footer'%>
+<%=render :partial => 'layouts/common_footer'%>
 </div>
 <!-- end footer div -->
 </div>

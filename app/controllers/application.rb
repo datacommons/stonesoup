@@ -2,6 +2,8 @@
 # Likewise, all the methods added will be available for all controllers.
 require_dependency "login_system"
 
+require 'sites'
+
 class ApplicationController < ActionController::Base
   include LoginSystem
 
@@ -12,68 +14,61 @@ class ApplicationController < ActionController::Base
 private
 
   def get_site
-    # These variables customize the layout
-
-    @site_searches = ['"Northeast Biodiesel"','Connecticut','cooperative','zip:02139','sector:consumer', 'sector:nonprofit AND state:massachusetts', 'tech*', 'sector:food AND (organic OR local)','sector:food -organic','Noemi Giszpenc']
-    @site_layout = :default
-    # showing recently modified people is optional, since it is hard to
-    # filter geographically right now
-    @site_show_latest_people = true
-
-    if ['ca.find.coop', 'california.find.coop', 'testca.find.coop'].include?(request.host)
-      Email.website_base_url = 'http://california.find.coop'
-      @site_searches = ['housing','tech*','Arizmendi','zip:941*','*']
-      @site_layout = :california
-    elsif ['me.find.coop','maine.find.coop','testme.find.coop'].include?(request.host)
-      Email.website_base_url = 'http://maine.find.coop'
-      @site_searches = ['food','local sprouts','zip:04412','*']
-      @site_layout = :maine
-      @site_show_latest_people = false
-    elsif ['oh.find.coop','ohio.find.coop','testoh.find.coop'].include?(request.host)
-      Email.website_base_url = 'http://ohio.find.coop'
-      @site_searches = ['grocery','zip:43202','*']
-      @site_layout = :ohio
-      @site_show_latest_people = false
-    elsif ['nyc.find.coop','testnyc.find.coop'].include?(request.host)
-      Email.website_base_url = 'http://nyc.find.coop'
-      @site_searches = ['food','zip:10036','*']
-      @site_layout = :nyc
-      @site_show_latest_people = false
-    else
-      Email.website_base_url = 'http://find.coop'
+    site = Site.get_subsite(request.host)
+    if site.nil?
+      site = Site.get_subsite('find.coop') 
     end
-    return @site_layout
+    site
   end
+
+  #   # These variables customize the layout
+
+  #   if ['ca.find.coop', 'california.find.coop', 'testca.find.coop'].include?(request.host)
+  #     return :california
+  #     # Email.website_base_url = 'http://california.find.coop'
+  #     # @site_searches = ['housing','tech*','Arizmendi','zip:941*','*']
+  #     # @site_layout = :california
+  #   elsif ['me.find.coop','maine.find.coop','testme.find.coop'].include?(request.host)
+  #     return :maine
+  #     # Email.website_base_url = 'http://maine.find.coop'
+  #     # @site_searches = ['food','local sprouts','zip:04412','*']
+  #     # @site_layout = :maine
+  #     # @site_show_latest_people = false
+  #   elsif ['oh.find.coop','ohio.find.coop','testoh.find.coop'].include?(request.host)
+  #     return :ohio
+  #     # Email.website_base_url = 'http://ohio.find.coop'
+  #     # @site_searches = ['grocery','zip:43202','*']
+  #     # @site_layout = :ohio
+  #     # @site_show_latest_people = false
+  #   elsif ['nyc.find.coop','testnyc.find.coop'].include?(request.host)
+  #     return :nyc
+  #     # Email.website_base_url = 'http://nyc.find.coop'
+  #     # @site_searches = ['food','zip:10036','*']
+  #     # @site_layout = :nyc
+  #     # @site_show_latest_people = false
+  #   end
+  #   # Email.website_base_url = 'http://find.coop'
+  #   return :default
+  # end
 
   def custom_layout
     #return appropriate layout depending on value of request.host (domain name)
     # you can also do other dependent filtering, setting session variables, etc.
-    site = get_site
+    @site = get_site
+    Email.website_base_url = 'http://' + @site.canonical_name
     
     if params[:iframe]
       logger.debug("setting session's IFRAME status to: #{params[:iframe]}")
       session[:iframe] = (params[:iframe].to_i == 1)
     end
-    return site.to_s
+    return @site.layout.to_s + "/template"
   end
 
 public
   def set_custom_filters
     site = get_site
-    case site
-    when :california
-      # set custom filters for CA
-      session[:state_filter] = ['CA', 'California']
-    when :maine
-      session[:state_filter] = ['ME', 'Maine']
-    when :ohio
-      session[:state_filter] = ['OH', 'Ohio']
-    when :nyc
-      session[:state_filter] = ['NY', 'New York']
-      session[:city_filter] = ['NY', 'New York', 'NYC']
-    else
-      session[:state_filter] = nil
-    end
+    session[:state_filter] = site.state_filter
+    session[:city_filter] = site.city_filter
   end
 
   def valid_password?(password, username)

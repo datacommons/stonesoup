@@ -10,7 +10,7 @@
 	<% end %>
 	<% unless hide_examples %>
 		<div class='example_preamble'>Example<br />searches:</div>
-		<% for example in @site_searches %>
+		<% for example in @site.site_searches %>
 		<div class='example_bubble'><%= link_to example, :action => 'search', :q => example %></div>
 		<% end %>
 	<% end %>

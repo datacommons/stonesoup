@@ -1,0 +1,16 @@
+<p>
+<font color='#800'>This is a prototype of of an NYC cooperative directory.</font>
+</p>
+
+<%= render :partial => 'search/search_form' %>
+<br class="clearboth" />
+
+<p>
+Supported by the Data Commons Project, a collaborative effort among a diverse array of organizations in the U.S. and Canada who share a mission of building and supporting the development of a cooperative economy.  Our goal is to develop an accurate, comprehensive, public database of cooperative economic initiatives in North America. (<a href='http://dcp.usworker.coop'>read more</a>...)
+</p>
+
+<p>
+Want to help out? <%= link_to 'Add your organization', :controller => 'organizations', :action => 'new' %>!
+</p>
+
+<%= render :partial => "list" %>

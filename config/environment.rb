@@ -53,6 +53,7 @@ Rails::Initializer.run do |config|
   # config.gem "geokit"
 
   config.load_paths << "#{RAILS_ROOT}/app/reports"
+  config.load_paths << "#{RAILS_ROOT}/app/sites"
 end
 
 # Add new inflection rules using the following format 
