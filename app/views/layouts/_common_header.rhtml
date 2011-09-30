@@ -1,7 +1,7 @@
 <%= Mapstraction.header(current_map_type, :host => request.host) %>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-<%= stylesheet_link_tag 'scaffold.css' %>
-<%= stylesheet_link_tag 'main.css' %>
+<%= stylesheet_link_tag (@site.style.to_s + '/scaffold.css') %>
+<%= stylesheet_link_tag (@site.style.to_s + '/main.css') %>
 <link rel="shortcut icon" href="/images/dcp.ico" type="image/x-icon" />
 <link rel="alternate" type="application/rss+xml" title="find.coop changes" href="<%= url_for :controller => 'search', :action => 'recent' %>" /> 
 <%= javascript_include_tag :defaults, 'tabs' %>

@@ -21,36 +21,6 @@ private
     site
   end
 
-  #   # These variables customize the layout
-
-  #   if ['ca.find.coop', 'california.find.coop', 'testca.find.coop'].include?(request.host)
-  #     return :california
-  #     # Email.website_base_url = 'http://california.find.coop'
-  #     # @site_searches = ['housing','tech*','Arizmendi','zip:941*','*']
-  #     # @site_layout = :california
-  #   elsif ['me.find.coop','maine.find.coop','testme.find.coop'].include?(request.host)
-  #     return :maine
-  #     # Email.website_base_url = 'http://maine.find.coop'
-  #     # @site_searches = ['food','local sprouts','zip:04412','*']
-  #     # @site_layout = :maine
-  #     # @site_show_latest_people = false
-  #   elsif ['oh.find.coop','ohio.find.coop','testoh.find.coop'].include?(request.host)
-  #     return :ohio
-  #     # Email.website_base_url = 'http://ohio.find.coop'
-  #     # @site_searches = ['grocery','zip:43202','*']
-  #     # @site_layout = :ohio
-  #     # @site_show_latest_people = false
-  #   elsif ['nyc.find.coop','testnyc.find.coop'].include?(request.host)
-  #     return :nyc
-  #     # Email.website_base_url = 'http://nyc.find.coop'
-  #     # @site_searches = ['food','zip:10036','*']
-  #     # @site_layout = :nyc
-  #     # @site_show_latest_people = false
-  #   end
-  #   # Email.website_base_url = 'http://find.coop'
-  #   return :default
-  # end
-
   def custom_layout
     #return appropriate layout depending on value of request.host (domain name)
     # you can also do other dependent filtering, setting session variables, etc.

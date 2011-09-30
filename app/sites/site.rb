@@ -53,6 +53,10 @@ class Site
     :default
   end
 
+  def style
+    :default
+  end
+
   def title
     'Data Commons Directory'
   end
