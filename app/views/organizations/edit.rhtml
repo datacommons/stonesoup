@@ -8,3 +8,7 @@
 <br/>
 
 <%= render :partial => 'parts' %>
+
+<h2>Remove entry</h2>
+
+<td><%= link_to 'Delete entire entry', @organization, :confirm => 'Are you sure?', :method => :delete %></td>
