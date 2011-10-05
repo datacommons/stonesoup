@@ -1,12 +1,7 @@
 # See http://www.robotstxt.org/wc/norobots.html for documentation on how to use the robots.txt file
 
 User-agent: *
-Crawl-delay: 60
-Disallow: /search/search*format=pdf*
-Disallow: /search/search*format=csv*
-Disallow: /search/near/*
+Crawl-delay: 300
+Disallow: /search*
 Disallow: *.csv
 Disallow: *.xml
-
-Disallow: *
-# NOTE: all bots are also blocked in .htaccess - 2011-09-26

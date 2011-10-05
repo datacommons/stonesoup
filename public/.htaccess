@@ -1,9 +1,9 @@
 # prevent bot scraping
-setenvifNoCase User-Agent "Slurp" bad_bot
-setenvifNoCase User-Agent "Baiduspider" bad_bot
-setenvifNoCase User-Agent "bingbot" bad_bot
-setenvifNoCase User-Agent "googlebot" bad_bot
-setenvifNoCase User-Agent "Sosospider" bad_bot
+#setenvifNoCase User-Agent "Slurp" bad_bot
+#setenvifNoCase User-Agent "Baiduspider" bad_bot
+#setenvifNoCase User-Agent "bingbot" bad_bot
+#setenvifNoCase User-Agent "googlebot" bad_bot
+#setenvifNoCase User-Agent "Sosospider" bad_bot
 <Limit GET POST HEAD>
 Order Allow,deny
 Allow from all
