@@ -241,7 +241,7 @@ class SearchController < ApplicationController
 protected
   def get_latest_changes
     data = Organization.latest_changes(session[:state_filter],session[:city_filter])
-    if @site_show_latest_people
+    if @site.should_show_latest_people
       data = data + Person.latest_changes(session[:state_filter])
     end
     logger.debug("data=#{data}")

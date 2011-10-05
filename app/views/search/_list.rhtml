@@ -53,12 +53,5 @@
    </ul>
  <% end %>
 <% else %>
-	<h2>Latest Changes</h2>
-	<% for entry in @latest_changes %>
-	  <p><%= link_to show_link entry %>
-	  <% if entry.updated_at %>
-	    updated <%= time_ago_in_words entry.updated_at %> ago
-	  <% end %>
-	  </p>
-	<% end %>
+  <%= render :partial => 'latest' %>
 <% end %>

@@ -4,9 +4,9 @@
 		( <%= link_to 'Preferences', :controller => 'users', :action => 'prefs' %>
 		| <%= link_to 'Logout', :controller => 'users', :action => 'logout' %>
 		| 	<% if current_user.person.nil? %>
-				<%= link_to 'Create your personal entry', :controller => 'people', :action => 'new', 'is_me' => 'yes' %>
+				<%= link_to 'Create personal entry', :controller => 'people', :action => 'new', 'is_me' => 'yes' %>
 			<% else %>
-				<%= link_to 'Edit your personal entry', :controller => 'people', :action => 'edit', :id => current_user.person %>
+				<%= link_to 'Edit personal entry', :controller => 'people', :action => 'edit', :id => current_user.person %>
 			<% end %>
 		| <a href='http://datacommons.find.coop/contact'>Report problem</a>
 		)

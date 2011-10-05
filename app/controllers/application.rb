@@ -24,7 +24,6 @@ private
   def custom_layout
     #return appropriate layout depending on value of request.host (domain name)
     # you can also do other dependent filtering, setting session variables, etc.
-    @site = get_site
     Email.website_base_url = 'http://' + @site.canonical_name
     
     if params[:iframe]
@@ -36,9 +35,9 @@ private
 
 public
   def set_custom_filters
-    site = get_site
-    session[:state_filter] = site.state_filter
-    session[:city_filter] = site.city_filter
+    @site = get_site
+    session[:state_filter] = @site.state_filter
+    session[:city_filter] = @site.city_filter
   end
 
   def valid_password?(password, username)

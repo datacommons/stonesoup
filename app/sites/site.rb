@@ -37,6 +37,10 @@ class Site
     true
   end
 
+  def show_latest_graphically
+    true
+  end
+
   def state_filter
     nil
   end
