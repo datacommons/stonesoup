@@ -199,30 +199,28 @@ class Organization < ActiveRecord::Base
   def Organization.latest_changes(state_filter = [], city_filter = [])
     user = User.current_user
     conditions = nil
+    condSQLs = []
+    condParams = []
+    joinSQL = nil
     unless state_filter.nil? or state_filter.empty?
-      condSQLs = []
-      condParams = []
-      joinSQL = nil
       logger.debug("applying session state filters to search results: #{state_filter.inspect}")
       joinSQL = 'INNER JOIN locations ON locations.organization_id = organizations.id'
       states = [state_filter].flatten
       condSQLs << "(locations.physical_state IN (#{states.collect{'?'}.join(',')})) OR (locations.mailing_state IN (#{states.collect{'?'}.join(',')}))"
       condParams += states + states
-      conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
-      logger.debug("After applying state_filter, conditions = #{conditions.inspect}")
     end
 
     unless city_filter.nil? or city_filter.empty?
-      condSQLs = []
-      condParams = []
-      joinSQL = nil
       logger.debug("applying session city filters to search results: #{city_filter.inspect}")
       joinSQL = 'INNER JOIN locations ON locations.organization_id = organizations.id'
       cities = [city_filter].flatten
       condSQLs << "(locations.physical_city IN (#{cities.collect{'?'}.join(',')})) OR (locations.mailing_city IN (#{cities.collect{'?'}.join(',')}))"
       condParams += cities + cities
+    end
+
+    unless joinSQL.nil?
       conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
-      logger.debug("After applying city_filter, conditions = #{conditions.inspect}")
+      logger.debug("After applying state_filter and city_filter, conditions = #{conditions.inspect}")
     end
 
     Organization.find(:all, :select => 'organizations.*', :order => 'updated_at DESC', 
