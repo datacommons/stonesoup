@@ -14,7 +14,6 @@ html, body {
 body, p, ol, ul, td {
   font-family:lucida grande,verdana, arial;
   font-size:   14px;
-  line-height: 14px;
 }
 
 img { border: 0; }
@@ -266,7 +265,6 @@ form.button-to {
 .address dt {
 	font-size: 140%;
 	color: #339966;
-	border-bottom: 1px solid #ccc;
 }
 .address dt .actions {
 	font-size: 60%;
