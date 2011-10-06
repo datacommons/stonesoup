@@ -1,4 +1,14 @@
 
 <%= render :partial => "layouts/#{@site.name}/index" %>
 
+<script>
+function selectSearchBox() {
+  document.forms.search_form.q.focus();
+}
+if (window.addEventListener) {
+  window.addEventListener('load', selectSearchBox, false);
+} else if (window.attachEvent) {
+  window.attachEvent('onload', selectSearchBox);
+}
+</script>
 
