@@ -1,7 +1,7 @@
 class DcSite < Site
 
   def site_searches
-    ['food','zip:20005*','*']
+    ['food','zip:20005','agri*','*']
   end
 
   def aliases

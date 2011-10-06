@@ -1,7 +1,7 @@
 class AustinSite < Site
 
   def site_searches
-    ['food','zip:10036*','*']
+    ['wheatsville','zip:78704','hous*','*']
   end
 
   def aliases
