@@ -24,6 +24,15 @@ module Common
     return password
   end
   
+  URL_FRIENDLY_CHARS = ('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a
+  def Common::random_token(size = 32)
+    token = ''
+    size.times do
+      token += URL_FRIENDLY_CHARS[rand(URL_FRIENDLY_CHARS.length)]
+    end
+    return token
+  end
+  
   def Common::detect_changes(old, attr_hash)
     # NOTE: old may be either a model or a hash. all fields are referenced through object[]
     # go through each parameter in attr_hash and if present in object and value is different, add to results

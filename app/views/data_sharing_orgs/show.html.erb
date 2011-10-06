@@ -53,4 +53,37 @@
 			<%- end -%>
 		</p>
 	</div>
+	<div class="tab-content">
+		<h1 class="tab" title="Data Import">Data Import</h1>
+		<p>
+			<%= form_tag({:controller => 'data_sharing_orgs', :action => 'import'}, :multipart => true) %>
+				<%= hidden_field_tag 'data_sharing_org_id', @data_sharing_org.id %>
+				Import data from a Comma-Separated Values (CSV) file
+				<div>
+					<label for="file">Data file:</label>
+					<%= file_field_tag "file" %>
+				</div>
+				<div>
+					<label for="plugin_name">Import Plugin:</label>
+					<%= select_tag 'plugin_name', options_for_select([['--choose--', '']] + data_import_plugins(), (params[:plugin_name] || @data_sharing_org.default_import_plugin_name)) %>
+				</div>
+				<div>
+					Import Status: 
+					<br/><span class="note"><span class="label">NOTE:</span> This setting applies only to new records. Existing records will keep their current visibility setting.</span>
+					<br/><%= radio_button_tag 'import_status', 'optin', params[:import_status] == 'optin' %>
+					<label for="import_status_optin">Opt-in Confirmation</label>
+					- data is PRIVATE by default, e-mail is sent requesting confirmation
+					
+					<br/><%= radio_button_tag 'import_status', 'optout', params[:import_status] == 'optout' %>
+					<label for="import_status_optout">Opt-out Confirmation</label>
+					- data is PUBLIC by default, e-mail is sent notifying of inclusion
+					
+					<br/><%= radio_button_tag 'import_status', 'optout-silent', params[:import_status] == 'optout-silent' %>
+					<label for="import_status_optout-silent">No Notification</label>
+					- data is PUBLIC by default, no e-mail is sent
+				</div>
+				<%= submit_tag 'Upload' %>
+			</form>
+		</p>
+	</div>
 </div>

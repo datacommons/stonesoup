@@ -18,10 +18,11 @@ class OrganizationsController < ApplicationController
   # GET /organizations/1
   # GET /organizations/1.xml
   def show
-    @organization = @organization = Organization.find(params[:id])
-    unless @organization.accessible?(current_user)
+    @organization = Organization.find(params[:id])
+    if !@organization.accessible?(current_user) and 
+      (params[:token].nil? or params[:token] != @organization.email_response_token)
       flash[:error] = "You may not view that entry."
-      redirect_to :action => 'index' and return
+      redirect_to :controller => 'search' and return
     end
 
     if not(@organization.latitude)

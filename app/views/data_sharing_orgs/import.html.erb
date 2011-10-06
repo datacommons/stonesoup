@@ -1,0 +1,23 @@
+<h1>Data Import Results</h1>
+
+Data imported using the <b><%= params[:plugin_name] %></b> plugin.
+
+<%- if(@stats.any?) -%>
+	<h2>Statistics</h2>
+	<ul>
+	<%- @stats.each do |k,v| -%>
+		<li><%= k.to_s.gsub('_', ' ').capitalize %>: <%= v %></li>
+	<%- end -%>
+	</ul>
+<%- end -%>
+
+<%- if(@errors.any?) -%>
+	<h2>Errors</h2>
+	<ul>
+	<%- @errors.each do |err| -%>
+		<li><%= err %></li>
+	<%- end -%>
+	</ul>
+<%- end -%>
+
+<%= link_to 'Back to DSO page', data_sharing_org_path(@dso) %>

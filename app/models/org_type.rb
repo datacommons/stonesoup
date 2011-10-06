@@ -2,7 +2,18 @@ class OrgType < ActiveRecord::Base
   has_and_belongs_to_many :organizations
   belongs_to :synonym_of, :class_name => 'OrgType', :foreign_key => 'effective_id'
   has_many :synonyms, :class_name => 'OrgType', :foreign_key => 'effective_id'
+  
+  validates_uniqueness_of :name
 
+  def OrgType.find_or_create_custom(name)
+    ot = OrgType.find_by_name(name)
+    if(ot.nil?)
+      ot = OrgType.new(:name => name, :description => name, :custom => true)
+      ot.save!
+    end
+    return ot
+  end
+  
   def get_organizations
     Organization.find(:all, :conditions => ['x.org_type_id = ? OR org_types.effective_id = ?', self.id, self.id],
       :joins => 'INNER JOIN org_types_organizations x ON x.organization_id = organizations.id' + \

@@ -1,0 +1,21 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<%=render :partial => 'layouts/common_header'%>
+</head>
+<body class="section-<%=params[:controller]%> page-<%=params[:controller]%>-<%=params[:action]%>">
+<!-- begin wrapper div -->
+<div id="bigwrapper">
+<!-- begin pagewidth div -->
+<div id="pagewidth">
+<!-- begin maincol div -->
+<div id="maincol">
+<%= @content_for_layout %>
+</div>
+<!-- end maincol div -->
+</div>
+<!-- end pagewidth div -->
+</div>
+<!-- end wrapper div -->
+</body>
+</html>

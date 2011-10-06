@@ -26,7 +26,7 @@ class Person < ActiveRecord::Base
   end
 
   def name
-    firstname + ' ' + lastname
+    [firstname, lastname].compact.join(' ')
   end  
   
   def accessible?(current_user)

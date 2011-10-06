@@ -1,3 +1,4 @@
 <h1>With great power comes great responsibility...</h1>
-
+Press the button below to become an editor for the directory entry for <b><%= @organization.name %></b>. As an editor you can be notified whenever the entry is edited by someone else. You can enable/disable this setting in your <%= link_to 'account preferences', :controller => 'users', :action => 'prefs' %>
+<br/><br/>
 <%= button_to 'Confirm', :action => 'become_editor' %>

@@ -10,7 +10,7 @@ class Location < ActiveRecord::Base
 
   validates_presence_of :organization_id, :on => :save
   validates_each :physical_city, :physical_country do |record, attr, value|
-    record.errors.add attr, "must be specified (or mailing)" unless \
+    record.errors.add attr, "(or mailing city & country) must be specified" unless \
       (!record.physical_city.blank? and !record.physical_country.blank?) or \
       (!record.mailing_city.blank? and !record.mailing_country.blank?)
   end

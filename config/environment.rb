@@ -210,3 +210,5 @@ class Time
     Date.new(self.year, self.month, self.mday)
   end
 end
+
+IMPORT_PLUGINS_DIRECTORY = "#{RAILS_ROOT}/lib/import_plugins"

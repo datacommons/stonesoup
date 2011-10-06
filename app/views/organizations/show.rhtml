@@ -1,3 +1,4 @@
+<%- included_view = (params && params[:widget]) if included_view.nil? -%>
 <h1><%= @organization.name %></h1>
 <div id="last_updated">
 	This entry was last updated on <%= date_format_long(@organization.updated_at) %>
@@ -8,7 +9,7 @@
 		<%- end -%>
 	<%- end -%>
 </div>
-<%- if current_user and current_user.data_sharing_orgs.any? # DSO MEMBER VIEW -%>
+<%- if !included_view and current_user and current_user.data_sharing_orgs.any? # DSO MEMBER VIEW -%>
 	<div id="dso_admin">
 		<h2>DSO Admin Menu</h2>
 		<%- if (current_user.data_sharing_orgs - @organization.data_sharing_orgs).any? # offer to add to DSO's data pool '%>
@@ -22,7 +23,8 @@
 					<%= submit_tag 'Add' %>
 				</form>
 			</p>
-		<%- else 	# no other DSO's to add to, offer to change current status -%>
+		<%- end -%>
+		<%- if((current_user.data_sharing_orgs & @organization.data_sharing_orgs).any?)	# offer to change current status -%>
 			DSO: Current Status
 			<ul>
 			<%- (current_user.data_sharing_orgs & @organization.data_sharing_orgs).each do |dso| -%>
@@ -43,7 +45,7 @@
 	</div>
 <%- end # NON-DSO MEMBER VIEW -%>
 
-<%- verified_nonuser_dsos = (@organization.verified_dsos - ( (current_user and current_user.data_sharing_orgs.any?) ? current_user.data_sharing_orgs : [])) -%>
+<%- verified_nonuser_dsos = (@organization.verified_dsos - ( (!included_view and current_user and current_user.data_sharing_orgs.any?) ? current_user.data_sharing_orgs : [])) -%>
 <%- if verified_nonuser_dsos.any? -%>
 	<div id="dso_status">
 		This record is in the 
@@ -170,17 +172,19 @@
 
 <div class="clearboth"></div>
 <div id="attributes">
-	<h2>Attributes</h2>
-	<% unless @organization.year_founded.nil? %>
-		Year Founded: <%= @organization.year_founded.year %><br />
-	<% end %>
-	<% unless @organization.legal_structure.nil? %>
-		Legal Structure: <%= @organization.legal_structure.name %><br />
-	<% end %>
+	<%- if(!@organization.year_founded.nil? or !@organization.legal_structure.nil?) -%>
+		<h2>Attributes</h2>
+		<% unless @organization.year_founded.nil? %>
+			Year Founded: <%= @organization.year_founded.year %><br />
+		<% end %>
+		<% unless @organization.legal_structure.nil? %>
+			Legal Structure: <%= @organization.legal_structure.name %><br />
+		<% end %>
+	<%- end -%>
 
 	<% unless @organization.products_services.empty? %>
 		<h2>Products &amp; Services</h2>
-		<ul id="attribute_list">
+		<ul>
 		<% @organization.products_services.each do |ps| %>
 			<li><%= ps.name %></li>
 		<% end %>
@@ -189,7 +193,7 @@
 
 	<% unless @organization.get_org_types.empty? %>
 		<h2>Organizational Type</h2>
-		<ul id="attribute_list">
+		<ul>
 		<% @organization.get_org_types.each do |ot| %>
 			<li><%= ot.name %></li>
 		<% end %>
@@ -198,7 +202,7 @@
 
 	<% unless @organization.sectors.empty? %>
 		<h2>Business Sector(s)</h2>
-		<ul id="attribute_list">
+		<ul>
 		<% @organization.sectors.each do |s| %>
 			<li><%= link_to s.name, :action => 'search', :controller => 'search', :q => 'sector:\'' + s.name + '\'' %></li>
 		<% end %>
@@ -207,7 +211,7 @@
 
 	<% unless @organization.get_member_orgs.empty? %>
 		<h2>Member Organization Affiliations</h2>
-		<ul id="attribute_list">
+		<ul>
 		<% @organization.get_member_orgs.each do |mo| %>
 			<li><%= show_link mo %></li>
 		<% end %>
@@ -226,39 +230,41 @@
 	</div>
 <% end %>
 
-<div class="clearboth" id="organization_editors">
-	<h2>Editors of this entry</h2>
-	<% if @organization.users.any? %>
+<%- unless included_view -%>
+	<div class="clearboth" id="organization_editors">
+		<h2>Editors of this entry</h2>
+		<% if @organization.users.any? %>
+		<ul>
+		<% for user in @organization.users %>
+		<li><%= show_link user %><%= " (pending)" unless user.last_login %>
+			<%- if User.current_user -%>
+				<%= button_to 'Remove Editor', {:action => 'remove_editor', :id => @organization, :user_id => user}, :confirm => 'Are you sure you want to remove this editor?', :method => :post %>
+			<%- end -%>
+		</li>
+		<% end %>
+		</ul>
+		<% end %>
+
+		<% if @organization.users.blank? %>
+		<p>There is no current editor for this entry.  Would you like to <%= link_to 'become the editor for this entry', :action => 'become_editor', :id => @organization %>?</p>
+		<% end %>
+
+		<% if @organization.users.include? current_user %>
+		<p>Invite new editor for this entry:</p>
+		<% form_tag :action => 'invite', :id => @organization do %>
+		E-mail: <%= text_field_tag 'user_login' %>
+		 <%= submit_tag 'Invite' %>
+		<% end %>
+		<% end %>
+	</div>
+
+	<h2>Download this entry</h2>
+
 	<ul>
-	<% for user in @organization.users %>
-	<li><%= show_link user %><%= " (pending)" unless user.last_login %>
-		<%- if User.current_user -%>
-			<%= button_to 'Remove Editor', {:action => 'remove_editor', :id => @organization, :user_id => user}, :confirm => 'Are you sure you want to remove this editor?', :method => :post %>
-		<%- end -%>
-	</li>
-	<% end %>
+	<li>Download as <%= link_to 'CSV', :action => 'show', :id => @organization, :format => 'csv' %> (suitable for spreadsheet programs)</li>
+	<li>Download as <%= link_to 'XML', :action => 'show', :id => @organization, :format => 'xml' %></li>
 	</ul>
-	<% end %>
 
-	<% if @organization.users.blank? %>
-	<p>There is no current editor for this entry.  Would you like to <%= link_to 'become the editor for this entry', :action => 'become_editor', :id => @organization %>?</p>
-	<% end %>
-
-	<% if @organization.users.include? current_user %>
-	<p>Invite new editor for this entry:</p>
-	<% form_tag :action => 'invite', :id => @organization do %>
-	E-mail: <%= text_field_tag 'user_login' %>
-	 <%= submit_tag 'Invite' %>
-	<% end %>
-	<% end %>
-</div>
-
-<h2>Download this entry</h2>
-
-<ul>
-<li>Download as <%= link_to 'CSV', :action => 'show', :id => @organization, :format => 'csv' %> (suitable for spreadsheet programs)</li>
-<li>Download as <%= link_to 'XML', :action => 'show', :id => @organization, :format => 'xml' %></li>
-</ul>
-
-<%= link_to 'Edit', :action => 'edit', :id => @organization %> |
-<%= link_to 'Back', :controller => 'search', :action => 'index' %>
+	<%= link_to 'Edit', :action => 'edit', :id => @organization %> |
+	<%= link_to 'Back', :controller => 'search', :action => 'index' %>
+<%- end -%>

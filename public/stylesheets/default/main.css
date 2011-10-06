@@ -31,6 +31,7 @@ a:hover{
 } 
 
 h1 {
+	padding-top: 10px;
 	color: #339966;
 	font-size:19px;
 	border-bottom: 1px solid #ccc;
@@ -407,26 +408,41 @@ ul.menu_bar li a {
 	position: absolute;
 	top: 0;
 	left: 0;
+	z-index: 10;
 	border: 2px solid black;
 	background-color: #FFF;
 	padding: 0px 4px;
+	text-align: left;
 }
 #admin_menu .title {
+	display: inline-block;
+	margin: 1px 0 2px 0;
 	padding: 5px;
 	font-weight: bold;
 }
+#admin_menu .title a {
+	text-decoration: none;
+}
 #admin_menu ul.menu_bar {
-	display: inline-block;
+	list-style-type: disc;
+	list-style-position:outside;
+}
+#admin_menu ul.menu_bar li {
+	display: block;
+	margin: 5px 0px 5px 15px;
 }
 
 #admin_menu .menu_item a {
-	background: #ABABAB;
 	color: #000;
 	border: none;
+	padding: 2px;
 }
 #admin_menu .menu_item a:hover {
 	color: #FFF;
 	background: #000;
+}
+div.menu-container {
+	border-bottom: 1px solid black;
 }
 
 .note {

@@ -30,7 +30,22 @@ module LoginSystem
   def protect?(action)
     true
   end
-   
+  
+  # allow access via token
+  def login_or_token_required
+    if(!params[:token].blank?)
+      org = Organization.find_by_email_response_token(params[:token])
+      if(org.nil?)
+        flash[:error] = "Sorry, that token is invalid. Try searching for your entry by name to edit it."
+        redirect_to :controller=>"search" and return false
+      else
+        params[:id] = org.id
+        return true
+      end
+    end
+    return login_required
+  end
+  
   # login_required filter. add 
   #
   #   before_filter :login_required

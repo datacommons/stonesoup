@@ -2,24 +2,28 @@
 	<div id="admin_menu">
 		<%- if current_user.is_admin? -%>
 			<div class="menu-container">
-				<span class="title"><%= link_to 'Administration (show/hide):', 'javaScript:document.getElementById("admin-menu-bar").toggle();'%></span>
-				<ul class="menu_bar" id="admin-menu-bar">
-					<li class="menu_item"><%= link_to 'Legal Structures', :controller => 'legal_structures' %></li>
-					<li class="menu_item"><%= link_to 'Member Organizations', :controller => 'member_orgs' %></li>
-					<li class="menu_item"><%= link_to 'Organization Types', :controller => 'org_types' %></li>
-					<li class="menu_item"><%= link_to 'Sectors', :controller => 'sectors' %></li>
-					<li class="menu_item"><%= link_to 'Users', :controller => 'users', :action => 'list' %></li>
-					<li class="menu_item"><%= link_to 'DSOs', data_sharing_orgs_path %></li>
-				</ul>
+				<div class="title"><%= link_to 'Administration (show/hide)', 'javaScript:Effect.toggle("admin-menu-bar", "slide");'%></div>
+				<div id="admin-menu-bar">
+					<ul class="menu_bar">
+						<li class="menu_item"><%= link_to 'Legal Structures', :controller => 'legal_structures' %></li>
+						<li class="menu_item"><%= link_to 'Member Organizations', :controller => 'member_orgs' %></li>
+						<li class="menu_item"><%= link_to 'Organization Types', :controller => 'org_types' %></li>
+						<li class="menu_item"><%= link_to 'Sectors', :controller => 'sectors' %></li>
+						<li class="menu_item"><%= link_to 'Users', :controller => 'users', :action => 'list' %></li>
+						<li class="menu_item"><%= link_to 'DSOs', data_sharing_orgs_path %></li>
+					</ul>
+				</div>
 			</div>
 		<%- end -%>
 		<%- if current_user.member_of_dso?(:any) -%>
-			<span class="title"><%= link_to 'Data Sharing (show/hide):', 'javaScript:document.getElementById("dso-menu-bar").toggle();'%></span>
-			<ul class="menu_bar" id="dso-menu-bar">
-				<%- current_user.data_sharing_orgs.each do |dso| -%>
-					<li class="menu_item"><%= link_to dso.name, dso %></li>
-				<%- end -%>
-			</ul>
+			<span class="title"><%= link_to 'Data Sharing (show/hide)', 'javaScript:Effect.toggle("dso-menu-bar", "slide");'%></span>
+			<div id="dso-menu-bar">
+				<ul class="menu_bar">
+					<%- current_user.data_sharing_orgs.each do |dso| -%>
+						<li class="menu_item"><%= link_to dso.name, dso %></li>
+					<%- end -%>
+				</ul>
+			</div>
 		<%- end -%>
 	</div>
 <%- end -%>

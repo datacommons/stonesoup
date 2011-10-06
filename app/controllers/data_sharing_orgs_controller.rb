@@ -1,9 +1,11 @@
 class DataSharingOrgsController < ApplicationController
-  before_filter :admin_or_DSOmembership_required, :only => [:show, :edit, :update, :link_org, :unlink_org]
+  before_filter :admin_or_DSOmembership_required, :only => [:show, :edit, :update, :link_org, :unlink_org, :import]
   before_filter :admin_required, :only => [:index, :new, :create, :destroy, :link_user, :unlink_user]
 protected
   def admin_or_DSOmembership_required
-    if session[:user] # must be logged in
+    unless session[:user] # must be logged in
+      access_denied and return false
+    else
       # admin's can access everything
       return true if session[:user] and session[:user].is_admin?
       # user is not admin, checking data access
@@ -16,16 +18,126 @@ protected
         access_denied and return false
       end
       dso = DataSharingOrg.find(dso_id)
+      if(dso.nil?)
+        logger.error("no DSO found with id #{dso_id}")
+        access_denied and return false
+      end
       if current_user.member_of_dso?(dso)
         return true
       else
         access_denied("You must be a member of the DSO to access that page.") and return false
       end
-    else
-      access_denied and return false
     end
   end
 public
+  def import
+    dso_id = params[:data_sharing_org_id]
+    @dso = DataSharingOrg.find(dso_id)
+    
+    errors = []
+    if(params[:file].blank?)
+      errors.push "You must upload a data file to be imported."
+    else
+      raw_csv_data = params[:file].read
+    end
+
+    @plugin_name = params[:plugin_name]
+    if @plugin_name.blank?
+      errors.push "You must select the import plugin name."
+    else
+      # update default, if needed
+      if(@dso.default_import_plugin_name != @plugin_name)
+        @dso.default_import_plugin_name = @plugin_name 
+        if @dso.save
+          logger.debug("Updated DSO's default_import_plugin_name to: #{@plugin_name}")
+        else
+          flash[:error] = "Couldn't save default_import_plugin_name to DSO record: #{@dso.errors.full_messages.inspect}"
+        end
+      end
+    end
+
+    @import_status = params[:import_status]
+    if @import_status.blank?
+      errors.push "You must select the default import status."
+    end
+    
+    unless errors.empty?
+      flash[:error] = "The import could not be processed for the following reasons:\n<ul><li>"+ errors.join('</li><li>') + '</li></ul>'
+      @data_sharing_org = @dso
+      #TODO: load "Data Import" tab instead of default
+      render :action => 'show' and return
+    end
+
+    self.require "#{IMPORT_PLUGINS_DIRECTORY}/#{@plugin_name}"
+    require 'faster_csv'
+
+    # statistics variables
+    error_messages = []
+    infos = []
+    lines_read = 0
+    created = 0
+    updated = 0
+    errors = 0
+    
+    case @import_status
+    when 'optin'
+      default_access_type = AccessRule::ACCESS_TYPE_PRIVATE
+    when 'optout', 'optout-silent'
+      default_access_type = AccessRule::ACCESS_TYPE_PUBLIC
+    else
+      raise "Unknown import status: '#{@import_status}'"
+    end
+    
+    # read our data file
+    FasterCSV.parse(raw_csv_data, :headers => true, :return_headers => false ) do |entry|
+      lines_read = lines_read + 1
+      
+      result = Module.const_get(@plugin_name.camelcase).parse_line(entry, @dso, default_access_type)
+      
+      if(result[:record_status] != :error)  # import successful, record was created or updated
+        organization = result[:record]
+        logger.debug("Processed record imported for #{organization.name}")
+        
+        case result[:record_status]
+        when :created
+          created += 1
+          # send email followup based on import preferences
+          case @import_status
+          when 'optin'
+            logger.debug("Sending opt-in confirmation email...")
+            Email.deliver_optin_confirmation(organization) unless organization.email.blank?
+          when 'optout'
+            logger.debug("Sending opt-out notification email...")
+            Email.deliver_optout_notification(organization) unless organization.email.blank?
+          #when 'optout-silent' # no notification
+          end
+        when :updated
+          updated += 1
+        else
+          raise "Unknown record_status returned by import plug-in: '#{result[:record_status]}'"
+        end
+        # set verification status for this org/DSO
+        DataSharingOrgsOrganization.set_status(@dso, organization, true)
+
+      else
+        errors += result[:errors].length
+      end
+      # handle general result[:errors] messages
+      error_messages += result[:errors] if !result[:errors].nil? and result[:errors].any?
+    end
+  rescue Exception => e
+    logger.error e.message
+    logger.error e.backtrace.join("\n")
+    error_messages.push e.message
+    errors += 1
+  ensure
+    @stats = {:records_read_from_csv => lines_read,
+      :records_created => created,
+      :records_updated => updated,
+      :errors => errors}
+    @errors = error_messages.uniq
+  end
+  
   def link_org
     dso = DataSharingOrg.find(params[:data_sharing_org_id])
     org = Organization.find(params[:organization_id])

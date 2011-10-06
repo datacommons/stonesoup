@@ -3,6 +3,17 @@ class MemberOrg < ActiveRecord::Base
   belongs_to :synonym_of, :class_name => 'MemberOrg', :foreign_key => 'effective_id'
   has_many :synonyms, :class_name => 'MemberOrg', :foreign_key => 'effective_id'
   
+  validates_uniqueness_of :name
+  
+  def MemberOrg.find_or_create_custom(name)
+    mo = MemberOrg.find_by_name(name)
+    if(mo.nil?)
+      mo = MemberOrg.new(:name => name, :custom => true)
+      mo.save!
+    end
+    return mo
+  end
+  
   def get_organizations
     Organization.find(:all, :conditions => ['x.member_org_id = ? OR member_orgs.effective_id = ?', self.id, self.id],
       :joins => 'INNER JOIN member_orgs_organizations x ON x.organization_id = organizations.id

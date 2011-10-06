@@ -1,6 +1,16 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
   
+  def data_import_plugins
+    dir = Dir.open IMPORT_PLUGINS_DIRECTORY
+    plugin_names = []
+    dir.entries.each do |entry|
+      next unless entry.match(/.+\.rb$/)
+      plugin_names.push entry.gsub(/\.rb$/,'')
+    end
+    plugin_names
+  end
+  
   def date_format_long(date)
     return '' if date.nil?
     return date.strftime('%B %d, %Y') # "July 20, 2009"

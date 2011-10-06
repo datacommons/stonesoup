@@ -1,0 +1,19 @@
+Hello,<br/>
+Your organization, <%= @organization.name %>, has been included in the Data Commons directory of the cooperative economy.<br/>
+<br/>
+<ul>
+	<li><%= link_to 'Click here to EDIT your entry', :host => Email.website_hostname, :controller => 'organizations', :action => 'edit', :id => @organization.id %> - you will need to be logged in or create a log in account.</li>
+	<li><%= link_to 'Click here to become an EDITOR for your entry', :host => Email.website_hostname, :controller => 'organizations', :action => 'become_editor', :id => @organization.id %> - you will need to be logged in or create a log in account.</li>
+	<li><%= link_to 'Click here to RESTRICT your entry to only be viewable by logged-in users.', :host => Email.website_hostname, :controller => 'access_rules', :action => 'set_org_visibility', :status => AccessRule::ACCESS_TYPE_LOGGEDIN, :token => @organization.email_response_token %></li>
+	<li><%= link_to 'Click here to HIDE your entry to only be viewable by entry editors', :host => Email.website_hostname, :controller => 'access_rules', :action => 'set_org_visibility', :status => AccessRule::ACCESS_TYPE_PRIVATE, :token => @organization.email_response_token %></li>
+</ul>
+<br/>
+Below is an example of what your entry will look like on the website.<br/>
+<br/>
+<iframe src="<%= Email.website_base_url + url_for(:controller => 'organizations', :action => 'show', :id => @organization, :widget => '1') %>"
+	style="height:400px;width:840px;overflow-y:auto;background-color:#f0f6d2;border:1px solid black;margin:0px auto;">
+</iframe>
+<br/>
+Cheers,<br/>
+The Data Commons Project<br/>
+http://find.coop

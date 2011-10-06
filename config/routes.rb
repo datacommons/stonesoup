@@ -5,6 +5,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :organizations_people
   map.resources :people
   map.resources :access_rules
+  map.connect 'set-visibility/:status/:token', :controller => 'access_rules', :action => 'set_org_visibility'
   map.resources :member_orgs
   map.resources :sectors
   map.resources :org_types

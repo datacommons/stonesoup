@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110921203529) do
+ActiveRecord::Schema.define(:version => 20111006034655) do
 
   create_table "access_rules", :force => true do |t|
     t.string "access_type"
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(:version => 20110921203529) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "default_import_plugin_name"
   end
 
   create_table "data_sharing_orgs_organizations", :force => true do |t|
@@ -27,7 +28,10 @@ ActiveRecord::Schema.define(:version => 20110921203529) do
     t.boolean  "verified",            :default => false, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "foreign_key_id"
   end
+
+  add_index "data_sharing_orgs_organizations", ["data_sharing_org_id", "foreign_key_id"], :name => "dsoo_dso_fk", :unique => true
 
   create_table "data_sharing_orgs_users", :id => false, :force => true do |t|
     t.integer  "data_sharing_org_id", :null => false
@@ -174,7 +178,7 @@ ActiveRecord::Schema.define(:version => 20110921203529) do
   end
 
   create_table "organizations", :force => true do |t|
-    t.string   "name",                :null => false
+    t.string   "name",                  :null => false
     t.text     "description"
     t.integer  "created_by_id"
     t.integer  "updated_by_id"
@@ -188,8 +192,14 @@ ActiveRecord::Schema.define(:version => 20110921203529) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "legal_structure_id"
-    t.integer  "access_rule_id",      :null => false
+    t.integer  "access_rule_id",        :null => false
+    t.datetime "import_notice_sent_at"
+    t.string   "email_response_token"
+    t.datetime "responded_at"
+    t.string   "response"
   end
+
+  add_index "organizations", ["email_response_token"], :name => "index_organizations_on_email_response_token"
 
   create_table "organizations_people", :force => true do |t|
     t.integer  "organization_id", :null => false

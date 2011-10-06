@@ -1,0 +1,17 @@
+Hello,<br/>
+We would like to include your organization <%= @organization.name %> in the Data Commons Project directory of the Cooperative Economy.<br/>
+<br/>
+<ul>
+	<li><%= link_to 'Click here to APPROVE your entry for inclusion in the directory', :host => Email.website_hostname, :controller => 'access_rules', :action => 'set_org_visibility', :status => AccessRule::ACCESS_TYPE_PUBLIC, :token => @organization.email_response_token %>.</li>
+	<li><%= link_to 'Click here to become an EDITOR for your entry', :host => Email.website_hostname, :controller => 'organizations', :action => 'become_editor', :id => @organization.id %> - you will need to log in or create a log in account first.</li>
+</ul>
+<br/>
+Below is an example of what your entry will look like once published on the website.<br/>
+<br/>
+<iframe src="<%= Email.website_base_url + url_for(:controller => 'organizations', :action => 'show', :id => @organization, :widget => '1', :token => @organization.email_response_token) %>"
+	style="height:400px;width:840px;overflow-y:auto;background-color:#f0f6d2;border:1px solid black;margin:0px auto;">
+</iframe>
+<br/>
+Cheers,<br/>
+The Data Commons Project<br/>
+http://find.coop

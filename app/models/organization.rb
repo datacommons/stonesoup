@@ -10,7 +10,7 @@ class Organization < ActiveRecord::Base
   has_many :organizations_people, :dependent => :destroy
   has_many :people, :through => :organizations_people
   has_and_belongs_to_many :users
-  has_many :data_sharing_orgs_organizations
+  has_many :data_sharing_orgs_organizations, :dependent => :destroy
   has_many :data_sharing_orgs, :through => :data_sharing_orgs_organizations
   belongs_to :updated_by, :class_name => 'User', :foreign_key => 'updated_by_id'
   belongs_to :created_by, :class_name => 'User', :foreign_key => 'created_by_id'
@@ -40,10 +40,26 @@ class Organization < ActiveRecord::Base
   before_save :save_ll, :record_acting_user
   before_update :save_old_values
   after_update :send_notifications
+  after_save :save_access_rule
   
   UPDATE_NOTIFICATION_IGNORED_COLUMNS = ['id', 'created_at', 'created_by_id', 'updated_at', 'updated_by_id']
   UPDATE_NOTIFICATION_HAS_ONE_COLUMNS = ['legal_structure', 'access_rule']
   #UPDATE_NOTIFICATION_INCLUDED_ASSOCIATIONS = ['locations', 'products_services', 'org_types', 'sectors', 'member_orgs', 'organizations_people', 'users', 'legal_structure', 'access_rule']
+  
+  def save_access_rule
+    self.access_rule.save unless self.access_rule.nil?
+  end
+  
+  def reset_email_response_token!
+    # first generate a token and make sure it's unique
+    token = nil
+    while(token.nil? or Organization.find_by_email_response_token(token))
+      token = Common::random_token
+    end
+    # set it on the org record and save
+    self.email_response_token = token
+    self.save!
+  end
   
   def record_acting_user
     return unless User.current_user  # should never happen, but lets check just in case

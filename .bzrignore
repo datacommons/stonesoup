@@ -7,3 +7,4 @@ log/*
 index
 index/*
 doc/plugins/
+.DS_Store
