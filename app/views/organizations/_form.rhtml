@@ -16,6 +16,9 @@
 
 <label for="organization_description">Description:</label><br/>
 <%= text_area 'organization', 'description', :rows => 5, :cols => 60  %><br/>
+<% if defined? more %>
+<b>We'll ask you to add locations, sectors etc. once the basic entry is created</b><br/>
+<% end %>
 
 <p><label for="organization_year_founded">Year founded</label>: <%= select_year @organization.year_founded, :include_blank => true, :prefix => 'organization', :field_name => 'year_founded(1i)', :start_year => (DateTime.now.year-200), :end_year => DateTime.now.year %></p>
 
