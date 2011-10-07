@@ -171,6 +171,7 @@ class SearchController < ApplicationController
           :type => "application/pdf",
           :disposition => 'inline'
         end
+        f.json { render :json => @entries }
       end
     end
   end
