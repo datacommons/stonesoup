@@ -256,4 +256,16 @@ class Organization < ActiveRecord::Base
   def to_s
     self.name
   end
+
+  def to_xml(options = {})
+    options[:include] ||= :locations
+    super(options)
+  end
+
+  def to_json(options)
+    options[:include] ||= :locations
+    super(options)
+  end
+
+
 end
