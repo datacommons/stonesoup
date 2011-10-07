@@ -197,7 +197,7 @@ form.button-to {
 	padding: 0;
 	width: 781px; /* was 686 */ /* was 701 */ 
 	text-align:left;
-	padding:0 15px 20px 15px; 
+	padding:10px 15px 20px 15px; 
 }
 
 #footer {
@@ -470,6 +470,17 @@ div.menu-container {
     background: #fff;
     margin:5px;
     padding:5px;
+    border: 1px solid #cfa;
+}
+
+.example_bubble a {
+    text-decoration: none;
+    color: #008;
+}
+
+.example_bubble a:hover {
+    text-decoration: underlined;
+    color: #f00;
 }
 
 #advsearch {
@@ -563,4 +574,14 @@ div.menu-container {
 #organization_editors form, 
 #organization_editors form div {
 	display: inline;
+}
+
+#search_form { 
+    text-align: center;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    padding-top: 5px;
+    margin: 0px;
+    font-weight: bold;
 }
