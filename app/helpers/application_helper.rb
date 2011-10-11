@@ -100,6 +100,7 @@ module ApplicationHelper
   end
 
   def javascript_email(email)
+    return nil if email.nil?
     user,domain = email.split('@')
     [
      "<script type=\"text/javascript\">document.write(['",
@@ -111,6 +112,7 @@ module ApplicationHelper
   end
 
   def javascript_email_link(email)
+    return nil if email.nil?
     user,domain = email.split('@')
     [
      "javascript:missive(['",
