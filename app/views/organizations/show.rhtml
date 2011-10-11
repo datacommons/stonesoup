@@ -168,7 +168,7 @@
 	<% unless @organization.email.blank? %>
 		<dl class="address">
 		<dt>Email</dt>
-		<dd><A HREF=mailto:<%= @organization.email %>><%= @organization.email %></A></dd>
+		<dd><a href="<%= javascript_email_link(@organization.email) %>"><%= javascript_email(@organization.email) %></A></dd>
 		</dl class="address">
 	<% end %>
 </div id="listing_info">

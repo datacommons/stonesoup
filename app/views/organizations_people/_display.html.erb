@@ -28,7 +28,7 @@ hide_links = false if hide_links.nil?
 <% end %>
 		Role: <%= org_person.role_name%><br/>
 		Phone: <%= org_person.phone%><br/>
-		Email: <%= org_person.email%><br/>
+		Email: <%= javascript_email(org_person.email) %><br/>
 		<% unless hide_links %>
 			<span class="actions">
 			[ <%= link_to_remote( 'delete', 

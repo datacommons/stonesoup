@@ -87,4 +87,39 @@ module ApplicationHelper
       return default_map_type
     end
   end
+
+  def obscure_email(_email)
+    return nil if _email.nil? #Don't bother if the parameter is nil.
+    lower = ('a'..'z').to_a
+    upper = ('A'..'Z').to_a
+    _email.split('').map { |char|
+      output = lower.index(char) + 97 if lower.include?(char)
+      output = upper.index(char) + 65 if upper.include?(char)
+      output ? "&##{output};" : (char == '@' ? '&#0064;' : char)
+    }.join
+  end
+
+  def javascript_email(email)
+    user,domain = email.split('@')
+    [
+     "<script type=\"text/javascript\">document.write(['",
+     obscure_email(user),
+     "\',\'",
+     obscure_email(domain),
+     "'].join('&#64;'))</script>",
+    ].join
+  end
+
+  def javascript_email_link(email)
+    user,domain = email.split('@')
+    [
+     "javascript:missive(['",
+     obscure_email(user),
+     "\',\'",
+     obscure_email(domain),
+     "'].join('&#64;'))",
+    ].join
+  end
+
+
 end
