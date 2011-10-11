@@ -92,4 +92,15 @@ public
       end
     end
   end
+
+
+  def not_found
+    respond_to do |type| 
+      type.html { render :template => "errors/error_404", :status => 404 } 
+      type.all  { render :nothing => true, :status => 404 } 
+    end
+    true  # so we can do "render_404 and return"
+  end
+
+
 end
