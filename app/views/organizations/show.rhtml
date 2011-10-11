@@ -1,6 +1,7 @@
 <%- included_view = (params && params[:widget]) if included_view.nil? -%>
 <h1><%= @organization.name %></h1>
 <div id="last_updated">
+<%- unless @organization.updated_at.nil? -%>
 	This entry was last updated on <%= date_format_long(@organization.updated_at) %>
 	<%- unless @organization.updated_by.nil? -%>
 		by <%= @organization.updated_by.login %>
@@ -8,6 +9,7 @@
 			(manager for <%= @organization.updated_by.data_sharing_orgs.map(&:name).to_sentence %>)
 		<%- end -%>
 	<%- end -%>
+<%- end -%>
 </div>
 <%- if !included_view and current_user and current_user.data_sharing_orgs.any? # DSO MEMBER VIEW -%>
 	<div id="dso_admin">
@@ -60,6 +62,7 @@
 
 
 
+<% unless @organization.locations.length == 0 %>
   <%
   map = Mapstraction.new("the_map",current_map_type)
   map.control_init(:small => true)
@@ -118,8 +121,18 @@
   </ul>
   </div>
   </div>
+<% end %>
 
 <p><%= simple_format @organization.description %></p>
+<% unless @organization.website.nil? %>
+  <% unless @organization.website == "" %>
+    See <% if /https?:\/\/(.*)/.match(@organization.website)==nil %>
+      <%= link_to @organization.website, "http://#{@organization.website}" %>
+    <% else %>
+      <%= link_to @organization.website, "#{@organization.website}" %>
+    <% end %>
+  <% end %>
+<% end %>
 
 <div class="clearboth"></div>
 
