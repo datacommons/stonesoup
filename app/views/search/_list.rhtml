@@ -22,7 +22,21 @@
   <% for entry in @entries %>
    <% if entry.accessible? current_user %>
     <div class='listing'>
-    <%= show_link entry %><br >
+    <%= show_link entry %><br />
+    <% if entry.respond_to? "website" %> 
+      <% unless entry.website.nil? %>
+        <% unless entry.website == "" %>
+          <i>
+          <% if /https?:\/\/(.*)/.match(entry.website)==nil %>
+            <%= link_to "view website...", "http://#{entry.website}" %>
+          <% else %>
+            <%= link_to "view website...", "#{entry.website}" %>
+          <% end %>
+          </i>
+          <br />
+       <% end %>
+     <% end %>
+   <% end %>
     <% if entry.respond_to? "primary_location" and !entry.primary_location.nil? %>
      	<% loc = entry.primary_location %>
 		<%= render :partial => 'locations/display_primary', :locals => {:location => loc} %>
