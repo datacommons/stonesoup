@@ -7,4 +7,8 @@ class DefaultSite < Site
   def aliases
     ['find.coop', 'www.find.coop']
   end
+
+  def blank_search
+    'Data Commons'
+  end
 end

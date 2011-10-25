@@ -13,6 +13,10 @@ class SearchController < ApplicationController
     @search_text = @query
     search_query = params[:q].to_s + '' # apparently the (+ '') is needed to make these distinct variables
     @latest_changes = get_latest_changes()
+
+    if search_query == ""
+      search_query = @site.blank_search
+    end
     
     if params[:q]
       record_types = [Organization, Person]

@@ -69,6 +69,10 @@ class Site
     'Data Commons Directory'
   end
 
+  def blank_search
+    '*'
+  end
+
   def self.scan
     get_subclasses.each do |c|
       s = c.new
