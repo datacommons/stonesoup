@@ -37,7 +37,7 @@ class Organization < ActiveRecord::Base
 
   validates_presence_of :name
 
-  before_save :save_ll, :record_acting_user
+  before_save :record_acting_user
   before_update :save_old_values
   after_update :send_notifications
   after_save :save_access_rule
@@ -205,13 +205,6 @@ class Organization < ActiveRecord::Base
     end
   end
   
-  def save_ll
-    self.locations.each do |loc|
-      loc.save_ll
-      loc.save(false)
-    end
-  end
-
   def Organization.latest_changes(state_filter = [], city_filter = [], zip_filter = [])
     user = User.current_user
     conditions = nil

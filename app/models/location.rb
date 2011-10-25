@@ -1,6 +1,7 @@
 class Location < ActiveRecord::Base
   belongs_to :organization
   after_save :set_organizations_primary_location
+  before_save :save_ll
   
   include GeoKit::Geocoders
 
@@ -16,6 +17,7 @@ class Location < ActiveRecord::Base
   end
   
   Location::ADDRESS_FIELDS = ['address1', 'address2', 'city', 'state', 'zip', 'county', 'country']
+  Location::MODIFIED_ADDRESS_FIELDS = ['address1', 'address2', 'city', 'state_zip', 'county', 'country']
   Location::STATES = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District of Columbia', 'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Northern Marianas Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Puerto Rico', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Virgin Islands', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming']
 
   Location::STATE_SHORT = {
@@ -119,6 +121,7 @@ class Location < ActiveRecord::Base
     address = self.to_s
     location=GeoKit::Geocoders::GoogleGeocoder.geocode(address)
     coords = location.ll.scan(/[0-9\.\-\+]+/)
+    logger.debug("Geocoding: #{address} gives #{coords}")
     if coords.length == 2
       self.longitude = coords[1]
       self.latitude = coords[0]
@@ -126,6 +129,7 @@ class Location < ActiveRecord::Base
       self.longitude = "0"
       self.latitude = "0"
     end
+    true
   end
   
   def get_primary(field = nil)
@@ -151,8 +155,15 @@ class Location < ActiveRecord::Base
   
   def to_s
     primary = get_primary
-    #return "#{self.physical_address1},#{self.physical_address2},#{self.physical_city},#{self.physical_state},#{self.physical_zip},#{self.physical_country}"
-    return ADDRESS_FIELDS.reject{|f| f=='county'}.collect{|f| self.send(primary+'_'+f)}.join(',')
+    return MODIFIED_ADDRESS_FIELDS.reject{|f| f=='county'}.collect{|f| self.send(primary+'_'+f)}.reject{|x| x==""}.join(', ')
+  end
+
+  def physical_state_zip
+    return [physical_state, physical_zip].collect.join(' ')
+  end
+
+  def mailing_state_zip
+    return [mailing_state, mailing_zip].collect.join(' ')
   end
 
   def accessible?(current_user)
