@@ -2,7 +2,7 @@
 <div class="listing_info"><%= page_entries_info @entries %></div>
 
 <div>
-<%= link_to 'View as list', params.merge(:action => 'search') %>
+<%= link_to 'View as list', clean_params.merge(:action => 'search') %>
 </div>
 
   <%

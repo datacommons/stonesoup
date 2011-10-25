@@ -3,7 +3,8 @@
 	<% form_tag( {:action => 'search'}, :id => 'search_form', :name => 'search_form', :method => 'get' ) do %>
 		<p><label for="q">Search the directory:</label>
 		<%= text_field_tag 'q', @query, :size => 30 %>
-		<%= submit_tag 'Search' %>
+		<%= submit_tag 'See List' %>
+		<%= submit_tag 'See Map', :name => 'Map' %>
 		<%= link_to_function('Advanced...', "Element.show('advanced_search'); Element.hide('basic_search')") %>
 		</p>
 	<% end %>

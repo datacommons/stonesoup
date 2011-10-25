@@ -46,10 +46,10 @@
   <%= will_paginate @entries %>
  <h2>View Options</h2>
    <ul>  
-    <li>View results on a <%= link_to 'map', params.merge(:action => 'map') %></li>
-    <li>Download as <%= link_to 'CSV', params.merge(:format => 'csv') %> (suitable for spreadsheet programs)</li>
-    <li>Download as <%= link_to 'XML', params.merge(:format => 'xml') %></li>
-    <li>Download as <%= link_to 'PDF', params.merge(:format => 'pdf') %></li>
+    <li>View results on a <%= link_to 'map', clean_params.merge(:action => 'map') %></li>
+    <li>Download as <%= link_to 'CSV', clean_params.merge(:format => 'csv') %> (suitable for spreadsheet programs)</li>
+    <li>Download as <%= link_to 'XML', clean_params.merge(:format => 'xml') %></li>
+    <li>Download as <%= link_to 'PDF', clean_params.merge(:format => 'pdf') %></li>
    </ul>
  <% end %>
 <% else %>

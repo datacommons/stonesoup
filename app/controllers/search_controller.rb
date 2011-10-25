@@ -168,7 +168,7 @@ class SearchController < ApplicationController
 
       f = params[:format]
       respond_to do |f| 
-        f.html
+        f.html { if params['Map'] then render :action => 'map' else render end }
         f.xml { render :xml => @entries }
         f.csv do
           data = [@entries].flatten
