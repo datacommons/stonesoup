@@ -212,7 +212,7 @@ class Organization < ActiveRecord::Base
     end
   end
 
-  def Organization.latest_changes(state_filter = [], city_filter = [])
+  def Organization.latest_changes(state_filter = [], city_filter = [], zip_filter = [])
     user = User.current_user
     conditions = nil
     condSQLs = []
@@ -232,6 +232,16 @@ class Organization < ActiveRecord::Base
       cities = [city_filter].flatten
       condSQLs << "(locations.physical_city IN (#{cities.collect{'?'}.join(',')})) OR (locations.mailing_city IN (#{cities.collect{'?'}.join(',')}))"
       condParams += cities + cities
+    end
+
+    unless zip_filter.nil? or zip_filter.empty?
+      logger.debug("applying session zip filters to search results: #{zip_filter.inspect}")
+      joinSQL = 'INNER JOIN locations ON locations.organization_id = organizations.id'
+      zips = [zip_filter].flatten.collect{|x| x.sub('*','%')}
+      zip_str = zips.collect{|z| "(locations.physical_zip LIKE ?)"}.join(" OR ")
+      # condSQLs << "(locations.physical_zip IN (#{cities.collect{'?'}.join(',')})) OR (locations.mailing_zip IN (#{cities.collect{'?'}.join(',')}))"
+      condSQLs << zip_str
+      condParams += zips
     end
 
     unless joinSQL.nil?

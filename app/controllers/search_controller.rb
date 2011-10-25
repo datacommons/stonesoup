@@ -90,6 +90,7 @@ class SearchController < ApplicationController
       #condSQL = [access_conditionSQL, proximity_conditionSQL].compact.collect{|sql| '('+sql+')'}.join(' AND ')
       logger.debug("flat conditions: #{flatSQL.inspect}")
       filtered_query = search_query
+      append_query = ""
 
       if not(params[:unrestricted])
         unless session[:state_filter].blank?
@@ -105,7 +106,8 @@ class SearchController < ApplicationController
             #end
             addl_criteria << "state:\"#{state}\""
           end
-          filtered_query = "+(#{search_query}) +(#{addl_criteria.join(' OR ')})"
+          append_query = "#{append_query} +(#{addl_criteria.join(' OR ')})"
+          filtered_query = "+(#{search_query})#{append_query}"
           logger.debug("After adding state filter to query, query is: #{filtered_query}")
         end
 
@@ -115,8 +117,21 @@ class SearchController < ApplicationController
           [session[:city_filter]].flatten.each do |city|
             addl_criteria << "city:\"#{city}\""
           end
-          filtered_query = "+(#{search_query}) +(#{addl_criteria.join(' OR ')})"
+          append_query = "#{append_query} +(#{addl_criteria.join(' OR ')})"
+          filtered_query = "+(#{search_query})#{append_query}"
           logger.debug("After adding city filter to query, query is: #{filtered_query}")
+        end
+
+        unless session[:zip_filter].blank?
+          logger.debug("applying zip filters to search results: #{session[:zip_filter].inspect}")
+          addl_criteria = []
+          [session[:zip_filter]].flatten.each do |zip|
+            addl_criteria << "zip:#{zip}"
+          end
+          append_query = "#{append_query} +(#{addl_criteria.join(' OR ')})"
+          filtered_query = "+(#{search_query})#{append_query}"
+          # filtered_query = "+(#{search_query}) +(#{addl_criteria.join(' OR ')})"
+          logger.debug("After adding zip filter to query, query is: #{filtered_query}")
         end
       end
 
@@ -241,7 +256,7 @@ class SearchController < ApplicationController
   
 protected
   def get_latest_changes
-    data = Organization.latest_changes(session[:state_filter],session[:city_filter])
+    data = Organization.latest_changes(session[:state_filter],session[:city_filter],session[:zip_filter])
     if @site.should_show_latest_people
       data = data + Person.latest_changes(session[:state_filter])
     end

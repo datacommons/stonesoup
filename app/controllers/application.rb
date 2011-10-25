@@ -39,6 +39,7 @@ public
     @site = get_site
     session[:state_filter] = @site.state_filter
     session[:city_filter] = @site.city_filter
+    session[:zip_filter] = @site.zip_filter
     
     Email.website_hostname = @site.canonical_name
     logger.debug("Set Email.website_hostname to: #{Email.website_hostname.inspect}")

@@ -13,7 +13,7 @@ class NycSite < Site
   end
   
   def city_filter
-    ['New York', 'NYC', 'NY']
+    ['New York', 'NYC', 'NY', 'Manhattan', 'Queens', 'Brooklyn', 'Bronx', 'Staten Island', 'Kings', 'Richmond']
   end
 
   def should_show_latest_people

@@ -49,6 +49,10 @@ class Site
     nil
   end
 
+  def zip_filter
+    nil
+  end
+
   def name
     @name ||= self.class.name.gsub('Site','').downcase
   end
