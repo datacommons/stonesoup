@@ -3107,7 +3107,7 @@ Marker.prototype.toOpenLayers = function() {
     var feature = new OpenLayers.Feature(this.markers, this.location.toOpenLayers()); 
     feature.closeBox = true;
     feature.data.icon = icon;
-    feature.popupClass = OpenLayers.Class(OpenLayers.Popup.Anchored, {
+    feature.popupClass = OpenLayers.Class(OpenLayers.Popup.FramedCloud, {
         'autoSize': true
     });
     feature.data.popupContentHTML = this.infoBubble;
