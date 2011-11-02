@@ -210,10 +210,9 @@ class Organization < ActiveRecord::Base
     conditions = nil
     condSQLs = []
     condParams = []
-    joinSQL = nil
+    joinSQL = 'INNER JOIN locations ON locations.organization_id = organizations.id'
     unless state_filter.nil? or state_filter.empty?
       logger.debug("applying session state filters to search results: #{state_filter.inspect}")
-      joinSQL = 'INNER JOIN locations ON locations.organization_id = organizations.id'
       states = [state_filter].flatten
       condSQLs << "(locations.physical_state IN (#{states.collect{'?'}.join(',')})) OR (locations.mailing_state IN (#{states.collect{'?'}.join(',')}))"
       condParams += states + states
@@ -221,7 +220,6 @@ class Organization < ActiveRecord::Base
 
     unless city_filter.nil? or city_filter.empty?
       logger.debug("applying session city filters to search results: #{city_filter.inspect}")
-      joinSQL = 'INNER JOIN locations ON locations.organization_id = organizations.id'
       cities = [city_filter].flatten
       condSQLs << "(locations.physical_city IN (#{cities.collect{'?'}.join(',')})) OR (locations.mailing_city IN (#{cities.collect{'?'}.join(',')}))"
       condParams += cities + cities
@@ -229,7 +227,6 @@ class Organization < ActiveRecord::Base
 
     unless zip_filter.nil? or zip_filter.empty?
       logger.debug("applying session zip filters to search results: #{zip_filter.inspect}")
-      joinSQL = 'INNER JOIN locations ON locations.organization_id = organizations.id'
       zips = [zip_filter].flatten.collect{|x| x.sub('*','%')}
       zip_str = zips.collect{|z| "(locations.physical_zip LIKE ?)"}.join(" OR ")
       # condSQLs << "(locations.physical_zip IN (#{cities.collect{'?'}.join(',')})) OR (locations.mailing_zip IN (#{cities.collect{'?'}.join(',')}))"
@@ -237,10 +234,8 @@ class Organization < ActiveRecord::Base
       condParams += zips
     end
 
-    unless joinSQL.nil?
-      conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
-      logger.debug("After applying state_filter and city_filter, conditions = #{conditions.inspect}")
-    end
+    conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
+    logger.debug("After applying state_filter and city_filter, conditions = #{conditions.inspect}")
 
     Organization.find(:all, :select => 'organizations.*, locations.latitude, locations.longitude', :order => 'updated_at DESC', 
                       :limit => 15,
