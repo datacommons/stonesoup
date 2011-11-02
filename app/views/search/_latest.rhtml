@@ -2,6 +2,9 @@
 
 <h2>Recent Activity</h2>
 
+<% if current_map_type == :openlayers %>
+Hold down the shift key, then click and drag the mouse to select an area.
+<% end %>
   <%
   map = Mapstraction.new("wide_map",current_map_type)
   map.control_init(:large => true)
