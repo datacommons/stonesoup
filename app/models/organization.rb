@@ -242,10 +242,11 @@ class Organization < ActiveRecord::Base
       logger.debug("After applying state_filter and city_filter, conditions = #{conditions.inspect}")
     end
 
-    Organization.find(:all, :select => 'organizations.*', :order => 'updated_at DESC', 
-               :limit => 15,
-               :conditions => conditions,
-               :joins => joinSQL)
+    Organization.find(:all, :select => 'organizations.*, locations.latitude, locations.longitude', :order => 'updated_at DESC', 
+                      :limit => 15,
+                      :conditions => conditions,
+                      :joins => joinSQL)
+
   end
   
   def link_name
