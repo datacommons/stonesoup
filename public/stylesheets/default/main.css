@@ -583,5 +583,12 @@ div.menu-container {
     padding-bottom: 10px;
     padding-top: 5px;
     margin: 0px;
+}
+
+#search_form label { 
     font-weight: bold;
+}
+
+#search_form a { 
+    text-decoration: none;
 }
