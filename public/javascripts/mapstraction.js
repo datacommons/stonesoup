@@ -921,6 +921,10 @@ Mapstraction.prototype.addLargeControls = function() {
       this.addControlsArgs.zoom = 'large';
       break;
     case 'openlayers':
+      for (var i = map.controls.length; i>1; i--) { 
+        map.controls[i-1].deactivate();
+        map.removeControl(map.controls[i-1]); 
+      }
       map.addControl(new OpenLayers.Control.PanZoomBar());
       break;
     case 'google':
