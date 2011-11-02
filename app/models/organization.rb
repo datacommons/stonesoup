@@ -237,7 +237,7 @@ class Organization < ActiveRecord::Base
     conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
     logger.debug("After applying state_filter and city_filter, conditions = #{conditions.inspect}")
 
-    Organization.find(:all, :select => 'organizations.*, locations.latitude, locations.longitude', :order => 'updated_at DESC', 
+    Organization.find(:all, :select => 'organizations.*, locations.latitude AS filtered_latitude, locations.longitude AS filtered_longitude', :order => 'updated_at DESC', 
                       :limit => 15,
                       :conditions => conditions,
                       :joins => joinSQL)

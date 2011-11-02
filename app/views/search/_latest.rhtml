@@ -10,9 +10,9 @@
   bounds = [10000, 10000, -10000, -10000]
   for e in @latest_changes
    if e.is_a?(Organization)
-    unless e.latitude.nil? or e.longitude.nil?
+    unless e.filtered_latitude.nil? or e.filtered_longitude.nil?
       icon = "/openlayers/img/marker-star.png"
-      pt = [Float(e.latitude), Float(e.longitude)]
+      pt = [Float(e.filtered_latitude), Float(e.filtered_longitude)]
       markers[e.id] = icon
       bounds = [[bounds[0], pt[0]].min,
                 [bounds[1], pt[1]].min,
