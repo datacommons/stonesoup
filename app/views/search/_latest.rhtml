@@ -12,14 +12,15 @@
   if e.is_a?(Organization)
   for location in e.locations
     unless location.latitude.nil? or location.longitude.nil?
-      icon = "http://www.openlayers.org/dev/img/marker-green.png"
+      icon = "/openlayers/img/marker-star.png"
       pt = [Float(location.latitude), Float(location.longitude)]
       markers[location.id] = icon
       bounds = [[bounds[0], pt[0]].min,
                 [bounds[1], pt[1]].min,
                 [bounds[2], pt[0]].max,
                 [bounds[3], pt[1]].max]
-      map.marker_init(Marker.new(pt, :info_bubble => show_link(location.organization), :icon => icon))
+      mkr = Marker.new(pt, :info_bubble => show_link(location.organization), :icon => icon, :icon_size => [22,22])
+      map.marker_init(mkr)
    end
   end
   end

@@ -16,6 +16,8 @@ function addDataToMarker(marker,options){
 	marker.setInfoBubble(options.infoBubble);
     if(options.icon)
 	marker.setIcon(options.icon);
+    if(options.iconSize)
+	marker.setIconSize(options.iconSize);
     if(options.infoDiv)
 	marker.setInfoDiv(options.infoDiv[0],options.infoDiv[1]);
     return marker;
