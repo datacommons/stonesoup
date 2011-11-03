@@ -53,6 +53,10 @@ class Site
     nil
   end
 
+  def dso_filter
+    nil
+  end
+
   def name
     @name ||= self.class.name.gsub('Site','').downcase
   end

@@ -260,7 +260,7 @@ class SearchController < ApplicationController
   
 protected
   def get_latest_changes
-    data = Organization.latest_changes(session[:state_filter],session[:city_filter],session[:zip_filter])
+    data = Organization.latest_changes(session[:state_filter],session[:city_filter],session[:zip_filter],session[:dso_filter])
     if @site.should_show_latest_people
       data = data + Person.latest_changes(session[:state_filter])
     end

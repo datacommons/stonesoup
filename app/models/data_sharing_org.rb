@@ -9,4 +9,8 @@ class DataSharingOrg < ActiveRecord::Base
   def unverified_orgs
     self.data_sharing_orgs_organizations.reject{|link| link.verified}.map{|link| link.organization}
   end
+
+  def to_s
+    self.name
+  end
 end

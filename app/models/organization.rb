@@ -31,6 +31,7 @@ class Organization < ActiveRecord::Base
                    :verified => { :via => :verified_to_s },
                    :city => { :via => :cities_to_s },
 #                   :public => { :store => :yes },
+                   :pool => { :via => :pool_to_s },
                  } )
 
   acts_as_reportable
@@ -159,7 +160,11 @@ class Organization < ActiveRecord::Base
   def org_types_to_s
     self.org_types.collect{|org_type| org_type.name}.join(', ')
   end
-  
+
+  def pool_to_s
+    self.data_sharing_orgs.collect{|dso| dso.to_s}.join(', ')
+  end
+    
   def set_access_rule(access_type)
     if self.access_rule.nil?
       self.access_rule = AccessRule.new(:access_type => access_type)
@@ -205,7 +210,7 @@ class Organization < ActiveRecord::Base
     end
   end
   
-  def Organization.latest_changes(state_filter = [], city_filter = [], zip_filter = [])
+  def Organization.latest_changes(state_filter = [], city_filter = [], zip_filter = [], dso_filter = [])
     user = User.current_user
     conditions = nil
     condSQLs = []
@@ -234,10 +239,18 @@ class Organization < ActiveRecord::Base
       condParams += zips
     end
 
-    conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
-    logger.debug("After applying state_filter and city_filter, conditions = #{conditions.inspect}")
+    unless dso_filter.nil? or dso_filter.empty?
+      logger.debug("applying session dso filters to search results: #{dso_filter.inspect}")
+      joinSQL = "#{joinSQL} INNER JOIN data_sharing_orgs_organizations ON data_sharing_orgs_organizations.organization_id = organizations.id INNER JOIN data_sharing_orgs ON data_sharing_orgs_organizations.data_sharing_org_id = data_sharing_orgs.id"
+      dsos = [dso_filter].flatten
+      condSQLs << "data_sharing_orgs.name IN (#{dsos.collect{'?'}.join(',')})"
+      condParams += dsos
+    end
 
-    Organization.find(:all, :select => 'organizations.*, locations.latitude AS filtered_latitude, locations.longitude AS filtered_longitude', :order => 'updated_at DESC', 
+    conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
+    logger.debug("After applying filters, conditions = #{conditions.inspect}")
+
+    Organization.find(:all, :select => 'organizations.*, locations.latitude AS filtered_latitude, locations.longitude AS filtered_longitude', :order => 'organizations.updated_at DESC', 
                       :limit => 15,
                       :conditions => conditions,
                       :joins => joinSQL)
