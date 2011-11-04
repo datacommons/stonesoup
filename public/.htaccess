@@ -1,6 +1,6 @@
 # prevent bot scraping
 #setenvifNoCase User-Agent "Slurp" bad_bot
-#setenvifNoCase User-Agent "Baiduspider" bad_bot
+SetEnvIfNoCase User-Agent "Baiduspider" bad_bot
 #setenvifNoCase User-Agent "bingbot" bad_bot
 #setenvifNoCase User-Agent "googlebot" bad_bot
 #setenvifNoCase User-Agent "Sosospider" bad_bot
