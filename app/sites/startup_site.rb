@@ -12,7 +12,11 @@ class StartupSite < Site
     false
   end
 
+  def org_type_filter
+    ['Startup']
+  end
+
   def blank_search
-    'startup'
+    '*'
   end
 end
