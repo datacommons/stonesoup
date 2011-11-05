@@ -167,7 +167,7 @@ class SearchController < ApplicationController
         :page => params[:page], 
         :per_page => 15,
       }
-      if params[:format]=='xml' or params[:format]=='csv' or params[:format]=='pdf' or defined? @unlimited_search
+      if params[:format]=='xml' or params[:format]=='csv' or params[:format]=='pdf' or defined? @unlimited_search or params['Map'] 
         # When providing xml or csv, there should be no
         # effective limit on the download size.  However,
         # depending on server load, we might want to 
