@@ -6,6 +6,7 @@ class OrgTypesController < ApplicationController
     @organization = Organization.find(params[:organization_id])
     @organization.org_types.delete(@org_type)
     @organization.save!
+    @organization.ferret_update
     render :partial => 'manage'
   end
 
@@ -14,6 +15,7 @@ class OrgTypesController < ApplicationController
     @organization = Organization.find(params[:organization_id])
     @organization.org_types.push(@org_type)
     @organization.save!
+    @organization.ferret_update
     render :partial => 'manage'
   end
   

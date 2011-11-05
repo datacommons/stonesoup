@@ -6,6 +6,7 @@ class SectorsController < ApplicationController
     @organization = Organization.find(params[:organization_id])
     @organization.sectors.delete(@sector)
     @organization.save!
+    @organization.ferret_update
     render :partial => 'manage'
   end
 
@@ -14,6 +15,7 @@ class SectorsController < ApplicationController
     @organization = Organization.find(params[:organization_id])
     @organization.sectors.push(@sector)
     @organization.save!
+    @organization.ferret_update
     render :partial => 'manage'
   end
 
