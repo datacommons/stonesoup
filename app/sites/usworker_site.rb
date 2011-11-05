@@ -15,8 +15,4 @@ class UsworkerSite < Site
   def dso_filter
     ["US Federation of Worker Cooperatives"]
   end
-
-  def blank_search
-    'us federation of worker'
-  end
 end
