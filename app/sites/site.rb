@@ -57,6 +57,10 @@ class Site
     nil
   end
 
+  def org_type_filter
+    nil
+  end
+
   def name
     @name ||= self.class.name.gsub('Site','').downcase
   end

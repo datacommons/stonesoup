@@ -210,7 +210,7 @@ class Organization < ActiveRecord::Base
     end
   end
   
-  def Organization.latest_changes(state_filter = [], city_filter = [], zip_filter = [], dso_filter = [])
+  def Organization.latest_changes(state_filter = [], city_filter = [], zip_filter = [], dso_filter = [], org_type_filter = [])
     user = User.current_user
     conditions = nil
     condSQLs = []
@@ -245,6 +245,14 @@ class Organization < ActiveRecord::Base
       dsos = [dso_filter].flatten
       condSQLs << "data_sharing_orgs.name IN (#{dsos.collect{'?'}.join(',')})"
       condParams += dsos
+    end
+
+    unless org_type_filter.nil? or org_type_filter.empty?
+      logger.debug("applying session org_type filters to search results: #{org_type_filter.inspect}")
+      joinSQL = "#{joinSQL} INNER JOIN org_types_organizations ON org_types_organizations.organization_id = organizations.id INNER JOIN org_types ON org_types_organizations.org_type_id = org_types.id"
+      org_types = [org_type_filter].flatten
+      condSQLs << "org_types.name IN (#{org_types.collect{'?'}.join(',')})"
+      condParams += org_types
     end
 
     conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?

@@ -141,13 +141,25 @@ class SearchController < ApplicationController
         unless session[:dso_filter].blank?
           logger.debug("applying dso filters to search results: #{session[:dso_filter].inspect}")
           addl_criteria = []
-          [session[:dso_filter]].flatten.each do |zip|
-            addl_criteria << "pool:#{zip}"
+          [session[:dso_filter]].flatten.each do |x|
+            addl_criteria << "pool:\"#{x}\""
           end
           append_query = "#{append_query} +(#{addl_criteria.join(' OR ')})"
           filtered_query = "+(#{search_query})#{append_query}"
           # filtered_query = "+(#{search_query}) +(#{addl_criteria.join(' OR ')})"
           logger.debug("After adding dso filter to query, query is: #{filtered_query}")
+        end
+
+        unless session[:org_type_filter].blank?
+          logger.debug("applying org_type filters to search results: #{session[:org_type_filter].inspect}")
+          addl_criteria = []
+          [session[:org_type_filter]].flatten.each do |x|
+            addl_criteria << "org_type:\"#{x}\""
+          end
+          append_query = "#{append_query} +(#{addl_criteria.join(' OR ')})"
+          filtered_query = "+(#{search_query})#{append_query}"
+          # filtered_query = "+(#{search_query}) +(#{addl_criteria.join(' OR ')})"
+          logger.debug("After adding org_type filter to query, query is: #{filtered_query}")
         end
       end
 
@@ -272,7 +284,7 @@ class SearchController < ApplicationController
   
 protected
   def get_latest_changes
-    data = Organization.latest_changes(session[:state_filter],session[:city_filter],session[:zip_filter],session[:dso_filter])
+    data = Organization.latest_changes(session[:state_filter],session[:city_filter],session[:zip_filter],session[:dso_filter],session[:org_type_filter])
     if @site.should_show_latest_people
       data = data + Person.latest_changes(session[:state_filter])
     end
