@@ -3,7 +3,7 @@
   <p>
   No results were found for this search.
     <% if not(params[:unrestricted]) %>
-    <% if session[:state_filter] or session[:state_filter] %>
+    <% if session[:state_filter] or session[:state_filter] or session[:dso_filter] %>
       Would you like to try an <%= link_to 'unrestricted search', params.merge(:unrestricted => true) %>?
     <% end %>
     <% if session[:state_filter] %>
@@ -11,6 +11,9 @@
     <% end %>
     <% if session[:city_filter] %>
     <br />The city was restricted to: <%= session[:city_filter].join(" / ") %>.
+    <% end %>
+    <% if session[:dso_filter] %>
+    <br />The search was restricted to known members of: <%= session[:dso_filter].join(" / ") %>.
     <% end %>
     <% end %>
   </p>

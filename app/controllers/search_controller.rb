@@ -137,6 +137,18 @@ class SearchController < ApplicationController
           # filtered_query = "+(#{search_query}) +(#{addl_criteria.join(' OR ')})"
           logger.debug("After adding zip filter to query, query is: #{filtered_query}")
         end
+
+        unless session[:dso_filter].blank?
+          logger.debug("applying dso filters to search results: #{session[:dso_filter].inspect}")
+          addl_criteria = []
+          [session[:dso_filter]].flatten.each do |zip|
+            addl_criteria << "pool:#{zip}"
+          end
+          append_query = "#{append_query} +(#{addl_criteria.join(' OR ')})"
+          filtered_query = "+(#{search_query})#{append_query}"
+          # filtered_query = "+(#{search_query}) +(#{addl_criteria.join(' OR ')})"
+          logger.debug("After adding dso filter to query, query is: #{filtered_query}")
+        end
       end
 
       pagination = { 
