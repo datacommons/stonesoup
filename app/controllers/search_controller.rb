@@ -14,7 +14,7 @@ class SearchController < ApplicationController
     search_query = params[:q].to_s + '' # apparently the (+ '') is needed to make these distinct variables
     @latest_changes = get_latest_changes()
 
-    if search_query == ""
+    if search_query == "" and params[:advanced] != '1'
       search_query = @site.blank_search
     end
     
@@ -44,24 +44,28 @@ class SearchController < ApplicationController
       proximity_conditionSQL = nil
       if params[:advanced] == '1'
         # process advanced params...
+        if search_query != ""
+          search_query = "(#{search_query})"
+        end
+
         unless params[:verified].blank?
           search_query << ' verified:yes' if params[:verified]
         end
         unless params[:org_type_id].blank?
           org_type = OrgType.find_by_id(params[:org_type_id])
-          search_query << " org_type:'#{org_type.name}'" unless org_type.nil?
+          search_query << " +org_type:'#{org_type.name}'" unless org_type.nil?
         end
         unless params[:sector_id].blank?
           sector = Sector.find_by_id(params[:sector_id])
-          newterm = "sector:'#{sector.name}'"
+          newterm = "+sector:'#{sector.name}'"
           search_query << ' ' + newterm unless sector.nil? or search_query.include?(newterm)
         end
         unless params[:county].blank?
-          newterm = "county:'#{params[:county]}'"
+          newterm = "+county:'#{params[:county]}'"
           search_query << ' ' + newterm unless search_query.include?(newterm)
         end
         unless params[:state].blank?
-          newterm = "state:'#{params[:state]}'"
+          newterm = "+state:'#{params[:state]}'"
           search_query << ' ' + newterm unless search_query.include?(newterm)
         end
         unless params[:within].blank? or params[:origin].blank?
