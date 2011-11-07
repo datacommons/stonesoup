@@ -1,5 +1,5 @@
 class OrganizationsController < ApplicationController
-  before_filter :login_required, :only => [:new, :create, :edit, :update, :destroy, :become_editor]
+  before_filter :login_required, :only => [:new, :create, :edit, :update, :destroy, :become_editor, :compare]
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
   verify :method => [:post, :put, :delete], :only => [ :destroy, :create, :update ],
          :redirect_to => { :action => :index }
@@ -153,6 +153,14 @@ class OrganizationsController < ApplicationController
       flash[:notice] = "#{@user.login} has been invited"
     end
     redirect_to :action => 'show', :id => @organization
+  end
+
+  # start at an interface for merging two entries
+  # /organizations/:id/v/:id2
+  def merge
+    @organization = Organization.find(params[:id])
+    @organization2 = Organization.find(params[:id2])
+    render :action => 'merge', :id => @organization
   end
 
   protected

@@ -40,6 +40,8 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'plumbing/index', :controller => 'plumbing', :action => 'index'
   map.connect 'plumbing/email', :controller => 'plumbing', :action => 'email'
 
+  map.connect 'organizations/:id/v/:id2', :controller => 'organizations', :action => 'merge'
+
   # Install the default route as the lowest priority.
   map.connect ':controller/:action/:id'
   map.connect ':controller/:action/:id.:format'

@@ -1,0 +1,17 @@
+<%= render :partial => '/layouts/js_required' %>
+
+
+<h1>Merging entry</h1>
+<%= link_to 'View this entry.', :action => 'show', :id => @organization %>
+<br/>
+<% form_tag( {:action => 'update', :id => @organization}, :method => 'PUT') do %>
+  <%= render :partial => 'form_merge' %>
+  <%= submit_tag 'Update' %>
+<% end %>
+<br/>
+
+<%= render :partial => 'parts' %>
+
+<h2>Remove entry</h2>
+
+<td><%= link_to 'Delete entire entry', @organization, :confirm => 'Are you sure?', :method => :delete %></td>

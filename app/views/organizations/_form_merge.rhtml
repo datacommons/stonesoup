@@ -1,0 +1,106 @@
+<%= error_messages_for 'organization' %>
+
+<script>
+function copy_field(field1,field2) {
+  var v = document.getElementById(field1).value;
+  document.getElementById(field1).value = document.getElementById(field2).value;
+  document.getElementById(field2).value = v;
+}
+</script>
+
+<%
+
+def double_text_field(o1,field,*args)
+    o2 = "#{o1}2"
+    base = text_field o1, field, *args
+    ref = @organization[field]
+    alt = @organization2[field]
+    unless alt.nil?
+    	if ref != alt
+	   base = base + " " + link_to_function("<<<","copy_field('#{o2}_#{field}','#{o1}_#{field}')")
+	   base = base + " " + text_field(o2,field,*args)
+	end
+    end
+    base
+end
+
+def double_text_area(o1,field,*args)
+    o2 = "#{o1}2"
+    base = text_area o1, field, *args
+    ref = @organization[field]
+    alt = @organization2[field]
+    unless alt.nil?
+    	if ref != alt
+	   base = base + "<br />" + link_to_function("<<<","copy_field('#{o2}_#{field}','#{o1}_#{field}')")
+	   base = base + "<br />" + text_area(o2,field,*args)
+	end
+    end
+    base
+end
+
+def double_select(o1,field,*args)
+    o2 = "#{o1}2"
+    base = select o1, field, *args
+    ref = @organization[field]
+    alt = @organization2[field]
+    unless alt.nil?
+    	if ref != alt
+	   base = base + " " + link_to_function("<<<","copy_field('#{o2}_#{field}','#{o1}_#{field}')")
+	   base = base + " " + select(o2,field,*args)
+	end
+    end
+    base
+end
+
+def double_select_year(o1,*args)
+    o2 = @organization2.year_founded
+    field = "year_founded"
+    base = select_year o1, *args
+    ref = @organization[field]
+    alt = @organization2[field]
+    unless alt.nil?
+    	if ref != alt
+	   base = base + " " + link_to_function("<<<","copy_field('organization2_year_founded_1i','organization_year_founded_1i')")
+	   args[0].merge!({:prefix => 'organization2'})
+	   base = base + " " + select_year(o2,*args)
+	end
+    end
+    base
+end
+
+%>
+
+<!--[form:organization]-->
+<table width="100%" cellpadding="0" cellspacing="0">
+	<tr>
+		<td colspan="2">
+			<label for="organization_name">Organization Name</label>: <%= double_text_field 'organization', 'name'  %><br/>
+			<label for="organization_phone">Phone</label>: <%= double_text_field 'organization', 'phone'  %><br/>
+			<label for="organization_fax">Fax</label>: <%= double_text_field 'organization', 'fax'  %><br/>
+			<label for="organization_email">Email</label>: <%= double_text_field 'organization', 'email'  %><br/>
+			<label for="organization_website">Website</label>: <%= double_text_field 'organization', 'website'  %><br/>
+			<label for="organization_legal_structure_id">Legal Structure</label>: <%= double_select 'organization', 'legal_structure_id', [['',nil]] + LegalStructure.find(:all).collect{|ls| [ls.name, ls.id]}  %><br/>
+		</td>
+	</tr>
+</table>
+
+<label for="organization_description">Description:</label><br/>
+<%= double_text_area 'organization', 'description', :rows => 5, :cols => 60  %><br/>
+<% if defined? more %>
+<b>We'll ask you to add locations, sectors etc. once the basic entry is created</b><br/>
+<% end %>
+
+<p><label for="organization_year_founded">Year founded</label>: <%= double_select_year @organization.year_founded, :include_blank => true, :prefix => 'organization', :field_name => 'year_founded(1i)', :start_year => (DateTime.now.year-200), :end_year => DateTime.now.year %></p>
+
+<p>
+
+<% if @organization.users.member?(User.current_user) %>
+	<%= check_box_tag 'disassociate_user_from_entry', "1", false %>
+	<label for="disassociate_user_from_entry">Remove me as an editor on this entry</label>
+<% else %>
+	<%= check_box_tag 'associate_user_to_entry', "1", true %>
+	<label for="associate_user_to_entry">Make me an editor on this entry</label>
+<% end %>
+</p>
+<!--[eoform:organization]-->
+
