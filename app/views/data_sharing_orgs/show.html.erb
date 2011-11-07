@@ -1,3 +1,16 @@
+<script>
+function checkForm() {
+	var sendEl = document.getElementById('sender_email');
+	var radioVal = getCheckedValue(sendEl.form.import_status);
+	if(radioVal == 'optin' || radioVal == 'optout') {
+		sendEl.disabled = '';
+		removeClass('sender_email_div', 'disabled');
+	} else {
+		sendEl.disabled = 'disabled';
+		addClass('sender_email_div', 'disabled');
+	}
+}
+</script>
 <h1>Data Sharing Organization</h1>
 <p>
   <b>Name:</b>
@@ -58,32 +71,47 @@
 		<p>
 			<%= form_tag({:controller => 'data_sharing_orgs', :action => 'import'}, :multipart => true) %>
 				<%= hidden_field_tag 'data_sharing_org_id', @data_sharing_org.id %>
-				Import data from a Comma-Separated Values (CSV) file
-				<div>
+				<h2>Import data from a CSV (Comma-Separated Values) file</h2>
+				<div class="field">
 					<label for="file">Data file:</label>
 					<%= file_field_tag "file" %>
 				</div>
-				<div>
+				<div class="field">
 					<label for="plugin_name">Import Plugin:</label>
 					<%= select_tag 'plugin_name', options_for_select([['--choose--', '']] + data_import_plugins(), (params[:plugin_name] || @data_sharing_org.default_import_plugin_name)) %>
 				</div>
-				<div>
-					Import Status: 
+				<div class="field">
+					<span class="title">Import Status:</span>
 					<br/><span class="note"><span class="label">NOTE:</span> This setting applies only to new records. Existing records will keep their current visibility setting.</span>
-					<br/><%= radio_button_tag 'import_status', 'optin', params[:import_status] == 'optin' %>
+					<br/><%= radio_button_tag 'import_status', 'optin', params[:import_status] == 'optin', :onChange => 'javascript:checkForm();' %>
 					<label for="import_status_optin">Opt-in Confirmation</label>
 					- data is PRIVATE by default, e-mail is sent requesting confirmation
 					
-					<br/><%= radio_button_tag 'import_status', 'optout', params[:import_status] == 'optout' %>
-					<label for="import_status_optout">Opt-out Confirmation</label>
+					<br/><%= radio_button_tag 'import_status', 'optout', params[:import_status] == 'optout', :onChange => 'javascript:checkForm();' %>
+					<label for="import_status_optout">Opt-out Notification</label>
 					- data is PUBLIC by default, e-mail is sent notifying of inclusion
 					
-					<br/><%= radio_button_tag 'import_status', 'optout-silent', params[:import_status] == 'optout-silent' %>
+					<br/><%= radio_button_tag 'import_status', 'optout-silent', params[:import_status] == 'optout-silent', :onChange => 'javascript:checkForm();' %>
 					<label for="import_status_optout-silent">No Notification</label>
 					- data is PUBLIC by default, no e-mail is sent
 				</div>
+				<div class="field" id="sender_email_div">
+					<label for="sender_email">E-mail &quot;from&quot; address (for Confirmation/Notification email):</label>
+					<br/><%= text_field_tag 'sender_email', params[:sender_email], :size => 40 %>
+					<br/>
+					<span class="note">
+						<span class="label">Format:</span>
+						[ <code>email@address.com</code> ]
+						or
+						[ <code>"Person/org Name" &lt;email@address.com&gt;</code> ]
+					</span>
+				</div>
 				<%= submit_tag 'Upload' %>
+				<script>checkForm();</script>
 			</form>
 		</p>
 	</div>
 </div>
+<%- unless flash[:tab].nil? -%>
+<script>default_tab1 = <%=flash[:tab]%>;</script>
+<%- end -%>

@@ -142,12 +142,14 @@ function ActivateTab(containerId, activeTabIndex)
 		}
 	}
 }
-
+// global variables, may be changed by view
+var default_tab1 = 0;
+var default_tab2 = 0;
 function loadTabs() {
 	BuildTabs('tab-container');
-	ActivateTab('tab-container', 0);
+	ActivateTab('tab-container', default_tab1);
 	BuildTabs('tab-container-2');
-	ActivateTab('tab-container-2', 0);
+	ActivateTab('tab-container-2', default_tab2);
 }
 var oldOnLoad = window.onload;
 if (typeof window.onload != 'function') {

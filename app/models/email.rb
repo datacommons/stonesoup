@@ -26,21 +26,21 @@ class Email < ActionMailer::Base
     body :user => user, :password => password_cleartext
   end
   
-  def optin_confirmation(organization)
+  def optin_confirmation(sender, organization)
     organization.import_notice_sent_at = Time.now # do this first so it's part of the changes saved in the next step
     organization.reset_email_response_token!  # generate unique token and save record
     recipients organization.email
-    from "Data Commons Project <no-reply@dcp.usworker.coop>"
+    from sender
     subject "Would you like to be included in the DCP Cooperative Directory?"
     content_type  "text/html"
     body :organization => organization
   end
   
-  def optout_notification(organization)
+  def optout_notification(sender, organization)
     organization.import_notice_sent_at = Time.now # do this first so it's part of the changes saved in the next step
     organization.reset_email_response_token!  # generate unique token and save record
     recipients organization.email
-    from "Data Commons Project <no-reply@dcp.usworker.coop>"
+    from sender
     subject "Your organization has been included in the DCP Cooperative Directory"
     content_type  "text/html"
     body :organization => organization

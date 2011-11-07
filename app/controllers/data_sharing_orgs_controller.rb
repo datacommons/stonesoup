@@ -31,20 +31,23 @@ protected
   end
 public
   def import
+    import_errors = []
+    num_errors = 0
+
     dso_id = params[:data_sharing_org_id]
     @dso = DataSharingOrg.find(dso_id)
 
     @matches = []
-    errors = []
+    validation_errors = []
     if(params[:file].blank?)
-      errors.push "You must upload a data file to be imported."
+      validation_errors.push "You must upload a data file to be imported."
     else
       raw_csv_data = params[:file].read
     end
 
     @plugin_name = params[:plugin_name]
     if @plugin_name.blank?
-      errors.push "You must select the import plugin name."
+      validation_errors.push "You must select the import plugin name."
     else
       # update default, if needed
       if(@dso.default_import_plugin_name != @plugin_name)
@@ -59,11 +62,17 @@ public
 
     @import_status = params[:import_status]
     if @import_status.blank?
-      errors.push "You must select the default import status."
+      validation_errors.push "You must select the default import status."
     end
     
-    unless errors.empty?
-      flash[:error] = "The import could not be processed for the following reasons:\n<ul><li>"+ errors.join('</li><li>') + '</li></ul>'
+    @sender_email = params[:sender_email]
+    if @sender_email.blank? and !@import_status.nil? and !@import_status.match(/-silent$/)
+      validation_errors.push "Sender e-mail address must be specified for confirmation/notification e-mail message."
+    end
+    
+    unless validation_errors.empty?
+      flash[:error] = "The import could not be processed for the following reasons:\n<ul><li>"+ validation_errors.join('</li><li>') + '</li></ul>'
+      flash[:tab] = 2
       @data_sharing_org = @dso
       #TODO: load "Data Import" tab instead of default
       render :action => 'show' and return
@@ -73,12 +82,10 @@ public
     require 'faster_csv'
 
     # statistics variables
-    error_messages = []
     infos = []
     lines_read = 0
     created = 0
     updated = 0
-    errors = 0
     
     case @import_status
     when 'optin'
@@ -112,10 +119,10 @@ public
             case @import_status
             when 'optin'
               logger.debug("Sending opt-in confirmation email...")
-              Email.deliver_optin_confirmation(organization) unless organization.email.blank?
+              Email.deliver_optin_confirmation(@sender_email, organization) unless organization.email.blank?
             when 'optout'
               logger.debug("Sending opt-out notification email...")
-              Email.deliver_optout_notification(organization) unless organization.email.blank?
+              Email.deliver_optout_notification(@sender_email, organization) unless organization.email.blank?
               #when 'optout-silent' # no notification
             end
           when :updated
@@ -127,22 +134,22 @@ public
           DataSharingOrgsOrganization.set_status(@dso, organization, true)
         end
       else
-        errors += result[:errors].length
+        num_errors += result[:errors].length
       end
       # handle general result[:errors] messages
-      error_messages += result[:errors] if !result[:errors].nil? and result[:errors].any?
+      import_errors += result[:errors] if !result[:errors].nil? and result[:errors].any?
     end
   rescue Exception => e
     logger.error e.message
     logger.error e.backtrace.join("\n")
-    error_messages.push e.message
-    errors += 1
+    import_errors.push e.message
+    num_errors += 1
   ensure
     @stats = {:records_read_from_csv => lines_read,
       :records_created => created,
       :records_updated => updated,
-      :errors => errors}
-    @errors = error_messages.uniq
+      :errors => num_errors}
+    @errors = import_errors.uniq
   end
   
   def link_org

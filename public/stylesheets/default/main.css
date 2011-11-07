@@ -92,6 +92,13 @@ div.actions {
 	display: inline-block;
 }
 
+form div.field {
+	margin-bottom: 10px;
+}
+form div.field span.title,
+form label {
+	font-weight: bold;
+}
 form.button-to {
 	display: inline-block;
 }
@@ -524,6 +531,11 @@ div.menu-container {
 .private {
 	border: 1px dotted #ccc;
 	background-color: transparent;
+}
+
+.disabled,
+.disabled span.note {
+	color: #AAA;
 }
 
 .pagination {
