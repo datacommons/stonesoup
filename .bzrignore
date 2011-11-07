@@ -8,3 +8,4 @@ index
 index/*
 doc/plugins/
 .DS_Store
+script/dev_server.sh
