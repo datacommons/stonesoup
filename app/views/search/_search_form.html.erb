@@ -25,20 +25,6 @@
 	<% form_tag( {:action => 'search'}, :method => 'get' ) do %>
 		<%= hidden_field_tag 'advanced', 1 %>
 		<table id="advsearch">
-			<tr><th><label for="q">Keyword search</label></th>
-				<td><%= text_field_tag 'q', @query, :size => 60 %>
-					<br/><span class="note">searches Organization's name, description and products/services</span>
-				</td>
-			</tr>
-			<tr>
-				<th>Organizational Details</th>
-				<td>
-					<table cellspacing="0" cellpadding="0" class="inner">
-						<tr><td>Organization Type:</td><td><%= select_tag 'org_type_id', '<option></option>' + options_from_collection_for_select(OrgType.get_available, 'id', 'name', params[:org_type_id].to_i) %></td></tr>
-						<tr><td>Business Sector:</td><td><%= select_tag 'sector_id', '<option></option>' + options_from_collection_for_select(Sector.get_available, 'id', 'name', params[:sector_id].to_i) %></td></tr>
-					</table>
-				</td>
-			</tr>
 			<tr><th>Geographically</th>
 				<td>
 					<table cellspacing="0" cellpadding="0" class="inner">
@@ -51,6 +37,20 @@
 					<tr><td>Within <%= select_tag 'within', options_for_select([['',''], ['1 mile', 1], ['5 miles', 5], ['10 miles', 10], ['20 miles', 20]], params[:within].to_i)%>
 					of</td><td><%= text_field_tag 'origin', params[:origin] %> (zipcode)</td></tr>
 					</table>
+				</td>
+			</tr>
+			<tr>
+				<th>Organizational Details</th>
+				<td>
+					<table cellspacing="0" cellpadding="0" class="inner">
+						<tr><td>Organization Type:</td><td><%= select_tag 'org_type_id', '<option></option>' + options_from_collection_for_select(OrgType.get_available, 'id', 'name', params[:org_type_id].to_i) %></td></tr>
+						<tr><td>Business Sector:</td><td><%= select_tag 'sector_id', '<option></option>' + options_from_collection_for_select(Sector.get_available, 'id', 'name', params[:sector_id].to_i) %></td></tr>
+					</table>
+				</td>
+			</tr>
+			<tr><th><label for="q">Keyword search</label></th>
+				<td><%= text_field_tag 'q', @query, :size => 60 %>
+					<br/><span class="note">searches Organization's name, description and products/services</span>
 				</td>
 			</tr>
 			<tr><th>Data Verification</th>
