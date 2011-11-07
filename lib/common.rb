@@ -49,26 +49,34 @@ module Common
       else
         value_changed = true unless oldvalue.same_value?(newvalue)
       end
-      changes[key] = {:old => oldvalue, :new => newvalue} if value_changed
+      if value_changed
+        changes[key] = {:old => oldvalue, :new => newvalue}
+        RAILS_DEFAULT_LOGGER.debug("detected value change for '#{key}'\nfrom: #{oldvalue}\nto: #{newvalue}")
+      end
+    end
+    return changes
+  end
+
+  def Common::changes_hash(object, attr_hash)
+    # NOTE: object may be another hash. all fields are referenced through object[]
+    # go through each parameter in attr_hash and if present in object and value is different, describe change in message returned
+    # if no changes present, message is nil
+    return nil if attr_hash.nil?
+    changes = []  # array of hashes, each containing :field, :from, and :to
+    Common::detect_changes(object, attr_hash).each do |key, values|
+      v_from = (values[:old].nil? ? '<NIL>' : "'#{values[:old].to_s}'")
+      v_to = (values[:new].nil? ? '<NIL>' : "'#{values[:new].to_s}'")
+      changes.push({:field => key, :from => v_from, :to => v_to})
     end
     return changes
   end
 
   def Common::change_message(msg, object, attr_hash)
-    # NOTE: object may be another hash. all fields are referenced through object[]
-    # go through each parameter in attr_hash and if present in object and value is different, describe change in message returned
-    # if no changes present, message is nil
-    return nil if attr_hash.nil?
-    change_msgs = []
-    Common::detect_changes(object, attr_hash).each do |key, values|
-      v_from = (values[:old].nil? ? '<NIL>' : "'#{values[:old].to_s}'")
-      v_to = (values[:new].nil? ? '<NIL>' : "'#{values[:new].to_s}'")
-      change_msgs << "#{key} changed from #{v_from} to #{v_to}"
-    end
-    if change_msgs.empty?
+    changes = Common::changes_hash(object, attr_hash)
+    if changes.empty?
       return nil
     else
-      return msg + change_msgs.join('; ')
+      return msg + changes.map{|change_hash| "#{change_hash[:field]} changed from #{change_hash[:from]} to #{change_hash[:to]}"}.join('; ')
     end
   end
 

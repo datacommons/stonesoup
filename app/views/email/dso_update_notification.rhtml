@@ -1,4 +1,4 @@
-One of the entries for which you are an editor has been updated<%= @by_line %>.
+One of the entries in the data pool of <%= @dso.name %> has been updated<%= @by_line %>.
 
 Entry: <%= @organization.name %>
 Changes:
@@ -7,6 +7,8 @@ Changes:
 To see the updated entry, go to:
 <%= Email.website_base_url %><%= url_for :controller => 'organizations', :action => 'show', :id => @organization %>
 From there, you may log in and make further updates or corrections as necessary.
+
+<%= @dso.name %> has <%= @dso.num_unverified %> entries pending verification.
 
 To update your e-mail preferences, click here and log in: <%= Email.website_base_url %><%= url_for :controller => 'users', :action => 'prefs' %>
 

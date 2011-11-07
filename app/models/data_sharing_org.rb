@@ -6,6 +6,10 @@ class DataSharingOrg < ActiveRecord::Base
     DataSharingOrgsOrganization.get_status(self, org).verified
   end
   
+  def num_unverified
+    self.data_sharing_orgs_organizations.count(:conditions => 'verified = 0')
+  end
+  
   def unverified_orgs
     self.data_sharing_orgs_organizations.reject{|link| link.verified}.map{|link| link.organization}
   end

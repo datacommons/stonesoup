@@ -103,18 +103,64 @@ class Organization < ActiveRecord::Base
   
   def send_notifications
     newvalues = self.get_value_hash
-    log_msg = Common::change_message("Organization Record changed: ", @oldvalues, newvalues)
-    if log_msg.nil? # if no changes, stop here
+    
+    changes_hash = Common::changes_hash(@oldvalues, newvalues)
+    if changes_hash.empty?
       logger.debug("No changes to report")
       return true
     end
-    logger.debug("sending update notification for: #{log_msg}")
+
+    logger.debug("sending update notification for: #{self.name} (##{self.id})")
+    
+    change_message = "Organization record updated:\n"
+    changes_hash.each do |change|
+      change_message += "* #{change[:field]} changed "
+      if(change[:from].match(/\n/) or change[:to].match(/\n/))  # if either contains a newline, use separate lines from from/to
+        change_message += "---- from: --------------------------\n"
+        change_message += change[:from] + "\n"
+        change_message += "---- to: --------------------------\n"
+        change_message += change[:to] + "\n"
+      else
+        change_message += "from #{change[:from]} to #{change[:to]}\n"
+      end
+    end
+    
     # send notifications to all the other editors on this entry, except the person making the update
     self.users.reject{|u| u == User.current_user}.each do |user|
       next unless user.update_notifications_enabled?  # skip if notifications are disabled
-      Email.deliver_update_notification(user, self, log_msg)
+      Email.deliver_update_notification(user, self, change_message)
     end
+    
+    # if this record is part of a DSO's data set, AND the acting user is NOT a "trusted" user
+    # send a notification to that DSO
+    if self.data_sharing_orgs.any? and !self.trust_user?(User.current_user)
+      self.data_sharing_orgs.each do |dso|
+        # set the entry's status to "unverified"
+        DataSharingOrgsOrganization.set_status(dso, self, false)
+
+        # send a notification to that DSO
+        Email.deliver_dso_update_notification(dso, self, change_message)
+      end
+    end
+    
     return true
+  end
+  
+  def trust_user?(user)
+    # if the org is part of a DSO's data pool
+    # and the user is an editor for that DSO
+    # then they are trusted
+    if self.data_sharing_orgs.collect(&:users).flatten.include?(user)
+      return true
+    end
+    
+    # other "trusted user" criteria
+    #TODO
+    #BONUS: DSO feature "trust pre-existing editors" with a timeframe (e.g. 5 minutes, 1 day, etc.).  So if a DSO approves a record, and that record is later modified by a pre-existing editor of that record, approval should be unaffected.
+    #- notify the DSO of the change in any case (and offer stricter, less trusting options)
+    #- use the timestamp on that association (the "created_at" field in the organizations_users table) to determine "pre-existing editor" status
+    
+    return false
   end
   
   def get_org_types
