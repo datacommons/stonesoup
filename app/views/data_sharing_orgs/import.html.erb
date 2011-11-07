@@ -1,6 +1,55 @@
+<script language="JavaScript">
+	function showLinkingButton(buttonname) {
+		var button = document.getElementById(buttonname);
+		button.value = 'Adding...'; 
+		button.disabled = true;
+	}
+	function resetLinkButton(buttonname) {
+		var button = document.getElementById(buttonname);
+		button.value = 'Add'; 
+		button.disabled = false;
+	}
+	function hideLinkButton(buttonname) {
+		var button = document.getElementById(buttonname);
+		button.style.visibility = "hidden";
+		button.style.display = "none";
+	}
+	function showLinkMessage(target,message) {
+		document.getElementById(target).innerHTML = message;
+	}
+</script> 
+
 <h1>Data Import Results</h1>
 
 Data imported using the <b><%= params[:plugin_name] %></b> plugin.
+
+<div id="ajax_result"></div>
+
+<%- if(@matches.any?) -%>
+	<h2>Matches</h2>
+	<ul>
+	  <%- @matches.each_with_index do |m,index| -%>
+	  <%- button_name = "linker_#{index}_button" -%>
+	  <%- msg_name = "linker_#{index}_msg" -%>
+	  <li>"<%= m[:local]['name'].to_s %>" matched <%= link_to m[:remote].name.to_s, m[:remote].link_hash %>
+	    <%- if m[:status]['linked'] -%>
+	    (already in pool)
+	    <%- else -%>
+	        <% form_remote_tag :url => {:action => 'link_org'}, 
+		:loading => %(showLinkingButton('#{button_name}')),
+		:failure => %(resetLinkButton('#{button_name}'); showLinkMessage('#{msg_name}','Link failed')),
+		:success => %(hideLinkButton('#{button_name}'); showLinkMessage('#{msg_name}','Done!')) do %>
+		<%= hidden_field_tag 'organization_id', m[:remote].id %>
+		<%= hidden_field_tag 'data_sharing_org_id', @dso.id %>
+		<%= submit_tag 'Add ' + m[:remote].name.to_s, :id => button_name %>
+		<% end %>
+		<div id='<%= msg_name %>'></div>
+
+  	     <%- end -%>
+	  </li>
+	  <%- end -%>	  
+	</ul>
+<%- end -%>
 
 <%- if(@stats.any?) -%>
 	<h2>Statistics</h2>

@@ -33,7 +33,8 @@ public
   def import
     dso_id = params[:data_sharing_org_id]
     @dso = DataSharingOrg.find(dso_id)
-    
+
+    @matches = []
     errors = []
     if(params[:file].blank?)
       errors.push "You must upload a data file to be imported."
@@ -93,32 +94,38 @@ public
       lines_read = lines_read + 1
       
       result = Module.const_get(@plugin_name.camelcase).parse_line(entry, @dso, default_access_type)
-      
+
+      if(result[:record_status] == :processed)
+        unless result[:remote].nil? or result[:local].nil?
+          @matches << { :local => result[:local], :remote => result[:remote], :status => result[:match_status] }
+        end
+      end
       if(result[:record_status] != :error)  # import successful, record was created or updated
         organization = result[:record]
-        logger.debug("Processed record imported for #{organization.name}")
-        
-        case result[:record_status]
-        when :created
-          created += 1
-          # send email followup based on import preferences
-          case @import_status
-          when 'optin'
-            logger.debug("Sending opt-in confirmation email...")
-            Email.deliver_optin_confirmation(organization) unless organization.email.blank?
-          when 'optout'
-            logger.debug("Sending opt-out notification email...")
-            Email.deliver_optout_notification(organization) unless organization.email.blank?
-          #when 'optout-silent' # no notification
+        if organization
+          logger.debug("Processed record imported for #{organization.name}")
+          
+          case result[:record_status]
+          when :created
+            created += 1
+            # send email followup based on import preferences
+            case @import_status
+            when 'optin'
+              logger.debug("Sending opt-in confirmation email...")
+              Email.deliver_optin_confirmation(organization) unless organization.email.blank?
+            when 'optout'
+              logger.debug("Sending opt-out notification email...")
+              Email.deliver_optout_notification(organization) unless organization.email.blank?
+              #when 'optout-silent' # no notification
+            end
+          when :updated
+            updated += 1
+          else
+            raise "Unknown record_status returned by import plug-in: '#{result[:record_status]}'"
           end
-        when :updated
-          updated += 1
-        else
-          raise "Unknown record_status returned by import plug-in: '#{result[:record_status]}'"
+          # set verification status for this org/DSO
+          DataSharingOrgsOrganization.set_status(@dso, organization, true)
         end
-        # set verification status for this org/DSO
-        DataSharingOrgsOrganization.set_status(@dso, organization, true)
-
       else
         errors += result[:errors].length
       end
