@@ -64,6 +64,10 @@ class SearchController < ApplicationController
           newterm = "+county:'#{params[:county]}'"
           search_query << ' ' + newterm unless search_query.include?(newterm)
         end
+        unless params[:country].blank?
+          newterm = "+country:'#{params[:country]}'"
+          search_query << ' ' + newterm unless search_query.include?(newterm)
+        end
         unless params[:state].blank?
           newterm = "+state:'#{params[:state]}'"
           search_query << ' ' + newterm unless search_query.include?(newterm)
