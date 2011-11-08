@@ -1,0 +1,14 @@
+
+<% unless org.locations.length == 0 then %>
+	<%= render :partial => 'locations/display', :locals => { :location => org.primary_location } unless org.primary_location.nil? %>
+	<% for loc in org.locations 
+		unless loc.id == org.primary_location_id %>
+			<% if !@location.nil? and @location.id == loc.id %>
+				<%# if @location == loc then we want to make sure to display the errors from the @location model... %>
+				<%= render :partial => 'locations/display', :locals => { :location => @location, :show_delete => true, :expanded => (loc.id == existing_expanded) } %>
+			<% else %>
+				<%= render :partial => 'locations/display', :locals => { :location => loc, :show_delete => true } %>
+			<% end %>
+ 		<% end
+	end %>
+<% end %>
