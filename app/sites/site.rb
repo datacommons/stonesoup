@@ -81,6 +81,10 @@ class Site
     '*'
   end
 
+  def custom_css
+    nil
+  end
+
   def self.scan
     get_subclasses.each do |c|
       s = c.new

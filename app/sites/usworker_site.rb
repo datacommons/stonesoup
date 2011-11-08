@@ -15,4 +15,8 @@ class UsworkerSite < Site
   def dso_filter
     ["US Federation of Worker Cooperatives"]
   end
+
+  def custom_css
+    name
+  end
 end

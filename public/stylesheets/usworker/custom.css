@@ -1,0 +1,12 @@
+html,body { 
+        background-image: url("bg_tree.png");
+        background-repeat: repeat;
+}
+
+#pagewidth { 
+        background-color: #ECECEC;
+}
+
+#maincol { 
+  background: url("header_geese.jpg") bottom left no-repeat;
+}
