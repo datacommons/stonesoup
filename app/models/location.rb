@@ -128,9 +128,11 @@ class Location < ActiveRecord::Base
       self.longitude = coords[1]
       self.latitude = coords[0]
     else
-      self.longitude = "0"
-      self.latitude = "0"
+      self.longitude = nil
+      self.latitude = nil
     end
+    true
+  rescue Exception => e
     true
   end
   

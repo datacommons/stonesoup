@@ -5,6 +5,9 @@
 <div>
 <%= link_to 'View main version', :action => 'show', :id => @organization %> /
 <%= link_to 'View version to be merged', :action => 'show', :id => @organization2 %>
+<% if session[:merge_search] %>
+/ <%= link_to 'View search', session[:merge_search] %>
+<% end %>
 <br/>
 When details differ between versions, choices are shown.
 </div>
@@ -18,9 +21,14 @@ When details differ between versions, choices are shown.
 
 <%= render :partial => 'parts' %>
 
-<h2>Remove entry</h2>
+<h2>Options</h2>
 
 <div>
 <%= link_to 'Delete redundant organization', @organization2, :confirm => 'Are you sure?', :method => :delete %>
 </div>
 
+<% if session[:merge_search] %>
+<div>
+<%= link_to 'Return to search', session[:merge_search] %>
+</div>
+<% end %>

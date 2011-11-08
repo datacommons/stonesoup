@@ -10,16 +10,22 @@ function copy_field(field1,field2) {
 
 <%
 
+def is_conflict(ref,alt)
+  return false if alt.nil?
+  txt = alt.to_s
+  return false if txt.length == 0
+  return false if txt.length == " "
+  return ref != alt
+end
+
 def double_text_field(o1,field,*args)
     o2 = "#{o1}2"
     base = text_field o1, field, *args
     ref = @organization[field]
     alt = @organization2[field]
-    unless alt.nil?
-    	if ref != alt
+    if is_conflict(ref,alt)
 	   base = base + " " + link_to_function("<<<","copy_field('#{o2}_#{field}','#{o1}_#{field}')")
 	   base = base + " " + text_field(o2,field,*args)
-	end
     end
     base
 end
@@ -29,11 +35,9 @@ def double_text_area(o1,field,*args)
     base = text_area o1, field, *args
     ref = @organization[field]
     alt = @organization2[field]
-    unless alt.nil?
-    	if ref != alt
+    if is_conflict(ref,alt)
 	   base = base + "<br />" + link_to_function("<<<","copy_field('#{o2}_#{field}','#{o1}_#{field}')")
 	   base = base + "<br />" + text_area(o2,field,*args)
-	end
     end
     base
 end
@@ -43,11 +47,9 @@ def double_select(o1,field,*args)
     base = select o1, field, *args
     ref = @organization[field]
     alt = @organization2[field]
-    unless alt.nil?
-    	if ref != alt
+    if is_conflict(ref,alt)
 	   base = base + " " + link_to_function("<<<","copy_field('#{o2}_#{field}','#{o1}_#{field}')")
 	   base = base + " " + select(o2,field,*args)
-	end
     end
     base
 end
@@ -58,12 +60,10 @@ def double_select_year(o1,*args)
     base = select_year o1, *args
     ref = @organization[field]
     alt = @organization2[field]
-    unless alt.nil?
-    	if ref != alt
+    if is_conflict(ref,alt)
 	   base = base + " " + link_to_function("<<<","copy_field('organization2_year_founded_1i','organization_year_founded_1i')")
 	   args[0].merge!({:prefix => 'organization2'})
 	   base = base + " " + select_year(o2,*args)
-	end
     end
     base
 end

@@ -17,7 +17,7 @@ class SearchController < ApplicationController
     if search_query == "" and params[:advanced] != '1'
       search_query = @site.blank_search
     end
-    
+
     if params[:q]
       record_types = [Organization, Person]
       params[:page] = 1 unless params[:page]
@@ -202,6 +202,16 @@ class SearchController < ApplicationController
       end
 =end
 
+      if params[:merge]
+        @merge_active = true
+        if params[:merge] == 'start'
+          session[:merge] = nil
+        end
+        params[:merge] = true
+        session[:merge_search] = params
+      else
+        @merge_active = false
+      end
       @merge_target = session[:merge] 
 
       f = params[:format]

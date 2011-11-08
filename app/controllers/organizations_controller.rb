@@ -180,11 +180,26 @@ class OrganizationsController < ApplicationController
     render :action => 'merge', :id => @organization
   end
 
+  def destroy_in_place
+    @organization = Organization.find(params[:id])
+    @organization.destroy
+
+    if session[:merge_search]
+      head :ok
+    else
+      redirect_to :action => 'index', :controller => "search"
+    end
+  end
+
   def untarget
     @organization = Organization.find(params[:id])
     session[:merge] = nil
-    flash[:notice] = "Merging ended."
-    render :action => 'show', :id => @organization
+    flash[:notice] = "Main version no longer set."
+    if session[:merge_search]
+      redirect_to :controller => 'search', :action => 'search', :params => session[:merge_search]
+    else
+      render :action => 'show', :id => @organization
+    end
   end
 
   def target
@@ -192,7 +207,11 @@ class OrganizationsController < ApplicationController
     m = session[:merge]
     session[:merge] = { :id => params[:id], :name => @organization.name }
     flash[:notice] = "Set as target for merging."
-    render :action => 'show', :id => @organization
+    if session[:merge_search]
+      redirect_to :controller => 'search', :action => 'search', :params => session[:merge_search]
+    else
+      render :action => 'show', :id => @organization
+    end
   end
 
   protected

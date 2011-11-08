@@ -528,6 +528,10 @@ div.menu-container {
 
 }
 
+.listing_merge_target {
+	background-color: #8F8;
+}
+
 .private {
 	border: 1px dotted #ccc;
 	background-color: transparent;
