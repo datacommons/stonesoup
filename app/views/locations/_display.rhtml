@@ -1,5 +1,7 @@
+<% shadow = false if shadow.nil? %>
 <% hide_links = false if hide_links.nil? %>
 <% expanded = false if expanded.nil? %>
+
 <% unless hide_links %>
 	<div id='location_<%=location.id%>_edit' style='<%=(expanded ? '' : 'display:none')%>' class="address">
 		<span class="actions">
@@ -8,22 +10,32 @@
 		</span>
 		<% remote_form_for(location, :update => 'locations', :method => 'PUT') do |f| %>
 			<%= f.error_messages %>
+			<%= hidden_field_tag 'trunk_id', get_trunk_id %>
+			<%= hidden_field_tag 'branch_id', get_branch_id %>
 			<%= render :partial => 'locations/form', :locals => { :location => location} %>
 	    	<%= f.submit "Update" %>
 		<% end %>
 	</div>
 <% end %>
 <dl class="address" id='location_<%=location.id%>' style='<%=(expanded ? 'display:none' : '')%>'>
-	<dt><%= location.note.blank? ? 'Address' : location.note %>
+	<dt><%- if location.organization_id != @organization.id -%>Unmerged: <%- end -%><%= location.note.blank? ? 'Address' : location.note %>
 		<% unless hide_links %>
 			<span class="actions">
+			<%- if location.organization_id != @organization.id -%>
+			[ <%= link_to_remote( 'merge', 
+				:url => {:controller => 'locations', :action => 'move', :id => location.id, :trunk_id => get_trunk_id, :branch_id => get_branch_id },
+				:update => 'locations',
+				:confirm => 'Merge address?') %>
+			]
+			<%- else -%>
 			[ <%= link_to_remote( 'delete', 
-				:url => {:controller => 'locations', :action => 'destroy', :id => location.id},
+				:url => {:controller => 'locations', :action => 'destroy', :id => location.id, :trunk_id => get_trunk_id, :branch_id => get_branch_id},
 				:method => 'DELETE',
 				:update => 'locations',
 				:confirm => 'Delete address?') %>
 			| 	<%= link_to_function( 'edit', "Element.hide('location_#{location.id}'); Element.show('location_#{location.id}_edit');") %> 
 			]
+			<%- end -%>
 			</span>
 		<% end %>
 	</dt>

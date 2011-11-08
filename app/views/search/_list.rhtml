@@ -49,6 +49,14 @@
     <% else %>
      <%= OrganizationsPerson.find_all_by_person_id(entry.id).collect{|op| [op.organization.name]}.join(", ") %>
     <% end %>
+    <% if @merge_target and entry.kind_of? Organization %>
+    <% if @merge_target[:id].to_s != entry.id.to_s %>
+    <br /><i><%= link_to "Merge with main version", :controller => 'organizations', :action => 'merge', :incoming => entry.id, :id => @merge_target[:id] %></i>
+    <br /><i><%= link_to "Set as main version", :controller => 'organizations', :action => 'target', :id => entry.id %></i>
+    <% else %>
+    <i>Main version for merge</i>
+    <% end %>
+    <% end %>
     </div>
    <% else %>
     <div class="listing private">

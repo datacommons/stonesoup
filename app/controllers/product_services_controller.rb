@@ -49,8 +49,9 @@ public
   # POST /product_services
   # POST /product_services.xml
   def create
-		@organization = Organization.find(params[:id])
-		@product_service = create_product_service_from_form(@organization, params)
+    @organization = Organization.find(params[:id])
+    @product_service = create_product_service_from_form(@organization, params)
+    merge_check
 
     respond_to do |format|
       if @product_service.save
@@ -71,6 +72,7 @@ public
   def update
     @product_service = ProductService.find(params[:id])
     @organization = @product_service.organization
+    merge_check
 
     respond_to do |format|
       if @product_service.update_attributes(params[:product_service])
@@ -86,11 +88,28 @@ public
     end
   end
 
+  def move
+    @product_service = ProductService.find(params[:id])
+    @organization = @product_service.organization
+    merge_check
+
+    @product_service.update_attribute(:organization_id, @organization1.id)
+    flash[:notice] = 'ProductService was successfully updated.'
+    respond_to do |format|
+      format.html { redirect_to(@product_service) }
+      format.xml  { head :ok }
+      format.js   { render :partial => 'manage' }
+    end
+  end
+
+
   # DELETE /product_services/1
   # DELETE /product_services/1.xml
   def destroy
     @product_service = ProductService.find(params[:id])
     @organization = @product_service.organization
+    merge_check
+
     @product_service.destroy
 
     respond_to do |format|
@@ -99,4 +118,5 @@ public
       format.js { render :partial => 'manage' }
     end
   end
+
 end

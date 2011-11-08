@@ -1,4 +1,5 @@
 <%
+shadow = false if shadow.nil?
 hide_person = false if hide_person.nil? 
 hide_org = false if hide_org.nil? 
 hide_links = false if hide_links.nil?
@@ -11,6 +12,8 @@ hide_links = false if hide_links.nil?
 		</span>
 		<% remote_form_for(org_person, :update => 'organizations_people', :method => 'PUT') do |f| %>
 			<%= f.error_messages %>
+			<%= hidden_field_tag 'trunk_id', get_trunk_id %>
+			<%= hidden_field_tag 'branch_id', get_branch_id %>
 			<% @organizations_person = org_person %>
 			<%= render :partial => 'organizations_people/form', :locals => {:hide_org => hide_org, :hide_person => hide_person} %>
 			<%= hidden_field_tag 'context', context %>
@@ -31,13 +34,21 @@ hide_links = false if hide_links.nil?
 		Email: <%= javascript_email(org_person.email) %><br/>
 		<% unless hide_links %>
 			<span class="actions">
+			<%- if shadow -%>
+			[ <%= link_to_remote( 'merge', 
+				:url => {:controller => 'organizations_people', :action => 'move', :id => org_person.id, :context => context, :trunk_id => get_trunk_id, :branch_id => get_branch_id },
+				:update => 'organizations_people',
+				:confirm => 'Merge person?') %>
+			]
+			<%- else -%>
 			[ <%= link_to_remote( 'delete', 
-				:url => {:controller => 'organizations_people', :action => 'destroy', :id => org_person.id, :context => context},
+				:url => {:controller => 'organizations_people', :action => 'destroy', :id => org_person.id, :context => context, :trunk_id => get_trunk_id, :branch_id => get_branch_id},
 				:method => 'DELETE',
 				:update => 'organizations_people',
-				:confirm => 'Delete product/service?') %>
+				:confirm => 'Delete person?') %>
 			| 	<%= link_to_function( 'edit', "Element.hide('org_person_#{org_person.id}'); Element.show('org_person_#{org_person.id}_edit');") %> 
 			]
+			<%- end -%>
 			</span>
 		<% end %>
 	</dt>

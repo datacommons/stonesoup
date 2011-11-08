@@ -11,19 +11,31 @@
 				<td><%= f.text_field :name, :size => 30 %></td>
 			</tr>
 		</table>
+	<%= hidden_field_tag 'trunk_id', get_trunk_id %>
+	<%= hidden_field_tag 'branch_id', get_branch_id %>
     	<%= f.submit "Update" %>
 	<% end %>
 </div>
 <dl class="attribute" id='product_service_<%=product_service.id%>'>
 	<dt><%= product_service.name %>
 		<span class="actions">
-		[ <%= link_to_remote( 'delete', 
-			:url => {:controller => 'product_services', :action => 'destroy', :id => product_service.id},
+<%- if product_service.organization_id != @organization.id -%>
+		[ 
+		<%= link_to_remote( 'merge', 
+			:url => {:controller => 'product_services', :action => 'move', :id => product_service.id, :trunk_id => get_trunk_id, :branch_id => get_branch_id},
+			:update => 'products_services',
+			:confirm => 'Merge product/service?') %>
+		]   
+<%- else -%>
+		[ 
+		<%= link_to_remote( 'delete', 
+			:url => {:controller => 'product_services', :action => 'destroy', :id => product_service.id, :trunk_id => get_trunk_id, :branch_id => get_branch_id},
 			:method => 'DELETE',
 			:update => 'products_services',
 			:confirm => 'Delete product/service?') %>
 		| 	<%= link_to_function( 'edit', "Element.hide('product_service_#{product_service.id}'); Element.show('product_service_#{product_service.id}_edit');") %> 
 		]
+<%- end -%>
 		</span>
 	</dt>
 </dl>

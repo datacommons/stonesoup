@@ -1,18 +1,10 @@
 <% existing_expanded = 0 if existing_expanded.nil? %>
 <% new_expanded = false if new_expanded.nil? %>
 <h2>Locations</h2>
-<% unless @organization.locations.length == 0 then %>
-	<%= render :partial => 'locations/display', :locals => { :location => @organization.primary_location } unless @organization.primary_location.nil? %>
-	<% for loc in @organization.locations 
-		unless loc.id == @organization.primary_location_id %>
-			<% if !@location.nil? and @location.id == loc.id %>
-				<%# if @location == loc then we want to make sure to display the errors from the @location model... %>
-				<%= render :partial => 'locations/display', :locals => { :location => @location, :show_delete => true, :expanded => (loc.id == existing_expanded) } %>
-			<% else %>
-				<%= render :partial => 'locations/display', :locals => { :location => loc, :show_delete => true } %>
-			<% end %>
- 		<% end
-	end %>
+<%= render :partial => 'locations/manage_list', :locals => { :org => @organization, :existing_expanded => existing_expanded, :new_expanded => new_expanded } %>
+<% if @organization2 %>
+   <%= render :partial => 'locations/manage_list', :locals => { :org => @organization2, :existing_expanded => existing_expanded, :new_expanded => new_expanded } %>
+   <br />
 <% end %>
 <%= link_to_function('New location', "Element.toggle('block_location_new_form'); Element.hide('block_location_new_link');", 'id' => 'block_location_new_link', :style => (new_expanded ? 'display:none' : '')) %>
 <div id="block_location_new_form" style="<%=new_expanded ? '' : 'display:none'%>" class="clearboth">
@@ -27,6 +19,8 @@
 		[<%= link_to_function('cancel', "Element.hide('block_location_new_form'); Element.show('block_location_new_link');") %>]
 		<br/>
 		<%= render :partial => 'locations/form', :locals => { :location => @new_location} %>
+		<%= hidden_field_tag 'trunk_id', get_trunk_id %>
+		<%= hidden_field_tag 'branch_id', get_branch_id %>
 		<%= submit_tag 'Save', :id => 'newlocation_savebutton' %>
 	<% end %>
 </div>

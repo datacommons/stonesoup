@@ -4,6 +4,7 @@ class SectorsController < ApplicationController
   def dissociate
     @sector = Sector.find(params[:sector_id])
     @organization = Organization.find(params[:organization_id])
+    merge_check
     @organization.sectors.delete(@sector)
     @organization.save!
     @organization.notify_related_record_change(:deleted, @sector)
@@ -14,6 +15,7 @@ class SectorsController < ApplicationController
   def associate
     @sector = Sector.find(params[:sector_id])
     @organization = Organization.find(params[:organization_id])
+    merge_check
     @organization.sectors.push(@sector)
     @organization.save!
     @organization.notify_related_record_change(:added, @sector)

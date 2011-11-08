@@ -76,6 +76,18 @@ public
       return nil
     end
   end
+
+
+  def merge_check
+    if params[:trunk_id]
+      if params[:trunk_id] != params[:branch_id]
+        @organization1 = Organization.find(params[:trunk_id])
+        @organization2 = Organization.find(params[:branch_id])
+        @organization = @organization1
+      end
+    end
+  end
+ 
   
   def set_current_user_on_model
     User.current_user = current_user

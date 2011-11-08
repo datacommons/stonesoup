@@ -279,5 +279,13 @@
 	</ul>
 
 	<%= link_to 'Edit', :action => 'edit', :id => @organization %> |
+	<%- if session[:merge].nil? -%>
+	<%= link_to 'Set as main version for merge', :action => 'target', :id => @organization %> |
+	<%- else -%>
+	  <%- if session[:merge][:id].to_s != @organization.id.to_s -%>
+		<%= link_to 'Merge this version of ' + session[:merge][:name], :action => 'merge', :id => session[:merge][:id], :incoming => @organization.id  %> |
+	  <%- end -%>
+	  <%= link_to 'Forget merge', :action => 'untarget', :id => @organization %> |
+	<%- end -%>
 	<%= link_to 'Back', :controller => 'search', :action => 'index' %>
 <%- end -%>

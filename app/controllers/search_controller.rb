@@ -202,6 +202,8 @@ class SearchController < ApplicationController
       end
 =end
 
+      @merge_target = session[:merge] 
+
       f = params[:format]
       respond_to do |f| 
         f.html { if params['Map'] then render :action => 'map' else render end }

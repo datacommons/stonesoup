@@ -4,6 +4,7 @@ class OrgTypesController < ApplicationController
   def dissociate
     @org_type = OrgType.find(params[:org_type_id])
     @organization = Organization.find(params[:organization_id])
+    merge_check
     @organization.org_types.delete(@org_type)
     @organization.save!
     @organization.notify_related_record_change(:deleted, @org_type)
@@ -14,6 +15,7 @@ class OrgTypesController < ApplicationController
   def associate
     @org_type = OrgType.find(params[:org_type_id])
     @organization = Organization.find(params[:organization_id])
+    merge_check
     @organization.org_types.push(@org_type)
     @organization.save!
     @organization.notify_related_record_change(:added, @org_type)
@@ -71,6 +73,7 @@ class OrgTypesController < ApplicationController
     @org_type = OrgType.new(params[:org_type])
     unless params[:organization_id].blank?  # as invoked via admin interface
       @organization = Organization.find(params[:organization_id])
+      merge_check
       @org_type.organizations.push(@organization)
     end
 

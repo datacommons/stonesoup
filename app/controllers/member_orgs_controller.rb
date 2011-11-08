@@ -4,6 +4,7 @@ class MemberOrgsController < ApplicationController
   def dissociate
     @member_org = MemberOrg.find(params[:member_org_id])
     @organization = Organization.find(params[:organization_id])
+    merge_check
     @organization.member_orgs.delete(@member_org)
     @organization.save!
     @organization.notify_related_record_change(:deleted, @member_org)
@@ -13,6 +14,7 @@ class MemberOrgsController < ApplicationController
   def associate
     @member_org = MemberOrg.find(params[:member_org_id])
     @organization = Organization.find(params[:organization_id])
+    merge_check
     @organization.member_orgs.push(@member_org)
     @organization.save!
     @organization.notify_related_record_change(:added, @member_org)
@@ -72,6 +74,7 @@ class MemberOrgsController < ApplicationController
     @member_org = MemberOrg.new(params[:member_org])
     unless params[:organization_id].blank?  # as invoked via admin interface
       @organization = Organization.find(params[:organization_id])
+      merge_check
       @member_org.organizations.push(@organization)
     end
 

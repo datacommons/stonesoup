@@ -92,13 +92,31 @@ class OrganizationsController < ApplicationController
     @organization = Organization.find(params[:id])
     @organization.users << current_user if params[:associate_user_to_entry] and !@organization.users.include?(current_user)
     @organization.users.delete(current_user) if params[:disassociate_user_from_entry]
+    merging = !params[:incoming].nil?
+    if merging
+      @organization1 = @organization
+      @organization2 = Organization.find(params[:incoming])
+    end
     respond_to do |format|
       if @organization.update_attributes(params[:organization])
         flash[:notice] = 'Organization was successfully updated.'
-        format.html { redirect_to(@organization) }
+        format.html { 
+          if merging 
+            render :action => 'merge'
+          else 
+            redirect_to(@organization) 
+          end 
+        }
         format.xml  { head :ok }
       else
-        format.html { render :action => "edit" }
+        format.html { 
+          flash[:notice] = 'Organization was not updated correctly.'
+          if merging
+            render :action => 'merge'
+          else
+            render :action => 'edit'
+          end
+        }
         format.xml  { render :xml => @organization.errors, :status => :unprocessable_entity }
       end
     end
@@ -155,12 +173,26 @@ class OrganizationsController < ApplicationController
     redirect_to :action => 'show', :id => @organization
   end
 
-  # start at an interface for merging two entries
-  # /organizations/:id/v/:id2
   def merge
     @organization = Organization.find(params[:id])
-    @organization2 = Organization.find(params[:id2])
+    @organization1 = @organization
+    @organization2 = Organization.find(params[:incoming])
     render :action => 'merge', :id => @organization
+  end
+
+  def untarget
+    @organization = Organization.find(params[:id])
+    session[:merge] = nil
+    flash[:notice] = "Merging ended."
+    render :action => 'show', :id => @organization
+  end
+
+  def target
+    @organization = Organization.find(params[:id])
+    m = session[:merge]
+    session[:merge] = { :id => params[:id], :name => @organization.name }
+    flash[:notice] = "Set as target for merging."
+    render :action => 'show', :id => @organization
   end
 
   protected

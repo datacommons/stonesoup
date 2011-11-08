@@ -53,10 +53,11 @@ public
   # POST /locations
   # POST /locations.xml
   def create
-		process_params(params)
-		@organization = Organization.find(params[:id])
-		@location = @organization.locations.create(params[:location])
-		@location.save!
+    process_params(params)
+    @organization = Organization.find(params[:id])
+    merge_check
+    @location = @organization.locations.create(params[:location])
+    @location.save!
     flash[:notice] = 'Location was successfully created.'
     respond_to do |format|
       format.html { redirect_to(@location) }
@@ -77,6 +78,7 @@ public
   def update
     @location = Location.find(params[:id])
     @organization = @location.organization
+    merge_check
 
     respond_to do |format|
       if @location.update_attributes(params[:location])
@@ -92,11 +94,28 @@ public
     end
   end
 
+  def move
+    @location = Location.find(params[:id])
+    @organization = @location.organization
+    merge_check
+    @location.update_attribute(:organization_id, @organization1.id)
+    if @organization2.primary_location == @location
+      @organization2.update_attribute(:primary_location, nil)
+    end
+    flash[:notice] = 'Location was successfully updated.'
+    respond_to do |format|
+      format.html { redirect_to(@location) }
+      format.xml  { head :ok }
+      format.js   { render :partial => 'manage', :locals => {:location => @location} }
+    end
+  end
+
   # DELETE /locations/1
   # DELETE /locations/1.xml
   def destroy
     @location = Location.find(params[:id])
     @organization = @location.organization
+    merge_check
     @location.destroy
     
     respond_to do |format|

@@ -64,6 +64,7 @@ class OrganizationsPeopleController < ApplicationController
     @organizations_person = OrganizationsPerson.find(params[:id])
     @person = @organizations_person.person
     @organization = @organizations_person.organization
+    merge_check
 
     respond_to do |format|
       if @organizations_person.update_attributes(params[:organizations_person])
@@ -79,12 +80,27 @@ class OrganizationsPeopleController < ApplicationController
     end
   end
 
+  def move
+    @organizations_person = OrganizationsPerson.find(params[:id])
+    @organization = @organizations_person.organization
+    merge_check
+    @organizations_person.update_attributes({:organization_id => @organization1.id})
+    flash[:notice] = 'Person was successfully updated.'
+    respond_to do |format|
+      format.html { redirect_to(@organizations_people_url) }
+      format.xml  { head :ok }
+      format.js   { render :partial => 'manage_for_orgs' }
+    end
+  end
+
   # DELETE /organizations_people/1
   # DELETE /organizations_people/1.xml
   def destroy
     @organizations_person = OrganizationsPerson.find(params[:id])
     @person = @organizations_person.person
     @organization = @organizations_person.organization
+    merge_check
+
     @organizations_person.destroy
 
     respond_to do |format|

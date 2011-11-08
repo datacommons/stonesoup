@@ -4,6 +4,11 @@
 		<%= render :partial => 'org_types/display', :locals => { :org_type => ps, :show_delete => true } %>
 	<% end %>
 <% end %>
+<% if @organization2 %>
+	<% for ps in @organization2.org_types - @organization.org_types %>
+		<%= render :partial => 'org_types/display', :locals => { :org_type => ps, :show_delete => true, :shadow => true } %>
+	<% end %>
+<% end %>
 <%= link_to_function('Add Organization Type', "Element.toggle('block_org_type_new_form'); Element.hide('block_org_type_new_link');", 'id' => 'block_org_type_new_link') %>
 <div id="block_org_type_new_form" style="display:none" class="clearboth">
 	Adding Organization Type [<%= link_to_function('cancel', "Element.hide('block_org_type_new_form'); Element.show('block_org_type_new_link');") %>]
@@ -13,6 +18,8 @@
 		:failure => %(resetSaveButton('addorg_type_savebutton'); showFailure('Could not select org_type')),
 		:success => %(resetSaveButton('addorg_type_savebutton'); Element.hide('block_org_type_new_form'); Element.show('block_org_type_new_link');) do %>
 		<%= hidden_field_tag 'organization_id', @organization.id %>
+		<%= hidden_field_tag 'trunk_id', get_trunk_id %>
+		<%= hidden_field_tag 'branch_id', get_branch_id %>
 		<%= select_tag 'org_type_id', options_from_collection_for_select(OrgType.get_available, 'id', 'name', @organization.org_types) %>
 		<%= submit_tag 'Add', :id => 'addorg_type_savebutton' %>
 	<% end %>
@@ -24,6 +31,8 @@
 		:failure => %(resetSaveButton('neworg_type_savebutton'); showFailure('Could not create org_type')),
 		:success => %(resetSaveButton('neworg_type_savebutton'); Element.hide('block_org_type_new_form'); Element.show('block_org_type_new_link');) do %>
 		<%= hidden_field_tag 'organization_id', @organization.id %>
+		<%= hidden_field_tag 'trunk_id', get_trunk_id %>
+		<%= hidden_field_tag 'branch_id', get_branch_id %>
 		Organization Type: <%= text_field 'org_type', 'name', 'size' => 30 %>
 		<%= submit_tag 'Create', :id => 'neworg_type_savebutton' %>
 	<% end %>

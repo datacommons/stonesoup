@@ -101,14 +101,18 @@ module ApplicationHelper
 
   def javascript_email(email)
     return nil if email.nil?
-    user,domain = email.split('@')
-    [
-     "<script type=\"text/javascript\">document.write(['",
-     obscure_email(user),
-     "\',\'",
-     obscure_email(domain),
-     "'].join('&#64;'))</script>",
-    ].join
+    if current_user.nil?
+      user,domain = email.split('@')
+      [
+       "<script type=\"text/javascript\">document.write(['",
+       obscure_email(user),
+       "\',\'",
+       obscure_email(domain),
+       "'].join('&#64;'))</script>",
+      ].join
+    else
+      obscure_email(email)
+    end
   end
 
   def javascript_email_link(email)
@@ -123,5 +127,17 @@ module ApplicationHelper
     ].join
   end
 
+  def get_trunk_id
+    if @organization
+      return @organization.id
+    end
+    nil
+  end
 
+  def get_branch_id
+    if @organization2
+      return @organization2.id
+    end
+    get_trunk_id
+  end
 end

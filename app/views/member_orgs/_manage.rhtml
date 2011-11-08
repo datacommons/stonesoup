@@ -4,6 +4,11 @@
 		<%= render :partial => 'member_orgs/display', :locals => { :member_org => ps, :show_delete => true } %>
 	<% end %>
 <% end %>
+<% if @organization2 %>
+	<% for ps in @organization2.member_orgs - @organization.member_orgs %>
+		<%= render :partial => 'member_orgs/display', :locals => { :member_org => ps, :show_delete => true, :shadow => true } %>
+	<% end %>
+<% end %>
 <%= link_to_function('Add Member Organization', "Element.toggle('block_member_org_new_form'); Element.hide('block_member_org_new_link');", 'id' => 'block_member_org_new_link') %>
 <div id="block_member_org_new_form" style="display:none" class="clearboth">
 	Adding Member Organization [<%= link_to_function('cancel', "Element.hide('block_member_org_new_form'); Element.show('block_member_org_new_link');") %>]
@@ -13,6 +18,8 @@
 		:failure => %(resetSaveButton('addmember_org_savebutton'); showFailure('Could not select member_org')),
 		:success => %(resetSaveButton('addmember_org_savebutton'); Element.hide('block_member_org_new_form'); Element.show('block_member_org_new_link');) do %>
 		<%= hidden_field_tag 'organization_id', @organization.id %>
+		<%= hidden_field_tag 'trunk_id', get_trunk_id %>
+		<%= hidden_field_tag 'branch_id', get_branch_id %>
 		<%= select_tag 'member_org_id', options_from_collection_for_select(MemberOrg.get_available, 'id', 'name', @organization.member_orgs) %>
 		<%= submit_tag 'Add', :id => 'addmember_org_savebutton' %>
 	<% end %>
@@ -24,6 +31,8 @@
 		:failure => %(resetSaveButton('newmember_org_savebutton'); showFailure('Could not create member_org')),
 		:success => %(resetSaveButton('newmember_org_savebutton'); Element.hide('block_member_org_new_form'); Element.show('block_member_org_new_link');) do %>
 		<%= hidden_field_tag 'organization_id', @organization.id %>
+		<%= hidden_field_tag 'trunk_id', get_trunk_id %>
+		<%= hidden_field_tag 'branch_id', get_branch_id %>
 		Member Organization: <%= text_field 'member_org', 'name', 'size' => 30 %>
 		<%= submit_tag 'Create', :id => 'newmember_org_savebutton' %>
 	<% end %>

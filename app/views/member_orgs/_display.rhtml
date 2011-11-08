@@ -1,11 +1,20 @@
+<% shadow = false if shadow.nil? %>
 <dl class="attribute" id='member_org_<%=member_org.id%>'>
 	<dt><%= member_org.name %>
 		<span class="actions">
+		<%- if shadow -%>
+		[ <%= link_to_remote( 'merge', 
+			:url => {:controller => 'member_orgs', :action => 'associate', :member_org_id => member_org.id, :organization_id => @organization.id, :trunk_id => get_trunk_id, :branch_id => get_branch_id},
+			:update => 'member_orgs',
+			:confirm => 'Merge Member Org association?') %>
+		]
+		<%- else -%>
 		[ <%= link_to_remote( 'delete', 
-			:url => {:controller => 'member_orgs', :action => 'dissociate', :member_org_id => member_org.id, :organization_id => @organization.id},
+			:url => {:controller => 'member_orgs', :action => 'dissociate', :member_org_id => member_org.id, :organization_id => @organization.id, :trunk_id => get_trunk_id, :branch_id => get_branch_id},
 			:update => 'member_orgs',
 			:confirm => 'Remove Member Org association?') %>
 		]
+		<%- end -%>
 		</span>
 	</dt>
 </dl>

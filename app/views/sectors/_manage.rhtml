@@ -4,6 +4,11 @@
 		<%= render :partial => 'sectors/display', :locals => { :sector => ps, :show_delete => true } %>
 	<% end %>
 <% end %>
+<% if @organization2 %>
+	<% for ps in @organization2.sectors - @organization.sectors %>
+		<%= render :partial => 'sectors/display', :locals => { :sector => ps, :show_delete => true, :shadow => true } %>
+	<% end %>
+<% end %>
 <%= link_to_function('Add Sector', "Element.toggle('block_sector_new_form'); Element.hide('block_sector_new_link');", 'id' => 'block_sector_new_link') %>
 <div id="block_sector_new_form" style="display:none" class="clearboth">
 	Adding Sector [<%= link_to_function('cancel', "Element.hide('block_sector_new_form'); Element.show('block_sector_new_link');") %>]
@@ -14,6 +19,8 @@
 		:success => %(resetSaveButton('addsector_savebutton'); Element.hide('block_sector_new_form'); Element.show('block_sector_new_link');) do %>
 		<%= hidden_field_tag 'organization_id', @organization.id %>
 		<%= select_tag 'sector_id', options_from_collection_for_select(Sector.find(:all), 'id', 'name', @organization.sectors) %>
+		<%= hidden_field_tag 'trunk_id', get_trunk_id %>
+		<%= hidden_field_tag 'branch_id', get_branch_id %>
 		<%= submit_tag 'Add', :id => 'addsector_savebutton' %>
 	<% end %>
 </div>

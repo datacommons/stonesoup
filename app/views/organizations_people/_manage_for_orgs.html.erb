@@ -4,6 +4,14 @@
 		<%= render :partial => 'organizations_people/display', :locals => { :org_person => op, :show_delete => true, :hide_org => true, :context => 'orgs' } %>
 	<% end %>
 <% end %>
+<% if @organization2 %>
+  <% unless @organization2.organizations_people.length == 0 then %>
+       <h2>Unmerged Associated People</h2>
+	<% for op in @organization2.organizations_people %>
+		<%= render :partial => 'organizations_people/display', :locals => { :org_person => op, :show_delete => true, :hide_org => true, :context => 'orgs', :shadow => true } %>
+	<% end %>
+  <% end %>
+<% end %>
 <%= link_to_function('New person association', "Element.toggle('block_org_association_new_form'); Element.hide('block_org_association_new_link');", 'id' => 'block_org_association_new_link') %>
 <div id="block_org_association_new_form" style="display:none" class="clearboth">
 	<%= error_messages_for 'organizations_person' %>
