@@ -37,6 +37,8 @@ module Usfwc
     elsif orgs.length == 1
       match = orgs.first
       match_status['linked'] = match.data_sharing_orgs.member? dso
+    elsif orgs.length == 0
+      errors.push "No matches for #{orgName}"
     else
       errors.push "Many matches for #{orgName}"
     end
