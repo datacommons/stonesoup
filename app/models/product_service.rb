@@ -2,6 +2,7 @@ class ProductService < ActiveRecord::Base
   belongs_to :organization
   validates_presence_of :name, :organization
   validates_uniqueness_of :name, :scope => :organization_id
+  include LinkedRecordNotification
   
   def to_s
     self.name

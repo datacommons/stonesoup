@@ -211,4 +211,29 @@ class Time
   end
 end
 
+class ActiveRecord::Base
+  def get_value_hash
+    oldvalues = Hash[*self.class.columns.reject { |c| 
+        ['id', 'created_at', 'created_by_id', 'updated_at', 'updated_by_id'].include?(c.name)
+      }.collect { |c| 
+        [c.name, self.send(c.name)]
+      }.flatten]
+    if self.class.respond_to?('update_notification_has_one_columns')
+      hasone_columns = self.class.update_notification_has_one_columns()
+    else
+      hasone_columns = []
+    end
+    hasone_columns.each do |hasone|
+      unless self.respond_to?(hasone)
+        logger.error("ERROR: #{self.class} has no method '#{hasone}' -- please update #{self.class}.update_notification_has_one_columns()")
+        next
+      end
+      oldvalues.delete(hasone + '_id')
+      value = self.send(hasone)
+      oldvalues[hasone] = value.to_s unless value.nil?
+    end
+    return oldvalues
+  end
+end
+
 IMPORT_PLUGINS_DIRECTORY = "#{RAILS_ROOT}/lib/import_plugins"

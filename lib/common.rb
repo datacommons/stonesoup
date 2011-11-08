@@ -79,6 +79,39 @@ module Common
       return msg + changes.map{|change_hash| "#{change_hash[:field]} changed from #{change_hash[:from]} to #{change_hash[:to]}"}.join('; ')
     end
   end
+  
+  def Common::formatted_change_message(object, oldvalues)
+    newvalues = object.get_value_hash
+  
+    changes_hash = Common::changes_hash(oldvalues, newvalues)
+    if changes_hash.empty?
+      return nil
+    end
+
+    change_message = object.class.to_s + " record updated:\n"
+    changes_hash.each do |change|
+      change_message += "* #{change[:field]} changed "
+      if(change[:from].match(/\n/) or change[:to].match(/\n/))  # if either contains a newline, use separate lines from from/to
+        change_message += "---- from: --------------------------\n"
+        change_message += change[:from] + "\n"
+        change_message += "---- to: --------------------------\n"
+        change_message += change[:to] + "\n"
+      else
+        change_message += "from #{change[:from]} to #{change[:to]}\n"
+      end
+    end
+    return change_message
+  end
+  
+  def Common::record_dump(object)
+    str = "id: #{object.id}\n"
+    object.class.content_columns.each do |column|
+      value = object.send(column.name)
+      next if value.blank?  # skip blank values
+      str += "#{column.name}: #{value}\n"
+    end
+    return str
+  end
 
   def Common.value_to_boolean(value)
     return false if value.nil?

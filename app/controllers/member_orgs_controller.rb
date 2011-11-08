@@ -6,6 +6,7 @@ class MemberOrgsController < ApplicationController
     @organization = Organization.find(params[:organization_id])
     @organization.member_orgs.delete(@member_org)
     @organization.save!
+    @organization.notify_related_record_change(:deleted, @member_org)
     render :partial => 'manage'
   end
 
@@ -14,6 +15,7 @@ class MemberOrgsController < ApplicationController
     @organization = Organization.find(params[:organization_id])
     @organization.member_orgs.push(@member_org)
     @organization.save!
+    @organization.notify_related_record_change(:added, @member_org)
     render :partial => 'manage'
   end
 

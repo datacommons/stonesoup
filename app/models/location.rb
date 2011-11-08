@@ -2,6 +2,7 @@ class Location < ActiveRecord::Base
   belongs_to :organization
   after_save :set_organizations_primary_location
   before_save :save_ll
+  include LinkedRecordNotification
   
   include GeoKit::Geocoders
 

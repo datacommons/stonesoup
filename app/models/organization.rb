@@ -40,11 +40,12 @@ class Organization < ActiveRecord::Base
 
   before_save :record_acting_user
   before_update :save_old_values
-  after_update :send_notifications
+  after_update :notify_changes
   after_save :save_access_rule
   
-  UPDATE_NOTIFICATION_IGNORED_COLUMNS = ['id', 'created_at', 'created_by_id', 'updated_at', 'updated_by_id']
-  UPDATE_NOTIFICATION_HAS_ONE_COLUMNS = ['legal_structure', 'access_rule']
+  def Organization.update_notification_has_one_columns
+    return ['legal_structure', 'access_rule']
+  end
   #UPDATE_NOTIFICATION_INCLUDED_ASSOCIATIONS = ['locations', 'products_services', 'org_types', 'sectors', 'member_orgs', 'organizations_people', 'users', 'legal_structure', 'access_rule']
   
   def save_access_rule
@@ -78,21 +79,6 @@ class Organization < ActiveRecord::Base
   def verified_dsos
     self.data_sharing_orgs_organizations.select{|link| link.verified}.map{|link| link.data_sharing_org}
   end
-
-  def get_value_hash
-    oldvalues = Hash[*self.class.columns.reject{|c| UPDATE_NOTIFICATION_IGNORED_COLUMNS.include?(c.name)}.collect {|c| [c.name, self.send(c.name)]}.flatten]
-    UPDATE_NOTIFICATION_HAS_ONE_COLUMNS.each do |hasone|
-      unless self.respond_to?(hasone)
-        logger.error("ERROR: Organization has no method '#{hasone}' -- please update Organization::UPDATE_NOTIFICATION_HAS_ONE_COLUMNS")
-        next
-      end
-      oldvalues.delete(hasone + '_id')
-      value = self.send(hasone)
-      oldvalues[hasone] = value.to_s unless value.nil?
-    end
-    #logger.debug("returning value_hash as : #{oldvalues.inspect}")
-    return oldvalues
-  end
   
   def save_old_values
     org = self.class.find(self.id)
@@ -101,30 +87,7 @@ class Organization < ActiveRecord::Base
     return true
   end
   
-  def send_notifications
-    newvalues = self.get_value_hash
-    
-    changes_hash = Common::changes_hash(@oldvalues, newvalues)
-    if changes_hash.empty?
-      logger.debug("No changes to report")
-      return true
-    end
-
-    logger.debug("sending update notification for: #{self.name} (##{self.id})")
-    
-    change_message = "Organization record updated:\n"
-    changes_hash.each do |change|
-      change_message += "* #{change[:field]} changed "
-      if(change[:from].match(/\n/) or change[:to].match(/\n/))  # if either contains a newline, use separate lines from from/to
-        change_message += "---- from: --------------------------\n"
-        change_message += change[:from] + "\n"
-        change_message += "---- to: --------------------------\n"
-        change_message += change[:to] + "\n"
-      else
-        change_message += "from #{change[:from]} to #{change[:to]}\n"
-      end
-    end
-    
+  def send_notifications(change_message)
     # send notifications to all the other editors on this entry, except the person making the update
     self.users.reject{|u| u == User.current_user}.each do |user|
       next unless user.update_notifications_enabled?  # skip if notifications are disabled
@@ -142,7 +105,38 @@ class Organization < ActiveRecord::Base
         Email.deliver_dso_update_notification(dso, self, change_message)
       end
     end
+  end
+  
+  def notify_related_record_change(how_changed, record, oldvalues = nil)
+    if(how_changed == :updated)
+      newvalues = record.get_value_hash
+      change_message = Common::formatted_change_message(record, oldvalues)
+      if(change_message.nil?)
+        logger.debug("No changes to report")
+        return true
+      end
+
+    elsif([:created, :deleted, :added].include?(how_changed))
+      change_message = "Related #{record.class} record was #{how_changed}:\n"
+      change_message += Common::record_dump(record)
+
+    else
+      raise "Unknown parameter value: how_changed=#{how_changed}"
+    end
     
+    self.send_notifications(change_message)
+    return true
+  end
+  
+  def notify_changes
+    change_message = Common::formatted_change_message(self, @oldvalues)
+    if(change_message.nil?)
+      logger.debug("No changes to report")
+      return true
+    end
+    logger.debug("sending update notification for: #{self.name} (##{self.id})")
+    
+    self.send_notifications(change_message)
     return true
   end
   

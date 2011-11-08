@@ -1,5 +1,6 @@
 class AccessRule < ActiveRecord::Base
   has_one :organization
+  include LinkedRecordNotification
   ACCESS_TYPE_PUBLIC = 'PUBLIC'
   ACCESS_TYPE_LOGGEDIN = 'LOGGEDIN'
   ACCESS_TYPE_PRIVATE = 'PRIVATE'
