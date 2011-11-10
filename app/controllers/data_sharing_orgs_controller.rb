@@ -1,5 +1,5 @@
 class DataSharingOrgsController < ApplicationController
-  before_filter :admin_or_DSOmembership_required, :only => [:show, :edit, :update, :link_org, :unlink_org, :import]
+  before_filter :admin_or_DSOmembership_required, :only => [:show, :edit, :update, :link_org, :unlink_org, :import, :add_org]
   before_filter :admin_required, :only => [:index, :new, :create, :destroy, :link_user, :unlink_user]
 protected
   def admin_or_DSOmembership_required
@@ -38,6 +38,8 @@ public
     @dso = DataSharingOrg.find(dso_id)
 
     @matches = []
+    @newbies = []
+    @multies = []
     validation_errors = []
     if(params[:file].blank?)
       validation_errors.push "You must upload a data file to be imported."
@@ -100,11 +102,20 @@ public
     FasterCSV.parse(raw_csv_data, :headers => true, :return_headers => false ) do |entry|
       lines_read = lines_read + 1
       
-      result = Module.const_get(@plugin_name.camelcase).parse_line(entry, @dso, default_access_type)
+      result = Module.const_get(@plugin_name.camelcase).parse_line(entry, @dso, default_access_type, :scan)
 
       if(result[:record_status] == :processed)
-        unless result[:remote].nil? or result[:local].nil?
-          @matches << { :local => result[:local], :remote => result[:remote], :status => result[:match_status] }
+        unless result[:local].nil?
+          unless result[:remote].nil?
+            @matches << { :local => result[:local], :remote => result[:remote], :status => result[:match_status] }
+          else
+            if result[:match_status][:available]
+              @newbies << result[:local]
+            end
+            if result[:match_status][:ambiguous]
+              @multies << result[:local]
+            end
+          end
         end
       end
       if(result[:record_status] != :error)  # import successful, record was created or updated
@@ -151,7 +162,19 @@ public
       :errors => num_errors}
     @errors = import_errors.uniq
   end
-  
+
+  def add_org
+    @dso = DataSharingOrg.find(params[:data_sharing_org_id])
+    @plugin_name = params[:plugin_name]
+    self.require "#{IMPORT_PLUGINS_DIRECTORY}/#{@plugin_name}"
+    entry = ::ActiveSupport::JSON.decode(params[:entry])
+    default_access_type = AccessRule::ACCESS_TYPE_PUBLIC
+    if current_user.member_of_dso?(@dso)
+      @entry = Module.const_get(@plugin_name.camelcase).parse_line(entry, @dso, default_access_type, :add)
+      render :partial => 'add_org'
+    end
+  end
+
   def link_org
     dso = DataSharingOrg.find(params[:data_sharing_org_id])
     org = Organization.find(params[:organization_id])

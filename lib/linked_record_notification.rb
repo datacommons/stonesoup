@@ -15,15 +15,21 @@ module LinkedRecordNotification
   end
   
   def notify_destroy
-    self.organization.notify_related_record_change(:deleted, self)
+    unless self.organization.nil?
+      self.organization.notify_related_record_change(:deleted, self)
+    end
   end
   
   def notify_create
-    self.organization.notify_related_record_change(:created, self)
+    unless self.organization.nil?
+      self.organization.notify_related_record_change(:created, self)
+    end
   end
 
   def notify_update
-    self.organization.notify_related_record_change(:updated, self, @oldvalues)
+    unless self.organization.nil?
+      self.organization.notify_related_record_change(:updated, self, @oldvalues)
+    end
   end
   
 end

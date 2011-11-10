@@ -12,7 +12,7 @@ module CoopMaine
   # => :record (organization record, if update/create was successful)
   # => :record_status (:error, :created, :updated)
   # => :errors (array of error messages)
-  def parse_line(entry, dso, default_access_type)
+  def parse_line(entry, dso, default_access_type, action)
     ########################################################### VALIDATE FUNCTION ARGUMENTS
     unless(dso)
       raise "DSO record was not passed to import()"

@@ -31,10 +31,14 @@ Data imported using the <b><%= params[:plugin_name] %></b> plugin.
 	  <%- @matches.each_with_index do |m,index| -%>
 	  <%- button_name = "linker_#{index}_button" -%>
 	  <%- msg_name = "linker_#{index}_msg" -%>
-	  <li>"<%= m[:local]['name'].to_s %>" matched <%= link_to m[:remote].name.to_s, m[:remote].link_hash %>
-	    <%- if m[:status]['linked'] -%>
+	  <li>"<%= m[:local]['name'].to_s %>" <%- if m[:status][:weak] -%>weakly<%- end -%>
+ matched <%= link_to m[:remote].name.to_s, m[:remote].link_hash %>
+	    <%- if m[:status][:linked] -%>
 	    (already in pool)
 	    <%- else -%>
+	    <br />
+	    <%= m[:local]['summary_text'] %> <b>(import)</b><br />
+	    <%= m[:remote].summary_text %> <b>(find.coop)</b><br />
 	        <% form_remote_tag :url => {:action => 'link_org'}, 
 		:loading => %(showLinkingButton('#{button_name}')),
 		:failure => %(resetLinkButton('#{button_name}'); showLinkMessage('#{msg_name}','Link failed')),
@@ -48,6 +52,40 @@ Data imported using the <b><%= params[:plugin_name] %></b> plugin.
   	     <%- end -%>
 	  </li>
 	  <%- end -%>	  
+	</ul>
+<%- end -%>
+
+<%- if(@newbies.any?) -%>
+	<h2>The great unmatched</h2>
+	<ul>
+	  <%- @newbies.each_with_index do |n,index| -%>
+	  <li>
+	    <%- button_name = "maker_#{index}_button" -%>
+	    <%- msg_name = "maker_#{index}_msg" -%>
+	    <%= n['name'] %> 
+	        <% form_remote_tag :url => {:action => 'add_org'}, 
+		:loading => %(showLinkingButton('#{button_name}')),
+		:update => "#{msg_name}_2",
+		:failure => %(resetLinkButton('#{button_name}'); showLinkMessage('#{msg_name}','Add failed')),
+		:success => %(hideLinkButton('#{button_name}'); showLinkMessage('#{msg_name}','Done!')) do %>
+		<%= hidden_field_tag 'entry', n.to_hash.to_json %>
+		<%= hidden_field_tag 'plugin_name', @plugin_name %>
+		<%= hidden_field_tag 'data_sharing_org_id', @dso.id %>
+		<%= submit_tag 'Add ' + n['name'].to_s, :id => button_name %>
+		<% end %>
+		<div id='<%= msg_name %>'></div>
+		<div id='<%= msg_name %>_2'></div>
+	  </li>
+	  <%- end -%>
+	</ul>
+<%- end -%>
+
+<%- if(@multies.any?) -%>
+	<h2>Those that match too much</h2>
+	<ul>
+	  <%- @multies.each_with_index do |n,index| -%>
+	  <li><%=n['name']%></li>
+	  <%- end -%>
 	</ul>
 <%- end -%>
 

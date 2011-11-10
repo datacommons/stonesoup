@@ -255,7 +255,11 @@ class Organization < ActiveRecord::Base
     conditions = nil
     condSQLs = []
     condParams = []
-    joinSQL = 'INNER JOIN locations ON locations.organization_id = organizations.id'
+    join_type = "INNER"
+    if [state_filter,city_filter,zip_filter].compact.collect{|f| f.length}.inject(0){|a,b| a+b}==0
+      join_type = "LEFT"
+    end
+    joinSQL = "#{join_type} JOIN locations ON locations.organization_id = organizations.id"
     unless state_filter.nil? or state_filter.empty?
       logger.debug("applying session state filters to search results: #{state_filter.inspect}")
       states = [state_filter].flatten
@@ -327,5 +331,12 @@ class Organization < ActiveRecord::Base
     super(options)
   end
 
+  def summary_text
+    txt = locations.to_s
+    if website
+      txt = txt + " / " + website
+    end
+    txt
+  end
 
 end

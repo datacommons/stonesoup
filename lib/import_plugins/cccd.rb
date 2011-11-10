@@ -24,7 +24,7 @@ module Cccd
   # => :record (organization record, if any)
   # => :record_status (:error, :created, :updated)
   # => :errors (array of error messages)
-  def parse_line(entry, dso, default_access_type)
+  def parse_line(entry, dso, default_access_type, action)
     unless(dso)
       raise "DSO record was not passed to import()"
     end
