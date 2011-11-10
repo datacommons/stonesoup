@@ -16,6 +16,10 @@ class MaineSite < Site
     false
   end
 
+  def custom_css
+    name
+  end
+
   def title
     'Cooperative Maine Directory'
   end
