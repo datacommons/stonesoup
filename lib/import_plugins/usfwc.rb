@@ -6,6 +6,15 @@ module Usfwc
   SECTOR_MAP = {
   }
 
+  def fix_null(a)
+    if a == "NULL"
+      nil
+    else
+      a
+    end
+  end
+  module_function :fix_null
+
   def simplify(a)
     a.downcase.gsub(/[^a-z0-9]/,'')
   end
@@ -34,10 +43,10 @@ module Usfwc
     if action == :add
       org_attr = {:name => entry['Company Name'],
         :description => nil,
-        :phone => entry['Phone'],
-        :fax => entry['Fax'],
+        :phone => fix_null(entry['Phone']),
+        :fax => fix_null(entry['Fax']),
         :email => nil,
-        :website => entry['Website'],
+        :website => fix_null(entry['Website']),
         :year_founded => nil,
         :democratic => nil,
         :created_by_id => nil,
@@ -50,6 +59,19 @@ module Usfwc
       organization = Organization.new(org_attr)
       organization.set_access_rule(default_access_type)
       organization.save!
+
+      DataSharingOrgsOrganization.linked_org_to_dso(organization, dso, nil)
+
+      loc_attr = {
+        :physical_address1 => fix_null(entry['Street Address']),
+        :physical_city => fix_null(entry['City']),
+        :physical_state => fix_null(entry['State']),
+        :physical_zip => fix_null(entry['Postal Code']),
+        :physical_country => "United States"
+      }
+      loc = organization.locations.new(loc_attr)
+      loc.save!
+
       organization.ferret_update
       return organization
     end
