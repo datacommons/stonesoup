@@ -6,6 +6,16 @@ module Usfwc
   SECTOR_MAP = {
   }
 
+  def simplify(a)
+    a.downcase.gsub(/[^a-z0-9]/,'')
+  end
+  module_function :simplify
+
+  def loose_match(a,b)
+    simplify(a) == simplify(b)
+  end
+  module_function :loose_match
+
   # inputs: entry (CSV line) , DSO record
   # outputs: result hash including the following keys:
   # => :record (organization record, if update/create was successful)
@@ -61,7 +71,9 @@ module Usfwc
       # errors.push "Trying #{prev_seek_name} vs #{seek_name}"
       break if seek_name == prev_seek_name
       orgs = Organization.find_with_ferret("name:\"#{seek_name}\"")
-      match_status[:weak] = true
+      unless seek_name.include? " "
+        match_status[:weak] = true
+      end
       if orgs.length>1
         orgs = []
         break
@@ -78,15 +90,29 @@ module Usfwc
         if match_status[:weak]
           plausible = false
           match.locations.each do |loc|
-            if loc.physical_city == entry['City']
+            if loose_match(loc.summary_city,entry['City'])
               plausible = true
             end
-            if loc.physical_address1 == entry['Street Address']
+            addr = ""
+            x = loc.physical_address1
+            unless x.nil?
+              unless x.gsub(/[^A-Za-z0-9]/,'').length>0
+                x = nil
+              end
+            end
+            unless x.nil?
+              addr = loc.physical_address1 unless loc.physical_address1.nil?
+              addr = addr + " " + loc.physical_address2 unless loc.physical_address2.nil?
+            else
+              addr = loc.mailing_address1 unless loc.mailing_address1.nil?
+              addr = addr + " " + loc.mailing_address2 unless loc.mailing_address2.nil?
+            end
+            if loose_match(addr,entry['Street Address'])
               plausible = true
             end
           end
           unless plausible
-            errors.push "Rejecting implausible match for #{orgName}"
+            errors.push "Implausible location match for #{orgName}"
             match = nil
             orgs = []
           end
