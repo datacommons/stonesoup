@@ -72,6 +72,10 @@ module Usfwc
       loc = organization.locations.new(loc_attr)
       loc.save!
 
+      # for some reason, the DSO link doesn't seem to "take" for
+      # ferret purposes - reload
+      organization = Organization.find(organization.id)
+
       organization.ferret_update
       return organization
     end
