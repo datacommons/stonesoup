@@ -8,7 +8,13 @@ class SearchReport < Prawn::Document
     @column_widths << (self.bounds.top_right[0] - self.bounds.top_left[0] - @column_widths.inject(0){|sum,item| sum + item})
   end
 
+  def safe(str)
+    return "" if str.nil?
+    str
+  end
+
   def fonter(sz,str)
+    return "" if str.nil?
     return "<font size='" + sz.to_s + "'>" + str + "</font>"
   end
 
@@ -23,28 +29,37 @@ class SearchReport < Prawn::Document
     for d in @data
       row = []
       sz = 8
-      row << fonter(sz,d['name'])
-      location = ""
-      for l in d.locations
-        unless l.physical_address1.blank?
-          location = location + l.physical_address1 + "\n"
-        end
-        unless l.physical_address2.blank?
-          location = location + l.physical_address2 + "\n"
-        end
-        unless l.physical_city.blank?
-          location = location + l.physical_city + "\n"
-        end
-        unless l.physical_country.blank?
-          location = location + l.physical_country + "\n"
-        end
+      if d.respond_to?('firstname')
+        row << fonter(sz,safe(d['firstname']) + " " + safe(d['lastname']))
+      else
+        row << fonter(sz,d['name'])
       end
-      row << fonter(sz,location)
+      location = ""
+      if d.respond_to?('locations')
+        for l in d.locations
+          unless l.physical_address1.blank?
+            location = location + l.physical_address1 + "\n"
+          end
+          unless l.physical_address2.blank?
+            location = location + l.physical_address2 + "\n"
+          end
+          unless l.physical_city.blank?
+            location = location + l.physical_city + "\n"
+          end
+          unless l.physical_country.blank?
+            location = location + l.physical_country + "\n"
+          end
+        end
+        row << fonter(sz,location)
+      else
+        row << ""
+      end
       row << fonter(sz,d['phone'])
       row << fonter(sz,d['email'])
-      row << fonter(sz,d['description'].gsub('<p>'," ").gsub('<P>'," "))
+      row << fonter(sz,safe(d['description']).gsub('<p>'," ").gsub('<P>'," "))
       rows = rows << row
     end
+
     table(rows, :header => true, :row_colors => %w[cccccc ffffff],
           :cell_style => {:inline_format => true},
           :column_widths => @column_widths) do
