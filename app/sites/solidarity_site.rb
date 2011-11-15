@@ -17,6 +17,6 @@ class SolidaritySite < Site
   end
 
   def custom_css
-    nil
+    name
   end
 end
