@@ -1,7 +1,7 @@
 class SolidaritySite < Site
 
   def site_searches
-    ['CSA']
+    ['GEO']
   end
 
   def aliases
@@ -13,7 +13,7 @@ class SolidaritySite < Site
   end
 
   def dso_filter
-    nil
+    ["Solidarity Economy", "US Federation of Worker Cooperatives"]
   end
 
   def custom_css
