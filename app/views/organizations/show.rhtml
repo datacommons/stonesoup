@@ -4,10 +4,12 @@
 <%- unless @organization.updated_at.nil? -%>
 	This entry was last updated on <%= date_format_long(@organization.updated_at) %>
 	<%- unless @organization.updated_by.nil? -%>
+	    <%- if current_user -%>
 		by <%= @organization.updated_by.login %>
 		<%- if @organization.updated_by.data_sharing_orgs.any? -%>
 			(manager for <%= @organization.updated_by.data_sharing_orgs.map(&:name).to_sentence %>)
 		<%- end -%>
+	    <%- end -%>
 	<%- end -%>
 <%- end -%>
 </div>
