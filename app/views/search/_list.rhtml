@@ -65,7 +65,7 @@ end
     <%- if @merge_active and entry.kind_of? Organization -%>
       <%- if @merge_target -%>
         <%- if @merge_target[:id].to_s != entry.id.to_s -%>
-          <br /><%= link_to "Merge", :controller => 'organizations', :action => 'merge', :incoming => entry.id, :id => @merge_target[:id] %> / 
+          <br /><%= link_to "Merge", { :controller => 'organizations', :action => 'merge', :incoming => entry.id, :id => @merge_target[:id] }, { :target => '_blank' } %> / 
           <%= link_to "Main", :controller => 'organizations', :action => 'target', :id => entry.id %> /
 	  <%= link_to_remote( 'Delete', 
 			:url => {:controller => 'organizations', :action => 'destroy_in_place', :id => entry.id},

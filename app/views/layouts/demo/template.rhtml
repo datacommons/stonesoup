@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<title><%= @site.title %>: <%= controller.action_name %></title>
+	<%=render :partial => 'layouts/common_header'%>
+</head>
+<body class="section-<%=params[:controller]%> page-<%=params[:controller]%>-<%=params[:action]%>">
+
+<%=render :partial => 'layouts/adminmenu'%>
+
+<!-- begin wrapper div -->
+<div id="bigwrapper">
+
+<!-- begin pagewidth div -->
+<div id="pagewidth">
+
+<!-- begin header div -->
+<div id="header" style='height: 50px;'>
+  <div style="text-align: center; color: #888;">[banner omitted to save space in demo video]</div>
+	<%=render :partial => 'layouts/usermenu'%>
+</div>
+<!-- end header div -->
+<!-- begin maincol div -->
+<div id="maincol">
+	<%- unless flash[:notice].blank? -%>
+		<p style="color: green"><%= flash[:notice] %></p>
+	<%- end -%>
+	<%- unless flash[:error].blank? -%>
+		<p style="color: red"><%= flash[:error] %></p>
+	<%- end -%>
+
+<%= @content_for_layout %>
+</div>
+<!-- end maincol div -->
+<!-- begin footer div -->
+<div id="footer">
+<%=render :partial => 'layouts/common_footer'%>
+</div>
+<!-- end footer div -->
+</div>
+<!-- end pagewidth div -->
+</div>
+<!-- end wrapper div -->
+</body>
+</html>
