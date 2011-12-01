@@ -62,7 +62,7 @@ class Site
   end
 
   def name
-    @name ||= self.class.name.gsub('Site','').downcase
+    @name ||= self.class.name.gsub('Site','').underscore
   end
 
   def layout

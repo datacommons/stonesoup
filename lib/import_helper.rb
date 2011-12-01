@@ -1,3 +1,5 @@
+require 'active_support/core_ext/string'
+
 class ImportHelper
   attr_accessor :errors, :match_status, :orgs, :match
 
@@ -91,10 +93,9 @@ class ImportHelper
   end
 
 
-  def match_with_ferret(org_attr, loc_attr, dso)
+  def match_with_ferret(org_attr, loc_attr, dso, entry)
     match_with_ferret_base(org_attr, loc_attr, dso)
     orgName = org_attr[:name]
-    entry = {}
     if @orgs.length == 0
       errors.push "No matches for #{orgName}"
       entry['stub'] = org_attr
@@ -114,7 +115,7 @@ class ImportHelper
   end
 
 
-  def apply(dso, default_access_type, action, org_attr, loc_attr)
+  def apply(dso, default_access_type, action, org_attr, loc_attr, entry)
     if action == :add
 
       organization = Organization.new(org_attr)
@@ -133,7 +134,7 @@ class ImportHelper
       organization.ferret_update
       return organization
     end
-    return match_with_ferret(org_attr, loc_attr, dso)
+    return match_with_ferret(org_attr, loc_attr, dso, entry)
   end
 
 end

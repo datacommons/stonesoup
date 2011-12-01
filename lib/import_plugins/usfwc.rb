@@ -33,7 +33,7 @@ module Usfwc
       :physical_country => "United States"
     }
 
-    return helper.apply(dso,default_access_type,action,org_attr,loc_attr)
+    return helper.apply(dso,default_access_type,action,org_attr,loc_attr,entry)
 
   end   # end of parse_line()
   module_function :parse_line

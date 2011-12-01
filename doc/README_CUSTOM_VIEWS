@@ -18,7 +18,7 @@ Add this file:
 See similar files in the same directory for templates.
 
 Add this directory:
-# app/views/layout/atlantis/
+# app/views/layouts/atlantis/
 See similar directories for examples.
 
 Add a line here:
