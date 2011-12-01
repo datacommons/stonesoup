@@ -1,183 +1,40 @@
+require 'import_helper'
+
 module Usfwc
 
-  # general plugin configuration
-  # FOREIGN_KEY_FIELD = 'EntryID'
-  
-  SECTOR_MAP = {
-  }
-
-  def fix_null(a)
-    if a == "NULL"
-      nil
-    else
-      a
-    end
-  end
-  module_function :fix_null
-
-  def simplify(a)
-    a.downcase.gsub(/[^a-z0-9]/,'')
-  end
-  module_function :simplify
-
-  def loose_match(a,b)
-    simplify(a) == simplify(b)
-  end
-  module_function :loose_match
-
-  # inputs: entry (CSV line) , DSO record
-  # outputs: result hash including the following keys:
-  # => :record (organization record, if update/create was successful)
-  # => :record_status (:error, :created, :updated)
-  # => :errors (array of error messages)
   def parse_line(entry, dso, default_access_type, action)
-    ########################################################### VALIDATE FUNCTION ARGUMENTS
+
     unless(dso)
       raise "DSO record was not passed to import()"
     end
 
-    ########################################################### INITIALIZE FUNCTION VARIABLES
-    errors = []
-    match_status = {}
+    helper = ImportHelper.new
 
-    if action == :add
-      org_attr = {:name => entry['Company Name'],
-        :description => nil,
-        :phone => fix_null(entry['Phone']),
-        :fax => fix_null(entry['Fax']),
-        :email => nil,
-        :website => fix_null(entry['Website']),
-        :year_founded => nil,
-        :democratic => nil,
-        :created_by_id => nil,
-        :updated_by_id => nil,
-        :created_at => Time.now,
-        :updated_at => Time.now,
-        :legal_structure_id => nil,
-        :primary_location_id => nil}
+    org_attr = {:name => entry['Company Name'],
+      :description => nil,
+      :phone => helper.fix_null(entry['Phone']),
+      :fax => helper.fix_null(entry['Fax']),
+      :email => helper.fix_null(entry['General Email']),
+      :website => helper.fix_null(entry['Website']),
+      :year_founded => nil,
+      :democratic => nil,
+      :created_by_id => nil,
+      :updated_by_id => nil,
+      :created_at => Time.now,
+      :updated_at => Time.now,
+      :legal_structure_id => nil,
+      :primary_location_id => nil}
 
-      organization = Organization.new(org_attr)
-      organization.set_access_rule(default_access_type)
-      organization.save!
-
-      DataSharingOrgsOrganization.linked_org_to_dso(organization, dso, nil)
-
-      loc_attr = {
-        :physical_address1 => fix_null(entry['Street Address']),
-        :physical_city => fix_null(entry['City']),
-        :physical_state => fix_null(entry['State']),
-        :physical_zip => fix_null(entry['Postal Code']),
-        :physical_country => "United States"
-      }
-      loc = organization.locations.new(loc_attr)
-      loc.save!
-
-      # for some reason, the DSO link doesn't seem to "take" for
-      # ferret purposes - reload
-      organization = Organization.find(organization.id)
-
-      organization.ferret_update
-      return organization
-    end
-
-    ########################################################### READ IN DATA FROM ENTRY
-    orgName = entry['Company Name']
-    RAILS_DEFAULT_LOGGER.debug("IMPORT: beginning import for #{orgName} ----------------------------------------------------")
-
-    seek_name = orgName.gsub(/\(.*\)/,'')
-    orgs = Organization.find_with_ferret("\"#{seek_name}\"")
-    prev_seek_name = ""
-    if orgs.length>1
-      orgs = Organization.find_with_ferret("name:\"#{seek_name}\"")
-    end
-    seek_name = seek_name.gsub(/[^a-zA-Z0-9]/,'* ').gsub(/^ */,'').gsub(/ *$/,'').gsub(/ +/,' ')
-    while orgs.length == 0
-      prev_seek_name = seek_name
-      seek_name = seek_name.gsub(/ [^ ]*$/,'')
-      # errors.push "Trying #{prev_seek_name} vs #{seek_name}"
-      break if seek_name == prev_seek_name
-      orgs = Organization.find_with_ferret("name:\"#{seek_name}\"")
-      unless seek_name.include? " "
-        match_status[:weak] = true
-      end
-      if orgs.length>1
-        orgs = []
-        break
-      end
-    end
-    match = nil
-    location = Location.new(:physical_address1 => entry['Street Address'], :physical_city => entry['City'], :physical_state => entry['State'])
-    if orgs.nil?
-      errors.push "Do not know what to do with #{orgName}"
-    elsif orgs.length == 1
-      match = orgs.first
-      match_status[:linked] = match.data_sharing_orgs.member? dso
-      unless match_status[:linked]
-        if match_status[:weak]
-          plausible = false
-          match.locations.each do |loc|
-            if loose_match(loc.summary_city,entry['City'])
-              plausible = true
-            end
-            addr = ""
-            x = loc.physical_address1
-            unless x.nil?
-              unless x.gsub(/[^A-Za-z0-9]/,'').length>0
-                x = nil
-              end
-            end
-            unless x.nil?
-              addr = loc.physical_address1 unless loc.physical_address1.nil?
-              addr = addr + " " + loc.physical_address2 unless loc.physical_address2.nil?
-            else
-              addr = loc.mailing_address1 unless loc.mailing_address1.nil?
-              addr = addr + " " + loc.mailing_address2 unless loc.mailing_address2.nil?
-            end
-            if loose_match(addr,entry['Street Address'])
-              plausible = true
-            end
-          end
-          unless plausible
-            errors.push "Implausible location match for #{orgName}"
-            match = nil
-            orgs = []
-          end
-        end
-      end
-    end
-
-    if orgs.length == 0
-      errors.push "No matches for #{orgName}"
-      stub = {:name => orgName,
-        :description => nil,
-        :phone => entry['Phone'],
-        :fax => entry['Fax'],
-        :email => entry['General Email'],
-        :website => entry['Website'],
-        :year_founded => nil,
-        :democratic => nil,
-        :created_by_id => nil,
-        :updated_by_id => nil,
-        :created_at => nil,
-        :updated_at => nil,
-        :legal_structure_id => nil,
-        :primary_location_id => nil}
-      entry['stub'] = stub
-      match_status[:available] = true
-    else
-      errors.push "Many matches for #{orgName}"
-      match_status[:ambiguous] = true
-    end
-    entry['name'] = orgName
-    entry['summary_text'] = entry['Street Address'].to_s + " " + entry['City'].to_s + " " + entry['State'].to_s  + " / " + entry['Website'].to_s
-
-    # return {:record => organization, :record_status => record_status, :errors => errors}
-    # errors.push "Nothing doing for #{orgName}"
-    return {:errors => errors, :record_status => :processed, 
-      :local => entry,
-      :remote => match,
-      :match_status => match_status
+    loc_attr = {
+      :physical_address1 => helper.fix_null(entry['Street Address']),
+      :physical_city => helper.fix_null(entry['City']),
+      :physical_state => helper.fix_null(entry['State']),
+      :physical_zip => helper.fix_null(entry['Postal Code']),
+      :physical_country => "United States"
     }
+
+    return helper.apply(dso,default_access_type,action,org_attr,loc_attr)
+
   end   # end of parse_line()
   module_function :parse_line
 
