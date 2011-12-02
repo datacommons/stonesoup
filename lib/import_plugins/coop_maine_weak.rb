@@ -26,7 +26,7 @@ module CoopMaineWeak
     ########################################################### READ IN DATA FROM ENTRY
 
     nully = ImportHelper.new
-    entry.keys.each do |k|
+    entry.to_hash.keys.each do |k|
       entry[k] = nully.fix_null(entry[k])
     end
 
