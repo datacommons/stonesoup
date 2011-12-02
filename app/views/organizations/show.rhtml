@@ -83,11 +83,13 @@
       y1 = sorted_longitudes.first
       x2 = sorted_latitudes.last
       y2 = sorted_longitudes.last
-      dx = (x2-x1)/10
-      dy = (y2-y1)/10
-      map.center_zoom_on_bounds_init([
-        [x1-dx,y1-dy], 
-        [x2+dx,y2+dy]])
+      unless x1.nil?
+        dx = (x2-x1)/10
+        dy = (y2-y1)/10
+        map.center_zoom_on_bounds_init([
+          [x1-dx,y1-dy], 
+          [x2+dx,y2+dy]])
+      end
     else 
       map.center_zoom_init(pt,11)
     end

@@ -24,6 +24,12 @@ module CoopMaineWeak
     errors = []
 
     ########################################################### READ IN DATA FROM ENTRY
+
+    nully = ImportHelper.new
+    entry.keys.each do |k|
+      entry[k] = nully.fix_null(entry[k])
+    end
+
     orgName = entry['Organization Name']
     RAILS_DEFAULT_LOGGER.debug("IMPORT: beginning import for #{orgName} ----------------------------------------------------")
     description = entry['Description of Work']
@@ -190,11 +196,110 @@ module CoopMaineWeak
       :created_at => Time.now,
       :updated_at => Time.now,
     }
+    contact_attrs = [
+                     {
+                       :person_attr => contact1_attr,
+                       :link_attr => contact1_link_attr,
+                     },
+                     {
+                       :person_attr => contact2_attr,
+                       :link_attr => contact2_link_attr,
+                     }
+                    ]
+
+    # scan for OrgType, Sector, LegalStructure
+    # data for these columns is either TRUE, FALSE, or blank (assume FALSE) 
+    # except: 'Type: Type of Other1' - string
+    # EXCEPT: 'Sector: Specify Other1' - string
+    # except: 'Legal: Type of Other' - string
+
+    # process regular named org Type columns
+    org_type_names = []
+    entry.select{|k,v| k.match(/^Type: (.*)/) and v == 'TRUE'}.each do |k,v|
+      if(m = k.match(/^Type: (.*)/))
+        org_type_name = m[1]
+        if(org_type_name == 'Other')
+          # process "other" entries...
+          entry.select{|k,v| k.match(/^Type: Type of Other/)}.each do |k,v|
+            next if v.blank?
+            RAILS_DEFAULT_LOGGER.debug("IMPORT: Adding 'other' Org Type to the list: '#{v}'")
+            org_type_names.push(v)
+          end
+        else  # not 'other', a regular entry, add it as normal
+          org_type_names.push(org_type_name)
+          RAILS_DEFAULT_LOGGER.debug("IMPORT: Adding named Org Type to the list: '#{org_type_name}'")
+        end
+      end
+    end
+    
+    # process regular named Sector columns
+    sector_names = []
+    entry.select{|k,v| k.match(/^Sector: (.*)/) and v == 'TRUE'}.each do |k,v|
+      if(m = k.match(/^Sector: (.*)/))
+        sector_name = m[1]
+        if(sector_name == 'Other')
+          # process "other" entries...
+          entry.select{|k,v| k.match(/^Sector: Specify Other/)}.each do |k,v|
+            next if v.blank?
+            RAILS_DEFAULT_LOGGER.debug("IMPORT: Adding 'other' Sector to the list: '#{v}'")
+            sector_names.push(v)
+          end
+        else  # not 'other', a regular entry, add it as normal
+          sector_names.push(sector_name)
+          RAILS_DEFAULT_LOGGER.debug("IMPORT: Adding named Sector to the list: '#{sector_name}'")
+        end
+      end
+    end
+    
+    # process regular named Legal columns
+    legal_structure_name = nil
+    entry.select{|k,v| k.match(/^Legal: (.*)/) and v == 'TRUE'}.each do |k,v|
+      if(m = k.match(/^Legal: (.*)/))
+        legal_name = m[1]
+        if(legal_name == 'Other')
+          # process "other" entry...
+          unless(legal_structure_name.nil?)
+            msg = "Warning: Legal Structure was previously set to '#{legal_structure_name}', now overwritten as '#{entry['Legal: Type of Other']}'"
+            errors.push(msg)
+            RAILS_DEFAULT_LOGGER.warn('IMPORT: ' + msg)
+          end
+          legal_structure_name = entry['Legal: Type of Other']
+          RAILS_DEFAULT_LOGGER.debug("IMPORT: Using 'other' Legal structure: '#{legal_structure_name}'")
+        else  # not 'other', a regular entry, set it as normal
+          unless(legal_structure_name.nil?)
+            msg = "Warning: Legal Structure was previously set to '#{legal_structure_name}', now overwritten as '#{legal_name}'"
+            errors.push(msg)
+            RAILS_DEFAULT_LOGGER.warn('IMPORT: ' + msg)
+          end
+          legal_structure_name = legal_name
+          RAILS_DEFAULT_LOGGER.debug("IMPORT: Using named Legal structure: '#{legal_structure_name}'")
+        end
+      end
+    end
+    
+    member_orgs = []
+    if(entry['Unionized?'] == 'TRUE')
+      union_name = entry['Which Union?']
+      unless(union_name.blank?)
+        member_orgs.push(MemberOrg.find_or_create_custom(union_name))
+      end
+    end
+    RAILS_DEFAULT_LOGGER.debug("IMPORT: member orgs: #{member_orgs.inspect}")
+
+    proto = ProtoEntry.new
+    proto.org_attr = org_attr
+    proto.location_attrs = location_attrs
+    proto.contact_attrs = contact_attrs
+    proto.org_type_names = org_type_names
+    proto.sector_names = sector_names
+    proto.legal_structure_name = legal_structure_name
+    proto.member_orgs = member_orgs
+    proto.product_service_names = product_service_names
+    proto.entry = entry
+    proto.default_access_type = default_access_type
 
     helper = ImportHelper.new
-    return helper.apply(dso,default_access_type,action,org_attr,
-                        location_attrs[0],entry)
-
+    return helper.apply_proto(dso,action,proto)
 
   end   # end of parse_line()
   module_function :parse_line
