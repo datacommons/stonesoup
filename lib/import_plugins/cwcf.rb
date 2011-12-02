@@ -15,7 +15,9 @@ module Cwcf
     if desc
       if desc.length>60
         desc = desc[0..60]
-        desc = desc[0..(desc.rindex(" "))]
+        if desc.rindex(" ")
+          desc = desc[0..(desc.rindex(" "))]
+        end
         desc = desc + " ... (<a href='#{desc_src}'>source</a>)"
       end
     end

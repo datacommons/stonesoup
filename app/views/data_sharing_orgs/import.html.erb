@@ -68,7 +68,7 @@ Data imported using the <b><%= params[:plugin_name] %></b> plugin.
 		:update => "#{msg_name}_2",
 		:failure => %(resetLinkButton('#{button_name}'); showLinkMessage('#{msg_name}','Add failed')),
 		:success => %(hideLinkButton('#{button_name}'); showLinkMessage('#{msg_name}','Done!')) do %>
-		<%= hidden_field_tag 'entry', n.to_hash.to_json.gsub!(/\\u([0-9a-z]{4})/) {|s| [$1.to_i(16)].pack("U")} %>
+		<%= hidden_field_tag 'entry', n.to_hash.to_json.gsub(/\\u([0-9a-z]{4})/) {|s| [$1.to_i(16)].pack("U")} %>
 		<%= hidden_field_tag 'plugin_name', @plugin_name %>
 		<%= hidden_field_tag 'data_sharing_org_id', @dso.id %>
 		<%= submit_tag 'Add ' + n['name'].to_s, :id => button_name %>
