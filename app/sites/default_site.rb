@@ -1,7 +1,7 @@
 class DefaultSite < Site
 
   def site_searches
-    ['Connecticut','cooperative','zip:02139','tech*', 'sector:food AND (organic OR local)','Noemi Giszpenc']
+    ['Startup','Connecticut','cooperative','zip:01301','tech*', 'sector:food AND (organic OR local)']
   end
 
   def aliases
