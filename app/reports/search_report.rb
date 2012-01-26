@@ -177,6 +177,9 @@ DOC
           unless l.physical_city.blank?
             location = location + latex(l.physical_city) + "\\newline "
           end
+          unless l.physical_state.blank?
+            location = location + latex(l.physical_state) + "\\newline "
+          end
           unless l.physical_country.blank?
             location = location + latex(l.physical_country) + "\\newline "
           end
@@ -293,6 +296,9 @@ DOC
           end
           unless l.physical_city.blank?
             location = location + latex(l.physical_city) + "\\\\\n"
+          end
+          unless l.physical_state.blank?
+            location = location + latex(l.physical_state) + "\\\\\n"
           end
           unless l.physical_country.blank?
             location = location + latex(l.physical_country) + "\\\\\n"
