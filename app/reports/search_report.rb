@@ -305,7 +305,8 @@ DOC
         if need_break
           fout.write("\\\\\n")
         end
-        fout.write("{\\tt \\href{mailto:" + latex(d['email']) + "}{" + latex(d['email']) + "}}")
+        m = latex(d['email'])
+        fout.write("{\\tt \\href{mailto:" + m + "}{" + m + "}}")
         need_break = true
       end
       unless d['description'].blank?
