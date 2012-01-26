@@ -218,9 +218,9 @@ DOC
 
   def to_pdf_latex_style2
     
-    dir = "/tmp/foo"
-    #dir = Dir.mktmpdir
-    need_rm = false
+    #dir = "/tmp/foo"
+    dir = Dir.mktmpdir
+    need_rm = true
     fout = File.open("#{dir}/report.tex", 'w')
 
     title = "\`\`" + latex(@search) + "\'\'"
