@@ -80,11 +80,15 @@ class SearchReport < Prawn::Document
     render
   end
 
+  def urly(s)
+    return "" if s.nil?
+    return s.gsub(/\\/,"/")
+  end
 
   def latex(s)
-    if (s.nil?) 
-      return ""
-    end
+    return "" if s.nil?
+    #s.gsub!(/\\/,"\\textbackslash{}")
+    #s.gsub!(/~/,"\\textasciitilde{}")
     s.gsub!(/<[^>]*>/,"")
     if (s.length>=300) 
       sn = s.match(/.{0,300}/m).to_s
@@ -320,7 +324,7 @@ DOC
         if need_break
           fout.write("\\\\\n")
         end
-        fout.write("{\\tt\\url{" + latex(safe(d['website'].gsub('http://','').gsub(/\/$/,''))) + "}}")
+        fout.write("{\\tt\\url{" + latex(safe(urly(d['website']).gsub('http://','').gsub(/\/$/,''))) + "}}")
       end
       # fout.write("\\vskip 10pt plus 50pt minus 3pt\n");
       fout.write("\n\n")
