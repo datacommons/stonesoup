@@ -229,7 +229,9 @@ class SearchController < ApplicationController
           :disposition => ("attachment; filename=search.csv")
         end
         f.pdf do
-          report = SearchReport.new(:data => @entries, :search => @search_text)
+          report = SearchReport.new(:data => @entries, :search => @search_text,
+                                    :user => current_user,
+                                    :style => params[:style])
           send_data report.to_pdf, :filename => "search.pdf",
           :type => "application/pdf",
           :disposition => 'inline'
