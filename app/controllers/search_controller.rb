@@ -217,6 +217,7 @@ class SearchController < ApplicationController
       f = params[:format]
       respond_to do |f| 
         f.html { if params['Map'] then render :action => 'map' else render end }
+        f.kml { render :file => 'search/search.kml.erb', :layout => false }
         f.xml { render :xml => @entries }
         f.csv do
           data = [@entries].flatten

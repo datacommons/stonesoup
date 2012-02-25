@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<%- @entries.each do |entry| -%>
+<%- entry.locations.each do |loc| -%>
+  <Placemark>
+    <name><%= entry.name %></name>
+    <description><%= entry.description %></description>
+    <Point>
+      <coordinates><%= loc.latitude.to_s + "," + loc.longitude.to_s + ",0" %></coordinates>
+    </Point>
+  </Placemark>
+<%- end -%>
+<%- end -%>
+</kml>
