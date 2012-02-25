@@ -97,6 +97,7 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(params[:user])
+    @user.is_admin = params[:user][:is_admin] # must be set manually due to attr_protected
     if @user.save
       flash[:notice] = 'User was successfully created.'
       redirect_to :action => 'list'
@@ -115,6 +116,7 @@ class UsersController < ApplicationController
 
   def update
     @user = User.find(params[:id])
+    @user.is_admin = params[:user][:is_admin] # must be set manually due to attr_protected
     if @user.update_attributes(params[:user])
       flash[:notice] = 'User was successfully updated.'
       redirect_to :action => 'show', :id => @user
