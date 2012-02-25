@@ -1,3 +1,5 @@
+<%= render :partial => 'search/search_form', :locals => {:hide_examples => true} %>
+
 <%- included_view = (params && params[:widget]) if included_view.nil? -%>
 <h1><%= @organization.name %></h1>
 <div id="last_updated">
