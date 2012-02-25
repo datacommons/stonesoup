@@ -13,22 +13,46 @@ class Email < ActionMailer::Base
     body       :user => user, :organization => org
   end
   
-  def update_notification(user, org, change_msg)
+  def update_notification(user, org, change_msg, type = :update)
     recipients user.login
     from FROM_ADDRESS
-    subject "The entry '#{org.name}' has been updated."
-    body :organization => org, :change_msg => change_msg
+    if type == :update
+      body[:updated_or_removed] = 'updated'
+    elsif type == :delete
+      body[:updated_or_removed] = 'removed'
+    else
+      raise "Unknown update type '#{type}'"
+    end
+    subject "The entry '#{org.name}' has been #{body[:updated_or_removed]}."
+    body[:organization] = org
+    body[:change_msg] = change_msg
+    body[:type] = type
     body[:by_line] = " by #{User.current_user.login}" unless User.current_user.nil?
+    body[:why_notified] = 'for which you are an editor'
   end
   
-  def dso_update_notification(dso, org, change_msg)
+  def dso_update_notification(dso, org, change_msg, type = :update)
     dso_recipients = dso.users.select{|u| u.update_notifications_enabled?}  # only send to DSO editors who have notifications enabled
     return false if dso_recipients.empty? # no users to send to, abort
     recipients dso_recipients
     from FROM_ADDRESS
-    subject "Entry update notification & approval request"
-    body :dso => dso, :organization => org, :change_msg => change_msg
+    if type == :update
+      body[:updated_or_removed] = 'updated'
+      subject "Entry update notification & approval request"
+    elsif type == :delete
+      subject "Entry removal notification"
+      body[:updated_or_removed] = 'removed'
+    else
+      raise "Unknown update type '#{type}'"
+    end
+    body[:organization] = org
+    body[:change_msg] = change_msg
+    body[:type] = type
     body[:by_line] = " by #{User.current_user.login}" unless User.current_user.nil?
+    body[:why_notified] = 'in the data pool of ' + dso.name
+    body[:dso] = dso
+    body[:dso_extra] = "#{dso.name} has #{dso.num_unverified} entries pending verification."
+    template "update_notification"  # use the same notification template as the main update notification e-mail
   end
   
   def password_reset(user, password_cleartext)

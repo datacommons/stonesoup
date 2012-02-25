@@ -15,7 +15,7 @@ module LinkedRecordNotification
   end
   
   def notify_destroy
-    unless self.organization.nil?
+    unless self.organization.nil? or self.organization.destruction_in_progress
       self.organization.notify_related_record_change(:deleted, self)
     end
   end

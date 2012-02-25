@@ -1,16 +1,21 @@
 class Organization < ActiveRecord::Base
-  has_many :locations, :dependent => :destroy
+  # NOTE on object relationships:
+  # DO NOT use [ :dependent => :destroy ] or [ :dependent => :delete_all ] 
+  # as this removes the related objects BEFORE the before_destroy callback is processed for the object itself
+  # (because we need to have the DSO relations intact to be able to notify the DSO of the removal)
+  # those related objects are now destroyed in the after_destroy callback manually
+  has_many :locations
   belongs_to :primary_location, :class_name => 'Location'
-  has_many :products_services, :dependent => :destroy, :class_name => 'ProductService'
+  has_many :products_services, :class_name => 'ProductService'
   belongs_to :legal_structure
   belongs_to :access_rule
   has_and_belongs_to_many :org_types
   has_and_belongs_to_many :sectors
   has_and_belongs_to_many :member_orgs
-  has_many :organizations_people, :dependent => :destroy
+  has_many :organizations_people
   has_many :people, :through => :organizations_people
   has_and_belongs_to_many :users
-  has_many :data_sharing_orgs_organizations, :dependent => :destroy
+  has_many :data_sharing_orgs_organizations
   has_many :data_sharing_orgs, :through => :data_sharing_orgs_organizations
   belongs_to :updated_by, :class_name => 'User', :foreign_key => 'updated_by_id'
   belongs_to :created_by, :class_name => 'User', :foreign_key => 'created_by_id'
@@ -42,6 +47,15 @@ class Organization < ActiveRecord::Base
   before_update :save_old_values
   after_update :notify_changes
   after_save :save_access_rule
+  before_destroy :notify_destroy
+  attr_accessor :destruction_in_progress # flag to mark if the org is currently being deleted (for notification handling)
+  after_destroy :destroy_related_objects
+  def destroy_related_objects
+    self.locations.destroy_all
+    self.products_services.destroy_all
+    self.data_sharing_orgs_organizations.destroy_all
+    self.organizations_people.destroy_all
+  end
   
   def Organization.update_notification_has_one_columns
     return ['legal_structure', 'access_rule']
@@ -87,22 +101,29 @@ class Organization < ActiveRecord::Base
     return true
   end
   
-  def send_notifications(change_message)
+  def send_notifications(change_message, type = :update)
     # send notifications to all the other editors on this entry, except the person making the update
-    self.users.reject{|u| u == User.current_user}.each do |user|
-      next unless user.update_notifications_enabled?  # skip if notifications are disabled
-      Email.deliver_update_notification(user, self, change_message)
+    other_editors = self.users.reject{|u| u == User.current_user}
+    logger.debug("other editors on this entry: #{other_editors.collect{|u| u.login}.join(', ')}")
+    other_editors.reject!{|u| !u.update_notifications_enabled?} # skip users who have notifications disabled
+    logger.debug("sending update notification to other editors on this entry with notifications enabled: #{other_editors.collect{|u| u.login}.join(', ')}")
+    other_editors.each do |user|
+      Email.deliver_update_notification(user, self, change_message, type)
     end
     
     # if this record is part of a DSO's data set, AND the acting user is NOT a "trusted" user
     # send a notification to that DSO
+    logger.debug("entry has DSOs? : #{self.data_sharing_orgs.any?}; entry trusts current user? : #{self.trust_user?(User.current_user)}")
     if self.data_sharing_orgs.any? and !self.trust_user?(User.current_user)
+      logger.debug("acting user is not trusted for this entry, sending #{type} notification to DSO editors...")
       self.data_sharing_orgs.each do |dso|
-        # set the entry's status to "unverified"
-        DataSharingOrgsOrganization.set_status(dso, self, false)
+        unless self.destruction_in_progress
+          # set the entry's status to "unverified"
+          DataSharingOrgsOrganization.set_status(dso, self, false)
+        end
 
         # send a notification to that DSO
-        Email.deliver_dso_update_notification(dso, self, change_message)
+        Email.deliver_dso_update_notification(dso, self, change_message, type)
       end
     end
   end
@@ -124,7 +145,19 @@ class Organization < ActiveRecord::Base
       raise "Unknown parameter value: how_changed=#{how_changed}"
     end
     
-    self.send_notifications(change_message)
+    self.send_notifications(change_message, :update)
+    return true
+  end
+  
+  def notify_destroy
+    self.destruction_in_progress = true
+    logger.debug("sending removal notification for: #{self.name} (##{self.id})")
+    if User.current_user
+      user = User.current_user.login
+    else
+      user = '(unknown)'
+    end
+    self.send_notifications("This entry is being removed from the directory by #{user}", :delete)
     return true
   end
   
@@ -136,7 +169,7 @@ class Organization < ActiveRecord::Base
     end
     logger.debug("sending update notification for: #{self.name} (##{self.id})")
     
-    self.send_notifications(change_message)
+    self.send_notifications(change_message, :update)
     return true
   end
   

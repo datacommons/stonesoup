@@ -1,16 +1,20 @@
-One of the entries for which you are an editor has been updated<%= @by_line %>.
-
+One of the entries <%= @why_notified %> has been <%= @updated_or_removed %><%= @by_line %>.
+----------
 Entry: <%= @organization.name %>
+<%- if @type == :update -%>
 Changes:
 <%= @change_msg %>
 
 To see the updated entry, go to:
 <%= Email.website_base_url %><%= url_for :controller => 'organizations', :action => 'show', :id => @organization %>
 From there, you may log in and make further updates or corrections as necessary.
+<%- end -%>
+----------
+<%= @dso_extra || '' %>
 
 To update your e-mail preferences, click here and log in: <%= Email.website_base_url %><%= url_for :controller => 'users', :action => 'prefs' %>
 
-If you believe this update may have been malicious in nature, please contact us immediately.
+If you believe this change may have been malicious in nature, please contact us immediately.
 
 Cheers,
 The Data Commons Project Staff
