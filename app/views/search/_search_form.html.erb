@@ -1,6 +1,6 @@
 <% hide_examples = false if hide_examples.nil? %>
 <div id="basic_search" style="<%= params[:advanced] ? 'display:none' : ''%>">
-	<% form_tag( {:action => 'search'}, :id => 'search_form', :name => 'search_form', :method => 'get' ) do %>
+	<% form_tag( {:controller => 'search', :action => 'search'}, :id => 'search_form', :name => 'search_form', :method => 'get' ) do %>
 		<div><label for="q">Search the directory:</label>
 		<%= text_field_tag 'q', @query, :size => 30 %>
 		<%= submit_tag 'See List' %>
@@ -14,7 +14,7 @@
 	      <div class='example_wrapper'>
 		<div class='example_preamble'>Search<br />examples:</div>
 		<% for example in @site.site_searches %>
-		<div class='example_bubble'><%= link_to example, :action => 'search', :q => example %></div>
+		<div class='example_bubble'><%= link_to example, :controller => 'search', :action => 'search', :q => example %></div>
 		<% end %>
               </div>
 	<% end %>
@@ -22,7 +22,7 @@
 <div id="advanced_search" style="<%= params[:advanced] ? '' : 'display:none'%>">
 	<%= link_to_function('Switch to Basic Search', "Element.hide('advanced_search'); Element.show('basic_search')") %>
 	<br/>
-	<% form_tag( {:action => 'search'}, :method => 'get' ) do %>
+	<% form_tag( {:controller => 'search', :action => 'search'}, :method => 'get' ) do %>
 		<%= hidden_field_tag 'advanced', 1 %>
 		<table id="advsearch">
 			<tr><th>Geographically</th>
