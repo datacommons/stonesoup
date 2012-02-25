@@ -70,7 +70,12 @@ class OrgTypesController < ApplicationController
     if params[:org_type][:custom].nil?  # no "custom" value vas provided, so that means this is being submitted via AJAX
       params[:org_type].merge!(:custom => true)  # make it a custom entry
     end
-    @org_type = OrgType.new(params[:org_type])
+    # search for an existing record
+    @org_type = OrgType.find_by_name(params[:org_type][:name])
+    if(@org_type.nil?)
+      # if not found, create it
+      @org_type = OrgType.new(params[:org_type])
+    end
     unless params[:organization_id].blank?  # as invoked via admin interface
       @organization = Organization.find(params[:organization_id])
       merge_check
