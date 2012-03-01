@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-	<title><%= @site.title %>: <%= controller.action_name %></title>
+	<title><%- if @content_for_title -%><%=h yield(:title) %><%- else -%><%= @site.title %>: <%= controller.action_name %><%- end -%></title>
 	<%=render :partial => 'layouts/common_header'%>
 </head>
 <body class="section-<%=params[:controller]%> page-<%=params[:controller]%>-<%=params[:action]%>">

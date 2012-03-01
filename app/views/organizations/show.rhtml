@@ -1,5 +1,6 @@
 <%= render :partial => 'search/search_form', :locals => {:hide_examples => true} %>
 
+<% content_for :title, @organization.name %>
 <%- included_view = (params && params[:widget]) if included_view.nil? -%>
 <h1><%= @organization.name %></h1>
 <div id="last_updated">
@@ -103,9 +104,11 @@
   </div>
   <%= render :partial => "layouts/map_choice" %>
   <div class="map_offer">
+  <% form_tag({:controller => 'search', :action => 'near'}, {:method => 'get'}) do %>
+  <%= hidden_field_tag(:id, @organization.id) %>
   Meet the neighbors:
   <ul>
-   <li>Within <%= link_to '1', :action => 'near', :controller => 'search', :id => @organization, :params => { :within => 1 } %>, <%= link_to '10', :action => 'near', :controller => 'search', :id => @organization, :params => { :within => 10 } %>, or <%= link_to '100', :action => 'near', :controller => 'search', :id => @organization, :params => { :within => 100 } %> miles</li>
+   <li>Within <%= link_to '1', :action => 'near', :controller => 'search', :id => @organization, :params => { :within => 1 } %>, <%= link_to '10', :action => 'near', :controller => 'search', :id => @organization, :params => { :within => 10 } %>, or <%= text_field_tag(:within,"20",:size=>3,:maxlength=>4) %> miles <%= submit_tag('go') %></li>
   <% if @organization.primary_location %>
      <% @zip = @organization.primary_location.summary_zip %>
      <% @city = @organization.primary_location.summary_city %>
@@ -123,6 +126,7 @@
      <% end %>
   <% end %>
   </ul>
+  <% end %>
   </div>
   </div>
 <% end %>
