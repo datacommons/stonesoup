@@ -608,3 +608,34 @@ div.menu-container {
 #search_form a { 
     text-decoration: none;
 }
+
+.example_search {
+ 	display: block;
+	float: left;
+	padding: 10px;
+	margin: 10px;
+	width: 40%;
+	background-color: #FFF;
+}
+
+.example_search h3 {
+  border: none;
+}
+
+.example_search .search_listing {
+ 	display: block;
+	float: left;
+	height: 200px;
+	background-color: #FFF;
+	overflow: auto;
+}
+
+.surround_map_insert { 
+}
+
+.map_insert { 
+  width: 100%;
+  height: 300px;
+  border: 1px solid #ccc;
+}
+

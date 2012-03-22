@@ -1,0 +1,48 @@
+  <%
+  map = Mapstraction.new("the_map_" + name,current_map_type)
+  map.control_init(:small => true)
+  at = 0
+  markers = {}
+  bounds = [10000, 10000, -10000, -10000]
+  for e in orgs
+   if e.is_a?(Organization)
+    unless e.latitude.nil? or e.longitude.nil?
+      icon = "/openlayers/img/marker-star.png"
+      pt = [Float(e.latitude), Float(e.longitude)]
+      markers[e.id] = icon
+      bounds = [[bounds[0], pt[0]].min,
+                [bounds[1], pt[1]].min,
+                [bounds[2], pt[0]].max,
+                [bounds[3], pt[1]].max]
+      mkr = Marker.new(pt, :info_bubble => show_link(e), :icon => icon, :icon_size => [22,22])
+      map.marker_init(mkr)
+    end
+   end
+  end
+  x1 = bounds[0]
+  y1 = bounds[1]
+  x2 = bounds[2]
+  y2 = bounds[3]
+  dx = (x2-x1)/10
+  dy = (y2-y1)/10
+  map.center_zoom_on_bounds_init([[x1-dx,y1-dy],[x2+dx,y2+dy]])
+  %>
+  <%= map.to_html %>
+  <div class="surround_map_insert">
+  <div class="map_insert" id="the_map_<%= name %>"></div>
+  </div>
+
+<% shown = {} %>
+<div class="search_listing">
+<% for entry in orgs[0,20] %>
+  <% unless shown.key?(entry.name) or !entry.is_a?(Organization) %>
+    <% shown[entry.name] = true %>
+    <p><%= show_link entry %> 
+    <% if entry.primary_location %>
+       <%= entry.primary_location.physical_city %> <%= entry.primary_location.physical_state %>
+    <% end %>
+    <br /><%= truncate_string(entry.description,70) %>
+    </p>
+  <% end %>
+<% end %>
+</div>
