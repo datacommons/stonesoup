@@ -9,11 +9,13 @@ class SearchController < ApplicationController
   end
 
   def search
-    if params[:state] and !params[:q]
+    if params[:state] and params[:advanced] != '1'
       long_state = Location::STATE_SHORT[params[:state]]
       long_state = params[:state] unless long_state
       params[:state] = long_state
-      params[:q] = "+state:'#{long_state}' "
+      q = params[:q].to_s + ''
+      q.gsub!(/\+state:\'[^\']+\' +/,'')
+      params[:q] = "+state:'#{long_state}' #{q}"
     end
 
 
