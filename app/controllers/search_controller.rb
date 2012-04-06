@@ -9,6 +9,14 @@ class SearchController < ApplicationController
   end
 
   def search
+    if params[:state] and !params[:q]
+      long_state = Location::STATE_SHORT[params[:state]]
+      long_state = params[:state] unless long_state
+      params[:state] = long_state
+      params[:q] = "+state:'#{long_state}' "
+    end
+
+
     @query = params[:q].to_s + ''
     @search_text = @query
     search_query = params[:q].to_s + '' # apparently the (+ '') is needed to make these distinct variables
@@ -65,11 +73,15 @@ class SearchController < ApplicationController
           search_query << ' ' + newterm unless search_query.include?(newterm)
         end
         unless params[:country].blank?
-          newterm = "+country:'#{params[:country]}'"
+          long_form = Location::COUNTRY_SHORT[params[:country]]
+          long_form = params[:country] unless long_form
+          newterm = "+country:'#{long_form}'"
           search_query << ' ' + newterm unless search_query.include?(newterm)
         end
         unless params[:state].blank?
-          newterm = "+state:'#{params[:state]}'"
+          long_state = Location::STATE_SHORT[params[:state]]
+          long_state = params[:state] unless long_state
+          newterm = "+state:'#{long_state}'"
           search_query << ' ' + newterm unless search_query.include?(newterm)
         end
         unless params[:within].blank? or params[:origin].blank?
