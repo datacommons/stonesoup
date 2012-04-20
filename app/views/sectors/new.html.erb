@@ -2,6 +2,7 @@
 
 <% form_for(@sector) do |f| %>
   <%= f.error_messages %>
+	<%= render :partial => 'form' %>
 
   <p>
     <%= f.submit "Create" %>
