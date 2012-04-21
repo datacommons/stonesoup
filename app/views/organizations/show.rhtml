@@ -132,15 +132,9 @@
 <% end %>
 
 <p><%= simple_format @organization.description %></p>
-<% unless @organization.website.nil? %>
-  <% unless @organization.website == "" %>
-    See <% if /https?:\/\/(.*)/.match(@organization.website)==nil %>
-      <%= link_to @organization.website, "http://#{@organization.website}" %>
-    <% else %>
-      <%= link_to @organization.website, "#{@organization.website}" %>
-    <% end %>
-  <% end %>
-<% end %>
+<%- unless @organization.website.blank? %>
+	See <%= website_link(@organization.website) %>
+<%- end -%>
 
 <p>
 <!-- Lockerz Share BEGIN -->

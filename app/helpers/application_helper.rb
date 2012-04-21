@@ -127,6 +127,15 @@ module ApplicationHelper
     ].join
   end
 
+  def website_link(website)
+    return '' if website.blank?
+    if /https?:\/\/(.*)/.match(website)==nil
+      link_to website, 'http://' + website
+    else
+      link_to website, website
+    end
+  end
+
   def get_trunk_id
     if @organization
       return @organization.id

@@ -12,7 +12,7 @@
 		<% for organization in @organizations %>
 			<tr>
 				<td><%= organization.name %></td>
-				<td><a href="<%= organization.website %>"><%= organization.website %></a></td>
+				<td><%= website_link(organization.website) %></td>
 				<td><%= organization.year_founded %></td>
 				<td><%= link_to 'Show', :controller => 'organizations', :action => 'show', :id => organization %></td>
 				<% if current_user %>
