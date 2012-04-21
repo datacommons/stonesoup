@@ -9,7 +9,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		<% for org_type in @org_types %>
+		<% for org_type in @org_types.select{|o| o.effective_id.nil?} %>
 			<tr>
 				<td><%=org_type.name%></td>
 				<td><%=org_type.description%></td>
