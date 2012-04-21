@@ -40,46 +40,7 @@ end
   <%= will_paginate @entries %>
   <% for entry in @entries %>
    <% if entry.accessible? current_user %>
-    <div id='listing_<%=entry.id%>' class='listing <%= "listing_merge_target" if is_merge_target(entry) %>'>
-    <%= show_link entry %><br />
-    <% if entry.respond_to? "website" %> 
-      <% unless entry.website.nil? %>
-        <% unless entry.website == "" %>
-          <i>
-          <% if /https?:\/\/(.*)/.match(entry.website)==nil %>
-            <%= link_to "view website...", "http://#{entry.website}" %>
-          <% else %>
-            <%= link_to "view website...", "#{entry.website}" %>
-          <% end %>
-          </i>
-          <br />
-       <% end %>
-     <% end %>
-   <% end %>
-    <% if entry.respond_to? "primary_location" and !entry.primary_location.nil? %>
-     	<% loc = entry.primary_location %>
-		<%= render :partial => 'locations/display_primary', :locals => {:location => loc} %>
-    <% else %>
-     <%= OrganizationsPerson.find_all_by_person_id(entry.id).collect{|op| [op.organization.name]}.join(", ") %>
-    <% end %>
-    <%- if @merge_active and entry.kind_of? Organization -%>
-      <%- if @merge_target -%>
-        <%- if @merge_target[:id].to_s != entry.id.to_s -%>
-          <br /><%= link_to "Merge", { :controller => 'organizations', :action => 'merge', :incoming => entry.id, :id => @merge_target[:id] }, { :target => '_blank' } %> / 
-          <%= link_to "Main", :controller => 'organizations', :action => 'target', :id => entry.id %> /
-	  <%= link_to_remote( 'Delete', 
-			:url => {:controller => 'organizations', :action => 'destroy_in_place', :id => entry.id},
-			:update => "listing_#{entry.id}",
-			:confirm => 'Are you sure?') %>
-        <%- else -%>
-           <br /><b>Main version for merge</b> (<%= link_to "Change", :controller => 'organizations', :action => 'untarget', :id => entry.id %>)
-
-        <%- end -%>
-      <%- else -%>
-          <br /><i><%= link_to "Set as main version", :controller => 'organizations', :action => 'target', :id => entry.id %></i>
-      <%- end-%>
-    <%- end -%>
-    </div>
+    <%= render :partial => 'search/teaser', :locals => {:entry => entry} %>
    <% else %>
     <div class="listing private">
     Result withheld.<br />

@@ -1,8 +1,21 @@
-<h1>Editing Preferences</h1>
+<div class="columns">
+	<div id="main">
+		<h1>Editing Preferences</h1>
 
-<% form_tag :action => 'update_prefs' do %>
-  <%= render :partial => 'form', :locals => {:prefs_mode => true} %>
-  <%= submit_tag 'Update' %>
-<% end %>
+		<% form_tag :action => 'update_prefs' do %>
+		  <%= render :partial => 'form', :locals => {:prefs_mode => true} %>
+		  <%= submit_tag 'Update' %>
+		<% end %>
 
-<%= button_to 'Cancel', :controller => 'search', :action => 'index' %>
+		<%= button_to 'Cancel', :controller => 'search', :action => 'index' %>
+	</div>
+<%- if current_user.organizations.any? -%>
+	<div id="sidebar">
+		<h1>My Entries</h1>
+	
+<%- current_user.organizations.each do |organization| -%>
+		<%= render :partial => 'search/teaser', :locals => {:entry => organization} %>
+<%- end -%>
+<%- end -%>
+	</div>
+</div>

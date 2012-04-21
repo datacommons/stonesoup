@@ -3,17 +3,28 @@
 
 <!--[form:user]-->
 <%- unless prefs_mode -%>
-<p><label for="user_login">E-mail address</label><br/>
-<%= text_field 'user', 'login'  %></p>
+<p>
+	<label for="user_login">E-mail address</label><br/>
+	<%= text_field 'user', 'login'  %>
+</p>
 <%- end -%>
 
-<p><label for="user_password_cleartext">Password</label><br/>
-<%= password_field 'user', 'password_cleartext' %> Leave blank to keep current password.</p>
+<p>
+	<label for="user_password_cleartext">Password</label><br/>
+	<%= password_field 'user', 'password_cleartext' %>
+	<span class="note">Leave blank to keep current password.</span>
+</p>
 
-<p><%= check_box 'user', 'update_notifications_enabled' %><label for="user_update_notifications_enabled">Editor notifications</label> - if enabled, you will receive an e-mail notification whenever an entry is updated for which you are an editor.</p>
+<p>
+	<%= check_box 'user', 'update_notifications_enabled' %>
+	<label for="user_update_notifications_enabled">Enable editor notifications</label>
+	<span class="note">When enabled, you will receive an e-mail notification whenever an entry is updated for which you are an editor.</span>
+</p>
 
 <%- unless prefs_mode -%>
-<p><%= check_box 'user', 'is_admin' %><label for="user_is_admin">This user is an administrator</label></p>
+<p>
+	<%= check_box 'user', 'is_admin' %>
+	<label for="user_is_admin">This user is an administrator</label>
+</p>
 <%- end -%>
 <!--[eoform:user]-->
-

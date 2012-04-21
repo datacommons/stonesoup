@@ -608,3 +608,16 @@ div.menu-container {
 #search_form a { 
     text-decoration: none;
 }
+
+div.columns {
+	overflow: auto;
+}
+div#main,
+div#sidebar {
+	width: 50%;
+	float: left;
+	
+}
+body.page-users-prefs .note {
+	display: block;
+}
