@@ -621,3 +621,6 @@ div#sidebar {
 body.page-users-prefs .note {
 	display: block;
 }
+body.page-users-prefs .listing {
+	width: 230px;
+}
