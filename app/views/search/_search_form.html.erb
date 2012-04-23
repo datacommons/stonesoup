@@ -1,3 +1,4 @@
+<% hide_examples = true if @site.site_searches.nil? %>
 <% hide_examples = false if hide_examples.nil? %>
 <div id="basic_search" style="<%= params[:advanced] ? 'display:none' : ''%>">
 	<% form_tag( {:controller => 'search', :action => 'search'}, :id => 'search_form', :name => 'search_form', :method => 'get' ) do %>
