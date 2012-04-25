@@ -10,4 +10,15 @@ To the future-mobile!
 <%= render :partial => 'search/search_form' %>
 <br class="clearboth" />
 
+<div class="example_search">
+<h3>Technology Coops</h3>
+<%= render :partial => "search/map", :locals => { :orgs => get_listing("technology coop*"), :name => "tech" } %>
+</div>
+
+<div class="example_search">
+<h3>Coops in Maine</h3>
+<%= render :partial => "search/map", :locals => { :orgs => get_listing("pool:'cooperative maine'"), :name => "maine" } %>
+</div>
+
+<div class="clearboth"></div>
 
