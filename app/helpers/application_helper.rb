@@ -330,10 +330,14 @@ module ApplicationHelper
     entries
   end
 
-  def get_listing(query)
+  def get_listing_uncached(query)
     p = {}
     p[:q] = query
     search_core(p)
   end
 
+  def get_listing(query)
+    result = YAML::load(Rails.cache.fetch("findcoop_get_listing:"+query, :expires_in => 30.minute) { get_listing_uncached(query).to_yaml })
+    return result
+  end
 end
