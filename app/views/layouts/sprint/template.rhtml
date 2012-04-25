@@ -17,8 +17,13 @@
 
 <!-- begin header div -->
 <div id="header">
-	<a href="/"><img src="/images/<%= @site.name %>/logo.png" alt="<%= @site.title %>" width="788" height="168" border="0" id="logo"></a>
+        <div class='loginblock'>
 	<%=render :partial => 'layouts/usermenu'%>
+        </div>
+	<div class='titleblock'>
+	<div class='clearboth title'><b>Find</b><span class='minor'>.COOP</span></div>
+	<div class='subtitle'>A directory of the cooperative economy</div>
+	</div>
 </div>
 <!-- end header div -->
 <!-- begin maincol div -->

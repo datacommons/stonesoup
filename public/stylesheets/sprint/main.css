@@ -9,7 +9,7 @@ html, body {
 } 
 
 body, p, ol, ul, td {
-  font-family:lucida grande,verdana, arial;
+  font-family: 'Open Sans', lucida grande,verdana,sans-serif;
   font-size:   14px;
 }
 
@@ -224,7 +224,7 @@ form.button-to {
 	text-align:left;
 	margin-left:auto;
 	margin-right:auto;
-	background-color: #ddd;
+	background-color: #fff;
 } 
  
 #header {
@@ -235,6 +235,26 @@ form.button-to {
 	width:100%;
 	border-bottom: 2px solid #23480d;
 	background-color: #fff;
+}
+
+#header .title {
+  font-size: 5em;
+  color: #384637;
+  line-height:75%;
+}
+
+#header .minor { 
+  font-size: 0.75em;
+}
+
+#header .subtitle {
+  font-size: 1.2em;
+  font-style: italic;
+  margin-left: 0.5em;
+}
+
+#header .loginblock { 
+  float: right;
 }
 
 #logo {
