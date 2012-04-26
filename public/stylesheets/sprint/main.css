@@ -744,3 +744,55 @@ body.page-users-prefs .listing {
   height:49px;
 }
 
+#carousel-wrapper {
+    width: 500px;
+    height: 500px;
+    overflow: hidden;
+}
+#carousel-content {
+    width: 3000px;
+}
+#carousel-content .slide {
+    float: left;
+    width: 500px;
+    height: 500px;
+}
+
+#carousel-area { 
+  width: 586px;
+  margin:0px auto;
+}
+#carousel-area h3 {
+  color: black;
+  text-decoration: none;    
+  border: none;
+}
+#carousel-area .carousel-control {
+  float: left;
+  width: 40px;
+  height: 128px;
+  text-align: center;
+  text-decoration: none;    
+  font-size: 36px;
+  line-height: 120px;
+  color: #aaa;
+}
+#carousel-area .prev { 
+  float: left;
+}
+#carousel-area .next { 
+  float: right;
+}
+
+#carousel-bar a { 
+  color: #888;
+  text-decoration: none;
+}
+
+#carousel-bar .active { 
+  color: #333;
+}
+
+#carousel-area .active { 
+  color: #333;
+}

@@ -7,15 +7,82 @@ This is a playground for preparing a <a href="http://cultivate.coop/wiki/Data_Co
 To the future-mobile!
 </p>
 
-<div class="example_search">
+
+<div id="carousel-area">
+<a id="carousel-left" href="javascript:" class="carousel-control prev" rel="prev">&laquo;</a>
+<a id="carousel-right" href="javascript:" class="carousel-control next" rel="next">&raquo;</a>
+<div id="carousel-wrapper">
+    <div id="carousel-content">
+
+<div id="slide1" class="slide">
 <h3>Technology Coops</h3>
 <%= render :partial => "search/map", :locals => { :orgs => get_listing("technology coop*"), :name => "tech" } %>
 </div>
 
-<div class="example_search">
+
+<div id="slide2" class="slide">
 <h3>Coops in Maine</h3>
 <%= render :partial => "search/map", :locals => { :orgs => get_listing("pool:'cooperative maine'"), :name => "maine" } %>
 </div>
+
+
+<div id="slide3" class="slide">
+<h3>Green Things</h3>
+<%= render :partial => "search/map", :locals => { :orgs => get_listing("green*"), :name => "green" } %>
+</div>
+
+
+<div id="slide4" class="slide">
+<h3>Coop Development</h3>
+<%= render :partial => "search/map", :locals => { :orgs => get_listing("coop* development"), :name => "coopdev" } %>
+</div>
+
+<div id="slide5" class="slide">
+<h3>Bikes</h3>
+<%= render :partial => "search/map", :locals => { :orgs => get_listing("bikes OR bicycles OR cycli*"), :name => "bikes" } %>
+</div>
+
+    </div>
+</div>
+</div>
+
+<div id="carousel-bar" style="text-align: center;">
+<a href="javascript:" class="carousel-jumper" rel="slide1">o</a>
+<a href="javascript:" class="carousel-jumper" rel="slide2">o</a>
+<a href="javascript:" class="carousel-jumper" rel="slide3">o</a>
+<a href="javascript:" class="carousel-jumper" rel="slide4">o</a>
+<a href="javascript:" class="carousel-jumper" rel="slide5">o</a>
+</div>
+
+
+<script>
+var carousel = null;
+
+function updateCarouselIndex(index) {
+  var links = $('carousel-bar').select('a');
+  links.each(function(e) { e.removeClassName('active'); });
+  links[index].addClassName('active');
+  if (index==0) {
+    $('carousel-left').removeClassName('active');
+  } else {
+    $('carousel-left').addClassName('active');
+  }
+  if (index==links.length-1) {
+    $('carousel-right').removeClassName('active');
+  } else {
+    $('carousel-right').addClassName('active');
+  }
+}
+
+function updateCarousel() {
+  updateCarouselIndex(carousel.current._index);
+}
+
+carousel = new Carousel('carousel-wrapper', $$('#carousel-content .slide'), $$('a.carousel-control', 'a.carousel-jumper'),{afterMove: updateCarousel});
+updateCarouselIndex(0);
+
+</script>
+
 
 <div class="clearboth"></div>
 

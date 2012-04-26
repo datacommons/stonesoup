@@ -13,7 +13,7 @@ class SprintSite < Site
   end
 
   def custom_css
-    name
+    nil
   end
 
   def style
