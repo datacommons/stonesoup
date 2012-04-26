@@ -1,6 +1,6 @@
 
 <p>
-This is a playground for preparing a <a href="http://cultivate.coop/wiki/Data_Commons_Code_Sprint#Mockups">bright and glorious future</a>.
+This is a playground for implementing a <a href="http://cultivate.coop/wiki/Data_Commons_Code_Sprint#Mockups">fresh new look for find.coop</a>.
 </p>
 
 <p>
@@ -27,19 +27,19 @@ To the future-mobile!
 
 
 <div id="slide3" class="slide">
-<h3>Green Things</h3>
-<%= render :partial => "search/map", :locals => { :orgs => get_listing("green*"), :name => "green" } %>
+<h3>Food</h3>
+<%= render :partial => "search/map", :locals => { :orgs => get_listing("food"), :name => "food" } %>
 </div>
 
 
 <div id="slide4" class="slide">
-<h3>Coop Development</h3>
-<%= render :partial => "search/map", :locals => { :orgs => get_listing("coop* development"), :name => "coopdev" } %>
+<h3>Bikes</h3>
+<%= render :partial => "search/map", :locals => { :orgs => get_listing("bikes OR bicycles OR cycli*"), :name => "bikes" } %>
 </div>
 
 <div id="slide5" class="slide">
-<h3>Bikes</h3>
-<%= render :partial => "search/map", :locals => { :orgs => get_listing("bikes OR bicycles OR cycli*"), :name => "bikes" } %>
+<h3>Cooperative Development</h3>
+<%= render :partial => "search/map", :locals => { :orgs => get_listing("coop* development"), :name => "coopdev" } %>
 </div>
 
     </div>
@@ -78,7 +78,7 @@ function updateCarousel() {
   updateCarouselIndex(carousel.current._index);
 }
 
-carousel = new Carousel('carousel-wrapper', $$('#carousel-content .slide'), $$('a.carousel-control', 'a.carousel-jumper'),{afterMove: updateCarousel});
+carousel = new Carousel('carousel-wrapper', $$('#carousel-content .slide'), $$('a.carousel-control', 'a.carousel-jumper'),{afterMove: updateCarousel, auto: true, frequency: 5});
 updateCarouselIndex(0);
 
 </script>

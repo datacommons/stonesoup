@@ -745,22 +745,22 @@ body.page-users-prefs .listing {
 }
 
 #carousel-wrapper {
-    width: 500px;
-    height: 500px;
+    width: 700px;
+    height: 400px;
     overflow: hidden;
 }
 #carousel-content {
-    width: 3000px;
+    width: 3500px;
 }
 #carousel-content .slide {
-    float: left;
-    width: 500px;
-    height: 500px;
+  float: left;
+  width: 675px;
+  height: 400px;
+  padding-left: 25px;
 }
 
 #carousel-area { 
-  width: 586px;
-  margin:0px auto;
+  width: 786px;
 }
 #carousel-area h3 {
   color: black;
@@ -795,4 +795,21 @@ body.page-users-prefs .listing {
 
 #carousel-area .active { 
   color: #333;
+}
+
+#carousel-area .surround_map_insert {  
+  width: 400px;
+  height: 400px;
+  float: left;
+  margin-right: 10px;
+  margin-bottom: 100px;
+}
+
+#carousel-area .search_listing {  
+  float: none;
+  height: inherit;
+}
+
+#carousel-area a {  
+  text-decoration: none;
 }
