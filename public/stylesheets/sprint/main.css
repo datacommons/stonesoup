@@ -199,7 +199,7 @@ form.button-to {
 	position: relative;
 	margin: 0;
 	padding: 0;
-	width: 781px; /* was 686 */ /* was 701 */ 
+	width: 820px; /* was 781px; */ /* was 686 */ /* was 701 */ 
 	text-align:left;
 	padding:10px 15px 20px 15px; 
 }
@@ -220,7 +220,7 @@ form.button-to {
 
 #pagewidth {
 	padding:0;
-	width: 800px; /* was 716 */
+	width: 940px; /* was 716 */
 	text-align:left;
 	margin-left:auto;
 	margin-right:auto;
@@ -235,6 +235,29 @@ form.button-to {
 	width:100%;
 	border-bottom: 2px solid #23480d;
 	background-color: #fff;
+}
+
+.nohover a {
+  color:inherit;
+  text-decoration: none;
+}
+
+.nohover a:hover {
+  color:inherit;
+  background:inherit;
+  text-decoration: none;
+}
+
+.nohover a:visited {
+  color:inherit;
+  background:inherit;
+  text-decoration: none;
+}
+
+.nohover a:active {
+  color:inherit;
+  background:inherit;
+  text-decoration: none;
 }
 
 #header .title {
@@ -257,6 +280,9 @@ form.button-to {
   float: right;
 }
 
+#header .titleblock { 
+  float: left;
+}
 #logo {
 	/*height:107px;*/
 	/*width:693px;*/
@@ -648,7 +674,7 @@ body.page-users-prefs .listing {
 }
 
 .example_search h3 {
-  border: none;
+  border: 0px;
 }
 
 .example_search .search_listing {
@@ -667,3 +693,54 @@ body.page-users-prefs .listing {
   height: 300px;
   border: 1px solid #ccc;
 }
+
+#basic_search {  
+  float: right;
+ }
+
+#search_label {  
+  display: none;
+}
+
+#see_map {  
+  display: none;
+}
+
+#search_form { 
+  padding: 0px;
+  margin: 0px;
+  width: 581px;
+  height: 76px;
+  background-image:url("/images/sprint/searchbar.png");
+  background-repeat:no-repeat;
+  position: relative;
+}
+
+#q { 
+  font-size: 1.5em;
+  border: 0px;
+  background-color:transparent;
+  position:absolute;
+  top:20px;
+  left:28px;
+  width:453px;
+  vertical-align: middle;
+  padding: 5px 0px 5px 45px; 
+  font-size: 33px;
+  line-height: 33px;
+}
+
+#search_form a { 
+  display: none;
+}
+
+#see_list {
+  border: 0px;
+  background-color:transparent;
+  position:absolute;
+  top:21px;
+  left:526px;
+  width:49px;
+  height:49px;
+}
+

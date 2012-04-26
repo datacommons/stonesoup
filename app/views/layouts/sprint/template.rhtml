@@ -20,10 +20,11 @@
         <div class='loginblock'>
 	<%=render :partial => 'layouts/usermenu'%>
         </div>
-	<div class='titleblock'>
-	<div class='clearboth title'><b>Find</b><span class='minor'>.COOP</span></div>
-	<div class='subtitle'>A directory of the cooperative economy</div>
+	<div class='titleblock nohover clearboth'>
+	  <div class='clearboth title'><b><a href='/'>Find</a></b><span class='minor'><a href='/'>.COOP</a></span></div>
+	  <div class='subtitle'><a href='/'>A directory of the cooperative economy</a></div>
 	</div>
+        <%= render :partial => 'search/search_form' %>
 </div>
 <!-- end header div -->
 <!-- begin maincol div -->

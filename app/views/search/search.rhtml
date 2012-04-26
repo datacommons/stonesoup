@@ -7,7 +7,9 @@
 	  <li><%= link_to 'Merge Entries', params.merge(:merge => 'start') %></li>
         <% end %>
 </ul>
+<%- unless @site.search_bar_in_header -%>
 <%= render :partial => 'search_form', :locals => {:hide_examples => true} %>
+<%- end %>
 
 <%= render :partial => "list" %>
 

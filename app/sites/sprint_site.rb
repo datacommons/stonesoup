@@ -23,4 +23,8 @@ class SprintSite < Site
   def layout
     name
   end
+
+  def search_bar_in_header
+    true
+  end
 end

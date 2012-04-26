@@ -85,6 +85,10 @@ class Site
     nil
   end
 
+  def search_bar_in_header
+    false
+  end
+
   def self.scan
     get_subclasses.each do |c|
       s = c.new
