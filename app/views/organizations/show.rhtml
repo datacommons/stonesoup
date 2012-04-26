@@ -1,4 +1,6 @@
+<%- unless @site.search_bar_in_header -%>
 <%= render :partial => 'search/search_form', :locals => {:hide_examples => true} %>
+<%- end -%>
 
 <% content_for :title, @organization.name %>
 <%- included_view = (params && params[:widget]) if included_view.nil? -%>
