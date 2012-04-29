@@ -231,9 +231,8 @@ form.button-to {
 	margin: 0;
 	padding: 0;
 	position:relative;
-	height:210px; /* was 151 */
+	height:151px; /* was 151 */
 	width:100%;
-	border-bottom: 2px solid #23480d;
 	background-color: #fff;
 }
 
@@ -811,5 +810,63 @@ body.page-users-prefs .listing {
 }
 
 #carousel-area a {  
+  text-decoration: none;
+}
+
+
+#front-bar .button { 
+  display:inline-block; 
+  padding: 1em;
+}
+
+#front-bar .button-right { 
+  position:relative; 
+  display:block; 
+  float:right; 
+  background: #cccc66;
+  padding: 1em;                    
+}
+
+
+#front-bar {
+  font-size: 1.1em;
+  padding: 0px;
+  margin: 0px;
+  padding: 0px;
+  margin: 0px;
+  background: #384637;
+}
+
+#front-bar a:link { 
+  color: #fff;
+  text-decoration: none;
+}
+#front-bar a:visited { 
+  color: #fff;
+  text-decoration: none;
+}
+#front-bar a:hover { 
+  color: #fff;
+  text-decoration: none;
+}
+#front-bar a:active { 
+  color: #fff;
+  text-decoration: none;
+}
+
+#front-bar .button-right a:link { 
+  color: #384637;
+  text-decoration: none;
+}
+#front-bar .button-right a:visited { 
+  color: #384637;
+  text-decoration: none;
+}
+#front-bar .button-right a:hover { 
+  color: #384637;
+  text-decoration: none;
+}
+#front-bar .button-right a:active { 
+  color: #384637;
   text-decoration: none;
 }
