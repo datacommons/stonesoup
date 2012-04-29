@@ -4,7 +4,7 @@
 	<% form_tag( {:controller => 'search', :action => 'search'}, :id => 'search_form', :name => 'search_form', :method => 'get' ) do %>
 		<div><label id="search_label" for="q">Search the directory:</label>
 		<%- if @site.search_bar_in_header %>
-		  <%= text_field_tag 'q', @query, :size => 30 %><%= image_submit_tag "/images/spacer.gif", :id => "see_list" %>
+		  <%= text_field_tag 'q', @query, :size => 30, :placeholder=>'Search...' %><%= image_submit_tag "/images/spacer.gif", :id => "see_list" %>
                 <%- else -%>
 		  <%= text_field_tag 'q', @query, :size => 30 %><%= submit_tag "see list", :id => "see_list" %>
                 <%- end -%>
