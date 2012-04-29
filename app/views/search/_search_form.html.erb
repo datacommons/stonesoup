@@ -9,8 +9,8 @@
 		  <%= text_field_tag 'q', @query, :size => 30 %><%= submit_tag "see list", :id => "see_list" %>
                 <%- end -%>
 		<%= submit_tag 'See Map', :name => 'Map', :id => "see_map" %>
-		<%= link_to_function('Options...', "Element.show('advanced_search'); Element.hide('basic_search')") %>
-		 <%= link_to 'Add...', :controller => 'organizations', :action => 'new' %>
+		<%= link_to_function(@site.search_bar_in_header ? 'Advanced Search' : 'Options...', "Element.show('advanced_search'); Element.hide('basic_search')", :id=>'see_advanced') %>
+		 <%= link_to 'Add...', {:controller => 'organizations', :action => 'new'}, {:id=>'see_add'} %>
 		</div>
 	<% end %>
 

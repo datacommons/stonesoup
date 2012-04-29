@@ -231,7 +231,6 @@ form.button-to {
 	margin: 0;
 	padding: 0;
 	position:relative;
-	height:151px; /* was 151 */
 	width:100%;
 	background-color: #fff;
 }
@@ -729,8 +728,15 @@ body.page-users-prefs .listing {
   line-height: 33px;
 }
 
-#search_form a { 
+#see_add { 
   display: none;
+}
+
+#see_advanced { 
+  position:absolute;
+  top:75px;
+  left:450px;
+  font-weight: bold;
 }
 
 #see_list {
@@ -814,6 +820,11 @@ body.page-users-prefs .listing {
 }
 
 
+#post-header { 
+  clear: both;
+  padding: 20px;
+}
+
 #front-bar .button { 
   display:inline-block; 
   padding: 1em;
@@ -869,4 +880,8 @@ body.page-users-prefs .listing {
 #front-bar .button-right a:active { 
   color: #384637;
   text-decoration: none;
+}
+
+#advanced_search {
+  clear: both;
 }
