@@ -19,6 +19,8 @@ class Organization < ActiveRecord::Base
   has_many :data_sharing_orgs, :through => :data_sharing_orgs_organizations
   belongs_to :updated_by, :class_name => 'User', :foreign_key => 'updated_by_id'
   belongs_to :created_by, :class_name => 'User', :foreign_key => 'created_by_id'
+  has_many :tags, :through => :taggings
+  has_many :taggings, :as => :taggable
 
   acts_as_ferret(:fields => {
                    :name => {:boost => 2.0, :store => :yes },
