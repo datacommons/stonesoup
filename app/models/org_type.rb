@@ -42,4 +42,12 @@ class OrgType < ActiveRecord::Base
   def <=>(other)
     self.to_s <=> other.to_s
   end
+
+  def link_name
+    name
+  end
+  
+  def link_hash
+    {:controller => 'org_types', :action => 'show', :id => self.id}
+  end
 end

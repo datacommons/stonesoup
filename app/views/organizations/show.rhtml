@@ -229,10 +229,10 @@ a2a_config.linkurl = "<%= url_for :action => 'show', :id => @organization, :only
 		</ul>
 	<% end %>
 
-	<% unless @organization.sectors.empty? %>
+	<% unless @organization.get_sectors.empty? %>
 		<h2>Business Sector(s)</h2>
 		<ul>
-		<% @organization.sectors.each do |s| %>
+		<% @organization.get_sectors.each do |s| %>
 			<li><%= link_to s.name, :action => 'search', :controller => 'search', :q => 'sector:\'' + s.name + '\'' %></li>
 		<% end %>
 		</ul>
@@ -247,6 +247,12 @@ a2a_config.linkurl = "<%= url_for :action => 'show', :id => @organization, :only
 		</ul>
 	<% end %>
 
+	<h2>Tags!</h2>
+	<ul>
+	<% @organization.tags.each do |t| %>
+	<li><%= t.literal_qualified_name %> ... <%= t.qualified_name %></li>
+	<% end %>
+	</ul>
 </div>
 
 

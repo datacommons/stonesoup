@@ -193,11 +193,19 @@ class Organization < ActiveRecord::Base
   end
   
   def get_org_types
-    org_types.collect{|ot| ot.root_term}.uniq
+    # org_types.collect{|ot| ot.root_term}.uniq
+    # [OrgType.find_by_name("Producer Cooperative")]
+    tags.select{|t| t.relevant_to? "OrgType"}.map{|x| x.effective_root}
   end
   
   def get_member_orgs
-    member_orgs.collect{|mo| mo.root_term}.uniq
+    # member_orgs.collect{|mo| mo.root_term}.uniq
+    tags.select{|t| t.relevant_to? "MemberOrg"}.map{|x| x.effective_root}
+  end
+
+
+  def get_sectors
+    tags.select{|t| t.relevant_to? "Sector"}.map{|x| x.effective_root}
   end
   
   def access_type

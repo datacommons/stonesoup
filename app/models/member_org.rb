@@ -2,6 +2,8 @@ class MemberOrg < ActiveRecord::Base
   has_and_belongs_to_many :organizations
   belongs_to :synonym_of, :class_name => 'MemberOrg', :foreign_key => 'effective_id'
   has_many :synonyms, :class_name => 'MemberOrg', :foreign_key => 'effective_id'
+
+  has_many :tags, :as => :root
   
   validates_uniqueness_of :name
   

@@ -260,6 +260,7 @@ ActiveRecord::Schema.define(:version => 20120503014251) do
 
   create_table "tag_contexts", :force => true do |t|
     t.string "name"
+    t.string "friendly_name"
   end
 
   add_index "tag_contexts", ["name"], :name => "index_tag_contexts_on_name"

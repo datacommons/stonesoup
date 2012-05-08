@@ -27,6 +27,10 @@ class LegalStructuresController < ApplicationController
     @legal_structure = LegalStructure.find(params[:id])
   end
 
+  def show
+    @legal_structure = LegalStructure.find(params[:id])
+  end
+
   # POST /legal_structures
   # POST /legal_structures.xml
   def create

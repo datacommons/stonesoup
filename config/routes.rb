@@ -1,4 +1,8 @@
 ActionController::Routing::Routes.draw do |map|
+
+  map.connect 'tags/search', :controller => "tags", :action => "search"
+  map.connect 'tags/update_identities', :controller => "tags", :action => "update_identities"
+
   map.resources :data_sharing_orgs
 
   map.resources :legal_structures
@@ -12,6 +16,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :product_services
   map.resources :locations
   map.resources :organizations
+  map.resources :tags
 
   # The priority is based upon order of creation: first created -> highest priority.
   

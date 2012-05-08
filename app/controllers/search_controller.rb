@@ -129,6 +129,84 @@ class SearchController < ApplicationController
     #<%= render :file => 'rendered_includes/' + params[:src] + '.rhtml' %>
     render :file => 'rendered_includes/' + params[:src] + '.rhtml'
   end
+
+
+  def auto_complete_test
+    render :action => 'auto_complete_test'
+  end
+
+  def auto_complete
+    search = params[:search]
+    search = "" if search.nil?
+    name = search
+
+    template = "name LIKE ?"
+    value = (name.length>2 ? "%" : "")+name+"%"
+    limit = 50
+    useful_limit = 5
+    
+    tags = []
+    organizations = []
+    people = []
+    locations = []
+
+
+    tags = Tag.find(:all, :conditions => ["name LIKE ?","%"+name+"%"], :limit => limit)
+    # tags = Tag.find(:all, :conditions => [template,value], :limit => limit).map{|t| t.effective_root}.compact.uniq    
+    if name.length>1
+      organizations = Organization.find(:all, :conditions => [template,value], :limit => limit*5)
+    end
+    if name.length>=2
+      first, last = name.split(/ /)
+      unless last.nil?
+        people = Person.find(:all, :conditions => ["lastname LIKE ? AND firstname LIKE ?",last + "%",first + "%"], :limit => limit)
+      else
+        people = Person.find(:all, :conditions => ["lastname LIKE ? OR firstname LIKE ?",value,value], :limit => limit)
+      end
+    end
+    if name.length>=2
+      locations = Location.find(:all, :conditions => ["physical_address1 LIKE ? OR physical_city LIKE ?",value,value], :limit => limit)
+    end
+    results = []
+
+    groups = [tags, organizations, people, locations]
+
+    global_limit = 20
+
+    if groups.flatten.length>global_limit
+      organizations = self.whittle(organizations,name,useful_limit,limit)
+      groups = [tags, organizations, people, locations]
+    end
+
+    while groups.flatten.length>global_limit
+      groups.each do |result_set|
+        result_set.slice!((result_set.length*0.75).floor,result_set.length)
+      end
+      groups = [tags, organizations, people, locations]
+    end
+
+    groups.each do |result_set|
+      result_set.each do |h|
+        target = h
+        if h.respond_to? "effective_root"
+          target = h.effective_root
+          target = h if target.nil?
+        end
+        next if target.kind_of? TagContext
+        next if target.kind_of? TagWorld
+        # label = (target.respond_to? "friendly_name") ? target.friendly_name : target.name
+        label = target.name
+        results << {
+          :name => h.name,
+          :label => h.name,
+          :family => target.class.to_s.underscore.pluralize,
+          :id => target.id
+        }
+      end
+    end
+    results = results.group_by{|x| x[:name]}.collect{|n, v| v[0]}
+    render :json => results.to_json
+  end
   
 protected
   def get_latest_changes
@@ -143,5 +221,15 @@ protected
     end
     logger.debug("returning data=#{data}")
     return data
+  end
+
+  def whittle(lst,name,threshold,limit)
+    if lst.length>threshold
+      lst2 = lst.select{|o| o.name.downcase.index(name.downcase) == 0}
+      if lst2.length > 0
+        lst = lst2
+      end
+    end
+    lst[0,limit]
   end
 end

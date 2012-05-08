@@ -728,6 +728,22 @@ body.page-users-prefs .listing {
   line-height: 33px;
 }
 
+#qq { 
+  background: white;
+  position:absolute;
+  top:65px;
+  left:28px;
+  width:453px;
+  z-index:10000;
+  text-align:left;
+  border-left: 1px solid #339966;
+  border-right: 1px solid #339966;
+  border-bottom: 1px solid #339966;
+  padding-bottom: 20px;
+  list-style-type:square;
+}
+
+
 #see_add { 
   display: none;
 }

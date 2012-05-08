@@ -1,0 +1,62 @@
+<% auto_complete_input_id = nil if auto_complete_input_id.nil? %>
+<% auto_complete_output_id = nil if auto_complete_output_id.nil? %>
+<%- if auto_complete_input_id.nil? -%>
+<form>
+<input type="text" id="plane_tagger_id" name="plane_tagger_id" autocomplete="off" />
+</form>
+<%- end -%>
+
+<%- if auto_complete_output_id.nil? -%>
+<ul id="tagger-list">
+</ul>
+<%- end -%>
+
+<%-
+   auto_complete_input_id = "plane_tagger_id" if auto_complete_input_id.nil?
+   auto_complete_output_id = "tagger-list" if auto_complete_output_id.nil?
+-%>
+
+<script>
+function tag_me(name,family,id) {
+<%- if act == :open_tag -%>
+	 document.location = '/' + family + '/' + id;
+         return true;
+<%- else -%>
+	 Form.Element.setValue('<%=auto_complete_input_id%>',name);
+         return false;
+<%- end -%>
+}
+
+if($("<%=auto_complete_input_id%>")) {
+                $('<%=auto_complete_output_id%>').hide();
+		new Form.Element.Observer('<%=auto_complete_input_id%>', 0.1, function(event) {
+			var string = $F('<%=auto_complete_input_id%>');
+			if (string.length >= 0) {
+				new Ajax.Request('<%= any ? '/search/auto_complete' : '/tags/search' %>', {method:'get',parameters:{search:string,exact:<%=exact%>},
+					onSuccess: function(transport) {
+						var taggers = transport.responseJSON;
+						var lis = $('<%=auto_complete_output_id%>').descendants();
+						if (lis.length > 0) {
+							lis.each(function(l) {
+								l.remove();
+							});
+						};
+						taggers.each(function(a) {
+							var item = "<li class='tagger'><a href='javascript:;' onclick='return tag_me(\"" + a.name + "\",\"" + a.family + "\"," + a.id + ");' class='tagger-link'>" + a.label + "</a></li>";
+							$('<%=auto_complete_output_id%>').insert(item);
+                                                });
+                                                $('<%=auto_complete_output_id%>').show();
+					}
+				});
+			} else {
+                                $('<%=auto_complete_output_id%>').hide();
+				var lis = $('<%=auto_complete_output_id%>').descendants();
+				if (lis.length > 0) {
+					lis.each(function(l) {
+						l.remove();
+					});
+				};
+			};
+		});
+	};
+</script>

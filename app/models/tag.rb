@@ -1,4 +1,5 @@
 class Tag < ActiveRecord::Base
+
   belongs_to :root, :polymorphic => true
   has_many :children, :class_name => "Tag", :foreign_key => "parent_id"
   belongs_to :parent, :class_name => "Tag"
@@ -6,9 +7,20 @@ class Tag < ActiveRecord::Base
   has_many :taggings
 
   def self.update_all_identities
+    ct = 0
     Tag.find_all_by_parent_id(nil).each do |t|
-      t.update_effective_identities
+      ct = ct + t.update_effective_identities
     end
+    return ct
+  end
+
+  def synonyms
+    return Tag.find_all_by_effective_id(self.id) unless self.effective
+    Tag.find_all_by_effective_id(effective.id)
+  end
+
+  def taggings_via_synonyms
+    self.synonyms.map{|t| t.taggings}.flatten
   end
 
   def update_effective_identities
@@ -20,7 +32,7 @@ class Tag < ActiveRecord::Base
     self.children.each do |t|
       count = count + t.update_effective_identities
     end
-    puts "updated #{count} nodes" unless count <= 1
+    # puts "updated #{count} nodes" unless count <= 1
     count
   end
 
@@ -28,6 +40,11 @@ class Tag < ActiveRecord::Base
     return nil if self.parent.nil?
     return self.parent.effective unless self.parent.effective.nil?
     self.parent
+  end
+
+  def effective_root
+    return self.effective.root unless self.effective.nil?
+    self.root
   end
 
   def update_effective_identity
@@ -59,5 +76,75 @@ class Tag < ActiveRecord::Base
     t = Tag.find_or_create_by_name_and_root_id_and_root_type(self.root.name,self.root_id,self.root_type)
     self.effective = t
     return true
+  end
+
+  def relevant_to?(name)
+    ep = self.effective_parent
+    return false if ep.nil?
+    return false if ep.root_type != "TagContext"
+    return ep.root.name == name
+  end
+
+  def readable_name
+    name = self.readable_name_rec
+    er = self.effective_root
+    if er
+      if er.kind_of? TagContext
+        name = name + " ..."
+      end
+    end
+    name
+  end
+
+  def readable_name_rec
+    self.effective.readable_name_rec unless self.effective.nil?
+    if self.root
+      if self.root.respond_to? "friendly_name"
+        return self.root.friendly_name
+      end
+    end
+    n = self.root ? self.root.name : self.name
+    ep = self.effective_parent
+    return n if ep.nil?
+    "#{n} (#{ep.readable_name_rec})"
+  end
+
+  def qualified_name
+    self.effective.qualified_name unless self.effective.nil?
+    #if self.root
+    #  if self.root.respond_to? "friendly_name"
+    #    return self.root.friendly_name
+    #  end
+    #end
+    n = self.root ? self.root.name : self.name
+    ep = self.effective_parent
+    return n if ep.nil?
+    "#{ep.qualified_name}:#{n}"
+  end
+
+  def literal_qualified_name
+    return self.name if self.parent.nil?
+    "#{self.parent.literal_qualified_name}:#{self.name}"
+  end
+
+  def self.find_by_qualified_name(name)
+    parts = name.split(/:/)
+    cursor = nil
+    closest = nil
+    parts.each do |p|
+      cursor = Tag.find_by_name_and_parent_id(p,cursor)
+      return [nil, closest] if cursor.nil?
+      closest = cursor
+    end
+    cursor = nil if name[-1,1]==':'
+    [cursor, closest]
+  end
+
+  def link_name
+    name
+  end
+  
+  def link_hash
+    {:controller => 'tags', :action => 'show', :id => self.id}
   end
 end

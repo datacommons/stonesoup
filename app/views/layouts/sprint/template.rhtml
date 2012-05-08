@@ -32,6 +32,7 @@
 <div class="button-right"><%= link_to '<b>+</b> Add Organization', :controller => 'organizations', :action => 'new' %></div>
 <div class="button"><a href="http://datacommons.find.coop/about">About</a></div><div class="button"><a href="http://datacommons.find.coop/contact">Contact</a></div><div class="button"><a href="http://datacommons.find.coop/donate">Donate</a></div>
 </div>
+
 <!-- end header div -->
 <!-- begin maincol div -->
 <div id="maincol">
@@ -48,6 +49,7 @@
 <!-- begin footer div -->
 <div id="footer">
 <%=render :partial => 'layouts/common_footer'%>
+<%=render :partial => 'tags/select_tag', :locals => { :any => true, :act => :open_tag, :exact => false, :auto_complete_input_id => 'q', :auto_complete_output_id => 'qq' }%>
 </div>
 <!-- end footer div -->
 </div>

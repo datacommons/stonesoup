@@ -237,6 +237,10 @@ class Location < ActiveRecord::Base
     return x
   end
 
+  def name
+    address_summary + " " + summary_city
+  end
+
   def link_name
     organization.name + " (" + address_summary + ")"
   end

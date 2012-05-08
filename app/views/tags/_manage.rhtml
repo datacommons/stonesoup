@@ -1,0 +1,62 @@
+<h2>Tags...</h2>
+
+<form>
+<input type="text" id="plane_tagger_id" name="plane_tagger_id" />
+</form>
+
+<ul id="tagger-list">
+<li>hmm</li>
+</ul>
+
+<script>
+function tag_me(name) {
+	 Form.Element.setValue('plane_tagger_id',name);
+}
+
+if($("plane_tagger_id")) {
+		new Form.Element.Observer('plane_tagger_id', 0.1, function(event) {
+			var string = $F('plane_tagger_id');
+			if (string.length >= 0) {
+				new Ajax.Request('/tags/search', {method:'get',parameters:{search:string},
+					onSuccess: function(transport) {
+						var taggers = transport.responseJSON;
+						var lis = $('tagger-list').descendants();
+						if (lis.length > 0) {
+							lis.each(function(l) {
+								l.remove();
+							});
+						};
+						taggers.each(function(a) {
+							var item = "<li class='tagger'><a href='javascript:;' onclick='tag_me(\"" + a.name + "\"); return false;' class='tagger-link'>" + a.label + "</a></li>";
+							$('tagger-list').insert(item);
+						});
+						//$$('.tagger-link').each(function(a) {
+						//	a.observe("click", function() {
+						//		var text = $(this).innerHTML;
+						//		Form.Element.setValue('plane_tagger_id',text);
+						//	});
+						//});
+					}
+				});
+			} else {
+				var lis = $('tagger-list').descendants();
+				if (lis.length > 0) {
+					lis.each(function(l) {
+						l.remove();
+					});
+				};
+			};
+		});
+	};
+</script>
+
+	<ul>
+	<% @organization.tags.each do |t| %>
+	<li><%= t.literal_qualified_name %> ... <%= t.qualified_name %></li>
+	<% end %>
+	</ul>
+
+<% if @organization2 %>
+   NOT IMPLEMENTED
+<% end %>
+
