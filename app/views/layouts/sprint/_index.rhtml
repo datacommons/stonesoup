@@ -7,8 +7,12 @@ This is a playground for implementing a <a href="http://cultivate.coop/wiki/Data
 To the future-mobile!
 </p>
 
+<script>
+var carousel = null;
+var carousel_active = true;
+</script>
 
-<div id="carousel-area">
+<div id="carousel-area" onmouseover="if (carousel) { if (carousel.timer) { carousel.stop(); carousel.start(); } } return false;">
 <a id="carousel-left" href="javascript:" class="carousel-control prev" rel="prev">&laquo;</a>
 <a id="carousel-right" href="javascript:" class="carousel-control next" rel="next">&raquo;</a>
 <div id="carousel-wrapper">
@@ -56,7 +60,6 @@ To the future-mobile!
 
 
 <script>
-var carousel = null;
 
 function updateCarouselIndex(index) {
   var links = $('carousel-bar').select('a');
@@ -78,7 +81,13 @@ function updateCarousel() {
   updateCarouselIndex(carousel.current._index);
 }
 
-carousel = new Carousel('carousel-wrapper', $$('#carousel-content .slide'), $$('a.carousel-control', 'a.carousel-jumper'),{afterMove: updateCarousel, auto: true, frequency: 5});
+Carousel.prototype.stop = function () {
+  if (this.timer) {
+    clearTimeout(this.timer);
+    this.timer = null;
+  }
+}
+carousel = new Carousel('carousel-wrapper', $$('#carousel-content .slide'), $$('a.carousel-control', 'a.carousel-jumper'),{afterMove: updateCarousel, auto: true, frequency: 9});
 updateCarouselIndex(0);
 
 </script>
