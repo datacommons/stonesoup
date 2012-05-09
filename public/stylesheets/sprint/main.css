@@ -726,6 +726,7 @@ body.page-users-prefs .listing {
   padding: 5px 0px 5px 45px; 
   font-size: 33px;
   line-height: 33px;
+  outline: 0;
 }
 
 #qq { 

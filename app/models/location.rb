@@ -238,7 +238,11 @@ class Location < ActiveRecord::Base
   end
 
   def name
-    address_summary + " " + summary_city
+    a = address_summary
+    c = summary_city
+    return c || "" if a.nil?
+    return a if c.nil?
+    a + " " + c
   end
 
   def link_name

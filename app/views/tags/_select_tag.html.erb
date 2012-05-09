@@ -63,9 +63,10 @@ function tag_key(obj,code) {
 if($("<%=auto_complete_input_id%>")) {
                 $('<%=auto_complete_output_id%>').hide();
                 $('<%=auto_complete_input_id%>').observe('keydown', function(event) { return tag_key($('<%=auto_complete_input_id%>'),event.keyCode); });
+                $('<%=auto_complete_input_id%>').observe('focusout', function(event) { $('<%=auto_complete_output_id%>').hide(); return false; });
 		new Form.Element.Observer('<%=auto_complete_input_id%>', 0.1, function(event) {
 			var string = $F('<%=auto_complete_input_id%>');
-                        if (string==ignore_value) return;
+                        if (string==ignore_value && string!="") return;
                         want_value = string;
 			if (string.length > 0) {
 				new Ajax.Request('<%= any ? '/search/auto_complete' : '/tags/search' %>', {method:'get',parameters:{search:string,exact:<%=exact%>},

@@ -150,8 +150,11 @@ class SearchController < ApplicationController
     people = []
     locations = []
 
-
-    tags = Tag.find(:all, :conditions => ["name LIKE ?","%"+name+"%"], :limit => limit)
+    if name.length>2
+      tags = Tag.find(:all, :conditions => [template,value], :limit => limit)
+    else
+      tags = Tag.find(:all, :conditions => ["name LIKE ? or name LIKE ?",name+"%"," "+name+"%"], :limit => limit)
+    end
     # tags = Tag.find(:all, :conditions => [template,value], :limit => limit).map{|t| t.effective_root}.compact.uniq    
     if name.length>1
       organizations = Organization.find(:all, :conditions => [template,value], :limit => limit*5)
@@ -159,9 +162,12 @@ class SearchController < ApplicationController
     if name.length>=2
       first, last = name.split(/ /)
       unless last.nil?
+        last = nil if last == ""
+      end
+      unless last.nil?
         people = Person.find(:all, :conditions => ["lastname LIKE ? AND firstname LIKE ?",last + "%",first + "%"], :limit => limit)
       else
-        people = Person.find(:all, :conditions => ["lastname LIKE ? OR firstname LIKE ?",value,value], :limit => limit)
+        people = Person.find(:all, :conditions => ["lastname LIKE ? OR firstname LIKE ?",first + "%",first+"%"], :limit => limit)
       end
     end
     if name.length>=2
@@ -171,7 +177,11 @@ class SearchController < ApplicationController
 
     groups = [tags, organizations, people, locations]
 
-    global_limit = 20
+    groups.each do |result_set|
+      result_set.sort!{|a,b| diff(a.name,b.name,search)}
+    end
+
+    global_limit = 25
 
     if groups.flatten.length>global_limit
       organizations = self.whittle(organizations,name,useful_limit,limit)
@@ -179,8 +189,13 @@ class SearchController < ApplicationController
     end
 
     while groups.flatten.length>global_limit
-      groups.each do |result_set|
-        result_set.slice!((result_set.length*0.75).floor,result_set.length)
+      groups.each_with_index do |result_set,idx|
+        if idx==0
+          if result_set.length<global_limit*0.5
+            next
+          end
+        end
+        result_set.slice!((result_set.length*0.8).floor,result_set.length)
       end
       groups = [tags, organizations, people, locations]
     end
@@ -204,7 +219,8 @@ class SearchController < ApplicationController
         }
       end
     end
-    results = results.group_by{|x| x[:name]}.collect{|n, v| v[0]}
+    results = results.group_by{|x| x[:label]}.collect{|n, v| v[0]}
+    results.sort!{|a,b| diff(a[:label],b[:label],search)}
     render :json => results.to_json
   end
   
@@ -231,5 +247,17 @@ protected
       end
     end
     lst[0,limit]
+  end
+
+  def diff(a,b,ref)
+    a = a.downcase
+    b = b.downcase
+    i1 = a.index(ref.downcase)
+    i2 = b.index(ref.downcase)
+    return -1 if i2.nil? and not(i1.nil?)
+    return +1 if i1.nil? and not(i2.nil?)
+    return a <=> b if i1.nil? and i2.nil?
+    return a <=> b if i1 == i2
+    i1 <=> i2
   end
 end
