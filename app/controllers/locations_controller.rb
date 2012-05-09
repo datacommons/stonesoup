@@ -1,6 +1,7 @@
 class LocationsController < ApplicationController
-  before_filter :login_required
-  before_filter :admin_required, :only => [:index, :show]
+  before_filter :login_required, :only => [:new, :create, :move, :update, :destroy, :edit]
+  before_filter :admin_required, :only => [:index]
+  # :show is ok
 protected  
 	def process_params(params)
 	  if params[:location_mailing_same_as_physical]

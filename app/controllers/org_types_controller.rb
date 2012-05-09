@@ -1,6 +1,7 @@
 class OrgTypesController < ApplicationController
   before_filter :login_required, :only => [:associate, :dissociate]
-  before_filter :admin_required, :only => [:index, :show, :new, :create, :edit, :update, :destroy]
+  before_filter :admin_required, :only => [:index, :new, :create, :edit, :update, :destroy]
+  # :show is ok
   def dissociate
     @org_type = OrgType.find(params[:org_type_id])
     @organization = Organization.find(params[:organization_id])

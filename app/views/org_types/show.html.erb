@@ -4,13 +4,13 @@
 	Synonyms: <%= @org_type.synonyms.collect{|ot| ot.name}.join(', ') %>
 	<br/>
 <% end %>
+<% if current_user %>
 <% unless current_user.is_admin? %>
 	<br/>
 	<%= link_to 'Edit', edit_org_type_path(@org_type) %> |
 	<%= link_to 'List org Types', org_types_path %>
 <% end %>
-<hr/>
-Organizations with this Org Type:
+<% end %>
 <br/>
 <% @organizations = @org_type.get_organizations %>
 <%= render :file => 'organizations/index' %>

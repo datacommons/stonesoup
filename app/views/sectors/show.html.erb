@@ -1,11 +1,10 @@
 <h1>Sector: <%=h @sector.name%></h1>
+<% if current_user %>
 <% unless current_user.is_admin? %>
 	<br/>
 	<%= link_to 'Edit', edit_sector_path(@sector) %> |
 	<%= link_to 'List org Types', sectors_path %>
 <% end %>
-<hr/>
-Organizations with this Sector:
-<br/>
+<% end %>
 <% @organizations = @sector.organizations %>
 <%= render :file => 'organizations/index' %>
