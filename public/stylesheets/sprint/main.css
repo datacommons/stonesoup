@@ -641,6 +641,10 @@ div.menu-container {
     font-weight: bold;
 }
 
+.autocomplete_select { 
+    font-weight: bold;
+}
+
 #search_form a { 
     text-decoration: none;
 }
