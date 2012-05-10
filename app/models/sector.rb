@@ -22,4 +22,8 @@ class Sector < ActiveRecord::Base
   def link_hash
     {:controller => 'sectors', :action => 'show', :id => self.id}
   end
+
+  def accessible?(u)
+    true
+  end
 end

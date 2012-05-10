@@ -1,16 +1,4 @@
-<%
-
-def is_merge_target(entry)
-  if @merge_active and entry.kind_of? Organization
-    if @merge_target
-      return @merge_target[:id].to_s == entry.id.to_s
-    end
-  end
-  false
-end
-
-%>
-
+<% title = @title || "Search Results" %>
 <% if @entries %>
  <% if @entries.blank? %>
   <p>
@@ -35,7 +23,7 @@ end
   </p>
   <p><%= link_to 'Would you like to add a new organization?', :controller => 'organizations', :action => 'new' %></p>
  <% else %>
- <h2>Search Results</h2>
+ <h2><%= title %></h2>
   <div class="listing_info"><%= page_entries_info @entries %></div>
   <%= will_paginate @entries %>
   <% for entry in @entries %>
@@ -55,13 +43,20 @@ end
   <% end %>
   <div class='clearboth'></div>
   <%= will_paginate @entries %>
+ <% unless @model %>
  <h2>View Options</h2>
    <ul>  
+    <% unless @title %>
     <li>View results on a <%= link_to 'map', clean_params.merge(:action => 'map') %></li>
+    <% end %>
     <li>Download as <%= link_to 'CSV', clean_params.merge(:format => 'csv') %> (suitable for spreadsheet programs)</li>
     <li>Download as <%= link_to 'XML', clean_params.merge(:format => 'xml') %></li>
     <li>Download as <%= link_to 'PDF', clean_params.merge(:format => 'pdf') %></li>
    </ul>
+ <% else %>
+ <h2>Not complete?</h2>
+ <%= link_to "Add #{@title.downcase.singularize}", new_link(@model) %>
+ <% end %>
  <% end %>
 <% else %>
   <%= render :partial => 'latest' %>

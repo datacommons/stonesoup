@@ -363,4 +363,48 @@ module ApplicationHelper
     result = YAML::load(Rails.cache.fetch("findcoop_get_listing:"+query, :expires_in => 14400.minute) { get_listing_uncached(query).to_yaml })
     return result
   end
+
+  def is_merge_target(entry)
+    if @merge_active and entry.kind_of? Organization
+      if @merge_target
+        return @merge_target[:id].to_s == entry.id.to_s
+      end
+    end
+    false
+  end
+
+  def clean_params
+    return params.reject{|x,y| ['Map','commit','page'].member? x}
+  end
+
+  def is_admin?
+    u = current_user
+    return false if u.nil?
+    return u.is_admin?
+  end
+
+  def edit_link(obj)
+    return {} if obj.nil?
+    return {} unless obj.respond_to?('link_hash')
+    h = obj.link_hash
+    h[:action] = "edit"
+    return h
+  end
+
+  def delete_link(obj)
+    return {} if obj.nil?
+    return {} unless obj.respond_to?('link_hash')
+    h = obj.link_hash
+    h[:method] = "delete"
+    h[:confirm] = 'Are you sure?'
+    return h
+  end
+
+  def new_link(model)
+    return {} if model.nil?
+    {
+      :controller => model.to_s.underscore.pluralize,
+      :action => 'new'
+    }
+  end
 end

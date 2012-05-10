@@ -28,4 +28,8 @@ class LegalStructure < ActiveRecord::Base
   def link_hash
     {:controller => 'legal_structures', :action => 'show', :id => self.id}
   end
+
+  def accessible?(u)
+    true
+  end
 end

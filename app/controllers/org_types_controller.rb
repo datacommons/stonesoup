@@ -27,26 +27,13 @@ class OrgTypesController < ApplicationController
   # GET /org_types
   # GET /org_types.xml
   def index
-    @org_types = OrgType.find(:all)
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @org_types }
-    end
+    show_tag_context(OrgType)
   end
 
   # GET /org_types/1
   # GET /org_types/1.xml
   def show
-    @org_type = OrgType.find(params[:id])
-    unless @org_type.root_term == @org_type
-      redirect_to org_type_path(@org_type.root_term) and return
-    end
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @org_type }
-    end
+    show_tag(OrgType.find(params[:id]))
   end
 
   # GET /org_types/new

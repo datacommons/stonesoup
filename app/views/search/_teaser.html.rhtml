@@ -6,8 +6,20 @@
 <% if entry.respond_to? "primary_location" and !entry.primary_location.nil? %>
  	<% loc = entry.primary_location %>
 		<%= render :partial => 'locations/display_primary', :locals => {:location => loc} %>
-<% else %>
+<% elsif entry.kind_of? Person %>
  <%= OrganizationsPerson.find_all_by_person_id(entry.id).collect{|op| [op.organization.name]}.join(", ") %>
+<% else %>
+  <%= entry.class.to_s.underscore.singularize.humanize %><br />
+  <% if entry.respond_to? "description" %>
+    <%= entry.description %>
+  <% end %>
+  <% if is_admin? %>
+  <br />
+  <i>
+  <%= link_to "edit", edit_link(entry) %>
+  <%= link_to "delete", entry, delete_link(entry) %>
+  </i>
+  <% end %>
 <% end %>
 <%- if @merge_active and entry.kind_of? Organization -%>
   <%- if @merge_target -%>

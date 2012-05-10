@@ -147,4 +147,8 @@ class Tag < ActiveRecord::Base
   def link_hash
     {:controller => 'tags', :action => 'show', :id => self.id}
   end
+
+  def accessible?(u)
+    true
+  end
 end

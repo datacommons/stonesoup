@@ -117,5 +117,25 @@ public
     true  # so we can do "render_404 and return"
   end
 
+  def show_tag_context(model)
+    tc = TagContext.find_by_name(model.to_s)
+    @title = model.to_s.underscore.pluralize.humanize unless tc
+    @title = tc.friendly_name if tc
+    @model = model
+    @entries = model.paginate(:per_page => 15, :page => (params[:page]||1))
+    respond_to do |format|
+      format.html { render :template => 'search/search' }
+      format.xml  { render :xml => @entries }
+    end
+  end
 
+  def show_tag(tag)
+    @title = tag.name
+    results = tag.tags.map{|t| t.taggings}.flatten.map{|t| t.taggable}
+    @entries = results.paginate(:per_page => 15, :page => (params[:page]||1))
+    respond_to do |format|
+      format.html { render :template => 'search/search' }
+      format.xml  { render :xml => @entries }
+    end
+  end
 end

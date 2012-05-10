@@ -3,12 +3,7 @@ class LegalStructuresController < ApplicationController
   # GET /legal_structures
   # GET /legal_structures.xml
   def index
-    @legal_structures = LegalStructure.find(:all)
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @legal_structures }
-    end
+    show_tag_context(LegalStructure)
   end
 
   # GET /legal_structures/new
@@ -28,7 +23,7 @@ class LegalStructuresController < ApplicationController
   end
 
   def show
-    @legal_structure = LegalStructure.find(params[:id])
+    show_tag(LegalStructure.find(params[:id]))
   end
 
   # POST /legal_structures

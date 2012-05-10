@@ -50,4 +50,8 @@ class MemberOrg < ActiveRecord::Base
   def <=>(other)
     self.to_s <=> other.to_s
   end
+
+  def accessible?(u)
+    true
+  end
 end

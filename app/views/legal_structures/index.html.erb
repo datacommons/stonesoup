@@ -1,20 +1,9 @@
 <h1>Listing Legal Structures</h1>
-The following options will appear in the drop-down for Legal Structure when users edit Organization records.
-<br/><br/>
-<table>
-  <tr>
-	<th>Name</th>
-  </tr>
 
-<% for legal_structure in @legal_structures %>
-  <tr>
-	<td><%= legal_structure.name %></td>
-    <td><%= link_to 'Edit', edit_legal_structure_path(legal_structure) %></td>
-    <td><%= link_to 'Destroy', legal_structure, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
-</table>
+<%- @legal_structures.each do |entry| -%>
+  <%= render :partial => 'search/teaser', :locals => {:entry => entry} %>
+<%- end -%>
 
-<br />
+<div class="clearboth"></div>
 
 <%= link_to 'New Legal Structure', new_legal_structure_path %>
