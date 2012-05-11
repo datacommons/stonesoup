@@ -150,34 +150,83 @@ class SearchController < ApplicationController
     people = []
     locations = []
 
-    if name.length>2
-      tags = Tag.find(:all, :conditions => [template,value], :limit => limit)
-    else
-      tags = Tag.find(:all, :conditions => ["name LIKE ? or name LIKE ?",name+"%"," "+name+"%"], :limit => limit)
+    if name.length>=1
+      joinSQL, condSQLs, condParams = Organization.all_join(session)
+      joinSQL = nil if condSQLs.empty?
+      if joinSQL
+        joinSQL = "INNER JOIN taggings ON taggings.tag_id = tags.id INNER JOIN organizations ON taggings.taggable_id = organizations.id #{joinSQL}"
+        condSQLs.unshift("taggings.taggable_type = ?")
+        condParams.unshift("Organization")
+      end
+      if name.length>2
+        condSQLs << template.gsub("name","tags.name")
+        condParams << value
+      else
+        condSQLs << "tags.name LIKE ? or tags.name LIKE ?"
+        condParams << name + "%"
+        condParams << " " + name + "%"
+      end
+      conditions = []
+      conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
+      tags = Tag.find(:all, :conditions => conditions, :joins => joinSQL, :limit => limit)
     end
-    if name.length>1
-      organizations = Organization.find(:all, :conditions => [template,value], :limit => limit*5)
+
+    if name.length>=1
+      joinSQL, condSQLs, condParams = Organization.all_join(session)
+      joinSQL = nil if condSQLs.empty?
+      condSQLs << template.gsub("name","organizations.name")
+      condParams << value
+      conditions = []
+      conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
+      organizations = Organization.find(:all, :conditions => conditions, :joins => joinSQL, :limit => limit*5)
     end
+
     if name.length>=2
       first, last = name.split(/ /)
       unless last.nil?
         last = nil if last == ""
       end
+      joinSQL, condSQLs, condParams = Organization.all_join(session)
+      joinSQL = "INNER JOIN organizations_people ON organizations_people.person_id = people.id INNER JOIN organizations ON organizations_people.organization_id = organizations.id #{joinSQL}"
+      joinSQL = nil if condSQLs.empty?
       unless last.nil?
-        people = Person.find(:all, :conditions => ["lastname LIKE ? AND firstname LIKE ?",last + "%",first + "%"], :limit => limit)
+        condSQLs << "people.lastname LIKE ? AND people.firstname LIKE ?"
+        condParams << (last + "%")
+        condParams << (first + "%")
       else
-        people = Person.find(:all, :conditions => ["lastname LIKE ? OR firstname LIKE ?",first + "%",first+"%"], :limit => limit)
+        condSQLs << "people.lastname LIKE ? OR people.firstname LIKE ?"
+        condParams << (first + "%")
+        condParams << (first + "%")
       end
+      # people = Person.find(:all, :conditions => ["lastname LIKE ? OR firstname LIKE ?",first + "%",first+"%"], :limit => limit)
+      conditions = []
+      conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
+      people = Person.find(:all, :conditions => conditions, :joins => joinSQL, :limit => limit)
     end
+
     if name.length>=2
-      locations = Location.find(:all, :conditions => ["physical_address1 LIKE ? OR physical_city LIKE ?",value,value], :limit => limit)
+      ignore, locCondSQLs, locCondParams = Organization.location_join(session)
+      joinSQL, condSQLs, condParams = Organization.tag_join(session)
+      joinSQL = "INNER JOIN organizations ON organizations.id = locations.organization_id #{joinSQL}"
+      condSQLs = condSQLs + locCondSQLs
+      condParams = condParams + locCondParams
+      joinSQL = nil if condSQLs.empty?
+      condSQLs << "locations.physical_address1 LIKE ? OR locations.physical_city LIKE ?"
+      condParams << value
+      condParams << value
+      conditions = []
+      conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
+      locations = Location.find(:all, :conditions => conditions, 
+                                :joins => joinSQL,
+                                :limit => limit)
     end
+
     results = []
 
     groups = [tags, organizations, people, locations]
 
     groups.each do |result_set|
-      result_set.sort!{|a,b| diff(a.name,b.name,search)}
+      result_set.sort!{|a,b| diff(a.name,b.name,false,false,search)}
     end
 
     global_limit = 25
@@ -202,7 +251,9 @@ class SearchController < ApplicationController
     groups.each do |result_set|
       result_set.each do |h|
         target = h
+        is_tag = false
         if h.respond_to? "effective_root"
+          is_tag = true
           target = h.effective_root
           target = h if target.nil?
         end
@@ -213,18 +264,19 @@ class SearchController < ApplicationController
           :name => h.name,
           :label => h.name,
           :family => target.class.to_s.underscore.pluralize,
-          :id => target.id
+          :id => target.id,
+          :is_tag => is_tag
         }
       end
     end
     results = results.group_by{|x| x[:label]}.collect{|n, v| v[0]}
-    results.sort!{|a,b| diff(a[:label],b[:label],search)}
+    results.sort!{|a,b| diff(a[:label],b[:label],a[:is_tag],b[:is_tag],search)}
     render :json => results.to_json
   end
   
 protected
   def get_latest_changes
-    data = Organization.latest_changes(session[:state_filter],session[:city_filter],session[:zip_filter],session[:dso_filter],session[:org_type_filter])
+    data = Organization.latest_changes(session)
     if @site.should_show_latest_people
       data = data + Person.latest_changes(session[:state_filter])
     end
@@ -247,7 +299,9 @@ protected
     lst[0,limit]
   end
 
-  def diff(a,b,ref)
+  def diff(a,b,a_tag,b_tag,ref)
+    return -1 if a_tag and not b_tag
+    return +1 if b_tag and not a_tag
     a = a.downcase
     b = b.downcase
     i1 = a.index(ref.downcase)

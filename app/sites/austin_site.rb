@@ -15,6 +15,14 @@ class AustinSite < Site
   def city_filter
     ['Austin']
   end
+  
+  def layout
+    :sprint
+  end
+
+  def use_logo
+    true
+  end
 
   def should_show_latest_people
     false

@@ -1,3 +1,5 @@
+<%- this_is_the_header = false unless this_is_the_header -%>
+<%- unless @site.search_bar_in_header and not(this_is_the_header) -%>
 <% hide_examples = true if @site.site_searches.nil? %>
 <% hide_examples = false if hide_examples.nil? %>
 <div id="basic_search" style="<%= params[:advanced] ? 'display:none' : ''%>">
@@ -70,3 +72,4 @@
 	<br/>
 	<br/>
 </div>
+<%- end -%>

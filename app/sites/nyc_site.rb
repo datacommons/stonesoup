@@ -16,6 +16,14 @@ class NycSite < Site
     ['New York', 'NYC', 'NY', 'Manhattan', 'Queens', 'Brooklyn', 'Bronx', 'Staten Island', 'Kings', 'Richmond']
   end
 
+  def layout
+    :sprint
+  end
+
+  def use_logo
+    true
+  end
+
   def should_show_latest_people
     false
   end

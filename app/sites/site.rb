@@ -70,7 +70,7 @@ class Site
   end
 
   def style
-    :default
+    self.layout
   end
 
   def title
@@ -86,6 +86,10 @@ class Site
   end
 
   def search_bar_in_header
+    self.layout == :sprint
+  end
+
+  def use_logo
     false
   end
 

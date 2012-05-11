@@ -5,6 +5,15 @@
 	<%=render :partial => 'layouts/common_header'%>
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700' rel='stylesheet' type='text/css'>
 <%= javascript_include_tag :defaults, 'carousel-min' %>
+<%- if @site.use_logo -%>
+<style>
+#header {
+  xbackground-image: url("/images/<%= @site.name %>/logo2.png");
+  xbackground-repeat:no-repeat;
+  xposition: relative;
+}
+</style>
+<%- end -%>
 </head>
 <body class="section-<%=params[:controller]%> page-<%=params[:controller]%>-<%=params[:action]%>">
 
@@ -22,12 +31,16 @@
 	<%=render :partial => 'layouts/usermenu'%>
         </div>
 	<div class='titleblock nohover clearboth'>
+          <%- unless @site.use_logo -%>
 	  <div class='clearboth title'><b><a href='/'>Find</a></b><span class='minor'><a href='/'>.COOP</a></span></div>
 	  <div class='subtitle'><a href='/'>A directory of the cooperative economy</a></div>
+          <%- else -%>
+          <a href="/"><img src="/images/<%= @site.name %>/logo2.png" /></a>
+          <%- end -%>
 	</div>
-        <%= render :partial => 'search/search_form' %>
-</div>
+        <%= render :partial => 'search/search_form', :locals => { :this_is_the_header => true } %>
 <div id="post-header"></div>
+</div>
 <div id="front-bar">
 <div class="button-right"><%= link_to '<b>+</b> Add Organization', :controller => 'organizations', :action => 'new' %></div>
 <div class="button"><a href="http://datacommons.find.coop/about">About</a></div><div class="button"><a href="http://datacommons.find.coop/contact">Contact</a></div><div class="button"><a href="http://datacommons.find.coop/donate">Donate</a></div>

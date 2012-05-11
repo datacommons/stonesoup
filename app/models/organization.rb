@@ -294,10 +294,11 @@ class Organization < ActiveRecord::Base
       nil
     end
   end
-  
-  def Organization.latest_changes(state_filter = [], city_filter = [], zip_filter = [], dso_filter = [], org_type_filter = [])
-    user = User.current_user
-    conditions = nil
+
+  def Organization.location_join(filters)
+    state_filter = filters[:state_filter]
+    city_filter = filters[:city_filter]
+    zip_filter = filters[:zip_filter]
     condSQLs = []
     condParams = []
     join_type = "INNER"
@@ -327,7 +328,15 @@ class Organization < ActiveRecord::Base
       condSQLs << zip_str
       condParams += zips
     end
+    return [joinSQL, condSQLs, condParams]
+  end
 
+  def Organization.tag_join(filters)
+    dso_filter = filters[:dso_filter] 
+    org_type_filter = filters[:org_type_filter]
+    condSQLs = []
+    condParams = []
+    joinSQL = ""
     unless dso_filter.nil? or dso_filter.empty?
       logger.debug("applying session dso filters to search results: #{dso_filter.inspect}")
       joinSQL = "#{joinSQL} INNER JOIN data_sharing_orgs_organizations ON data_sharing_orgs_organizations.organization_id = organizations.id INNER JOIN data_sharing_orgs ON data_sharing_orgs_organizations.data_sharing_org_id = data_sharing_orgs.id"
@@ -338,15 +347,31 @@ class Organization < ActiveRecord::Base
 
     unless org_type_filter.nil? or org_type_filter.empty?
       logger.debug("applying session org_type filters to search results: #{org_type_filter.inspect}")
-      joinSQL = "#{joinSQL} INNER JOIN org_types_organizations ON org_types_organizations.organization_id = organizations.id INNER JOIN org_types ON org_types_organizations.org_type_id = org_types.id"
-      org_types = [org_type_filter].flatten
-      condSQLs << "org_types.name IN (#{org_types.collect{'?'}.join(',')})"
-      condParams += org_types
+      joinSQL = "#{joinSQL} INNER JOIN taggings AS taggings_org ON taggings_org.taggable_id = organizations.id INNER JOIN tags AS tags_org ON taggings_org.tag_id = tags_org.id INNER JOIN org_types ON tags_org.root_id = org_types.id"
+      condSQLs << "org_types.name IN (#{org_type_filter.collect{'?'}.join(',')})"
+      condParams += org_type_filter
+      condSQLs << "taggings_org.taggable_type = ?"
+      condParams += ["Organization"]
+      condSQLs << "tags_org.root_type = ?"
+      condParams += ["OrgType"]
     end
+    return [joinSQL, condSQLs, condParams]
+  end
 
+  def Organization.all_join(filters)
+    joinSQL, condSQLs, condParams = Organization.location_join(filters)
+    joinSQL2, condSQLs2, condParams2 = Organization.tag_join(filters)
+    joinSQL = joinSQL + joinSQL2
+    condSQLs = condSQLs + condSQLs2
+    condParams = condParams + condParams2
+    return [joinSQL,condSQLs,condParams]
+  end
+
+  def Organization.latest_changes(filters)
+    joinSQL, condSQLs, condParams = Organization.all_join(filters)
+    conditions = []
     conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
     logger.debug("After applying filters, conditions = #{conditions.inspect}")
-
     Organization.find(:all, :select => 'organizations.*, locations.latitude AS filtered_latitude, locations.longitude AS filtered_longitude', :order => 'organizations.updated_at DESC', 
                       :limit => 15,
                       :conditions => conditions,

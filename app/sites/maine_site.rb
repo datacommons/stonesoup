@@ -16,8 +16,12 @@ class MaineSite < Site
     false
   end
 
-  def custom_css
-    name
+  def layout
+    :sprint
+  end
+
+  def use_logo
+    true
   end
 
   def title

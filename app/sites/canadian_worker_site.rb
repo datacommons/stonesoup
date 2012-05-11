@@ -16,7 +16,11 @@ class CanadianWorkerSite < Site
     ["Canadian Worker Cooperative Federation"]
   end
 
-  #def custom_css
-  #  name
-  #end
+  def layout
+    :sprint
+  end
+
+  def use_logo
+    true
+  end
 end

@@ -130,12 +130,31 @@ public
   end
 
   def show_tag(tag)
+    joinSQL, condSQLs, condParams = Organization.all_join(session)
+    joinSQL = nil if condSQLs.empty?
     @tag = tag
     @title = tag.name
-    if tag.respond_to? "tags"
-      results = tag.tags.map{|t| t.taggings}.flatten.map{|t| t.taggable}
+    if joinSQL.nil?
+      if tag.respond_to? "tags"
+        results = tag.tags.map{|t| t.taggings}.flatten.map{|t| t.taggable}
+      else
+        results = tag.taggings.flatten.map{|t| t.taggable}
+      end
     else
-      results = tag.taggings.flatten.map{|t| t.taggable}
+      # for now, let's assume we are tagging organizations only
+      joinSQL = "#{joinSQL} INNER JOIN taggings AS taggings2 ON taggings2.taggable_id = organizations.id INNER JOIN tags AS tags2 ON taggings2.tag_id = tags2.id"
+      condSQLs << "tags2.root_id = ?"
+      condSQLs << "tags2.root_type = ?"
+      if tag.respond_to? "root_id"
+        condParams << tag.root_id
+        condParams << tag.root_type
+      else
+        condParams << tag.id
+        condParams << tag.class.to_s
+      end
+      conditions = []
+      conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
+      results = Organization.find(:all, :conditions => conditions, :joins => joinSQL)
     end
     @entries = results.paginate(:per_page => 15, :page => (params[:page]||1))
     respond_to do |format|

@@ -36,7 +36,9 @@ class AddGeneralTags < ActiveRecord::Migration
     root_tables = ["OrgType", 
                    "MemberOrg", 
                    "Sector",
-                   "LegalStructure"]
+                   "LegalStructure"
+                   # "ProductService"
+                  ]
 
 
     friendly_names = {
@@ -44,6 +46,7 @@ class AddGeneralTags < ActiveRecord::Migration
       "MemberOrg" => "Member Organization Affiliation", 
       "Sector" => "Business Sector",
       "LegalStructure" => "Legal Structure"
+      # "ProductService" => "Product/Service"
       }
 
     dcc_world = TagWorld.new(:name => "dcc")

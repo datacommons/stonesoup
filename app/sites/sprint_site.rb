@@ -12,19 +12,7 @@ class SprintSite < Site
     'Data Commons'
   end
 
-  def custom_css
-    nil
-  end
-
-  def style
-    name
-  end
-
   def layout
-    name
-  end
-
-  def search_bar_in_header
-    true
+    :sprint
   end
 end
