@@ -1,5 +1,5 @@
 class LegalStructuresController < ApplicationController
-  before_filter :admin_required, :only => [:index, :new, :create, :edit, :update, :destroy]
+  before_filter :admin_required, :only => [:new, :create, :edit, :update, :destroy]
   # GET /legal_structures
   # GET /legal_structures.xml
   def index

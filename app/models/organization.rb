@@ -237,7 +237,9 @@ class Organization < ActiveRecord::Base
   end
   
   def sectors_to_s
-    self.sectors.collect{|sect| sect.name}.join(', ')
+    # temporarily hijacking for tags
+    # self.sectors.collect{|sect| sect.name}.join(', ')
+    self.tags.collect{|t| t.name}.join(', ')
   end
   
   def org_types_to_s

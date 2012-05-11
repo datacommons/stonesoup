@@ -130,8 +130,13 @@ public
   end
 
   def show_tag(tag)
+    @tag = tag
     @title = tag.name
-    results = tag.tags.map{|t| t.taggings}.flatten.map{|t| t.taggable}
+    if tag.respond_to? "tags"
+      results = tag.tags.map{|t| t.taggings}.flatten.map{|t| t.taggable}
+    else
+      results = tag.taggings.flatten.map{|t| t.taggable}
+    end
     @entries = results.paginate(:per_page => 15, :page => (params[:page]||1))
     respond_to do |format|
       format.html { render :template => 'search/search' }

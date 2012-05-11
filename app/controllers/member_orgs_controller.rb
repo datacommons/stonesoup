@@ -1,6 +1,6 @@
 class MemberOrgsController < ApplicationController
   before_filter :login_required, :only => [:associate, :dissociate]
-  before_filter :admin_required, :only => [:index, :new, :create, :edit, :update, :destroy]
+  before_filter :admin_required, :only => [:new, :create, :edit, :update, :destroy]
   def dissociate
     @member_org = MemberOrg.find(params[:member_org_id])
     @organization = Organization.find(params[:organization_id])

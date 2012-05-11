@@ -1,0 +1,16 @@
+<ul>
+<%- if entry.effective -%>
+<li>Synonym of tag: <%= show_link(entry.effective) %></li>
+<%- else -%>
+ <% Tag.find_all_by_effective_id(entry.id).each do |t| %>
+   <li>--- Synonym: <%= show_link(t) %></li>
+ <% end %> 
+<%- end -%>
+<li>Rooted in: <%= show_link(entry.root) %></li>
+<li>Qualified name: <%= entry.qualified_name %></li>
+<li>Literal qualified name: <%= entry.literal_qualified_name %></li>
+<li>Parent: <%= show_link(entry.parent) %></li>
+<% entry.children.each do |t| %>
+   <li>Child: <%= show_link(t) %></li>
+<% end %>
+</ul>

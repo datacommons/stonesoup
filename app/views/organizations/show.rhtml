@@ -220,39 +220,14 @@ a2a_config.linkurl = "<%= url_for :action => 'show', :id => @organization, :only
 		</ul>
 	<% end %>
 
-	<% unless @organization.get_org_types.empty? %>
-		<h2>Organizational Type</h2>
-		<ul>
-		<% @organization.get_org_types.each do |ot| %>
-			<li><%= ot.name %></li>
-		<% end %>
-		</ul>
+	<% @organization.tags.group_by{|x| x.effective_parent}.each do |parent,tags|  %>
+          <h2><%= parent ? parent.readable_name : "Tags" %></h2>
+  	  <ul>
+ 	    <% tags.each do |t| %>
+	      <li><%= show_link(t) %></li>
+            <% end %>
+          </ul>
 	<% end %>
-
-	<% unless @organization.get_sectors.empty? %>
-		<h2>Business Sector(s)</h2>
-		<ul>
-		<% @organization.get_sectors.each do |s| %>
-			<li><%= link_to s.name, :action => 'search', :controller => 'search', :q => 'sector:\'' + s.name + '\'' %></li>
-		<% end %>
-		</ul>
-	<% end %>
-
-	<% unless @organization.get_member_orgs.empty? %>
-		<h2>Member Organization Affiliations</h2>
-		<ul>
-		<% @organization.get_member_orgs.each do |mo| %>
-			<li><%= show_link mo %></li>
-		<% end %>
-		</ul>
-	<% end %>
-
-	<h2>Tags!</h2>
-	<ul>
-	<% @organization.tags.each do |t| %>
-	<li><%= t.literal_qualified_name %> ... <%= t.qualified_name %></li>
-	<% end %>
-	</ul>
 </div>
 
 

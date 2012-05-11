@@ -1,6 +1,6 @@
 <% title = @title || "Search Results" %>
 <% if @entries %>
- <% if @entries.blank? %>
+ <% if @entries.blank? and not(@tag) %>
   <p>
   No results were found for this search.
     <% if not(params[:unrestricted]) %>
@@ -24,6 +24,9 @@
   <p><%= link_to 'Would you like to add a new organization?', :controller => 'organizations', :action => 'new' %></p>
  <% else %>
  <h2><%= title %></h2>
+  <% if @tag %>
+    <%= render :partial => "#{@tag.class.to_s.underscore.pluralize}/summary", :locals => {:entry => @tag} %>
+  <% end %>
   <div class="listing_info"><%= page_entries_info @entries %></div>
   <%= will_paginate @entries %>
   <% for entry in @entries %>

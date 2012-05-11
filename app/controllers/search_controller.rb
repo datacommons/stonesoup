@@ -155,7 +155,6 @@ class SearchController < ApplicationController
     else
       tags = Tag.find(:all, :conditions => ["name LIKE ? or name LIKE ?",name+"%"," "+name+"%"], :limit => limit)
     end
-    # tags = Tag.find(:all, :conditions => [template,value], :limit => limit).map{|t| t.effective_root}.compact.uniq    
     if name.length>1
       organizations = Organization.find(:all, :conditions => [template,value], :limit => limit*5)
     end
@@ -209,7 +208,6 @@ class SearchController < ApplicationController
         end
         next if target.kind_of? TagContext
         next if target.kind_of? TagWorld
-        # label = (target.respond_to? "friendly_name") ? target.friendly_name : target.name
         label = target.name
         results << {
           :name => h.name,

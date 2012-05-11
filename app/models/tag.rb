@@ -47,6 +47,13 @@ class Tag < ActiveRecord::Base
     self.root
   end
 
+  def leaf
+    r = self.root
+    r = self.effective.root unless self.effective.nil?
+    r = self if r.nil?
+    r
+  end
+
   def update_effective_identity
     eparent = self.effective_parent
     if eparent!=self.parent
@@ -86,14 +93,7 @@ class Tag < ActiveRecord::Base
   end
 
   def readable_name
-    name = self.readable_name_rec
-    er = self.effective_root
-    if er
-      if er.kind_of? TagContext
-        name = name + " ..."
-      end
-    end
-    name
+    self.readable_name_rec
   end
 
   def readable_name_rec
@@ -127,9 +127,8 @@ class Tag < ActiveRecord::Base
     "#{self.parent.literal_qualified_name}:#{self.name}"
   end
 
-  def self.find_by_qualified_name(name)
+  def self.find_by_qualified_name(name, cursor = nil)
     parts = name.split(/:/)
-    cursor = nil
     closest = nil
     parts.each do |p|
       cursor = Tag.find_by_name_and_parent_id(p,cursor)

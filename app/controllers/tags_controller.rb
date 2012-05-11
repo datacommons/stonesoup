@@ -1,21 +1,48 @@
 class TagsController < ApplicationController
-  before_filter :admin_required, :only => [:index, :new, :create, :edit, :update, :destroy, :update_identities]
+  before_filter :login_required, :only => [:associate, :dissociate]
+  before_filter :admin_required, :only => [:new, :create, :edit, :update, :destroy, :update_identities]
+
+  def dissociate
+    @tagging = Tagging.find(params[:tagging_id])
+    @taggable = @tagging.taggable
+    @taggable.taggings.delete(@tagging)
+    @taggable.save!
+    # @taggable.notify_related_record_change(:deleted, @tag)
+    @taggable.ferret_update
+    @organization = @taggable
+    render :partial => 'manage'
+  end
+
+  def associate
+    if params[:text]
+      parent = nil
+      if params[:type]
+        if params[:type].length > 0
+          parent = Tag.find_by_name(params[:type])
+        end
+      end
+      @tag = Tag.create(:name => params[:text], 
+                        :parent => parent)
+      @tag.save!
+    else
+      @tag = Tag.find(params[:id])
+    end
+    @taggable = Organization.find(params[:taggable_id])
+    @taggable.tags.push(@tag)
+    @taggable.save!
+    # @taggable.notify_related_record_change(:added, @tag)
+    @taggable.ferret_update
+    @organization = @taggable
+    render :partial => 'manage'
+  end
 
   def index
-    @tags = Tag.find(:all).sort{|x,y| x.literal_qualified_name <=> y.literal_qualified_name}
-
-    respond_to do |format|
-      format.html
-      format.xml  { render :xml => @tags }
-    end
+    show_tag_context(Tag)
+    # @tags = Tag.find(:all).sort{|x,y| x.literal_qualified_name <=> y.literal_qualified_name}
   end
 
   def show
-    @tag = Tag.find(params[:id])
-    respond_to do |format|
-      format.html
-      format.xml  { render :xml => @tag }
-    end
+    show_tag(Tag.find(params[:id]))
   end
 
 
@@ -30,9 +57,19 @@ class TagsController < ApplicationController
       search = "dcc"
     end
 
+    cursor = nil
+    parent = nil
+    seed = ""
+    if params[:parent]
+      seed = params[:parent]
+      parent = Tag.find_by_name_and_root_type(seed,"TagContext")
+    end
     exact, closest = Tag.find_by_qualified_name(search)
+    hits = []
     if exact
-      hits = []
+      if params[:parent]
+        hits = hits + [exact]
+      end
       hits = hits + Tag.find_all_by_parent_id(exact.id)
     else
       name = search.gsub(/.*:/,'')
@@ -55,6 +92,9 @@ class TagsController < ApplicationController
       end
     end
     results = Array.new
+    if params[:parent]
+      hits.reject!{|x| x.root_type == "TagContext" or x.root_type == "TagWorld"}
+    end
     hits.each do |h|
       if closest
         next if h.parent != closest and h != closest
@@ -63,12 +103,13 @@ class TagsController < ApplicationController
         :name => h.qualified_name,
         :label => lowlevel ? h.literal_qualified_name : h.readable_name,
         :family => "tags",
-        :id => h.id
+        :id => h.id,
+        :direct => (h.parent == parent || seed == "")
       }
     end
     #results.uniq!{|x| x[:name]} # aww, our ruby is too old
     results = results.group_by{|x| x[:name]}.collect{|n, v| v[0]} unless lowlevel
-    results.sort!{|x,y| x[:name].downcase <=> y[:name].downcase}
+    results.sort!{|x,y| ((x[:direct] ? 0 : 1) <=> (y[:direct] ? 0 : 1)).nonzero? || (x[:name].downcase <=> y[:name].downcase)}
 
     render :json => results.to_json
   end

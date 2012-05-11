@@ -906,3 +906,7 @@ body.page-users-prefs .listing {
 #advanced_search {
   clear: both;
 }
+
+.tagger.indirect a {
+  color: #88f;
+}
