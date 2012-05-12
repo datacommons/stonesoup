@@ -24,7 +24,7 @@ hide_links = false if hide_links.nil?
 <dl class="attribute" id='org_person_<%=org_person.id%>'>
 	<dt>
 <% unless hide_person %>
-		Person: <%= link_to org_person.person.name, :controller => 'people', :action => 'show', :id => org_person.person.id %><br/>
+		Person: <%= link_to org_person.person.name, person_path(org_person.person) %><br/>
 <% end %>
 <% unless hide_org %>
 		Organization: <%= link_to org_person.organization.name, organization_path(org_person.organization)%><br/>

@@ -1,6 +1,7 @@
-<% auto_complete_input_id = nil if auto_complete_input_id.nil? %>
-<% auto_complete_output_id = nil if auto_complete_output_id.nil? %>
-<% any = false if any.nil? %>
+<%- auto_complete_input_id = nil unless auto_complete_input_id -%>
+<%- auto_complete_output_id = nil unless auto_complete_output_id -%>
+<%- geo = false unless geo -%>
+<%- any = false unless any -%>
 <%- if auto_complete_input_id.nil? -%>
 <form>
 <input type="text" id="plane_tagger_id" name="plane_tagger_id" autocomplete="off" />
@@ -69,7 +70,7 @@ if($("<%=auto_complete_input_id%>")) {
                         if (string==ignore_value && string!="") return;
                         want_value = string;
 			if (string.length > 0) {
-				new Ajax.Request('<%= any ? '/search/auto_complete' : '/tags/search' %>', {method:'get',parameters:{search:string,exact:<%=exact%>},
+				new Ajax.Request('<%= any ? '/search/auto_complete' : '/tags/search' %>', {method:'get',parameters:{search:string,exact:<%= exact %>,geo:<%= geo %>},
 					onSuccess: function(transport) {
                                                 if (string!=want_value) return;
                                                 current_tags = [];
@@ -84,7 +85,7 @@ if($("<%=auto_complete_input_id%>")) {
                                                 var ct = 0;
 						taggers.each(function(a) {
 <%- if act == :open_tag -%>
-							var item = "<li class='tagger'><a href='/" + a.family + "/" + a.id + "' class='tagger-link'>" + a.label + "</a></li>";
+							var item = "<li class='tagger'><a href='/" + a.family + "/" + a.pid + "' class='tagger-link'>" + a.label + "</a></li>";
 <%- else -%>
 							var item = "<li class='tagger'><a href='javascript:;' onclick='return tag_me(\"" + a.name + "\",\"" + a.family + "\"," + a.id + ");' class='tagger-link'>" + a.label + "</a></li>";
 <%- end -%>

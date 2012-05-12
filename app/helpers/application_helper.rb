@@ -37,7 +37,12 @@ module ApplicationHelper
       if obj.link_hash.nil?
         return obj.link_name
       else
-        return link_to(obj.link_name, obj.link_hash)
+        # problem with user
+        begin
+          return link_to(obj.link_name, obj)
+        rescue
+          return link_to(obj.link_name, obj.link_hash)
+        end
       end
     else
       return ''

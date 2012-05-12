@@ -136,6 +136,9 @@ class SearchController < ApplicationController
   end
 
   def auto_complete
+    geo = false
+    geo = (params[:geo].to_s == "true") if params[:geo]
+
     search = params[:search]
     search = "" if search.nil?
     name = search
@@ -150,7 +153,7 @@ class SearchController < ApplicationController
     people = []
     locations = []
 
-    if name.length>=1
+    if name.length>=1 and not(geo)
       joinSQL, condSQLs, condParams = Organization.all_join(session)
       joinSQL = nil if condSQLs.empty?
       if joinSQL
@@ -171,7 +174,7 @@ class SearchController < ApplicationController
       tags = Tag.find(:all, :conditions => conditions, :joins => joinSQL, :limit => limit)
     end
 
-    if name.length>=1
+    if name.length>=1 and not(geo)
       joinSQL, condSQLs, condParams = Organization.all_join(session)
       joinSQL = nil if condSQLs.empty?
       condSQLs << template.gsub("name","organizations.name")
@@ -181,7 +184,7 @@ class SearchController < ApplicationController
       organizations = Organization.find(:all, :conditions => conditions, :joins => joinSQL, :limit => limit*5)
     end
 
-    if name.length>=2
+    if name.length>=2 and not(geo)
       first, last = name.split(/ /)
       unless last.nil?
         last = nil if last == ""
@@ -265,6 +268,7 @@ class SearchController < ApplicationController
           :label => h.name,
           :family => target.class.to_s.underscore.pluralize,
           :id => target.id,
+          :pid => target.to_param,
           :is_tag => is_tag
         }
       end

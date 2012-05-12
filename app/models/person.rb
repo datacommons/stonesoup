@@ -70,4 +70,8 @@ class Person < ActiveRecord::Base
   def <=>(other)
     self.to_s <=> other.to_s
   end
+
+  def to_param
+    "#{id}-#{name.parameterize}"
+  end 
 end
