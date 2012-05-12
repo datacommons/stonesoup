@@ -85,7 +85,8 @@ if($("<%=auto_complete_input_id%>")) {
                                                 var ct = 0;
 						taggers.each(function(a) {
 <%- if act == :open_tag -%>
-							var item = "<li class='tagger'><a href='/" + a.family + "/" + a.pid + "' class='tagger-link'>" + a.label + "</a></li>";
+							var item = "<li class='tagger'><a href='/" + a.type + "/" + a.pid + "' class='tagger-link'>" + a.label + "</a> (" + a.family + ")</li>";
+                                                        if (typeof a.pid == "object") { item = "<li class='tagger'><a href='/search/search?act=search"; for (var p in a.pid) { item = item + "&amp;" + p + "="; item = item + escape(a.pid[p]); }; item = item + "' class='tagger-link'>" + a.label + "</a> (" + a.family + ")</li>"; }
 <%- else -%>
 							var item = "<li class='tagger'><a href='javascript:;' onclick='return tag_me(\"" + a.name + "\",\"" + a.family + "\"," + a.id + ");' class='tagger-link'>" + a.label + "</a></li>";
 <%- end -%>

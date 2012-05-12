@@ -162,13 +162,30 @@ module ApplicationHelper
   end
 
   def search_core(_params)
-    if _params[:state] and _params[:advanced] != '1'
-      long_state = Location::STATE_SHORT[_params[:state]]
-      long_state = _params[:state] unless long_state
-      _params[:state] = long_state
+    if (_params[:state]||_params[:city]||_params[:country]||_params[:zip]) and _params[:advanced] != '1'
       q = _params[:q].to_s + ''
-      q.gsub!(/\+state:\'[^\']+\' +/,'')
-      _params[:q] = "+state:'#{long_state}' #{q}"
+      if _params[:state]
+        long_state = Location::STATE_SHORT[_params[:state]]
+        long_state = _params[:state] unless long_state
+        _params[:state] = long_state
+        q.gsub!(/\+state:\"[^\"]+\" +/,'')
+        q = _params[:q] = "+state:\"#{long_state}\" #{q}"
+      end
+      if _params[:city]
+        q.gsub!(/\+city:\"[^\"]+\" +/,'')
+        q = _params[:q] = "+city:\"#{_params[:city]}\" #{q}"
+      end
+      if _params[:zip]
+        q.gsub!(/\+zip:\"[^\"]+\" +/,'')
+        q = _params[:q] = "+zip:\"#{_params[:zip]}\" #{q}"
+      end
+      if _params[:country]
+        alt_form = Location::COUNTRY_SHORT[_params[:country]]
+        alt_form = _params[:country] unless alt_form
+        _params[:country] = alt_form
+        q.gsub!(/\+country:\"[^\"]+\" +/,'')
+        q = _params[:q] = "+country:\"#{_params[:country]}\" #{q}"
+      end
     end
 
     search_query = _params[:q].to_s + ''
@@ -210,27 +227,31 @@ module ApplicationHelper
         end
         unless _params[:org_type_id].blank?
           org_type = OrgType.find_by_id(_params[:org_type_id])
-          search_query << " +org_type:'#{org_type.name}'" unless org_type.nil?
+          search_query << " +org_type:\"#{org_type.name}\"" unless org_type.nil?
         end
         unless _params[:sector_id].blank?
           sector = Sector.find_by_id(_params[:sector_id])
-          newterm = "+sector:'#{sector.name}'"
+          newterm = "+sector:\"#{sector.name}\""
           search_query << ' ' + newterm unless sector.nil? or search_query.include?(newterm)
         end
         unless _params[:county].blank?
-          newterm = "+county:'#{_params[:county]}'"
+          newterm = "+county:\"#{_params[:county]}\""
+          search_query << ' ' + newterm unless search_query.include?(newterm)
+        end
+        unless _params[:city].blank?
+          newterm = "+city:\"#{_params[:city]}\""
           search_query << ' ' + newterm unless search_query.include?(newterm)
         end
         unless _params[:country].blank?
           alt_form = Location::COUNTRY_SHORT[_params[:country]]
           alt_form = _params[:country] unless alt_form
-          newterm = "+country:'#{alt_form}'"
+          newterm = "+country:\"#{alt_form}\""
           search_query << ' ' + newterm unless search_query.include?(newterm)
         end
         unless _params[:state].blank?
           alt_form = Location::STATE_SHORT[_params[:state]]
           alt_form = _params[:state] unless alt_form
-          newterm = "+state:'#{alt_form}'"
+          newterm = "+state:\"#{alt_form}\""
           search_query << ' ' + newterm unless search_query.include?(newterm)
         end
         unless _params[:within].blank? or _params[:origin].blank?
@@ -261,7 +282,6 @@ module ApplicationHelper
       end
       
       #condSQL = [access_conditionSQL, proximity_conditionSQL].compact.collect{|sql| '('+sql+')'}.join(' AND ')
-      logger.debug("flat conditions: #{flatSQL.inspect}")
       filtered_query = search_query
       append_query = ""
 
@@ -343,6 +363,9 @@ module ApplicationHelper
         # restrict this to logged in users?
         pagination = { }
       end
+
+      logger.debug("flat conditions: #{flatSQL.inspect}")
+      logger.debug("filtered query: #{filtered_query}")
       
       entries = ActsAsFerret::find(filtered_query,
                                    record_types,

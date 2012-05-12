@@ -1,7 +1,43 @@
+class SearchItem
+  def initialize(name,family,params)
+    @name = name
+    @family = family
+    @params = params.delete_if{|x,y| y.nil?}
+    if family == "City" || family == "Postal code"
+      if @params[:state]
+        @name = @name + ", #{@params[:state]}" if @params[:state].length >= 1
+      end
+    end
+    if family == "City" || family == "State" || family == "Postal code"
+      @name = @name + ", #{@params[:country]}" if @params[:country]
+    end
+    if family == "Postal code"
+      # temporary: need to delete country if USA, since a lot of US data snuck in without country
+      @params = @params.delete_if{|x,y| x == :city or x == :state or (x==:country and (y.downcase.include? "united states" or y=="USA" or y=="US"))}
+    end
+  end
+
+  def name
+    @name
+  end
+  
+  def family
+    @family
+  end
+
+  def id
+    0
+  end
+
+  def to_param
+    @params
+  end
+end
+
 class SearchController < ApplicationController
   def index
     search
-    if params[:q]
+    if params[:q] || params[:act]
       render :action => 'search'
     else
       render :action => 'welcome'
@@ -9,17 +45,18 @@ class SearchController < ApplicationController
   end
 
   def search
-    if not params[:q]
+    if not (params[:q]||params[:act])
       @latest_changes = get_latest_changes()
       return
     end
 
+    params[:q] = "" unless params[:q]
     @query = params[:q].to_s + ''
     @search_text = @query
     search_query = params[:q].to_s + '' # apparently the (+ '') is needed to make these distinct variables
 
     _params = params.clone
-    if search_query == "" and _params[:advanced] != '1'
+    if search_query == "" and _params[:advanced] != '1' and not(params[:act])
       search_query = @site.blank_search
       _params[:q] = search_query
     end
@@ -136,8 +173,8 @@ class SearchController < ApplicationController
   end
 
   def auto_complete
-    geo = false
-    geo = (params[:geo].to_s == "true") if params[:geo]
+    # geo = false
+    # geo = (params[:geo].to_s == "true") if params[:geo]
 
     search = params[:search]
     search = "" if search.nil?
@@ -152,8 +189,9 @@ class SearchController < ApplicationController
     organizations = []
     people = []
     locations = []
+    areas = []
 
-    if name.length>=1 and not(geo)
+    if name.length>=1
       joinSQL, condSQLs, condParams = Organization.all_join(session)
       joinSQL = nil if condSQLs.empty?
       if joinSQL
@@ -174,7 +212,7 @@ class SearchController < ApplicationController
       tags = Tag.find(:all, :conditions => conditions, :joins => joinSQL, :limit => limit)
     end
 
-    if name.length>=1 and not(geo)
+    if name.length>=1
       joinSQL, condSQLs, condParams = Organization.all_join(session)
       joinSQL = nil if condSQLs.empty?
       condSQLs << template.gsub("name","organizations.name")
@@ -184,7 +222,7 @@ class SearchController < ApplicationController
       organizations = Organization.find(:all, :conditions => conditions, :joins => joinSQL, :limit => limit*5)
     end
 
-    if name.length>=2 and not(geo)
+    if name.length>=2
       first, last = name.split(/ /)
       unless last.nil?
         last = nil if last == ""
@@ -222,11 +260,32 @@ class SearchController < ApplicationController
       locations = Location.find(:all, :conditions => conditions, 
                                 :joins => joinSQL,
                                 :limit => limit)
+      
+    end
+
+    if name.length>=1
+      ignore, locCondSQLs, locCondParams = Organization.location_join(session)
+      joinSQL, condSQLs, condParams = Organization.tag_join(session)
+      joinSQL = "INNER JOIN organizations ON organizations.id = locations.organization_id #{joinSQL}"
+      condSQLs = condSQLs + locCondSQLs
+      condParams = condParams + locCondParams
+      joinSQL = nil if condSQLs.empty?
+      condSQLs << "locations.physical_city LIKE ? OR locations.physical_state LIKE ? OR locations.physical_country LIKE ? OR locations.physical_zip LIKE ?"
+      condParams << value
+      condParams << value
+      condParams << value
+      condParams << value
+      conditions = []
+      conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
+      area_locations = Location.find(:all, :conditions => conditions, 
+                                     :joins => joinSQL,
+                                     :limit => limit)
+      areas = area_locations.map{|x| areaize(x,name)}.compact.uniq
     end
 
     results = []
 
-    groups = [tags, organizations, people, locations]
+    groups = [tags, areas, organizations, people, locations]
 
     groups.each do |result_set|
       result_set.sort!{|a,b| diff(a.name,b.name,false,false,search)}
@@ -236,7 +295,7 @@ class SearchController < ApplicationController
 
     if groups.flatten.length>global_limit
       organizations = self.whittle(organizations,name,useful_limit,limit)
-      groups = [tags, organizations, people, locations]
+      groups = [tags, areas, organizations, people, locations]
     end
 
     while groups.flatten.length>global_limit
@@ -248,7 +307,7 @@ class SearchController < ApplicationController
         end
         result_set.slice!((result_set.length*0.8).floor,result_set.length)
       end
-      groups = [tags, organizations, people, locations]
+      groups = [tags, areas, organizations, people, locations]
     end
 
     groups.each do |result_set|
@@ -266,7 +325,8 @@ class SearchController < ApplicationController
         results << {
           :name => h.name,
           :label => h.name,
-          :family => target.class.to_s.underscore.pluralize,
+          :family => (target.respond_to? "family") ? target.family : target.class.to_s.underscore.humanize,
+          :type => target.class.to_s.underscore.pluralize,
           :id => target.id,
           :pid => target.to_param,
           :is_tag => is_tag
@@ -315,5 +375,22 @@ protected
     return a <=> b if i1.nil? and i2.nil?
     return a <=> b if i1 == i2
     i1 <=> i2
+  end
+
+  def areaize(loc,txt)
+    txt = txt.downcase
+    if loc.physical_city
+      return SearchItem.new(loc.physical_city,"City",{:city => loc.physical_city, :state => loc.physical_state, :country => loc.physical_country}) if loc.physical_city.downcase.include? txt
+    end
+    if loc.physical_zip
+      return SearchItem.new(loc.physical_zip,"Postal code",{:zip => loc.physical_zip, :city => loc.physical_city, :state => loc.physical_state, :country => loc.physical_country}) if loc.physical_zip.downcase.include? txt
+    end
+    if loc.physical_state
+      return SearchItem.new(loc.physical_state,"State",{:state => loc.physical_state, :country => loc.physical_country}) if loc.physical_state.downcase.include? txt
+    end
+    if loc.physical_country
+      return SearchItem.new(loc.physical_country,"Country",{:country => loc.physical_country}) if loc.physical_country.downcase.include? txt
+    end
+    nil
   end
 end
