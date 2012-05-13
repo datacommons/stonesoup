@@ -4,7 +4,23 @@ html,body {
 }
 
 #pagewidth { 
-        background-color: #ECECEC;
+  background-color: #ECECEC;
+}
+
+.titleblock {
+  margin-left: 20px;
+}
+
+.loginblock {
+  margin-right: 20px;
+}
+
+#basic_search {
+  margin-right: 20px;
+}
+
+#post-header {
+  padding: 5px;
 }
 
 #maincol { 

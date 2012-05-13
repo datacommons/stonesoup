@@ -19,4 +19,12 @@ class UsworkerSite < Site
   def custom_css
     name
   end
+  
+  def layout
+    :sprint
+  end
+
+  def use_logo
+    true
+  end
 end
