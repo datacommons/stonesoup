@@ -16,6 +16,14 @@ class CaliforniaSite < Site
     false
   end
 
+  def custom_css
+    nil
+  end
+
+  def style
+    :default
+  end
+
   def layout
     :california
   end
