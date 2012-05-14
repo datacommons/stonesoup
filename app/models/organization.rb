@@ -1,4 +1,5 @@
 class Organization < ActiveRecord::Base
+
   # NOTE on object relationships:
   # DO NOT use [ :dependent => :destroy ] or [ :dependent => :delete_all ] 
   # as this removes the related objects BEFORE the before_destroy callback is processed for the object itself
@@ -295,10 +296,10 @@ class Organization < ActiveRecord::Base
     end
   end
 
-  def Organization.location_join(filters)
-    state_filter = filters[:state_filter]
-    city_filter = filters[:city_filter]
-    zip_filter = filters[:zip_filter]
+  def Organization.location_join(filters,opts = {})
+    state_filter = ApplicationHelper.get_filter(filters,:state_filter,opts)
+    city_filter = ApplicationHelper.get_filter(filters,:city_filter,opts)
+    zip_filter = ApplicationHelper.get_filter(filters,:zip_filter,opts)
     condSQLs = []
     condParams = []
     join_type = "INNER"
@@ -331,9 +332,9 @@ class Organization < ActiveRecord::Base
     return [joinSQL, condSQLs, condParams]
   end
 
-  def Organization.tag_join(filters)
-    dso_filter = filters[:dso_filter] 
-    org_type_filter = filters[:org_type_filter]
+  def Organization.tag_join(filters, opts = {})
+    dso_filter = ApplicationHelper.get_filter(filters,:dso_filter,opts)
+    org_type_filter = ApplicationHelper.get_filter(filters,:org_type_filter,opts)
     condSQLs = []
     condParams = []
     joinSQL = ""
@@ -358,9 +359,9 @@ class Organization < ActiveRecord::Base
     return [joinSQL, condSQLs, condParams]
   end
 
-  def Organization.all_join(filters)
-    joinSQL, condSQLs, condParams = Organization.location_join(filters)
-    joinSQL2, condSQLs2, condParams2 = Organization.tag_join(filters)
+  def Organization.all_join(filters,opts = {})
+    joinSQL, condSQLs, condParams = Organization.location_join(filters,opts)
+    joinSQL2, condSQLs2, condParams2 = Organization.tag_join(filters,opts)
     joinSQL = joinSQL + joinSQL2
     condSQLs = condSQLs + condSQLs2
     condParams = condParams + condParams2

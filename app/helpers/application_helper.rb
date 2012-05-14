@@ -286,10 +286,11 @@ module ApplicationHelper
       append_query = ""
 
       if not(_params[:unrestricted])
-        unless session[:state_filter].blank?
-          logger.debug("applying session state filters to search results: #{session[:state_filter].inspect}")
+        state_filter = ApplicationHelper.get_filter(session,:state_filter)
+        unless state_filter.blank?
+          logger.debug("applying session state filters to search results: #{state_filter.inspect}")
           addl_criteria = []
-          [session[:state_filter]].flatten.each do |state|
+          [state_filter].flatten.each do |state|
             # Nested parentheses do not seem to work, omit for now.
             # could solve during indexing with a virtual field.
             #if state.length == 2  # abbreviation, make sure it's qualified with USA country:
@@ -304,10 +305,11 @@ module ApplicationHelper
           logger.debug("After adding state filter to query, query is: #{filtered_query}")
         end
 
-        unless session[:city_filter].blank?
-          logger.debug("applying city filters to search results: #{session[:city_filter].inspect}")
+        city_filter = ApplicationHelper.get_filter(session,:city_filter)
+        unless city_filter.blank?
+          logger.debug("applying city filters to search results: #{city_filter.inspect}")
           addl_criteria = []
-          [session[:city_filter]].flatten.each do |city|
+          [city_filter].flatten.each do |city|
             addl_criteria << "city:\"#{city}\""
           end
           append_query = "#{append_query} +(#{addl_criteria.join(' OR ')})"
@@ -315,10 +317,11 @@ module ApplicationHelper
           logger.debug("After adding city filter to query, query is: #{filtered_query}")
         end
 
-        unless session[:zip_filter].blank?
-          logger.debug("applying zip filters to search results: #{session[:zip_filter].inspect}")
+        zip_filter = ApplicationHelper.get_filter(session,:zip_filter)
+        unless zip_filter.blank?
+          logger.debug("applying zip filters to search results: #{zip_filter.inspect}")
           addl_criteria = []
-          [session[:zip_filter]].flatten.each do |zip|
+          [zip_filter].flatten.each do |zip|
             addl_criteria << "zip:#{zip}"
           end
           append_query = "#{append_query} +(#{addl_criteria.join(' OR ')})"
@@ -327,10 +330,11 @@ module ApplicationHelper
           logger.debug("After adding zip filter to query, query is: #{filtered_query}")
         end
 
-        unless session[:dso_filter].blank?
-          logger.debug("applying dso filters to search results: #{session[:dso_filter].inspect}")
+        dso_filter = ApplicationHelper.get_filter(session,:dso_filter)
+        unless dso_filter.blank?
+          logger.debug("applying dso filters to search results: #{dso_filter.inspect}")
           addl_criteria = []
-          [session[:dso_filter]].flatten.each do |x|
+          [dso_filter].flatten.each do |x|
             addl_criteria << "pool:\"#{x}\""
           end
           append_query = "#{append_query} +(#{addl_criteria.join(' OR ')})"
@@ -339,10 +343,11 @@ module ApplicationHelper
           logger.debug("After adding dso filter to query, query is: #{filtered_query}")
         end
 
-        unless session[:org_type_filter].blank?
-          logger.debug("applying org_type filters to search results: #{session[:org_type_filter].inspect}")
+        org_type_filter = ApplicationHelper.get_filter(session,:org_type_filter)
+        unless org_type_filter.blank?
+          logger.debug("applying org_type filters to search results: #{org_type_filter.inspect}")
           addl_criteria = []
-          [session[:org_type_filter]].flatten.each do |x|
+          [org_type_filter].flatten.each do |x|
             addl_criteria << "org_type:\"#{x}\""
           end
           append_query = "#{append_query} +(#{addl_criteria.join(' OR ')})"
@@ -434,5 +439,20 @@ module ApplicationHelper
       :controller => model.to_s.underscore.pluralize,
       :action => 'new'
     }
+  end
+
+  def ApplicationHelper.get_filter(filters,key,opts = {})
+    if opts[:only]
+      return nil unless opts[:only].include? key
+    end
+    if opts[:omit]
+      return nil if opts[:omit].include? key
+    end
+    filter = filters[("active_" + key.to_s).to_sym]
+    if filter
+      return nil if filter.length == 0
+      return filter
+    end
+    filters[key]
   end
 end

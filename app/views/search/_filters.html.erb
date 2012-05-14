@@ -1,0 +1,113 @@
+<h2>Default Filters</h2>
+
+<% @default_filters.each do |filter| %>
+<div>
+<%= filter[:name] %> ==>
+<%= filter[:value].join(', ') %>
+</div>
+<% end %>
+
+<h2>Active Filters</h2>
+
+<% @active_filters.each do |filter| %>
+<div>
+<%= link_to_remote( 'x', 
+    :url => {:controller => 'search', :action => 'change_filter', :name => filter[:name]},
+    :update => 'search_filters',
+    :confirm => 'Remove filter?') %>
+<%= filter[:name] %> ==>
+<%= filter[:value].join(', ') %>
+</div>
+<% end %>
+
+<h2>All Filters</h2>
+
+<% @all_filters.each do |filter| %>
+<div>
+<%= link_to_remote( 'x', 
+    :url => {:controller => 'search', :action => 'change_filter', :name => filter[:name]},
+    :update => 'search_filters',
+    :confirm => 'Remove filter?') %>
+<%= filter[:name] %> ==>
+<% if filter[:value] %>
+<%= filter[:value].join(', ') %>
+<% end %>
+</div>
+<% end %>
+
+<h2>Add Filter</h2>
+
+<% form_remote_tag(:url => {:controller => 'search', :action => 'change_filter'},
+    :update => "search_filters", :method => "get") do %>
+  <%= label_tag(:name, "Name:") %>
+  <%= select_tag(:name, options_for_select([['city','city'],['state','state'],['zip','zip'],['dso','dso'],['org_type','org_type']])) %>
+  <%= label_tag(:value, "Values:") %>
+  <%= text_field_tag(:value) %> (commas between)
+  <%= submit_tag("Search") %>
+<% end %>
+
+
+<% xfilters = ['country','state','city','zip','dso','org_type'] %>
+
+<% xfilters.each do |filter| %>
+
+<h2><%=filter%></h2>
+
+<form id="<%=filter%>_filter_form">
+<ul>
+<li>Add <input type="text" id="<%=filter%>_filter_input" name="<%=filter%>_filter_input" /></li>
+</ul>
+<ul id="<%=filter%>_filter_tips">
+</ul>
+</form>
+
+<% end %>
+
+
+<script>
+function filter_instrument(prefix,completer,seed) {
+  var in_id = prefix + "_input";
+  var out_id = prefix + "_tips";
+  var form_id = prefix + "_form";
+  $(form_id).observe('submit',function(event) {
+    event.stop();
+    var string = $F(in_id);
+    if (confirm("Uh?")) {
+      alert("yuh");
+    }
+    return false;
+  });
+  new Form.Element.Observer(in_id, 0.1, function(event) {
+    var string = $F(in_id);
+    if (string.length >= 0) {
+      new Ajax.Request('/search/'+completer, {method:'get',parameters:{search:string,parent:seed},
+        onSuccess: function(transport) {
+          var taggers = transport.responseJSON;
+          var lis = $(out_id).descendants();
+          if (lis.length > 0) {
+            lis.each(function(l) {
+              l.remove();
+            });
+          };
+          taggers.each(function(a) {
+            var item = "<li class='tagger'><a href='/" + a.type + "/" + a.pid + "' class='tagger-link'>" + a.label + "</a> (" + a.family + ")</li>";
+            if (typeof a.pid == "object") { item = "<li class='tagger'><a href='/search/search?act=search"; for (var p in a.pid) { item = item + "&amp;" + p + "="; item = item + escape(a.pid[p]); }; item = item + "' class='tagger-link'>" + a.label + "</a> (" + a.family + ")</li>"; }
+            $(out_id).insert(item);
+          });
+        }
+      });
+    } else {
+      var lis = $(out_id).descendants();
+      if (lis.length > 0) {
+        lis.each(function(l) {
+          l.remove();
+        });
+     };
+   };
+ });
+}
+<% xfilters.each do |filter| %>
+filter_instrument("<%=filter%>_filter","auto_complete_<%=filter%>","");
+<% end %>
+</script>
+

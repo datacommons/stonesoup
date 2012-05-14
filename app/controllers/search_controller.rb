@@ -1,39 +1,3 @@
-class SearchItem
-  def initialize(name,family,params)
-    @name = name
-    @family = family
-    @params = params.delete_if{|x,y| y.nil?}
-    if family == "City" || family == "Postal code"
-      if @params[:state]
-        @name = @name + ", #{@params[:state]}" if @params[:state].length >= 1
-      end
-    end
-    if family == "City" || family == "State" || family == "Postal code"
-      @name = @name + ", #{@params[:country]}" if @params[:country]
-    end
-    if family == "Postal code"
-      # temporary: need to delete country if USA, since a lot of US data snuck in without country
-      @params = @params.delete_if{|x,y| x == :city or x == :state or (x==:country and (y.downcase.include? "united states" or y=="USA" or y=="US"))}
-    end
-  end
-
-  def name
-    @name
-  end
-  
-  def family
-    @family
-  end
-
-  def id
-    0
-  end
-
-  def to_param
-    @params
-  end
-end
-
 class SearchController < ApplicationController
   def index
     search
@@ -167,15 +131,55 @@ class SearchController < ApplicationController
     render :file => 'rendered_includes/' + params[:src] + '.rhtml'
   end
 
+  def change_filter
+    if params[:name]
+      key = ("active_" + params[:name] + "_filter").to_sym
+      if params[:value]
+        session[key] = params[:value].split(/,/).map{|x| x.strip}
+      else
+        # session.delete(key)
+        session[key] = nil
+      end
+    end
+    self.get_filters
+    render :partial => 'filters'
+  end
 
   def auto_complete_test
+    self.get_filters
     render :action => 'auto_complete_test'
   end
 
-  def auto_complete
-    # geo = false
-    # geo = (params[:geo].to_s == "true") if params[:geo]
+  def auto_complete_country
+    opts = { :omit => [:city_filter, :zip_filter, :state_filter, :country_filter] }
+    auto_complete_location("physical_country",opts)
+  end
 
+  def auto_complete_state
+    opts = { :omit => [:city_filter, :zip_filter, :state_filter] }
+    auto_complete_location("physical_state",opts)
+  end
+
+  def auto_complete_city
+    opts = { :omit => [:city_filter, :zip_filter] }
+    auto_complete_location("physical_city",opts)
+  end
+
+  def auto_complete_zip
+    opts = { :omit => [:city_filter, :zip_filter] }
+    auto_complete_location("physical_zip",opts)
+  end
+
+  def auto_complete_org_type
+    opts = { :omit => [:org_type_filter] }
+    auto_complete_tag("OrgType",opts)
+  end
+
+  def auto_complete_dso
+    auto_complete_named(DataSharingOrg,{})
+  end
+
+  def auto_complete
     search = params[:search]
     search = "" if search.nil?
     name = search
@@ -283,8 +287,6 @@ class SearchController < ApplicationController
       areas = area_locations.map{|x| areaize(x,name)}.compact.uniq
     end
 
-    results = []
-
     groups = [tags, areas, organizations, people, locations]
 
     groups.each do |result_set|
@@ -309,40 +311,14 @@ class SearchController < ApplicationController
       end
       groups = [tags, areas, organizations, people, locations]
     end
-
-    groups.each do |result_set|
-      result_set.each do |h|
-        target = h
-        is_tag = false
-        if h.respond_to? "effective_root"
-          is_tag = true
-          target = h.effective_root
-          target = h if target.nil?
-        end
-        next if target.kind_of? TagContext
-        next if target.kind_of? TagWorld
-        label = target.name
-        results << {
-          :name => h.name,
-          :label => h.name,
-          :family => (target.respond_to? "family") ? target.family : target.class.to_s.underscore.humanize,
-          :type => target.class.to_s.underscore.pluralize,
-          :id => target.id,
-          :pid => target.to_param,
-          :is_tag => is_tag
-        }
-      end
-    end
-    results = results.group_by{|x| x[:label]}.collect{|n, v| v[0]}
-    results.sort!{|a,b| diff(a[:label],b[:label],a[:is_tag],b[:is_tag],search)}
-    render :json => results.to_json
+    render_auto_complete(groups,search)
   end
   
 protected
   def get_latest_changes
     data = Organization.latest_changes(session)
     if @site.should_show_latest_people
-      data = data + Person.latest_changes(session[:state_filter])
+      data = data + Person.latest_changes(ApplicationHelper.get_filter(session,:state_filter))
     end
     logger.debug("data=#{data}")
     data = AccessRule.cleanse(data, current_user).sort{|a,b| ( a.updated_at and b.updated_at ) ? b.updated_at <=> a.updated_at : ( b.updated_at ? 1 : -1 )}
@@ -377,20 +353,171 @@ protected
     i1 <=> i2
   end
 
-  def areaize(loc,txt)
+  def areaize1(field,loc,txt)
     txt = txt.downcase
-    if loc.physical_city
-      return SearchItem.new(loc.physical_city,"City",{:city => loc.physical_city, :state => loc.physical_state, :country => loc.physical_country}) if loc.physical_city.downcase.include? txt
-    end
-    if loc.physical_zip
-      return SearchItem.new(loc.physical_zip,"Postal code",{:zip => loc.physical_zip, :city => loc.physical_city, :state => loc.physical_state, :country => loc.physical_country}) if loc.physical_zip.downcase.include? txt
-    end
-    if loc.physical_state
-      return SearchItem.new(loc.physical_state,"State",{:state => loc.physical_state, :country => loc.physical_country}) if loc.physical_state.downcase.include? txt
-    end
-    if loc.physical_country
-      return SearchItem.new(loc.physical_country,"Country",{:country => loc.physical_country}) if loc.physical_country.downcase.include? txt
+    val = loc[field]
+    return nil unless val
+    return nil unless val.downcase.include? txt
+    if field == "physical_city"
+      return SearchItem.new(loc.physical_city,"City",{:city => loc.physical_city, :state => loc.physical_state, :country => loc.physical_country}) 
+    elsif field == "physical_zip"
+      return SearchItem.new(loc.physical_zip,"Postal code",{:zip => loc.physical_zip, :city => loc.physical_city, :state => loc.physical_state, :country => loc.physical_country})
+    elsif field == "physical_state"
+      return SearchItem.new(loc.physical_state,"State",{:state => loc.physical_state, :country => loc.physical_country})
+    elsif field == "physical_country"
+      return SearchItem.new(loc.physical_country,"Country",{:country => loc.physical_country})
     end
     nil
+  end
+
+  def areaize(loc,txt)
+    return areaize1("physical_city",loc,txt) || areaize1("physical_zip",loc,txt) || areaize1("physical_state",loc,txt) || areaize1("physical_country",loc,txt)
+  end
+
+  def get_filters
+    possible_filters = [
+                        { :key => :state_filter, :label => "State" },
+                        { :key => :city_filter, :label => "City" },
+                        { :key => :zip_filter, :label => "Zip" },
+                        { :key => :dso_filter, :label => "Team" },
+                        { :key => :org_type_filter, :label => "Organization Type" }
+                       ]
+    default_filters = []
+    active_filters = []
+    all_filters = []
+    possible_filters.each do |possible_filter|
+      key = possible_filter[:key]
+      name = key.to_s.gsub("_filter","")
+      filter = session[key]
+      default_filters << { :name => name, :label => possible_filter[:label], :value => filter } if filter
+      filter2 = session[("active_"+key.to_s).to_sym]
+      if filter2
+        active_filters << { :name => name, :label => possible_filter[:label], :value => filter2 } 
+        filter = filter2
+      end
+      all_filters << { :name => name, :label => possible_filter[:label], :value => filter }
+    end
+    default_filters.compact!
+    active_filters.compact!
+    @default_filters = default_filters
+    @active_filters = active_filters
+    @all_filters = all_filters
+  end
+
+  def render_auto_complete(groups,search)
+    results = []
+    groups.each do |result_set|
+      result_set.each do |h|
+        target = h
+        is_tag = false
+        if h.respond_to? "effective_root"
+          is_tag = true
+          target = h.effective_root
+          target = h if target.nil?
+        end
+        next if target.kind_of? TagContext
+        next if target.kind_of? TagWorld
+        label = target.name
+        results << {
+          :name => h.name,
+          :label => h.name,
+          :family => (target.respond_to? "family") ? target.family : target.class.to_s.underscore.humanize,
+          :type => target.class.to_s.underscore.pluralize,
+          :id => target.id,
+          :pid => target.to_param,
+          :is_tag => is_tag
+        }
+      end
+    end
+    results = results.group_by{|x| x[:label]}.collect{|n, v| v[0]}
+    results.sort!{|a,b| diff(a[:label],b[:label],a[:is_tag],b[:is_tag],search)}
+    render :json => results.to_json
+  end
+
+  def auto_complete_location(key,opts,distinct_sql = nil)
+    search = params[:search]
+    search = "" if search.nil?
+    name = search
+    template = "name LIKE ?"
+    value = (name.length>2 ? "%" : "")+name+"%"
+    limit = 50
+    areas = []
+    if name.length>=0
+      ignore, locCondSQLs, locCondParams = Organization.location_join(session,opts)
+      joinSQL, condSQLs, condParams = Organization.tag_join(session,opts)
+      joinSQL = "INNER JOIN organizations ON organizations.id = locations.organization_id #{joinSQL}"
+      condSQLs = condSQLs + locCondSQLs
+      condParams = condParams + locCondParams
+      joinSQL = nil if condSQLs.empty?
+      condSQLs << "locations.#{key} LIKE ?"
+      condParams << value
+      conditions = []
+      conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
+      sql = 'DISTINCT locations.physical_country'
+      unless key == "physical_country"
+        sql << ", locations.physical_state"
+        unless key == "physical_state"
+          sql << ", locations.physical_city"
+          unless key == "physical_city"
+            sql << ", locations.physical_zip"
+          end
+        end
+      end
+      area_locations = Location.find(:all, :conditions => conditions, 
+                                     :select => sql,
+                                     :joins => joinSQL,
+                                     :limit => limit)
+      areas = area_locations.map{|x| areaize1(key,x,name)}.compact.uniq
+    end
+    render_auto_complete([areas],search)
+  end
+
+  def auto_complete_tag(key,opts)
+    search = params[:search]
+    search = "" if search.nil?
+    name = search
+    template = "name LIKE ?"
+    value = (name.length>2 ? "%" : "")+name+"%"
+    limit = 50
+    tags = []
+    if name.length>=0
+      joinSQL, condSQLs, condParams = Organization.all_join(session,opts)
+      joinSQL = nil if condSQLs.empty?
+      if joinSQL
+        joinSQL = "INNER JOIN taggings ON taggings.tag_id = tags.id INNER JOIN organizations ON taggings.taggable_id = organizations.id #{joinSQL}"
+        condSQLs.unshift("taggings.taggable_type = ?")
+        condParams.unshift("Organization")
+      end
+      if name.length>2
+        condSQLs << template.gsub("name","tags.name")
+        condParams << value
+      else
+        condSQLs << "tags.name LIKE ? or tags.name LIKE ?"
+        condParams << name + "%"
+        condParams << " " + name + "%"
+      end
+      conditions = []
+      conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
+      tags = Tag.find(:all, :conditions => conditions, :joins => joinSQL, :limit => limit)
+      if key
+        tags.reject!{|x| x.effective_parent.nil?}
+        tags.reject!{|x| x.effective_parent.name != key}
+      end
+    end
+    render_auto_complete([tags],search)
+  end
+
+  def auto_complete_named(model,opts)
+    search = params[:search]
+    search = "" if search.nil?
+    name = search
+    template = "name LIKE ?"
+    value = (name.length>2 ? "%" : "")+name+"%"
+    limit = 50
+    tags = []
+    if name.length>=0
+      tags = model.find(:all, :conditions => [template, value], :limit => limit)
+    end
+    render_auto_complete([tags],search)
   end
 end

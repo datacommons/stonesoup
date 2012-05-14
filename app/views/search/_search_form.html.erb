@@ -13,7 +13,11 @@
 		  <%= text_field_tag 'q', @query, :size => 30 %><%= submit_tag "see list", :id => "see_list" %>
                 <%- end -%>
 		<%= submit_tag 'See Map', :name => 'Map', :id => "see_map" %>
-		<%= link_to_function(@site.search_bar_in_header ? 'Advanced Search' : 'Options...', "Element.show('advanced_search'); Element.hide('basic_search')", :id=>'see_advanced') %>
+		<%- if @site.search_bar_in_header %>
+                  <%= link_to_remote( 'Advanced Search',{:url => {:controller => 'search', :action => 'change_filter'},:update => 'search_filters',:success => "Element.toggle('search_filters')"}, {:id=>'see_advanced'}) %>
+                <%- else -%>
+		  <%= link_to_function('Options...', "Element.show('advanced_search'); Element.hide('basic_search')", :id=>'see_advanced') %>
+                <%- end -%>
 		 <%= link_to 'Add...', {:controller => 'organizations', :action => 'new'}, {:id=>'see_add'} %>
 		</div>
 	<% end %>
@@ -27,6 +31,7 @@
               </div>
 	<% end %>
 </div>
+<%- unless @site.search_bar_in_header %>
 <div id="advanced_search" style="<%= params[:advanced] ? '' : 'display:none'%>">
 	<%= link_to_function('Switch to Basic Search', "Element.hide('advanced_search'); Element.show('basic_search')") %>
 	<br/>
@@ -72,4 +77,5 @@
 	<br/>
 	<br/>
 </div>
+<%- end -%>
 <%- end -%>
