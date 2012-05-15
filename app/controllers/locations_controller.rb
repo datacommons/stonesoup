@@ -59,6 +59,7 @@ public
     merge_check
     @location = @organization.locations.create(params[:location])
     @location.save!
+    @organization.ferret_update
     flash[:notice] = 'Location was successfully created.'
     respond_to do |format|
       format.html { redirect_to(@location) }
@@ -83,6 +84,7 @@ public
 
     respond_to do |format|
       if @location.update_attributes(params[:location])
+        @organization.ferret_update
         flash[:notice] = 'Location was successfully updated.'
         format.html { redirect_to(@location) }
         format.xml  { head :ok }
@@ -103,6 +105,7 @@ public
     if @organization2.primary_location == @location
       @organization2.update_attribute(:primary_location, nil)
     end
+    @organization.ferret_update
     flash[:notice] = 'Location was successfully updated.'
     respond_to do |format|
       format.html { redirect_to(@location) }
@@ -118,6 +121,7 @@ public
     @organization = @location.organization
     merge_check
     @location.destroy
+    @organization.ferret_update
     
     respond_to do |format|
       format.html { redirect_to(locations_url) }
