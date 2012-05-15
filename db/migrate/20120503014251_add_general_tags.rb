@@ -117,6 +117,7 @@ class AddGeneralTags < ActiveRecord::Migration
         Tagging.new(:tag => tag, :taggable => org).save!
       end
     end
+    Tag.update_all_identities
   end
 
   def self.down

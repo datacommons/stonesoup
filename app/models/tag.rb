@@ -15,8 +15,8 @@ class Tag < ActiveRecord::Base
   end
 
   def synonyms
-    return Tag.find_all_by_effective_id(self.id) unless self.effective
-    Tag.find_all_by_effective_id(effective.id)
+    return Tag.find_all_by_effective_id(self.effective_id) + [self.effective] if self.effective_id
+    Tag.find_all_by_effective_id(self.id) + [self]
   end
 
   def taggings_via_synonyms

@@ -240,11 +240,11 @@ class Organization < ActiveRecord::Base
   def sectors_to_s
     # temporarily hijacking for tags
     # self.sectors.collect{|sect| sect.name}.join(', ')
-    self.tags.collect{|t| t.name}.join(', ')
+    self.tags.map{|t| t.synonyms}.flatten.collect{|t| t.name}.uniq.join(' ; ')
   end
   
   def org_types_to_s
-    self.org_types.collect{|org_type| org_type.name}.join(', ')
+    self.org_types.map{|x| x.tags}.flatten.collect{|t| t.name}.uniq.join(' ; ')
   end
 
   def pool_to_s
@@ -357,9 +357,19 @@ class Organization < ActiveRecord::Base
 
     unless org_type_filter.nil? or org_type_filter.empty?
       logger.debug("applying session org_type filters to search results: #{org_type_filter.inspect}")
-      joinSQL = "#{joinSQL} INNER JOIN taggings AS taggings_org ON taggings_org.taggable_id = organizations.id INNER JOIN tags AS tags_org ON taggings_org.tag_id = tags_org.id INNER JOIN org_types ON tags_org.root_id = org_types.id"
-      condSQLs << "org_types.name IN (#{org_type_filter.collect{'?'}.join(',')})"
-      condParams += org_type_filter
+
+      # joinSQL = "#{joinSQL} INNER JOIN taggings AS taggings_org ON taggings_org.taggable_id = organizations.id INNER JOIN tags AS tags_org ON taggings_org.tag_id = tags_org.id INNER JOIN org_types ON tags_org.root_id = org_types.id"
+      # condSQLs << "org_types.name IN (#{org_type_filter.collect{'?'}.join(',')})"
+      # condParams += org_type_filter
+
+      ids = org_type_filter.map{|x| Tag.find_by_name(x)}.compact.map{|x| x.effective_root}.compact.select{|x| x.kind_of? OrgType}.compact
+      joinSQL = "#{joinSQL} INNER JOIN taggings AS taggings_org ON taggings_org.taggable_id = organizations.id INNER JOIN tags AS tags_org ON taggings_org.tag_id = tags_org.id"
+      condSQLs << "tags_org.root_id IN (#{ids.collect{'?'}.join(',')})"
+      condParams += ids.map{|x| x.id}
+      puts joinSQL
+      puts condSQLs
+      puts condParams
+
       condSQLs << "taggings_org.taggable_type = ?"
       condParams += ["Organization"]
       condSQLs << "tags_org.root_type = ?"

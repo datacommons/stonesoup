@@ -41,7 +41,13 @@
         <%= render :partial => 'search/search_form', :locals => { :this_is_the_header => true } %>
 <div id="post-header"></div>
 </div>
-<div id="search_filters" style="display: none; margin-bottom: 20px;"></div>
+<%- if @filter_override -%>
+<div id="search_filters">
+<%= render :partial => 'search/filters' %>
+</div>
+<%- else -%>
+<div id="search_filters" style="display: none;"></div>
+<%- end -%>
 <div id="front-bar">
 <div class="button-right"><%= link_to '<b>+</b> Add Organization', :controller => 'organizations', :action => 'new' %></div>
 <div class="button"><a href="http://datacommons.find.coop/about">About</a></div><div class="button"><a href="http://datacommons.find.coop/contact">Contact</a></div><div class="button"><a href="http://datacommons.find.coop/donate">Donate</a></div>

@@ -42,9 +42,47 @@ public
     session[:zip_filter] = @site.zip_filter
     session[:dso_filter] = @site.dso_filter
     session[:org_type_filter] = @site.org_type_filter
+    get_filters # session[:filter_active]
     
     Email.website_hostname = @site.canonical_name
     logger.debug("Set Email.website_hostname to: #{Email.website_hostname.inspect}")
+  end
+
+  def get_filters
+    possible_filters = [
+                        { :key => :country_filter, :label => "Country" },
+                        { :key => :state_filter, :label => "State" },
+                        { :key => :city_filter, :label => "City" },
+                        { :key => :zip_filter, :label => "Zip" },
+                        { :key => :dso_filter, :label => "Team" },
+                        { :key => :org_type_filter, :label => "Organization Type" }
+                       ]
+    default_filters = []
+    active_filters = []
+    all_filters = []
+    all_default = true
+    possible_filters.each do |possible_filter|
+      key = possible_filter[:key]
+      name = key.to_s.gsub("_filter","")
+      filter = session[key]
+      is_default = !filter.nil?
+      has_default = is_default
+      default_filters << { :name => name, :label => possible_filter[:label], :value => filter } if filter
+      filter2 = session[("active_"+key.to_s).to_sym]
+      if filter2
+        active_filters << { :name => name, :label => possible_filter[:label], :value => filter2 } 
+        filter = filter2
+        is_default = false
+        all_default = false
+      end
+      all_filters << { :name => name, :label => possible_filter[:label], :value => filter, :is_default => is_default, :has_default => has_default }
+    end
+    default_filters.compact!
+    active_filters.compact!
+    @default_filters = default_filters
+    @active_filters = active_filters
+    @all_filters = all_filters
+    @filter_override = !all_default
   end
 
   def valid_password?(password, username)

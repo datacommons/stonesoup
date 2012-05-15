@@ -396,40 +396,6 @@ protected
     return areaize1("physical_city",loc,txt) || areaize1("physical_zip",loc,txt) || areaize1("physical_state",loc,txt) || areaize1("physical_country",loc,txt)
   end
 
-  def get_filters
-    possible_filters = [
-                        { :key => :country_filter, :label => "Country" },
-                        { :key => :state_filter, :label => "State" },
-                        { :key => :city_filter, :label => "City" },
-                        { :key => :zip_filter, :label => "Zip" },
-                        { :key => :dso_filter, :label => "Team" },
-                        { :key => :org_type_filter, :label => "Organization Type" }
-                       ]
-    default_filters = []
-    active_filters = []
-    all_filters = []
-    possible_filters.each do |possible_filter|
-      key = possible_filter[:key]
-      name = key.to_s.gsub("_filter","")
-      filter = session[key]
-      is_default = !filter.nil?
-      has_default = is_default
-      default_filters << { :name => name, :label => possible_filter[:label], :value => filter } if filter
-      filter2 = session[("active_"+key.to_s).to_sym]
-      if filter2
-        active_filters << { :name => name, :label => possible_filter[:label], :value => filter2 } 
-        filter = filter2
-        is_default = false
-      end
-      all_filters << { :name => name, :label => possible_filter[:label], :value => filter, :is_default => is_default, :has_default => has_default }
-    end
-    default_filters.compact!
-    active_filters.compact!
-    @default_filters = default_filters
-    @active_filters = active_filters
-    @all_filters = all_filters
-  end
-
   def render_auto_complete(groups,search)
     results = []
     groups.each do |result_set|
