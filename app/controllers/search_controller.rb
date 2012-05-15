@@ -20,12 +20,12 @@ class SearchController < ApplicationController
     search_query = params[:q].to_s + '' # apparently the (+ '') is needed to make these distinct variables
 
     _params = params.clone
-    if search_query == "" and _params[:advanced] != '1' and not(params[:act])
-      search_query = @site.blank_search
-      _params[:q] = search_query
-    end
+    # if search_query == "" and _params[:advanced] != '1' and not(params[:act])
+    # search_query = @site.blank_search
+    #  _params[:q] = search_query
+    #end
 
-    @entries = @template.search_core(_params)
+    @entries = @template.search_core(_params,@site)
 
     if params[:merge]
       @merge_active = true
@@ -137,8 +137,28 @@ class SearchController < ApplicationController
       if params[:value]
         session[key] = params[:value].split(/,/).map{|x| x.strip}
       else
-        # session.delete(key)
-        session[key] = nil
+        # key = nil means use default; key = [] means filter inactive
+        if session[key].nil?
+          session[key] = []
+        else
+          session[key] = nil
+        end  
+      end
+    end
+    if params[:act]
+      params.select{|k,v| k.include? "_filter"}.each do |k,v|
+        k = "dso_filter" if k == "data_sharing_orgs_filter"
+        k = "org_type_filter" if k == "org_types_filter"
+        key = "active_" + k
+        session[key.to_sym] = [] if session[key.to_sym].nil?
+        session[key.to_sym] << v
+        session[key.to_sym].uniq!
+        session[key.to_sym].sort!
+      end
+      if params.keys.include? "zip_filter"
+        session[:active_city_filter] = nil
+      elsif params.keys.include? "city_filter"
+        session[:active_zip_filter] = nil
       end
     end
     self.get_filters
@@ -357,6 +377,8 @@ protected
     txt = txt.downcase
     val = loc[field]
     return nil unless val
+    val.strip!
+    return nil if val == ""
     return nil unless val.downcase.include? txt
     if field == "physical_city"
       return SearchItem.new(loc.physical_city,"City",{:city => loc.physical_city, :state => loc.physical_state, :country => loc.physical_country}) 
@@ -376,6 +398,7 @@ protected
 
   def get_filters
     possible_filters = [
+                        { :key => :country_filter, :label => "Country" },
                         { :key => :state_filter, :label => "State" },
                         { :key => :city_filter, :label => "City" },
                         { :key => :zip_filter, :label => "Zip" },
@@ -389,13 +412,16 @@ protected
       key = possible_filter[:key]
       name = key.to_s.gsub("_filter","")
       filter = session[key]
+      is_default = !filter.nil?
+      has_default = is_default
       default_filters << { :name => name, :label => possible_filter[:label], :value => filter } if filter
       filter2 = session[("active_"+key.to_s).to_sym]
       if filter2
         active_filters << { :name => name, :label => possible_filter[:label], :value => filter2 } 
         filter = filter2
+        is_default = false
       end
-      all_filters << { :name => name, :label => possible_filter[:label], :value => filter }
+      all_filters << { :name => name, :label => possible_filter[:label], :value => filter, :is_default => is_default, :has_default => has_default }
     end
     default_filters.compact!
     active_filters.compact!

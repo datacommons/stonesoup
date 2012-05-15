@@ -7,7 +7,7 @@
 		<div><label id="search_label" for="q">Search the directory:</label>
 		<%- if @site.search_bar_in_header %>
 		  <%= text_field_tag 'q', @query, :size => 30, :placeholder=>'Search...', :autocomplete => "off" %><%= image_submit_tag "/images/spacer.gif", :id => "see_list" %>
-		  <ul id="qq">
+		  <ul id="qq" class="autocomplete_box">
 		  </ul>
                 <%- else -%>
 		  <%= text_field_tag 'q', @query, :size => 30 %><%= submit_tag "see list", :id => "see_list" %>

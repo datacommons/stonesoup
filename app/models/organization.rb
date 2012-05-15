@@ -297,16 +297,25 @@ class Organization < ActiveRecord::Base
   end
 
   def Organization.location_join(filters,opts = {})
+    country_filter = ApplicationHelper.get_filter(filters,:country_filter,opts)
     state_filter = ApplicationHelper.get_filter(filters,:state_filter,opts)
     city_filter = ApplicationHelper.get_filter(filters,:city_filter,opts)
     zip_filter = ApplicationHelper.get_filter(filters,:zip_filter,opts)
     condSQLs = []
     condParams = []
     join_type = "INNER"
-    if [state_filter,city_filter,zip_filter].compact.collect{|f| f.length}.inject(0){|a,b| a+b}==0
+    if [country_filter,state_filter,city_filter,zip_filter].compact.collect{|f| f.length}.inject(0){|a,b| a+b}==0
       join_type = "LEFT"
     end
     joinSQL = "#{join_type} JOIN locations ON locations.organization_id = organizations.id"
+
+    unless country_filter.nil? or country_filter.empty?
+      logger.debug("applying session country filters to search results: #{country_filter.inspect}")
+      countries = [country_filter].flatten
+      condSQLs << "(locations.physical_country IN (#{countries.collect{'?'}.join(',')})) OR (locations.mailing_country IN (#{countries.collect{'?'}.join(',')}))"
+      condParams += countries + countries
+    end
+
     unless state_filter.nil? or state_filter.empty?
       logger.debug("applying session state filters to search results: #{state_filter.inspect}")
       states = [state_filter].flatten

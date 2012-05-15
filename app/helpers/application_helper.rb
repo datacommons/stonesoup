@@ -161,7 +161,7 @@ module ApplicationHelper
     return s + " ..."
   end
 
-  def search_core(_params)
+  def search_core(_params,site)
     if (_params[:state]||_params[:city]||_params[:country]||_params[:zip]) and _params[:advanced] != '1'
       q = _params[:q].to_s + ''
       if _params[:state]
@@ -189,6 +189,7 @@ module ApplicationHelper
     end
 
     search_query = _params[:q].to_s + ''
+    using_blank = search_query.blank?
 
     entries = []
 
@@ -267,10 +268,9 @@ module ApplicationHelper
           proximity_conditionSQL = 'organizations.id IN ('+close_organization_ids.join(',')+')'
           logger.debug("close_organization_ids = #{close_organization_ids.inspect}")
         end
-        search_query = '*' if search_query.blank? # give it something to force the query, even if the actual "search terms" are blank
         logger.debug("After adding advanced search terms, query is: #{search_query}")
       end
-      
+
       unless proximity_conditionSQL.nil?
         conditionSQL[:organization] <<= proximity_conditionSQL
       end
@@ -286,6 +286,18 @@ module ApplicationHelper
       append_query = ""
 
       if not(_params[:unrestricted])
+        country_filter = ApplicationHelper.get_filter(session,:country_filter)
+        unless country_filter.blank?
+          logger.debug("applying country filters to search results: #{country_filter.inspect}")
+          addl_criteria = []
+          [country_filter].flatten.each do |country|
+            addl_criteria << "country:\"#{country}\""
+          end
+          append_query = "#{append_query} +(#{addl_criteria.join(' OR ')})"
+          filtered_query = "+(#{search_query})#{append_query}"
+          logger.debug("After adding country filter to query, query is: #{filtered_query}")
+        end
+
         state_filter = ApplicationHelper.get_filter(session,:state_filter)
         unless state_filter.blank?
           logger.debug("applying session state filters to search results: #{state_filter.inspect}")
@@ -355,6 +367,11 @@ module ApplicationHelper
           # filtered_query = "+(#{search_query}) +(#{addl_criteria.join(' OR ')})"
           logger.debug("After adding org_type filter to query, query is: #{filtered_query}")
         end
+      end
+
+      filtered_query.gsub!("+() ","")
+      if using_blank and filtered_query == ""
+        filtered_query = site.blank_search
       end
 
       pagination = { 

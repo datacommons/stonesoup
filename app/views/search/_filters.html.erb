@@ -1,87 +1,100 @@
-<h2>Default Filters</h2>
-
-<% @default_filters.each do |filter| %>
-<div>
-<%= filter[:name] %> ==>
-<%= filter[:value].join(', ') %>
-</div>
-<% end %>
-
-<h2>Active Filters</h2>
-
-<% @active_filters.each do |filter| %>
-<div>
+<% @all_filters.each_with_index do |filter,index| %>
+<form id="<%=filter[:name]%>_filter_form" class="filter_listing<%- if !(filter[:value].blank?) -%> active<%- elsif filter[:has_default] -%> disable<%- end -%>">
+<%- unless filter[:value].blank? and !filter[:has_default] -%>
 <%= link_to_remote( 'x', 
     :url => {:controller => 'search', :action => 'change_filter', :name => filter[:name]},
-    :update => 'search_filters',
-    :confirm => 'Remove filter?') %>
-<%= filter[:name] %> ==>
-<%= filter[:value].join(', ') %>
-</div>
+    :html => {:class => 'close'},
+    :update => 'search_filters') %>
+<%- end -%>
+<b><%= filter[:label] %></b><br />
+<% unless filter[:value].blank? %>
+<%= filter[:value].join(', ') %><br />
+<% else %>
+ <%- if filter[:has_default] -%>
+   (disabled)<br />
+ <%- end -%>
 <% end %>
-
-<h2>All Filters</h2>
-
-<% @all_filters.each do |filter| %>
-<div>
-<%= link_to_remote( 'x', 
-    :url => {:controller => 'search', :action => 'change_filter', :name => filter[:name]},
-    :update => 'search_filters',
-    :confirm => 'Remove filter?') %>
-<%= filter[:name] %> ==>
-<% if filter[:value] %>
-<%= filter[:value].join(', ') %>
-<% end %>
-</div>
-<% end %>
-
-<h2>Add Filter</h2>
-
-<% form_remote_tag(:url => {:controller => 'search', :action => 'change_filter'},
-    :update => "search_filters", :method => "get") do %>
-  <%= label_tag(:name, "Name:") %>
-  <%= select_tag(:name, options_for_select([['city','city'],['state','state'],['zip','zip'],['dso','dso'],['org_type','org_type']])) %>
-  <%= label_tag(:value, "Values:") %>
-  <%= text_field_tag(:value) %> (commas between)
-  <%= submit_tag("Search") %>
-<% end %>
-
-
-<% xfilters = ['country','state','city','zip','dso','org_type'] %>
-
-<% xfilters.each do |filter| %>
-
-<h2><%=filter%></h2>
-
-<form id="<%=filter%>_filter_form">
-<ul>
-<li>Add <input type="text" id="<%=filter%>_filter_input" name="<%=filter%>_filter_input" /></li>
-</ul>
-<ul id="<%=filter%>_filter_tips">
++ <input type="text" id="<%=filter[:name]%>_filter_input" name="<%=filter[:name]%>_filter_input" autocomplete="false" tabindex="<%=20+index%>" style="padding-bottom: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; width:60px;" />
+<div style="position:relative;"><ul id="<%=filter[:name]%>_filter_tips" class="autocomplete_box" style="margin-top: 0px; padding-top: 0px; margin-left: 0px; margin-right: 0px; width:300px; z-index:<%=10999-index%>; display: none; position:absolute; top: 0px; left: 0px;"></div>
 </ul>
 </form>
-
 <% end %>
-
+<div class="clearboth"></div>
 
 <script>
-function filter_instrument(prefix,completer,seed) {
-  var in_id = prefix + "_input";
-  var out_id = prefix + "_tips";
-  var form_id = prefix + "_form";
-  $(form_id).observe('submit',function(event) {
-    event.stop();
-    var string = $F(in_id);
-    if (confirm("Uh?")) {
-      alert("yuh");
+function filter_tag_key(in_id,out_id,code,store) {
+  var result = true;
+  var obj = $(in_id);
+  if (store.current_tag_at!=-1) {
+    $$('#' + out_id + ' li')[store.current_tag_at].removeClassName("autocomplete_select");
+  }
+  if (code==38) {
+    // up
+    if (store.current_tags.length>store.current_tag_at-1 && store.current_tag_at>=1) {
+       store.current_tag_at--;
+       store.ignore_value = store.current_tags[store.current_tag_at].ac_label;
+       obj.value = store.current_tags[store.current_tag_at].ac_label;
+       result = false;
     }
-    return false;
-  });
-  new Form.Element.Observer(in_id, 0.1, function(event) {
+  } else if (code==40||code==9) {
+    // down
+    if (store.current_tags.length>store.current_tag_at+1) {
+       store.current_tag_at++;
+       store.ignore_value = store.current_tags[store.current_tag_at].ac_label;
+       obj.value = store.current_tags[store.current_tag_at].ac_label;
+       result = false;
+    }
+    if (code==9) return result;
+  }
+  if (store.current_tag_at!=-1) {
+    $$('#' + out_id + ' li')[store.current_tag_at].addClassName("autocomplete_select");
+  }
+  return result;
+}
+
+function filter_link(a) {
+  var lnk = new Object();
+  var item = "/search/change_filter?act=select";
+  if (typeof a.pid == "object") {
+    for (var p in a.pid) { item = item + "&" + p + "_filter="; item = item + escape(a.pid[p]); };
+  } else {
+    item = item + "&" + a.type + "_filter=" + escape(a.name);
+  }
+  lnk["ac_label"] = a.label;
+  lnk["ac_link"] = item;
+  lnk["ac_cat"] = a.cat;
+  var item = "<li class='tagger'><a href='#' onclick=\"new Ajax.Updater('search_filters', '" + item.replace(/\&/g,'&amp;') +"', {asynchronous:true, evalScripts:true}); return false;\">" + a.label  + "</a></li>";
+  lnk["ac_bullet"] = item;
+  return lnk;
+}
+
+function filter_submit_link(lnk,prefix) {
+  var ac_link = null;
+  if (typeof(lnk) == 'object') {
+    ac_link = lnk.ac_link;
+  } else {
+    ac_link = "/search/change_filter?act=select&" + prefix + "=" + escape(lnk);
+  }
+  new Ajax.Updater('search_filters', ac_link, {asynchronous:true, evalScripts:true}); 
+
+  return false;
+}
+
+function filter_instrument(prefix,completer,state,linkify,submitify) {
+  var store = state[prefix] = new Object();
+  store.current_tags = [];
+  store.current_tag_at = -1;
+  store.ignore_value = "__INVALID__";
+  var updater = function(event) {
     var string = $F(in_id);
+    if (string==store.ignore_value) return;
+    store.want_value = string;
     if (string.length >= 0) {
-      new Ajax.Request('/search/'+completer, {method:'get',parameters:{search:string,parent:seed},
+      new Ajax.Request('/search/'+completer, {method:'get',parameters:{search:string},
         onSuccess: function(transport) {
+          if (string!=store.want_value) return;
+          store.current_tags = [];
+          store.current_tag_at = -1;
           var taggers = transport.responseJSON;
           var lis = $(out_id).descendants();
           if (lis.length > 0) {
@@ -90,10 +103,12 @@ function filter_instrument(prefix,completer,seed) {
             });
           };
           taggers.each(function(a) {
-            var item = "<li class='tagger'><a href='/" + a.type + "/" + a.pid + "' class='tagger-link'>" + a.label + "</a> (" + a.family + ")</li>";
-            if (typeof a.pid == "object") { item = "<li class='tagger'><a href='/search/search?act=search"; for (var p in a.pid) { item = item + "&amp;" + p + "="; item = item + escape(a.pid[p]); }; item = item + "' class='tagger-link'>" + a.label + "</a> (" + a.family + ")</li>"; }
+            var full_item = linkify(a);
+            var item = full_item['ac_bullet'];
             $(out_id).insert(item);
+            store.current_tags.push(full_item);
           });
+          $(out_id).show();
         }
       });
     } else {
@@ -104,10 +119,28 @@ function filter_instrument(prefix,completer,seed) {
         });
      };
    };
- });
+ };
+
+  var in_id = prefix + "_input";
+  var out_id = prefix + "_tips";
+  var form_id = prefix + "_form";
+  $(in_id).observe('focus', updater);
+  $(in_id).observe('blur', function(event) { Element.hide.delay(0.25,$(out_id)); });
+
+  $(in_id).observe('keydown', function(event) { return filter_tag_key(in_id,out_id,event.keyCode,store); });
+  $(form_id).observe('submit',function(event) {
+    event.stop();
+    var string = $F(in_id);
+    if (string==store.ignore_value && store.current_tag_at!=-1) {
+      return submitify(store.current_tags[store.current_tag_at]);
+    }
+    return submitify(string,prefix);
+  });
+  new Form.Element.Observer(in_id, 0.1, updater);
 }
-<% xfilters.each do |filter| %>
-filter_instrument("<%=filter%>_filter","auto_complete_<%=filter%>","");
+<% @all_filters.each do |filter| %>
+var filter_state = new Object();
+filter_instrument("<%=filter[:name]%>_filter","auto_complete_<%=filter[:name]%>",filter_state,filter_link,filter_submit_link);
 <% end %>
 </script>
 

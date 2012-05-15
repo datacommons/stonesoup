@@ -233,6 +233,7 @@ form.button-to {
 	position:relative;
 	width:100%;
 	background-color: #fff;
+        min-height: 150px;
 }
 
 .nohover a {
@@ -733,19 +734,21 @@ body.page-users-prefs .listing {
   outline: 0;
 }
 
-#qq { 
+.autocomplete_box {
   background: white;
-  position:absolute;
+  position: absolute;
+  text-align: left;
+  border: 1px solid #339966;
+  padding-bottom: 20px;
+  list-style-type: square;
+}
+
+#qq { 
   top:65px;
   left:28px;
   width:453px;
-  z-index:10000;
-  text-align:left;
-  border-left: 1px solid #339966;
-  border-right: 1px solid #339966;
-  border-bottom: 1px solid #339966;
-  padding-bottom: 20px;
-  list-style-type:square;
+  z-index:11000;
+  border-top: none;
 }
 
 
@@ -843,7 +846,8 @@ body.page-users-prefs .listing {
 
 #post-header { 
   clear: both;
-  padding: 20px;
+  padding: 0px;
+  margin: 0px;
 }
 
 #front-bar .button { 
@@ -910,3 +914,39 @@ body.page-users-prefs .listing {
 .tagger.indirect a {
   color: #88f;
 }
+
+#search_filters {  
+  margin-top: 0px;
+  margin-bottom: 0px;
+  background: #cccc66;
+}
+
+.filter_listing {
+  display: block;
+  float: right;
+  margin: 5px;
+  padding: 5px;
+  max-width: 150px;
+}
+
+.filter_listing .close {
+  display: float;
+  float: right;
+}
+
+.filter_listing a {
+  text-decoration: none;
+}
+
+.filter_listing.active {
+  background: #fff;
+}
+
+.filter_listing.default {
+  background: #fff;
+}
+
+.filter_listing.disable {
+  background: #f00;
+}
+

@@ -64,7 +64,7 @@ function tag_key(obj,code) {
 if($("<%=auto_complete_input_id%>")) {
                 $('<%=auto_complete_output_id%>').hide();
                 $('<%=auto_complete_input_id%>').observe('keydown', function(event) { return tag_key($('<%=auto_complete_input_id%>'),event.keyCode); });
-                $('<%=auto_complete_input_id%>').observe('focusout', function(event) { Element.hide.delay(1,'<%=auto_complete_output_id%>'); return false; });
+                $('<%=auto_complete_input_id%>').observe('blur', function(event) { Element.hide.delay(0.25,'<%=auto_complete_output_id%>'); return false; });
 		new Form.Element.Observer('<%=auto_complete_input_id%>', 0.1, function(event) {
 			var string = $F('<%=auto_complete_input_id%>');
                         if (string==ignore_value && string!="") return;
