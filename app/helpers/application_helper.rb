@@ -371,7 +371,9 @@ module ApplicationHelper
 
       filtered_query.gsub!("+() ","")
       if using_blank and filtered_query == ""
-        filtered_query = site.blank_search
+        if site
+          filtered_query = site.blank_search
+        end
       end
 
       pagination = { 
@@ -405,7 +407,7 @@ module ApplicationHelper
   def get_listing_uncached(query)
     p = {}
     p[:q] = query
-    search_core(p)
+    search_core(p,nil)
   end
 
   def get_listing(query)
