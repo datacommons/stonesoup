@@ -477,11 +477,11 @@ protected
       joinSQL = nil if condSQLs.empty?
       condSQLs << "locations.#{key} LIKE ?"
       condParams << value
-      conditions = []
-      conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
       sql = 'DISTINCT locations.physical_country'
+      condSQLs << "locations.physical_country IS NOT NULL"
       unless key == "physical_country"
         sql << ", locations.physical_state"
+        condSQLs << "locations.physical_state IS NOT NULL"
         unless key == "physical_state"
           sql << ", locations.physical_city"
           unless key == "physical_city"
@@ -489,6 +489,8 @@ protected
           end
         end
       end
+      conditions = []
+      conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
       area_locations = Location.find(:all, :conditions => conditions, 
                                      :select => sql,
                                      :joins => joinSQL,
