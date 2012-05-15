@@ -161,7 +161,7 @@ module ApplicationHelper
     return s + " ..."
   end
 
-  def search_core(_params,site)
+  def search_core(_params,site, opts = {})
     if (_params[:state]||_params[:city]||_params[:country]||_params[:zip]) and _params[:advanced] != '1'
       q = _params[:q].to_s + ''
       if _params[:state]
@@ -286,7 +286,7 @@ module ApplicationHelper
       append_query = ""
 
       if not(_params[:unrestricted])
-        country_filter = ApplicationHelper.get_filter(session,:country_filter)
+        country_filter = ApplicationHelper.get_filter(session,:country_filter,opts)
         unless country_filter.blank?
           logger.debug("applying country filters to search results: #{country_filter.inspect}")
           addl_criteria = []
@@ -298,7 +298,7 @@ module ApplicationHelper
           logger.debug("After adding country filter to query, query is: #{filtered_query}")
         end
 
-        state_filter = ApplicationHelper.get_filter(session,:state_filter)
+        state_filter = ApplicationHelper.get_filter(session,:state_filter,opts)
         unless state_filter.blank?
           logger.debug("applying session state filters to search results: #{state_filter.inspect}")
           addl_criteria = []
@@ -317,7 +317,7 @@ module ApplicationHelper
           logger.debug("After adding state filter to query, query is: #{filtered_query}")
         end
 
-        city_filter = ApplicationHelper.get_filter(session,:city_filter)
+        city_filter = ApplicationHelper.get_filter(session,:city_filter,opts)
         unless city_filter.blank?
           logger.debug("applying city filters to search results: #{city_filter.inspect}")
           addl_criteria = []
@@ -329,7 +329,7 @@ module ApplicationHelper
           logger.debug("After adding city filter to query, query is: #{filtered_query}")
         end
 
-        zip_filter = ApplicationHelper.get_filter(session,:zip_filter)
+        zip_filter = ApplicationHelper.get_filter(session,:zip_filter,opts)
         unless zip_filter.blank?
           logger.debug("applying zip filters to search results: #{zip_filter.inspect}")
           addl_criteria = []
@@ -342,7 +342,7 @@ module ApplicationHelper
           logger.debug("After adding zip filter to query, query is: #{filtered_query}")
         end
 
-        dso_filter = ApplicationHelper.get_filter(session,:dso_filter)
+        dso_filter = ApplicationHelper.get_filter(session,:dso_filter,opts)
         unless dso_filter.blank?
           logger.debug("applying dso filters to search results: #{dso_filter.inspect}")
           addl_criteria = []
@@ -355,7 +355,7 @@ module ApplicationHelper
           logger.debug("After adding dso filter to query, query is: #{filtered_query}")
         end
 
-        org_type_filter = ApplicationHelper.get_filter(session,:org_type_filter)
+        org_type_filter = ApplicationHelper.get_filter(session,:org_type_filter,opts)
         unless org_type_filter.blank?
           logger.debug("applying org_type filters to search results: #{org_type_filter.inspect}")
           addl_criteria = []
@@ -407,12 +407,12 @@ module ApplicationHelper
   def get_listing_uncached(query)
     p = {}
     p[:q] = query
-    search_core(p,nil)
+    search_core(p,nil,{:no_override => true})
   end
 
   def get_listing(query)
     # long cache for now
-    result = YAML::load(Rails.cache.fetch("findcoop_get_listing:"+query, :expires_in => 14400.minute) { get_listing_uncached(query).to_yaml })
+    result = YAML::load(Rails.cache.fetch("findcoop_get_listingv2:"+query, :expires_in => 14400.minute) { get_listing_uncached(query).to_yaml })
     return result
   end
 
@@ -467,10 +467,12 @@ module ApplicationHelper
     if opts[:omit]
       return nil if opts[:omit].include? key
     end
-    filter = filters[("active_" + key.to_s).to_sym]
-    if filter
-      return nil if filter.length == 0
-      return filter
+    unless opts[:no_override]
+      filter = filters[("active_" + key.to_s).to_sym]
+      if filter
+        return nil if filter.length == 0
+        return filter
+      end
     end
     filters[key]
   end
