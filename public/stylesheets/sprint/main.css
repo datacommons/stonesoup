@@ -918,35 +918,60 @@ body.page-users-prefs .listing {
 #search_filters {  
   margin-top: 0px;
   margin-bottom: 0px;
-  background: #cccc66;
 }
 
 .filter_listing {
   display: block;
   float: right;
   margin: 5px;
-  padding: 5px;
+  padding: 10px;
   max-width: 150px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -khtml-border-radius: 5px;
+  border-radius: 5px;
+}
+
+.filter_listing input {  
+  font-family: Arial, Sans-Serif;
+  font-size: 13px;
+  margin-bottom: 5px;
+  display: block;
+  padding: 4px;
+  border: 1px solid #ddddaa;
 }
 
 .filter_listing .close {
   display: float;
   float: right;
+  margin-left: 10px;
 }
 
 .filter_listing a {
   text-decoration: none;
 }
 
+.filter_listing .close a {
+  font-weight: bold;
+  color: #fff;
+}
+
 .filter_listing.active {
-  background: #fff;
+  background: #384637;
+  color: #cccc66;
+  border: 1px solid #cccc66;
 }
 
 .filter_listing.default {
-  background: #fff;
+  background: #cccc66;
+  border: 1px solid #ddddaa;
 }
 
 .filter_listing.disable {
-  background: #f00;
+  background: #ddddaa;
+  border: 1px solid #384637;
 }
 
+.filter_listing.active .filter_title {
+  color: white;
+}

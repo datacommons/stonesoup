@@ -1,20 +1,19 @@
 <% @all_filters.each_with_index do |filter,index| %>
-<form id="<%=filter[:name]%>_filter_form" class="filter_listing<%- if !(filter[:value].blank?) -%> active<%- elsif filter[:has_default] -%> disable<%- end -%>">
+<form id="<%=filter[:name]%>_filter_form" class="filter_listing<%- if !(filter[:value].blank?) -%> active<%- elsif filter[:has_default] -%> disable<%- else -%> default<%- end -%>">
 <%- unless filter[:value].blank? and !filter[:has_default] -%>
-<%= link_to_remote( 'x', 
+<div class="close"><%= link_to_remote( 'x', 
     :url => {:controller => 'search', :action => 'change_filter', :name => filter[:name]},
-    :html => {:class => 'close'},
-    :update => 'search_filters') %>
+    :update => 'search_filters') %></div>
 <%- end -%>
-<b><%= filter[:label] %></b><br />
+<span class="filter_title"><%= filter[:label] %></span><br />
 <% unless filter[:value].blank? %>
 <%= filter[:value].join(', ') %><br />
 <% else %>
  <%- if filter[:has_default] -%>
-   (disabled)<br />
+   (filter blocked)<br />
  <%- end -%>
 <% end %>
-+ <input type="text" id="<%=filter[:name]%>_filter_input" name="<%=filter[:name]%>_filter_input" autocomplete="false" tabindex="<%=20+index%>" style="padding-bottom: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; width:60px;" />
+<input type="text" id="<%=filter[:name]%>_filter_input" name="<%=filter[:name]%>_filter_input" autocomplete="off" placeholder="Add <%=filter[:label].gsub('Organization','org').downcase%>..." tabindex="<%=20+index%>" style="padding-bottom: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; width:90px;" />
 <div style="position:relative;"><ul id="<%=filter[:name]%>_filter_tips" class="autocomplete_box" style="margin-top: 0px; padding-top: 0px; margin-left: 0px; margin-right: 0px; width:300px; z-index:<%=10999-index%>; display: none; position:absolute; top: 0px; left: 0px;"></div>
 </ul>
 </form>
@@ -102,11 +101,15 @@ function filter_instrument(prefix,completer,state,linkify,submitify) {
               l.remove();
             });
           };
+          var ct = 0;
           taggers.each(function(a) {
+            if (ct<20) {
             var full_item = linkify(a);
             var item = full_item['ac_bullet'];
             $(out_id).insert(item);
             store.current_tags.push(full_item);
+            }
+            ct++;
           });
           $(out_id).show();
         }
