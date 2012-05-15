@@ -41,7 +41,7 @@
     <% if entry.primary_location %>
        <%= entry.primary_location.physical_city %> <%= entry.primary_location.physical_state %>
     <% end %>
-    <br /><%= truncate_string(entry.description,70) %>
+    <br /><%= entry.description.nil? ? "" : truncate_string(entry.description,70) %>
     </p>
   <% end %>
 <% end %>
