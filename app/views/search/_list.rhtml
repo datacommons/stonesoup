@@ -1,4 +1,10 @@
 <% title = @title || "Search Results" %>
+<% 
+if @entries
+  @entry_name = "result" if @entries.map{|e| e.class.to_s}.uniq.length>1 
+end
+%>
+
 <% if @entries %>
  <% if @entries.blank? and not(@tag) %>
   <p>
@@ -27,7 +33,7 @@
   <% if @tag %>
     <%= render :partial => "#{@tag.class.to_s.underscore.pluralize}/summary", :locals => {:entry => @tag} %>
   <% end %>
-  <div class="listing_info"><%= page_entries_info @entries %></div>
+  <div class="listing_info"><%= page_entries_info @entries, (@entry_name ? {:entry_name => @entry_name} : {}) %></div>
   <%= will_paginate @entries %>
   <% for entry in @entries %>
    <% if entry.accessible? current_user %>

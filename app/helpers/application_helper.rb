@@ -161,7 +161,80 @@ module ApplicationHelper
     return s + " ..."
   end
 
-  def search_core(_params,site, opts = {})
+  
+  def search_core_org_ppl(search_query,pagination)
+    joinSQL, condSQLs, condParams = Organization.all_join(session)
+
+    org_joinSQL, org_condSQLs, org_condParams = [joinSQL, condSQLs, condParams]
+    # org_joinSQL = nil if org_condSQLs.empty?
+    org_conditions = []
+    org_conditions = [org_condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + org_condParams unless org_condSQLs.empty?
+
+    ppl_joinSQL, ppl_condSQLs, ppl_condParams = [joinSQL, condSQLs, condParams]
+    ppl_joinSQL = "INNER JOIN organizations_people ON organizations_people.person_id = people.id INNER JOIN organizations ON organizations_people.organization_id = organizations.id #{ppl_joinSQL}"
+    # ppl_joinSQL = nil if ppl_condSQLs.empty?
+    ppl_conditions = []
+    ppl_conditions = [ppl_condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + ppl_condParams unless ppl_condSQLs.empty?
+
+    includes = [:access_rule, :users]
+
+    if search_query == ""
+      entries = Organization.find(:all,
+                                  :limit => :all,
+                                  :conditions => org_conditions,
+                                  :joins => org_joinSQL,
+                                  :select => "DISTINCT organizations.*",
+                                  :include => includes)
+      entries2 = Person.find(:all,
+                             :limit => :all,
+                             :conditions => ppl_conditions,
+                             :joins => ppl_joinSQL,
+                             :select => "DISTINCT people.*",
+                             :include => [:access_rule])
+      if entries.length>0 and entries2.length>0
+        @entry_name = "result"
+      end
+      entries += entries2
+      entries = entries.paginate(pagination)
+    else
+      entries = ActsAsFerret::find(search_query,
+                                   [Organization,Person],
+                                   pagination,
+                                   {
+                                     :limit => :all,
+                                     :conditions => { :organization => org_conditions, :person => ppl_conditions },
+                                     :joins => { :organization => org_joinSQL, :person => ppl_joinSQL },
+                                     :select => { :organization => "DISTINCT organizations.*", :person => "DISTINCT people.*"},
+                                     :include => includes
+                                   })
+    end
+    entries
+  end
+
+  def search_core(_params,site,opts = {})
+    search_query = _params[:q].to_s + ''
+    pagination = { 
+      :page => _params[:page], 
+      :per_page => 15,
+    }
+    if _params[:format]=='xml' or _params[:format]=='csv' or _params[:format]=='pdf' or defined? @unlimited_search or _params['Map'] 
+      # When providing xml or csv, there should be no
+      # effective limit on the download size.  However,
+      # depending on server load, we might want to 
+      # restrict this to logged in users?
+      pagination = { }
+    end
+    using_blank = search_query.blank?
+    #if using_blank
+    #  if site
+    #    search_query = site.blank_search
+    #  end
+    #end
+    search_query = "" if search_query == "*"
+    search_core_org_ppl(search_query,pagination)
+  end
+
+  def search_core_old(_params,site, opts = {})
     if (_params[:state]||_params[:city]||_params[:country]||_params[:zip]) and _params[:advanced] != '1'
       q = _params[:q].to_s + ''
       if _params[:state]

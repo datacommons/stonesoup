@@ -32,7 +32,9 @@ ActionController::Routing::Routes.draw do |map|
   # -- just remember to delete public/index.html.
   map.connect '', :controller => "search"
 
-  map.connect 'feed.rss', :controller => "search", :action => "recent"
+  map.connect 'feed', :controller => "search", :action => "feed"
+
+  map.recent 'recent', :controller => "search", :action => "recent"
 
   # Allow downloading Web Service WSDL as a file with an extension
   # instead of a file named 'wsdl'

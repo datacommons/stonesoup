@@ -343,7 +343,9 @@ class Organization < ActiveRecord::Base
 
   def Organization.tag_join(filters, opts = {})
     dso_filter = ApplicationHelper.get_filter(filters,:dso_filter,opts)
-    org_type_filter = ApplicationHelper.get_filter(filters,:org_type_filter,opts)
+    org_type_filter = ApplicationHelper.get_filter(filters,:org_type_filter,opts) || []
+    sector_filter = ApplicationHelper.get_filter(filters,:sector_filter,opts) || []
+    legal_structure_filter = ApplicationHelper.get_filter(filters,:legal_structure_filter,opts) || []
     condSQLs = []
     condParams = []
     joinSQL = ""
@@ -355,26 +357,36 @@ class Organization < ActiveRecord::Base
       condParams += dsos
     end
 
-    unless org_type_filter.nil? or org_type_filter.empty?
-      logger.debug("applying session org_type filters to search results: #{org_type_filter.inspect}")
+    tag_filters = [[org_type_filter, OrgType],
+                   [sector_filter, Sector],
+                   [legal_structure_filter, LegalStructure]]
 
-      # joinSQL = "#{joinSQL} INNER JOIN taggings AS taggings_org ON taggings_org.taggable_id = organizations.id INNER JOIN tags AS tags_org ON taggings_org.tag_id = tags_org.id INNER JOIN org_types ON tags_org.root_id = org_types.id"
-      # condSQLs << "org_types.name IN (#{org_type_filter.collect{'?'}.join(',')})"
-      # condParams += org_type_filter
-
-      ids = org_type_filter.map{|x| Tag.find_by_name(x)}.compact.map{|x| x.effective_root}.compact.select{|x| x.kind_of? OrgType}.compact
-      joinSQL = "#{joinSQL} INNER JOIN taggings AS taggings_org ON taggings_org.taggable_id = organizations.id INNER JOIN tags AS tags_org ON taggings_org.tag_id = tags_org.id"
-      condSQLs << "tags_org.root_id IN (#{ids.collect{'?'}.join(',')})"
-      condParams += ids.map{|x| x.id}
-      puts joinSQL
-      puts condSQLs
-      puts condParams
-
-      condSQLs << "taggings_org.taggable_type = ?"
-      condParams += ["Organization"]
-      condSQLs << "tags_org.root_type = ?"
-      condParams += ["OrgType"]
+    tag_filters.each do |filter,klass|
+      unless filter.nil? or filter.empty?
+        logger.debug("applying session tag filters to search results: #{filter.inspect}")
+        name = klass.to_s
+        tags = filter.map{|x| Tag.find_by_name_and_root_type(x,name)}.compact.map{|x| x.synonyms}.flatten
+        puts "TAGS: #{tags.inspect}"
+        joinSQL = "#{joinSQL} INNER JOIN taggings AS taggings_#{name} ON taggings_#{name}.taggable_id = organizations.id"
+        condSQLs << "taggings_#{name}.taggable_type = ?"
+        condParams += ["Organization"]
+        condSQLs << "taggings_#{name}.tag_id IN (#{tags.collect{'?'}.join(',')})"
+        condParams += tags.map{|x| x.id}
+      end
     end
+    
+    # unless org_type_filter.nil? or org_type_filter.empty?
+    #   logger.debug("applying session org_type filters to search results: #{org_type_filter.inspect}")
+    #   ids = org_type_filter.map{|x| Tag.find_by_name(x)}.compact.map{|x| x.effective_root}.compact.select{|x| x.kind_of? OrgType}.compact
+    #   joinSQL = "#{joinSQL} INNER JOIN taggings AS taggings_org ON taggings_org.taggable_id = organizations.id INNER JOIN tags AS tags_org ON taggings_org.tag_id = tags_org.id"
+    #   condSQLs << "tags_org.root_id IN (#{ids.collect{'?'}.join(',')})"
+    #   condParams += ids.map{|x| x.id}
+    #   condSQLs << "taggings_org.taggable_type = ?"
+    #   condParams += ["Organization"]
+    #   condSQLs << "tags_org.root_type = ?"
+    #   condParams += ["OrgType"]
+    # end
+
     return [joinSQL, condSQLs, condParams]
   end
 

@@ -49,13 +49,34 @@ public
   end
 
   def get_filters
+    _params = params
+    if _params[:state]
+      long_state = Location::STATE_SHORT[_params[:state]]
+      long_state = _params[:state] unless long_state
+      session[:active_state_filter] = long_state.split(/,/)
+    end
+    if _params[:city]
+      session[:active_city_filter] = _params[:city].split(/,/)
+    end
+    if _params[:zip]
+      session[:active_zip_filter] = _params[:zip].split(/,/)
+    end
+    if _params[:country]
+      alt_form = Location::COUNTRY_SHORT[_params[:country]]
+      alt_form = _params[:country] unless alt_form
+      session[:active_country_filter] = alt_form.split(/,/)
+    end
+    @filter_unrestricted = _params[:unrestricted]
+
     possible_filters = [
                         { :key => :country_filter, :label => "Country" },
                         { :key => :state_filter, :label => "State" },
                         { :key => :city_filter, :label => "City" },
                         { :key => :zip_filter, :label => "Zip" },
                         { :key => :dso_filter, :label => "Team" },
-                        { :key => :org_type_filter, :label => "Organization Type" }
+                        { :key => :org_type_filter, :label => "Organization Type" },
+                        { :key => :sector_filter, :label => "Business Sector" },
+                        { :key => :legal_structure_filter, :label => "Legal Structure" }
                        ]
     default_filters = []
     active_filters = []
@@ -64,18 +85,23 @@ public
     possible_filters.each do |possible_filter|
       key = possible_filter[:key]
       name = key.to_s.gsub("_filter","")
-      filter = session[key]
+      filter0 = filter = session[key]
       is_default = !filter.nil?
       has_default = is_default
       default_filters << { :name => name, :label => possible_filter[:label], :value => filter } if filter
       filter2 = session[("active_"+key.to_s).to_sym]
+      if @filter_unrestricted
+        filter2 = session[("active_"+key.to_s).to_sym] = [] if filter
+        filter2 = session[("active_"+key.to_s).to_sym] = nil if filter2 and !filter
+      end
       if filter2
         active_filters << { :name => name, :label => possible_filter[:label], :value => filter2 } 
         filter = filter2
         is_default = false
         all_default = false
       end
-      all_filters << { :name => name, :label => possible_filter[:label], :value => filter, :is_default => is_default, :has_default => has_default }
+      f = { :name => name, :label => possible_filter[:label], :value => filter, :original => filter0, :is_default => is_default, :has_default => has_default }
+      all_filters << f
     end
     default_filters.compact!
     active_filters.compact!

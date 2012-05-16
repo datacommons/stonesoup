@@ -855,11 +855,14 @@ body.page-users-prefs .listing {
   padding: 1em;
 }
 
+#front-bar .flip-color { 
+  background: #cccc66;
+}
+
 #front-bar .button-right { 
   position:relative; 
   display:block; 
   float:right; 
-  background: #cccc66;
   padding: 1em;                    
 }
 
@@ -890,19 +893,19 @@ body.page-users-prefs .listing {
   text-decoration: none;
 }
 
-#front-bar .button-right a:link { 
+#front-bar .flip-color a:link { 
   color: #384637;
   text-decoration: none;
 }
-#front-bar .button-right a:visited { 
+#front-bar .flip-color a:visited { 
   color: #384637;
   text-decoration: none;
 }
-#front-bar .button-right a:hover { 
+#front-bar .flip-color a:hover { 
   color: #384637;
   text-decoration: none;
 }
-#front-bar .button-right a:active { 
+#front-bar .flip-color a:active { 
   color: #384637;
   text-decoration: none;
 }

@@ -119,10 +119,16 @@ class SearchController < ApplicationController
     end
   end
 
-  def recent
+  def feed
     @entries = get_latest_changes
-    render :layout => false
     response.headers["Content-Type"] = "application/xml; charset=utf-8"
+    render :layout => false
+  end
+
+  def recent
+    @title = "Recently changed"
+    @entries = get_latest_changes
+    @entries = @entries.paginate(:per_page => 15, :page => (params[:page]||1))
   end
   
   def render_js
@@ -148,7 +154,7 @@ class SearchController < ApplicationController
     if params[:act]
       params.select{|k,v| k.include? "_filter"}.each do |k,v|
         k = "dso_filter" if k == "data_sharing_orgs_filter"
-        k = "org_type_filter" if k == "org_types_filter"
+        k = k.gsub("s_filter","_filter")
         key = "active_" + k
         session[key.to_sym] = [] if session[key.to_sym].nil?
         session[key.to_sym] << v
@@ -193,6 +199,16 @@ class SearchController < ApplicationController
   def auto_complete_org_type
     opts = { :omit => [:org_type_filter] }
     auto_complete_tag("OrgType",opts)
+  end
+
+  def auto_complete_sector
+    opts = { :omit => [:sector_filter] }
+    auto_complete_tag("Sector",opts)
+  end
+
+  def auto_complete_legal_structure
+    opts = { :omit => [:legal_structure_filter] }
+    auto_complete_tag("LegalStructure",opts)
   end
 
   def auto_complete_dso
@@ -337,9 +353,7 @@ class SearchController < ApplicationController
 protected
   def get_latest_changes
     data = Organization.latest_changes(session)
-    if @site.should_show_latest_people
-      data = data + Person.latest_changes(ApplicationHelper.get_filter(session,:state_filter))
-    end
+    data = data + Person.latest_changes(session).uniq
     logger.debug("data=#{data}")
     data = AccessRule.cleanse(data, current_user).sort{|a,b| ( a.updated_at and b.updated_at ) ? b.updated_at <=> a.updated_at : ( b.updated_at ? 1 : -1 )}
     if data.length>15
@@ -444,10 +458,10 @@ protected
       condSQLs << "locations.#{key} LIKE ?"
       condParams << value
       sql = 'DISTINCT locations.physical_country'
-      condSQLs << "locations.physical_country IS NOT NULL"
+      condSQLs << "locations.physical_country IS NOT NULL AND locations.physical_country <> ''"
       unless key == "physical_country"
         sql << ", locations.physical_state"
-        condSQLs << "locations.physical_state IS NOT NULL"
+        # condSQLs << "locations.physical_state IS NOT NULL AND locations.physical_state <> ''"
         unless key == "physical_state"
           sql << ", locations.physical_city"
           unless key == "physical_city"
@@ -482,6 +496,10 @@ protected
         condSQLs.unshift("taggings.taggable_type = ?")
         condParams.unshift("Organization")
       end
+      if key
+        condSQLs.unshift("tags.root_type = ?")
+        condParams.unshift(key)
+      end
       if name.length>2
         condSQLs << template.gsub("name","tags.name")
         condParams << value
@@ -493,10 +511,6 @@ protected
       conditions = []
       conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
       tags = Tag.find(:all, :conditions => conditions, :joins => joinSQL, :limit => limit)
-      if key
-        tags.reject!{|x| x.effective_parent.nil?}
-        tags.reject!{|x| x.effective_parent.name != key}
-      end
     end
     render_auto_complete([tags],search)
   end
