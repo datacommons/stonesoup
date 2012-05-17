@@ -199,9 +199,7 @@ form.button-to {
 	position: relative;
 	margin: 0;
 	padding: 0;
-	width: 820px; /* was 781px; */ /* was 686 */ /* was 701 */ 
 	text-align:left;
-	padding:10px 15px 20px 15px; 
 }
 
 #footer {
@@ -996,4 +994,8 @@ body.page-users-prefs .listing {
 
 .filter_input_active { 
   width: 90px;
+}
+
+.left_listing { 
+  width: 600px;
 }

@@ -21,7 +21,7 @@ class SearchController < ApplicationController
     #  _params[:q] = search_query
     #end
 
-    @entries = @template.search_core(_params,@site)
+    @entries = @template.search_core(_params,@site,{ :unlimited_search => @unlimited_search })
 
     if params[:merge]
       @merge_active = true

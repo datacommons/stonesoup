@@ -5,6 +5,7 @@ if @entries
 end
 %>
 
+
 <% if @entries %>
  <% if @entries.blank? and not(@tag) %>
   <p>
@@ -33,6 +34,8 @@ end
   <% if @tag %>
     <%= render :partial => "#{@tag.class.to_s.underscore.pluralize}/summary", :locals => {:entry => @tag} %>
   <% end %>
+  <%= render :partial => "search/list_map" %>
+  <div class="left_listing">
   <div class="listing_info"><%= page_entries_info @entries, (@entry_name ? {:entry_name => @entry_name} : {}) %></div>
   <%= will_paginate @entries %>
   <% for entry in @entries %>
@@ -52,20 +55,8 @@ end
   <% end %>
   <div class='clearboth'></div>
   <%= will_paginate @entries %>
- <% unless @model %>
- <h2>View Options</h2>
-   <ul>  
-    <% unless @title %>
-    <li>View results on a <%= link_to 'map', clean_params.merge(:action => 'map') %></li>
-    <% end %>
-    <li>Download as <%= link_to 'CSV', clean_params.merge(:format => 'csv') %> (suitable for spreadsheet programs)</li>
-    <li>Download as <%= link_to 'XML', clean_params.merge(:format => 'xml') %></li>
-    <li>Download as <%= link_to 'PDF', clean_params.merge(:format => 'pdf') %></li>
-   </ul>
- <% else %>
- <h2>Not complete?</h2>
- <%= link_to "Add #{@title.downcase.singularize}", new_link(@model) %>
- <% end %>
+  <div style="margin: 50px;"></div>
+ </div>
  <% end %>
 <% else %>
   <%= render :partial => 'latest' %>

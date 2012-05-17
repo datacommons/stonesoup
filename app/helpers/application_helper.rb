@@ -217,14 +217,14 @@ module ApplicationHelper
       :page => _params[:page], 
       :per_page => 15,
     }
-    if _params[:format]=='xml' or _params[:format]=='csv' or _params[:format]=='pdf' or defined? @unlimited_search or _params['Map'] 
+    if _params[:format]=='xml' or _params[:format]=='csv' or _params[:format]=='pdf' or opts[:unlimited_search] or _params['Map'] 
       # When providing xml or csv, there should be no
       # effective limit on the download size.  However,
       # depending on server load, we might want to 
       # restrict this to logged in users?
       pagination = { }
     end
-    using_blank = search_query.blank?
+    #using_blank = search_query.blank?
     #if using_blank
     #  if site
     #    search_query = site.blank_search

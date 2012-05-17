@@ -13,7 +13,7 @@
    <s><%= filter[:original].join(', ') %></s><br />
  <%- end -%>
 <% end %>
-<input type="text" id="<%=filter[:name]%>_filter_input" name="<%=filter[:name]%>_filter_input" autocomplete="off" placeholder="Type..." tabindex="<%=20+index%>" class="filter_input filter_input_inactive" />
+<input type="text" id="<%=filter[:name]%>_filter_input" name="<%=filter[:name]%>_filter_input" autocomplete="off" placeholder="Add..." tabindex="<%=20+index%>" class="filter_input filter_input_inactive" />
 <div style="position:relative;"><ul id="<%=filter[:name]%>_filter_tips" class="autocomplete_box" style="margin-top: 0px; padding-top: 0px; margin-left: 0px; margin-right: 0px; width:300px; z-index:<%=10999-index%>; display: none; position:absolute; top: 0px; left: 0px;"></div>
 </ul>
 </form>
