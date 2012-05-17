@@ -15,7 +15,7 @@
    if e.is_a?(Organization)
     unless e.latitude.nil? or e.longitude.nil?
     # for location in e.locations
-    # unless location.latitude.nil? or location.longitude.nil?
+    unless e.latitude.abs+e.longitude.abs<0.001
       icon = "http://maps.google.com/mapfiles/marker.png"
       pt = [Float(e.latitude), Float(e.longitude)]
       markers[e.id] = icon
@@ -24,6 +24,7 @@
                 [bounds[2], pt[0]].max,
                 [bounds[3], pt[1]].max]
       map.marker_init(Marker.new(pt, :info_bubble => show_link(e), :icon => icon))
+    end
    end
   end
   end
