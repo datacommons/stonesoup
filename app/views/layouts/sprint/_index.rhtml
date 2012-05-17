@@ -19,13 +19,13 @@ var carousel_active = true;
     <div id="carousel-content">
 
 <div id="slide1" class="slide">
-<h3>Coops in Maine</h3>
-<%= render :partial => "search/map", :locals => { :orgs => get_listing("pool:'cooperative maine'"), :name => "maine" } %>
+<h3>Cooperative Development</h3>
+<%= render :partial => "search/map", :locals => { :orgs => get_listing("coop* development"), :name => "coopdev" } %>
 </div>
 
 <div id="slide2" class="slide">
-<h3>Bikes</h3>
-<%= render :partial => "search/map", :locals => { :orgs => get_listing("bikes OR bicycles OR cycli*"), :name => "bikes" } %>
+<h3>Coops in Maine</h3>
+<%= render :partial => "search/map", :locals => { :orgs => get_listing("pool:'cooperative maine'"), :name => "maine" } %>
 </div>
 
 
@@ -35,8 +35,8 @@ var carousel_active = true;
 </div>
 
 <div id="slide4" class="slide">
-<h3>Cooperative Development</h3>
-<%= render :partial => "search/map", :locals => { :orgs => get_listing("coop* development"), :name => "coopdev" } %>
+<h3>Bikes</h3>
+<%= render :partial => "search/map", :locals => { :orgs => get_listing("bikes OR bicycles OR cycli*"), :name => "bikes" } %>
 </div>
 
 
