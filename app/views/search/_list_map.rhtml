@@ -9,7 +9,7 @@
   for e in @entries
    if e.is_a?(Organization)
     unless e.latitude.nil? or e.longitude.nil?
-     unless e.latitude.abs+e.longitude.abs<0.001
+     unless Float(e.latitude).abs+Float(e.longitude).abs<0.001
       icon = "/openlayers/img/marker-star.png"
       pt = [Float(e.latitude), Float(e.longitude)]
       markers[e.id] = icon

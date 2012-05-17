@@ -176,21 +176,21 @@ module ApplicationHelper
     ppl_conditions = []
     ppl_conditions = [ppl_condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + ppl_condParams unless ppl_condSQLs.empty?
 
-    includes = [:access_rule, :users]
+    # includes = [:access_rule, :users]
+
+    org_select = "DISTINCT organizations.*, locations.latitude AS latitude, locations.longitude AS longitude"
 
     if search_query == ""
       entries = Organization.find(:all,
                                   :limit => :all,
                                   :conditions => org_conditions,
                                   :joins => org_joinSQL,
-                                  :select => "DISTINCT organizations.*",
-                                  :include => includes)
+                                  :select => org_select)
       entries2 = Person.find(:all,
                              :limit => :all,
                              :conditions => ppl_conditions,
                              :joins => ppl_joinSQL,
-                             :select => "DISTINCT people.*",
-                             :include => [:access_rule])
+                             :select => "DISTINCT people.*")
       if entries.length>0 and entries2.length>0
         @entry_name = "result"
       end
@@ -204,8 +204,7 @@ module ApplicationHelper
                                      :limit => :all,
                                      :conditions => { :organization => org_conditions, :person => ppl_conditions },
                                      :joins => { :organization => org_joinSQL, :person => ppl_joinSQL },
-                                     :select => { :organization => "DISTINCT organizations.*", :person => "DISTINCT people.*"},
-                                     :include => includes
+                                     :select => { :organization => org_select, :person => "DISTINCT people.*"}
                                    })
     end
     entries
@@ -223,6 +222,10 @@ module ApplicationHelper
       # depending on server load, we might want to 
       # restrict this to logged in users?
       pagination = { }
+      pagination = { 
+        :page => 1, 
+        :per_page => 50000,
+      }
     end
     #using_blank = search_query.blank?
     #if using_blank

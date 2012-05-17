@@ -280,20 +280,26 @@ class Organization < ActiveRecord::Base
     self.access_rule.access_type == AccessRule::ACCESS_TYPE_PUBLIC
   end
   
-  def longitude
-    if self.primary_location
-      self.primary_location.longitude
-    else
-      nil
-    end
-  end
+  # def xlongitude
+  #   return Float(self.filtered_longitude) if self.respond_to? "filtered_longitude"
+  #   if self.primary_location
+  #     self.primary_location.longitude
+  #   else
+  #     nil
+  #   end
+  # end
   
-  def latitude
-    if self.primary_location
-      self.primary_location.latitude
-    else
-      nil
-    end
+  # def xlatitude
+  #   return Float(self.filtered_latitude) if self.respond_to? "filtered_latitude"
+  #   if self.primary_location
+  #     self.primary_location.latitude
+  #   else
+  #     nil
+  #   end
+  # end
+
+  def get_primary
+    self
   end
 
   def Organization.location_join(filters,opts = {})

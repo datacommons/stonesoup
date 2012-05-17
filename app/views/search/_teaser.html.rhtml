@@ -3,8 +3,8 @@
 <%- if entry.respond_to? "website" and !entry.website.blank? -%>
 	<i><%= website_link(entry.website) %></i><br/>
 <%- end -%>
-<% if entry.respond_to? "primary_location" and !entry.primary_location.nil? %>
- 	<% loc = entry.primary_location %>
+<% if entry.respond_to? "physical_city" %>
+ 	<% loc = entry %>
 		<%= render :partial => 'locations/display_primary', :locals => {:location => loc} %>
 <% elsif entry.kind_of? Person %>
  <%= OrganizationsPerson.find_all_by_person_id(entry.id).collect{|op| [op.organization.name]}.join(", ") %>
