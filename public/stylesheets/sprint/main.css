@@ -935,6 +935,10 @@ body.page-users-prefs .listing {
   border-radius: 5px;
 }
 
+.filter_title {
+  font-size: 0.9em;
+}
+
 .filter_listing input {  
   font-family: Arial, Sans-Serif;
   font-size: 13px;
@@ -977,4 +981,19 @@ body.page-users-prefs .listing {
 
 .filter_listing.active .filter_title {
   color: white;
+}
+
+.filter_listing .filter_input { 
+  padding-bottom: 0px; 
+  margin-bottom: 0px; 
+  margin-left: 0px; 
+  margin-right: 0px; 
+}
+
+.filter_input_inactive { 
+  width: 40px;
+}
+
+.filter_input_active { 
+  width: 90px;
 }

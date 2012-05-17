@@ -1,19 +1,15 @@
 class SearchController < ApplicationController
   def index
-    search
     if params[:q] || params[:act]
+      search
       render :action => 'search'
     else
+      @latest_changes = get_latest_changes
       render :action => 'welcome'
     end
   end
 
   def search
-    if not (params[:q]||params[:act])
-      @latest_changes = get_latest_changes()
-      return
-    end
-
     params[:q] = "" unless params[:q]
     @query = params[:q].to_s + ''
     @search_text = @query

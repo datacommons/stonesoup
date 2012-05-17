@@ -5,7 +5,7 @@
     :url => {:controller => 'search', :action => 'change_filter', :name => filter[:name]},
     :update => 'search_filters') %></div>
 <%- end -%>
-<span id="<%=filter[:name]%>_title" class="filter_title"><%- if (filter[:value].blank?) -%><a href="#"><%- end -%><%= filter[:label] %><%- if (filter[:value].blank?) -%></a><%- end -%></span><br />
+<span id="<%=filter[:name]%>_title" class="filter_title"><%= filter[:label] %></span><br />
 <% unless filter[:value].blank? %>
 <%= filter[:value].join(', ') %><br />
 <% else %>
@@ -13,7 +13,7 @@
    <s><%= filter[:original].join(', ') %></s><br />
  <%- end -%>
 <% end %>
-<input type="text" id="<%=filter[:name]%>_filter_input" name="<%=filter[:name]%>_filter_input" autocomplete="off" placeholder="Add <%=filter[:label].gsub('Organization','org').downcase%>..." tabindex="<%=20+index%>" style="padding-bottom: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; width:90px; <%- if (filter[:value].blank?) -%>display: none;<%- end -%>" />
+<input type="text" id="<%=filter[:name]%>_filter_input" name="<%=filter[:name]%>_filter_input" autocomplete="off" placeholder="Type..." tabindex="<%=20+index%>" class="filter_input filter_input_inactive" />
 <div style="position:relative;"><ul id="<%=filter[:name]%>_filter_tips" class="autocomplete_box" style="margin-top: 0px; padding-top: 0px; margin-left: 0px; margin-right: 0px; width:300px; z-index:<%=10999-index%>; display: none; position:absolute; top: 0px; left: 0px;"></div>
 </ul>
 </form>
@@ -21,11 +21,6 @@
 <div class="clearboth"></div>
 
 <script>
-function show_this_filter(prefix) {
-  $(prefix + "_filter_input").show();
-  $(prefix + "_filter_input").focus();
-}
-
 function filter_tag_key(in_id,out_id,code,store) {
   var result = true;
   var obj = $(in_id);
@@ -90,6 +85,8 @@ function filter_instrument(prefix,completer,state,linkify,submitify) {
   store.current_tag_at = -1;
   store.ignore_value = "__INVALID__";
   var updater = function(event) {
+    $(in_id).removeClassName("filter_input_inactive");
+    $(in_id).addClassName("filter_input_active");
     var string = $F(in_id);
     if (string==store.ignore_value) return;
     store.want_value = string;
@@ -116,7 +113,7 @@ function filter_instrument(prefix,completer,state,linkify,submitify) {
             }
             ct++;
           });
-          $(out_id).show();
+          if (ct>0) { $(out_id).show(); } else { $(out_id).hide(); }
         }
       });
     } else {
@@ -149,10 +146,6 @@ function filter_instrument(prefix,completer,state,linkify,submitify) {
 <% @all_filters.each do |filter| %>
 var filter_state = new Object();
 filter_instrument("<%=filter[:name]%>_filter","auto_complete_<%=filter[:name]%>",filter_state,filter_link,filter_submit_link);
-var f = $$("#<%=filter[:name]%>_title a")[0];
-if (f) {
-  f.observe('click', function(event) { show_this_filter("<%=filter[:name]%>"); return false; });
-}
 <% end %>
 </script>
 
