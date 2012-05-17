@@ -19,32 +19,27 @@ var carousel_active = true;
     <div id="carousel-content">
 
 <div id="slide1" class="slide">
-<h3>Technology Coops</h3>
-<%= render :partial => "search/map", :locals => { :orgs => get_listing("technology coop*"), :name => "tech" } %>
-</div>
-
-
-<div id="slide2" class="slide">
 <h3>Coops in Maine</h3>
 <%= render :partial => "search/map", :locals => { :orgs => get_listing("pool:'cooperative maine'"), :name => "maine" } %>
 </div>
 
-
-<div id="slide3" class="slide">
-<h3>Food</h3>
-<%= render :partial => "search/map", :locals => { :orgs => get_listing("food"), :name => "food" } %>
-</div>
-
-
-<div id="slide4" class="slide">
+<div id="slide2" class="slide">
 <h3>Bikes</h3>
 <%= render :partial => "search/map", :locals => { :orgs => get_listing("bikes OR bicycles OR cycli*"), :name => "bikes" } %>
 </div>
 
-<div id="slide5" class="slide">
+
+<div id="slide3" class="slide">
+<h3>Technology Coops</h3>
+<%= render :partial => "search/map", :locals => { :orgs => get_listing("technology coop*"), :name => "tech" } %>
+</div>
+
+<div id="slide4" class="slide">
 <h3>Cooperative Development</h3>
 <%= render :partial => "search/map", :locals => { :orgs => get_listing("coop* development"), :name => "coopdev" } %>
 </div>
+
+
 
     </div>
 </div>
@@ -55,7 +50,6 @@ var carousel_active = true;
 <a href="javascript:" class="carousel-jumper" rel="slide2">o</a>
 <a href="javascript:" class="carousel-jumper" rel="slide3">o</a>
 <a href="javascript:" class="carousel-jumper" rel="slide4">o</a>
-<a href="javascript:" class="carousel-jumper" rel="slide5">o</a>
 </div>
 
 

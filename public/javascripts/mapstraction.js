@@ -308,9 +308,13 @@ Mapstraction.prototype.addAPI = function(element,api) {
       this.layers['osmmapnik'] = new OpenLayers.Layer.TMS(
         'OSM Mapnik', 
         [    
-            "http://a.tile.openstreetmap.org/",
-            "http://b.tile.openstreetmap.org/",
-            "http://c.tile.openstreetmap.org/"
+	    "http://otile1.mqcdn.com/tiles/1.0.0/osm/",
+	    "http://otile2.mqcdn.com/tiles/1.0.0/osm/",
+	    "http://otile3.mqcdn.com/tiles/1.0.0/osm/",
+	    "http://otile4.mqcdn.com/tiles/1.0.0/osm/"
+            //"http://a.tile.openstreetmap.org/",
+            //"http://b.tile.openstreetmap.org/",
+            //"http://c.tile.openstreetmap.org/"
         ], 
         {
           type:'png', 

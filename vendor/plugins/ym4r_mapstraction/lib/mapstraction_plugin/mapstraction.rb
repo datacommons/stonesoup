@@ -111,12 +111,12 @@ module Ym4r
             a << "<script type=\"text/javascript\" src=\"http://freeearth.poly9.com/api.js\"></script>\n"
           elsif type == :openlayers
             #a << "<script src=\"http://openlayers.org/api/OpenLayers.js\"></script>\n"      
-            a << "<script src=\"/openlayers/OpenLayers.js?ver=2\"></script>\n"
+            a << "<script src=\"/openlayers/OpenLayers.js?ver=3\"></script>\n"
           end
         end
-        a << "<script src=\"/javascripts/mapstraction.js?ver=2\" type=\"text/javascript\"></script>\n"
-        a << "<script src=\"/javascripts/mapstraction-route.js?ver=2\" type=\"text/javascript\"></script>\n"
-        a << "<script src=\"/javascripts/ym4r-mapstraction.js?ver=2\" type=\"text/javascript\"></script>\n"
+        a << "<script src=\"/javascripts/mapstraction.js?ver=3\" type=\"text/javascript\"></script>\n"
+        a << "<script src=\"/javascripts/mapstraction-route.js?ver=3\" type=\"text/javascript\"></script>\n"
+        a << "<script src=\"/javascripts/ym4r-mapstraction.js?ver=3\" type=\"text/javascript\"></script>\n"
         a
       end
      

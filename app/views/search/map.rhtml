@@ -12,16 +12,18 @@
   markers = {}
   bounds = [10000, 10000, -10000, -10000]
   for e in @entries
-  for location in e.locations
-    unless location.latitude.nil? or location.longitude.nil?
+   if e.is_a?(Organization)
+    unless e.latitude.nil? or e.longitude.nil?
+    # for location in e.locations
+    # unless location.latitude.nil? or location.longitude.nil?
       icon = "http://maps.google.com/mapfiles/marker.png"
-      pt = [Float(location.latitude), Float(location.longitude)]
-      markers[location.id] = icon
+      pt = [Float(e.latitude), Float(e.longitude)]
+      markers[e.id] = icon
       bounds = [[bounds[0], pt[0]].min,
                 [bounds[1], pt[1]].min,
                 [bounds[2], pt[0]].max,
                 [bounds[3], pt[1]].max]
-      map.marker_init(Marker.new(pt, :info_bubble => show_link(location.organization), :icon => icon))
+      map.marker_init(Marker.new(pt, :info_bubble => show_link(e), :icon => icon))
    end
   end
   end
