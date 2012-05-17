@@ -200,6 +200,8 @@ form.button-to {
 	margin: 0;
 	padding: 0;
 	text-align:left;
+        padding-top: 20px;
+        padding-bottom: 20px;
 }
 
 #footer {
