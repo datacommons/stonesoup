@@ -492,9 +492,9 @@ module ApplicationHelper
     search_core(p,nil,opts)
   end
 
-  def get_listing(query,opts = {})
+  def get_listing(query,name,opts = {})
     # long cache for now
-    result = YAML::load(Rails.cache.fetch("findcoop_get_listingv11:"+query, :expires_in => 14400.minute) { get_listing_uncached(query,opts).to_yaml })
+    result = YAML::load(Rails.cache.fetch("findcoop_get_listingv13:"+name, :expires_in => 14400.minute) { get_listing_uncached(query,opts).to_yaml })
     return result
   end
 
