@@ -167,8 +167,8 @@ module ApplicationHelper
     "DISTINCT organizations.*, locations.latitude AS latitude, locations.longitude AS longitude, #{org_address}"
   end
   
-  def search_core_org_ppl(search_query,pagination)
-    joinSQL, condSQLs, condParams = Organization.all_join(session)
+  def search_core_org_ppl(search_query,pagination,opts)
+    joinSQL, condSQLs, condParams = Organization.all_join(session,opts)
 
     org_joinSQL, org_condSQLs, org_condParams = [joinSQL, condSQLs, condParams]
     # org_joinSQL = nil if org_condSQLs.empty?
@@ -238,7 +238,7 @@ module ApplicationHelper
     #  end
     #end
     search_query = "" if search_query == "*"
-    search_core_org_ppl(search_query,pagination)
+    search_core_org_ppl(search_query,pagination,opts)
   end
 
   def search_core_old(_params,site, opts = {})
@@ -484,15 +484,17 @@ module ApplicationHelper
     entries
   end
 
-  def get_listing_uncached(query)
+  def get_listing_uncached(query,opts)
     p = {}
     p[:q] = query
-    search_core(p,nil,{:no_override => true})
+    opts = opts.merge({:no_override => true, :unlimited_search => true})
+    opts.inspect
+    search_core(p,nil,opts)
   end
 
-  def get_listing(query)
+  def get_listing(query,opts = {})
     # long cache for now
-    result = YAML::load(Rails.cache.fetch("findcoop_get_listingv3:"+query, :expires_in => 14400.minute) { get_listing_uncached(query).to_yaml })
+    result = YAML::load(Rails.cache.fetch("findcoop_get_listingv11:"+query, :expires_in => 14400.minute) { get_listing_uncached(query,opts).to_yaml })
     return result
   end
 
@@ -541,6 +543,9 @@ module ApplicationHelper
   end
 
   def ApplicationHelper.get_filter(filters,key,opts = {})
+    if opts.include? key
+      return opts[key]
+    end
     if opts[:only]
       return nil unless opts[:only].include? key
     end

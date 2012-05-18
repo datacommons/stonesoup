@@ -12,7 +12,7 @@ var carousel_active = true;
 
 <div id="slide1" class="slide">
 <h3>Cooperative Development</h3>
-<%= render :partial => "search/map", :locals => { :orgs => get_listing("coop* development"), :name => "coopdev" } %>
+<%= render :partial => "search/map", :locals => { :orgs => get_listing("",{:sector_filter => ["Cooperative Development"]}), :name => "coopdev" } %>
 </div>
 
 <div id="slide2" class="slide">
