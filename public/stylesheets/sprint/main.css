@@ -789,7 +789,8 @@ body.page-users-prefs .listing {
 }
 
 #carousel-area { 
-  width: 786px;
+  width: 800px;
+  margin: 0px auto;
 }
 #carousel-area h3 {
   color: black;

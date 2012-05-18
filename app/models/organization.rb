@@ -299,7 +299,7 @@ class Organization < ActiveRecord::Base
   # end
 
   def get_primary
-    self
+    Location.get_primary_for(self)
   end
 
   def Organization.location_join(filters,opts = {})
@@ -410,7 +410,7 @@ class Organization < ActiveRecord::Base
     conditions = []
     conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
     logger.debug("After applying filters, conditions = #{conditions.inspect}")
-    Organization.find(:all, :select => 'organizations.*, locations.latitude AS filtered_latitude, locations.longitude AS filtered_longitude', :order => 'organizations.updated_at DESC', 
+    Organization.find(:all, :select => ApplicationHelper.get_org_select, :order => 'organizations.updated_at DESC', 
                       :limit => 15,
                       :conditions => conditions,
                       :joins => joinSQL)

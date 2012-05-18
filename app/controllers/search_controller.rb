@@ -351,7 +351,8 @@ protected
     data = Organization.latest_changes(session)
     data = data + Person.latest_changes(session).uniq
     logger.debug("data=#{data}")
-    data = AccessRule.cleanse(data, current_user).sort{|a,b| ( a.updated_at and b.updated_at ) ? b.updated_at <=> a.updated_at : ( b.updated_at ? 1 : -1 )}
+    # data = AccessRule.cleanse(data, current_user)...
+    data = data.sort{|a,b| ( a.updated_at and b.updated_at ) ? b.updated_at <=> a.updated_at : ( b.updated_at ? 1 : -1 )}
     if data.length>15
       data = data[0..14]
     end

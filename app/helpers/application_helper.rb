@@ -161,6 +161,11 @@ module ApplicationHelper
     return s + " ..."
   end
 
+
+  def ApplicationHelper.get_org_select
+    org_address = ["address1","address2","city","state","zip","country","county"].map{|x| ["physical_" + x, "mailing_" + x]}.flatten.map{|x| "locations.#{x} AS #{x}"}.join(', ')
+    "DISTINCT organizations.*, locations.latitude AS latitude, locations.longitude AS longitude, #{org_address}"
+  end
   
   def search_core_org_ppl(search_query,pagination)
     joinSQL, condSQLs, condParams = Organization.all_join(session)
@@ -178,8 +183,7 @@ module ApplicationHelper
 
     # includes = [:access_rule, :users]
 
-    org_select = "DISTINCT organizations.*, locations.latitude AS latitude, locations.longitude AS longitude"
-
+    org_select = ApplicationHelper.get_org_select
     if search_query == ""
       entries = Organization.find(:all,
                                   :limit => :all,
@@ -488,7 +492,7 @@ module ApplicationHelper
 
   def get_listing(query)
     # long cache for now
-    result = YAML::load(Rails.cache.fetch("findcoop_get_listingv2:"+query, :expires_in => 14400.minute) { get_listing_uncached(query).to_yaml })
+    result = YAML::load(Rails.cache.fetch("findcoop_get_listingv3:"+query, :expires_in => 14400.minute) { get_listing_uncached(query).to_yaml })
     return result
   end
 

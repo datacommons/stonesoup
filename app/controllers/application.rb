@@ -218,7 +218,7 @@ public
       end
       conditions = []
       conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
-      results = Organization.find(:all, :conditions => conditions, :joins => joinSQL)
+      results = Organization.find(:all, :conditions => conditions, :joins => joinSQL, :select => ApplicationHelper.get_org_select)
     end
     @entries = results.paginate(:per_page => 15, :page => (params[:page]||1))
     respond_to do |format|

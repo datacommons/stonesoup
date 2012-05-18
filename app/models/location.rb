@@ -141,18 +141,18 @@ class Location < ActiveRecord::Base
     true
   end
   
-  def get_primary(field = nil)
+  def Location.get_primary_for(location, field = nil)
     primary = 'physical'  # default
     # find which address (physical or mailing) has the most complete info
     # first check for address1
-    unless physical_address1.blank?
+    unless location.physical_address1.blank?
       primary = 'physical'
     else
-      unless mailing_address1.blank?
+      unless location.mailing_address1.blank?
         primary = 'mailing'
       else
         # if address1 is blank for both, check city
-        unless physical_city.blank?
+        unless location.physical_city.blank?
           primary = 'physical'
         else
           primary = 'mailing'
@@ -160,6 +160,10 @@ class Location < ActiveRecord::Base
       end
     end
     return primary
+  end
+
+  def get_primary(field = nil)
+    Location.get_primary_for(self,field)
   end
   
   def to_s

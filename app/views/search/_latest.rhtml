@@ -1,46 +1,13 @@
-
-
 <h2>Recent Activity</h2>
 
 <% if current_map_type == :openlayers %>
 Hold down the shift key, then click and drag the mouse to select an area.
 <% end %>
-  <%
-  map = Mapstraction.new("wide_map",current_map_type)
-  map.control_init(:large => true)
-  at = 0
-  markers = {}
-  bounds = [10000, 10000, -10000, -10000]
-  for e in @latest_changes
-   if e.is_a?(Organization)
-    unless e.filtered_latitude.nil? or e.filtered_longitude.nil?
-      icon = "/openlayers/img/marker-star.png"
-      pt = [Float(e.filtered_latitude), Float(e.filtered_longitude)]
-      markers[e.id] = icon
-      bounds = [[bounds[0], pt[0]].min,
-                [bounds[1], pt[1]].min,
-                [bounds[2], pt[0]].max,
-                [bounds[3], pt[1]].max]
-      mkr = Marker.new(pt, :info_bubble => show_link(e), :icon => icon, :icon_size => [22,22])
-      map.marker_init(mkr)
-    end
-   end
-  end
-  x1 = bounds[0]
-  y1 = bounds[1]
-  x2 = bounds[2]
-  y2 = bounds[3]
-  dx = (x2-x1)/10
-  dy = (y2-y1)/10
-  map.center_zoom_on_bounds_init([[x1-dx,y1-dy],[x2+dx,y2+dy]])
-  %>
-  <%= map.to_html %>
-  <div id="surround_wide_map">
-  <%= map.div() %>
-  <div class="clearboth">
-  </div>
-  <%= render :partial => "layouts/map_choice" %>
-  </div>
+
+<div id="surround_wide_map">
+<%= render :partial => "search/map_core", :locals => { :map_id => "wide_map", :map_class => nil, :orgs => @latest_changes } %>
+<%= render :partial => "layouts/map_choice" %>
+</div>
 
 <% shown = {} %>
 <% for entry in @latest_changes %>
