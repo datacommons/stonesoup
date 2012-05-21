@@ -2,10 +2,8 @@
 <%= render :partial => "search/map_core", :locals => { :map_id => "the_map", :map_class => nil, :orgs => @entries } %>
  <% unless @model %>
    <ul>  
-    <% unless @title %>
     <% if @have_something %>
-    <li>View <%= link_to 'larger map', clean_params.merge(:action => 'map') %></li>
-    <% end %>
+    <li>View <%= link_to 'larger map', clean_params.merge(:style => 'map') %></li>
     <% end %>
     <li>Download as <%= link_to 'CSV', clean_params.merge(:format => 'csv') %></li>
     <li>Download as <%= link_to 'XML', clean_params.merge(:format => 'xml') %></li>

@@ -1,4 +1,19 @@
 class SearchController < ApplicationController
+  before_filter :check_for_map
+
+protected
+
+  def check_for_map
+    @map_style = false
+    if params[:style]
+      if params[:style] == "map"
+        @unlimited_search = true
+        @map_style = true
+      end
+    end
+  end
+public
+
   def index
     if params[:q] || params[:act]
       search
@@ -124,7 +139,11 @@ class SearchController < ApplicationController
   def recent
     @title = "Recently changed"
     @entries = get_latest_changes
-    @entries = @entries.paginate(:per_page => 15, :page => (params[:page]||1))
+    if @unlimited_search
+      @entries = @entries.paginate(:per_page => 50000, :page => 1)
+    else
+      @entries = @entries.paginate(:per_page => 15, :page => (params[:page]||1))
+    end
   end
   
   def render_js
@@ -353,8 +372,8 @@ protected
     logger.debug("data=#{data}")
     # data = AccessRule.cleanse(data, current_user)...
     data = data.sort{|a,b| ( a.updated_at and b.updated_at ) ? b.updated_at <=> a.updated_at : ( b.updated_at ? 1 : -1 )}
-    if data.length>15
-      data = data[0..14]
+    if data.length>50
+      data = data[0..49]
     end
     logger.debug("returning data=#{data}")
     return data

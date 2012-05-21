@@ -1,10 +1,1 @@
-
-<div class="listing_info"><%= page_entries_info @entries %></div>
-
-<div>
-<%= link_to 'View as list', clean_params.merge(:action => 'search') %>
-</div>
-
-<div id="surround_wide_map">
-<%= render :partial => "search/map_core", :locals => { :map_id => "wide_map", :map_class => nil, :orgs => @entries } %>
-</div>
+<%= render :partial => 'search/map_main' %>

@@ -225,7 +225,6 @@ module ApplicationHelper
       # effective limit on the download size.  However,
       # depending on server load, we might want to 
       # restrict this to logged in users?
-      pagination = { }
       pagination = { 
         :page => 1, 
         :per_page => 50000,

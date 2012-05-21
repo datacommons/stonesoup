@@ -195,7 +195,7 @@ public
 
   def show_tag(tag)
     joinSQL, condSQLs, condParams = Organization.all_join(session)
-    joinSQL = nil if condSQLs.empty?
+    # joinSQL = nil if condSQLs.empty?
     @tag = tag
     @title = tag.name
     if joinSQL.nil?
