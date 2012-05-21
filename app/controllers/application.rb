@@ -7,11 +7,24 @@ require 'sites'
 class ApplicationController < ActionController::Base
   include LoginSystem
 
-  before_filter :login_from_cookie, :set_current_user_on_model, :set_custom_filters
+  before_filter :login_from_cookie, :set_current_user_on_model, :set_custom_filters, :check_for_map
   
   layout :custom_layout
   
 private
+
+protected
+
+  def check_for_map
+    @map_style = false
+    if params[:style]
+      if params[:style] == "map"
+        @unlimited_search = true
+        @map_style = true
+      end
+    end
+  end
+
 
   def get_site
     site = Site.get_subsite(request.host)
@@ -220,7 +233,11 @@ public
       conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
       results = Organization.find(:all, :conditions => conditions, :joins => joinSQL, :select => ApplicationHelper.get_org_select)
     end
-    @entries = results.paginate(:per_page => 15, :page => (params[:page]||1))
+    if @unlimited_search
+      @entries = results.paginate(:per_page => 50000, :page => 1)
+    else
+      @entries = results.paginate(:per_page => 15, :page => (params[:page]||1))
+    end
     respond_to do |format|
       format.html { render :template => 'search/search' }
       format.xml  { render :xml => @entries }

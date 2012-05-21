@@ -1,17 +1,5 @@
 class SearchController < ApplicationController
-  before_filter :check_for_map
 
-protected
-
-  def check_for_map
-    @map_style = false
-    if params[:style]
-      if params[:style] == "map"
-        @unlimited_search = true
-        @map_style = true
-      end
-    end
-  end
 public
 
   def index
