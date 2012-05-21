@@ -27,12 +27,12 @@ class TagsController < ApplicationController
     else
       @tag = Tag.find(params[:id])
     end
-    @taggable = Organization.find(params[:taggable_id])
-    @taggable.tags.push(@tag)
-    @taggable.save!
-    # @taggable.notify_related_record_change(:added, @tag)
-    @taggable.ferret_update
-    @organization = @taggable
+    @organization = Organization.find(params[:taggable_id])
+    merge_check
+    @organization.tags.push(@tag)
+    @organization.save!
+    # @organization.notify_related_record_change(:added, @tag)
+    @organization.ferret_update
     render :partial => 'manage'
   end
 

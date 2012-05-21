@@ -224,7 +224,7 @@ a2a_config.linkurl = "<%= url_for :action => 'show', :id => @organization, :only
           <h2><%= parent ? parent.readable_name : "Tags" %></h2>
   	  <ul>
  	    <% tags.each do |t| %>
-	      <li><%= show_link(t) %></li>
+	      <li><%= show_link(t.leaf) %></li>
             <% end %>
           </ul>
 	<% end %>
