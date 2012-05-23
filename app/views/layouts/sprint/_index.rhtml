@@ -22,13 +22,13 @@ var carousel_active = true;
 
 
 <div id="slide3" class="slide">
-<h3>Technology Coops</h3>
-<%= render :partial => "search/map", :locals => { :orgs => get_listing("technology coop*","tech"), :name => "tech" } %>
+<h3>Web development</h3>
+<%= render :partial => "search/map", :locals => { :orgs => get_listing("","webdev",{:sector_filter => ["Web development"]}), :name => "webdev", :link => { :sector => "Web development" } } %>
 </div>
 
 <div id="slide4" class="slide">
 <h3>Bikes</h3>
-<%= render :partial => "search/map", :locals => { :orgs => get_listing("bikes OR bicycles OR cycli*","bikes"), :name => "bikes" } %>
+<%= render :partial => "search/map", :locals => { :orgs => get_listing("bikes OR bicycles OR cycli*","bikes"), :name => "bikes", :link => { :q => "bikes OR bicycles OR cycli*" } } %>
 </div>
 
     </div>
