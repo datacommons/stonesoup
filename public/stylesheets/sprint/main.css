@@ -685,7 +685,7 @@ body.page-users-prefs .listing {
 	float: left;
 	height: 200px;
 	background-color: #FFF;
-	overflow: auto;
+	overflow: hidden;
 }
 
 .surround_map_insert { 
@@ -837,7 +837,43 @@ body.page-users-prefs .listing {
 
 #carousel-area .search_listing {  
   float: none;
-  height: inherit;
+  position: relative;
+  overflow: hidden;
+  height: 300px;
+  width: 250px;
+  margin: 0px;
+}
+
+#carousel-area .search_link_backdrop {  
+ position: absolute; 
+ left: 0px; 
+ bottom: 0px; 
+ width: 250px;
+ margin: 0px;
+ padding: 0px;
+ text-align: center;
+ height:50px;
+ background-image:url("/images/sprint/trans_white_1x50.png");
+ background-repeat:repeat-x;
+}
+
+#carousel-area .search_location {  
+ color: #888;
+}
+
+#carousel-area .search_entry {  
+ margin-bottom: 7px;
+}
+
+#carousel-area .search_link {  
+ position: absolute; 
+ left: 0px; 
+ bottom: 0px; 
+ width: 250px;
+ margin: 0px;
+ padding: 0px;
+ text-align: center;
+ font-weight: bold;
 }
 
 #carousel-area a {  

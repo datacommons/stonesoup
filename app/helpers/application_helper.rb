@@ -185,6 +185,7 @@ module ApplicationHelper
 
     org_select = ApplicationHelper.get_org_select(org_select)
     org_order = nil if org_order.blank?
+    org_order = 'organizations.updated_at DESC' if org_order.blank?
 
     if search_query == ""
       entries = Organization.find(:all,
@@ -497,7 +498,7 @@ module ApplicationHelper
 
   def get_listing(query,name,opts = {})
     # long cache for now
-    result = YAML::load(Rails.cache.fetch("findcoop_get_listingv13:"+name, :expires_in => 14400.minute) { get_listing_uncached(query,opts).to_yaml })
+    result = YAML::load(Rails.cache.fetch("findcoop_get_listingv14:"+name, :expires_in => 14400.minute) { get_listing_uncached(query,opts).to_yaml })
     return result
   end
 

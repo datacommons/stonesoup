@@ -109,7 +109,7 @@
   Meet the neighbors:
   <ul>
    <%- @organization.locations.each do |loc| -%>
-     <li>Near <%= link_to loc.name, :action => 'map', :controller => 'search', :params => { :within => "20 miles", :location => loc.id, :state => "", :city => "", :zip => "", :country => "" } %></li>
+     <li>Near <%= link_to loc.name, :action => 'map', :controller => 'search', :params => { :within => "20 miles", :location => loc.id, :reset => 1 } %></li>
    <%- end -%>
   <% if @organization.primary_location %>
      <% @zip = @organization.primary_location.summary_zip %>
@@ -117,14 +117,14 @@
      <% @state = @organization.primary_location.summary_state %>
      <% @country = @organization.primary_location.summary_country %>
      <% if @city and @state %>
-      <li>In <%= link_to @city, :controller => 'search', :action => 'map', :params => { :zip => "", :city => @city, :state => @state, :country => @country, :location => "" } %></li>
+      <li>In <%= link_to @city, :controller => 'search', :action => 'map', :params => { :city => @city, :state => @state, :country => @country, :reset => 1 } %></li>
      <% end %>
      <% if @zip %>
-      <li>In zip code <%= link_to @zip, :controller => 'search', :action => 'map', :params => { :zip => @zip, :city => "", :state => "", :country => @country, :location => "", :within => "" } %></li>
+      <li>In zip code <%= link_to @zip, :controller => 'search', :action => 'map', :params => { :zip => @zip, :country => @country, :reset => 1 } %></li>
      <% end %>
      <% if not(session[:city_filter]) %>
      <% if @state %>
-       <li>In <%= link_to @state, :controller => 'search', :action => 'search', :params => { :state => @state, :country => @country, :zip => "", :city => "", :location => "" } %></li>
+       <li>In <%= link_to @state, :controller => 'search', :action => 'search', :params => { :state => @state, :country => @country, :reset => 1 } %></li>
      <% end %>
      <% end %>
   <% end %>

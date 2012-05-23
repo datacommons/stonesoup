@@ -62,7 +62,26 @@ public
   end
 
   def get_filters
+    possible_filters = [
+                        { :key => :country_filter, :label => "Country" },
+                        { :key => :state_filter, :label => "State" },
+                        { :key => :city_filter, :label => "City" },
+                        { :key => :zip_filter, :label => "Zip" },
+                        { :key => :within_filter, :label => "Within", :single => true },
+                        { :key => :loc_filter, :label => "Loc", :single => true },
+                        { :key => :dso_filter, :label => "Team" },
+                        { :key => :org_type_filter, :label => "Organization Type" },
+                        { :key => :sector_filter, :label => "Business Sector" },
+                        { :key => :legal_structure_filter, :label => "Legal Structure" }
+                       ]
+
     _params = params
+    if _params[:reset]
+      possible_filters.each do |f|
+        name = ("active_" + f[:key].to_s).to_sym
+        session[name] = nil
+      end
+    end
     if _params[:state]
       long_state = Location::STATE_SHORT[_params[:state]]
       long_state = _params[:state] unless long_state
@@ -73,6 +92,12 @@ public
     end
     if _params[:zip]
       session[:active_zip_filter] = _params[:zip].split(/,/)
+    end
+    if _params[:sector]
+      session[:active_sector_filter] = _params[:sector].split(/;/)
+    end
+    if _params[:dso]
+      session[:active_dso_filter] = _params[:dso].split(/;/)
     end
     if _params[:location]
       if _params[:location].blank?
@@ -95,18 +120,6 @@ public
     end
     @filter_unrestricted = _params[:unrestricted]
 
-    possible_filters = [
-                        { :key => :country_filter, :label => "Country" },
-                        { :key => :state_filter, :label => "State" },
-                        { :key => :city_filter, :label => "City" },
-                        { :key => :zip_filter, :label => "Zip" },
-                        { :key => :within_filter, :label => "Within", :single => true },
-                        { :key => :loc_filter, :label => "Loc", :single => true },
-                        { :key => :dso_filter, :label => "Team" },
-                        { :key => :org_type_filter, :label => "Organization Type" },
-                        { :key => :sector_filter, :label => "Business Sector" },
-                        { :key => :legal_structure_filter, :label => "Legal Structure" }
-                       ]
     default_filters = []
     active_filters = []
     @filter_bank = {}

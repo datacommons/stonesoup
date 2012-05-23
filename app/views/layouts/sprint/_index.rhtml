@@ -12,12 +12,12 @@ var carousel_active = true;
 
 <div id="slide1" class="slide">
 <h3>Cooperative Development</h3>
-<%= render :partial => "search/map", :locals => { :orgs => get_listing("","coopdev",{:sector_filter => ["Cooperative Development"]}), :name => "coopdev" } %>
+<%= render :partial => "search/map", :locals => { :orgs => get_listing("","coopdev",{:sector_filter => ["Cooperative Development"]}), :name => "coopdev", :link => { :sector => "Cooperative Development" } } %>
 </div>
 
 <div id="slide2" class="slide">
 <h3>Coops in Maine</h3>
-<%= render :partial => "search/map", :locals => { :orgs => get_listing("","maine", {:dso_filter => ["Cooperative Maine"], :state_filter => ["Maine"]}), :name => "maine" } %>
+<%= render :partial => "search/map", :locals => { :orgs => get_listing("","maine", {:dso_filter => ["Cooperative Maine"], :state_filter => ["Maine"]}), :name => "maine", :link => { :dso => "Cooperative Maine", :state => "Maine" } } %>
 </div>
 
 
