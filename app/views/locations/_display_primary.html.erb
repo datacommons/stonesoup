@@ -1,9 +1,13 @@
+<%- show_street = true if local_assigns[:show_street].nil? -%>
+<%- show_country = true if local_assigns[:show_country].nil? -%>
+<%- show_state = true if local_assigns[:show_state].nil? -%>
 	 <% primary = location.get_primary %>
+<%- if show_street -%>
      <%= location.send(primary+'_address1') %>
      <% unless location.send(primary+'_address2').blank? %>
        <br /><%= location.send(primary+'_address2') %>
      <% end %>
      <br />
-     <%= location.send(primary+'_city') %> <%= location.send(primary+'_state') %> <%= location.send(primary+'_zip') %>
-     <br />
-     <%= location.send(primary+'_country') %>
+<%- end -%>
+     <%= location.send(primary+'_city') %><%- if show_state -%> <%= location.send(primary+'_state') %> <%= location.send(primary+'_zip') %><%-end-%>
+     <%- if show_country -%><br /><%= location.send(primary+'_country') %><%- end -%>

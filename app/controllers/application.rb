@@ -262,7 +262,7 @@ public
       end
       conditions = []
       conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
-      results = Organization.find(:all, :conditions => conditions, :joins => joinSQL, :select => ApplicationHelper.get_org_select)
+      results = Organization.find(:all, :conditions => conditions, :joins => joinSQL, :select => ApplicationHelper.get_org_select([]))
     end
     if @unlimited_search
       @entries = results.paginate(:per_page => 50000, :page => 1)

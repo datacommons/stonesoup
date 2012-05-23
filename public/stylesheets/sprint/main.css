@@ -31,19 +31,16 @@ h1 {
 	padding-top: 10px;
 	color: #339966;
 	font-size:19px;
-	border-bottom: 1px solid #ccc;
 }
 
 h2 {
 	color: #339966;
 	font-size:17px;
-	border-bottom: 1px solid #ccc;
 }
 
 h3 {
 	color: #339966;
 	font-size:15px;
-	border-bottom: 1px solid #ccc;
 }
 
 dl {
@@ -296,9 +293,13 @@ form.button-to {
 	margin: 10px 0 0 15px;
 }
 
-#listing_info {
-	min-height: 130px;
+.listing_info {
 	margin-top: 0px;
+	margin-bottom: 10px;
+}
+
+.list_header {
+	margin-bottom: 20px;
 }
 
 .address {
@@ -551,19 +552,24 @@ div.menu-container {
 .listing {
  	display: block;
 	float: left;
-	margin: 10px;
-	border: 1px solid #ccc;
-	padding: 5px;
-	width: 28%;
-	height: 135px;
+	margin: 0px;
+	margin-bottom: 10px;
+	padding: 0px;
+	padding-right: 10px;
+	width: 285px;
 	background-color: #FFF;
-	overflow: auto;
+	overflow: hidden;
 	-moz-border-radius-topleft: 9px;	
 	-moz-border-radius-topright: 9px;
 	-moz-border-radius-bottomleft: 9px;	
 	-moz-border-radius-bottomright: 9px;
-
+        vertical-align: top;
 }
+
+.listing a { 
+    text-decoration: none;
+}
+
 
 .listing_merge_target {
 	background-color: #8F8;
@@ -581,7 +587,8 @@ div.menu-container {
 
 .pagination {
   text-align: center;
-  padding: .3em; }
+  padding: .3em; 
+}
   .pagination a, .pagination span, .pagination em {
     padding: .2em .5em; }
   .pagination span.disabled {
@@ -857,7 +864,7 @@ body.page-users-prefs .listing {
  background-repeat:repeat-x;
 }
 
-#carousel-area .search_location {  
+.search_location {  
  color: #888;
 }
 

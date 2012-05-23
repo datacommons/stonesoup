@@ -132,12 +132,16 @@ module ApplicationHelper
     ].join
   end
 
-  def website_link(website)
+  def website_link(website,opts = {})
     return '' if website.blank?
+    txt = website
+    if opts[:shorten]
+      txt.gsub!(/https?:\/\/(www\.)?/,'')
+    end
     if /https?:\/\/(.*)/.match(website)==nil
-      link_to website, 'http://' + website
+      link_to txt, 'http://' + website
     else
-      link_to website, website
+      link_to txt, website
     end
   end
 
@@ -156,6 +160,9 @@ module ApplicationHelper
   end
 
   def truncate_string(s,len)
+    s.gsub!(/<[^>]*>/,'')
+    s.gsub!(/\.\.\./,'')
+    s.gsub!(/  +/,' ')
     return s if s.index(/[a-z]/i).nil?
     s = s[0,len-4].gsub(/[^ ]*$/,"")
     return s + " ..."

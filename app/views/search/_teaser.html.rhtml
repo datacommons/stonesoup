@@ -1,11 +1,21 @@
+<%- @orgs_seen = {} unless @orgs_seen -%>
+<%- show_country = true if local_assigns[:show_country].nil? -%>
+<%- show_state = true if local_assigns[:show_state].nil? -%>
 <div id='listing_<%=entry.id%>' class='listing <%= "listing_merge_target" if is_merge_target(entry) %>'>
-<%= show_link entry %><br />
+<b><%= show_link entry %></b><br />
 <%- if entry.respond_to? "website" and !entry.website.blank? -%>
-	<i><%= website_link(entry.website) %></i><br/>
+	<i><%= website_link(entry.website, :shorten => true) %></i><br/>
 <%- end -%>
 <% if entry.respond_to? "physical_city" %>
  	<% loc = entry %>
-		<%= render :partial => 'locations/display_primary', :locals => {:location => loc} %>
+		<span class="search_location"><%= render :partial => 'locations/display_primary', :locals => {:location => loc, :show_street => false, :show_country => show_country, :show_state => show_state} %></span>
+        <%- if @orgs_seen[entry.id] -%>
+        <br />(Alternate location)
+        <%- end -%>
+    <%- unless entry.description.blank? or @orgs_seen[entry.id] -%>
+      <br /><%= entry.description.nil? ? "" : truncate_string(entry.description.gsub(/[\n\r+]/,'').strip,70) %>
+    <%- end -%>
+        <%- @orgs_seen[entry.id] = true -%>
 <% elsif entry.kind_of? Person %>
  <%= OrganizationsPerson.find_all_by_person_id(entry.id).collect{|op| [op.organization.name]}.join(", ") %>
 <% else %>

@@ -36,11 +36,20 @@ end
   <% end %>
   <%= render :partial => "search/list_map" %>
   <div class="left_listing">
+  <div class="list_header">
   <div class="listing_info"><%= page_entries_info @entries, (@entry_name ? {:entry_name => @entry_name} : {}) %></div>
   <%= will_paginate @entries %>
+  </div>
+  <%-
+  all_locations = @entries.select{|x| x.respond_to? "physical_country"}
+  all_countries = all_locations.map{|x| x.physical_country}.uniq
+  all_states = all_locations.map{|x| x.physical_state}.uniq
+  show_country = all_countries.length>1
+  show_state = all_states.length>1
+  -%>
   <% for entry in @entries %>
    <% if entry.accessible? current_user %>
-    <%= render :partial => 'search/teaser', :locals => {:entry => entry} %>
+    <%= render :partial => 'search/teaser', :locals => {:entry => entry, :show_country => show_country, :show_state => show_state} %>
    <% else %>
     <div class="listing private">
     Result withheld.<br />

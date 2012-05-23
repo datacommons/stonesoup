@@ -4,6 +4,8 @@ class Person < ActiveRecord::Base
   has_many :organizations, :through => :organizations_people
   has_one :user
 
+  acts_as_reportable
+
   validates_presence_of :firstname
 
   acts_as_ferret(:fields => {
