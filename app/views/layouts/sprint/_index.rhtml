@@ -52,6 +52,8 @@ To the future-mobile!
 
 <script>
 
+var carousel_ended = false;
+
 function updateCarouselIndex(index) {
   var links = $('carousel-bar').select('a');
   links.each(function(e) { e.removeClassName('active'); });
@@ -61,10 +63,24 @@ function updateCarouselIndex(index) {
   } else {
     $('carousel-left').addClassName('active');
   }
+  var r = $('carousel-right');
   if (index==links.length-1) {
-    $('carousel-right').removeClassName('active');
+    r.removeClassName('active');
+    r.stopObserving('click');
+    r.observe('click',function(evt) {
+      $('carousel-right').stopObserving('click');
+      $('carousel-right').observe('click', carousel.click.bind(carousel));
+      carousel.first();
+      carousel.start();
+    });
+    carousel_ended = true;
   } else {
-    $('carousel-right').addClassName('active');
+    r.addClassName('active');
+    if (carousel_ended) {
+      $('carousel-right').stopObserving('click');
+      $('carousel-right').observe('click', carousel.click.bind(carousel));
+      carousel_ended = false;
+    }
   }
 }
 
