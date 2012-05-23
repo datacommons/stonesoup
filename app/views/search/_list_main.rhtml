@@ -42,8 +42,8 @@ end
   </div>
   <%-
   all_locations = @entries.select{|x| x.respond_to? "physical_country"}
-  all_countries = all_locations.map{|x| x.physical_country}.uniq
-  all_states = all_locations.map{|x| x.physical_state}.uniq
+  all_countries = all_locations.map{|x| x.physical_country}.reject{|x| x.blank?}.uniq
+  all_states = all_locations.map{|x| x.physical_state}.reject{|x| x.blank?}.uniq
   show_country = all_countries.length>1
   show_state = all_states.length>1
   -%>

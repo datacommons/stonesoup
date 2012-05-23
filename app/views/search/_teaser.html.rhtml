@@ -8,7 +8,7 @@
 <%- end -%>
 <% if entry.respond_to? "physical_city" %>
  	<% loc = entry %>
-		<span class="search_location"><%= render :partial => 'locations/display_primary', :locals => {:location => loc, :show_street => false, :show_country => show_country, :show_state => show_state} %></span>
+		<span class="search_location"><%= render :partial => 'locations/display_primary', :locals => {:location => loc, :show_street => !(show_country||show_state), :show_country => show_country, :show_state => show_state} %></span>
         <%- if @orgs_seen[entry.id] -%>
         <br />(Alternate location)
         <%- end -%>
