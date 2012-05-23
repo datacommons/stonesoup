@@ -151,7 +151,10 @@ public
           session[key] = []
         else
           session[key] = nil
-        end  
+        end
+        if key == :active_within_filter
+          session[:active_loc_filter] = nil
+        end
       end
     end
     if params[:act]
@@ -159,10 +162,12 @@ public
         k = "dso_filter" if k == "data_sharing_orgs_filter"
         k = k.gsub("s_filter","_filter")
         key = "active_" + k
-        session[key.to_sym] = [] if session[key.to_sym].nil?
-        session[key.to_sym] << v
-        session[key.to_sym].uniq!
-        session[key.to_sym].sort!
+        record = session[key.to_sym]
+        record = [] if session[key.to_sym].nil? or key == "active_within_filter"
+        record << v
+        record.uniq!
+        record.sort!
+        session[key.to_sym] = record
       end
       if params.keys.include? "zip_filter"
         session[:active_city_filter] = nil
@@ -175,7 +180,6 @@ public
   end
 
   def auto_complete_test
-    self.get_filters
     render :action => 'auto_complete_test'
   end
 
@@ -216,6 +220,30 @@ public
 
   def auto_complete_dso
     auto_complete_named(DataSharingOrg,{})
+  end
+
+  def auto_complete_within
+    search = params[:search]
+    search = "" if search.nil?
+    tags = []
+    country_filter = ApplicationHelper.get_filter(session,:country_filter)
+    units = ["miles","kilometers"]
+    unless country_filter.blank?
+      # eventually make this more sophisticated (use country associated
+      # with zip code / other origin)
+      if country_filter.include? "Canada"
+        units = ["kilometers","miles"]
+      end
+    end
+    units.each do |u|
+      [10, 20, 50].each do |x|
+        tags << SearchItem.new("#{x} #{u}","within",{ :within => "#{x} #{u}" })
+      end
+    end
+    if search.length > 0
+      tags.reject!{|t| t.name.index(search.downcase) != 0}
+    end
+    render_auto_complete([tags],search,false)
   end
 
   def auto_complete
@@ -414,7 +442,7 @@ protected
     return areaize1("physical_city",loc,txt) || areaize1("physical_zip",loc,txt) || areaize1("physical_state",loc,txt) || areaize1("physical_country",loc,txt)
   end
 
-  def render_auto_complete(groups,search)
+  def render_auto_complete(groups,search, should_sort = true)
     results = []
     groups.each do |result_set|
       result_set.each do |h|
@@ -439,8 +467,10 @@ protected
         }
       end
     end
-    results = results.group_by{|x| x[:label]}.collect{|n, v| v[0]}
-    results.sort!{|a,b| diff(a[:label],b[:label],a[:is_tag],b[:is_tag],search)}
+    if should_sort
+      results = results.group_by{|x| x[:label]}.collect{|n, v| v[0]}
+      results.sort!{|a,b| diff(a[:label],b[:label],a[:is_tag],b[:is_tag],search)}
+    end
     render :json => results.to_json
   end
 

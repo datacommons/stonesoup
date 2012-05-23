@@ -1,4 +1,5 @@
-<% @all_filters.each_with_index do |filter,index| %>
+<% @all_filters.reject{|x| x[:name]=="loc"}.each_with_index do |filter,index| %>
+<% unless filter[:name] == "within" and @active_filters.select{|x| (x[:name] == "zip" || x[:name]=="loc") and !x[:value].blank? and x[:value].length == 1}.length == 0 %>
 <form id="<%=filter[:name]%>_filter_form" class="filter_listing<%- if !(filter[:value].blank?) -%> active<%- elsif filter[:has_default] -%> disable<%- else -%> default<%- end -%>">
 <%- unless filter[:value].blank? and !filter[:has_default] -%>
 <div class="close"><%= link_to_remote( 'x', 
@@ -13,10 +14,21 @@
    <s><%= filter[:original].join(', ') %></s><br />
  <%- end -%>
 <% end %>
-<input type="text" id="<%=filter[:name]%>_filter_input" name="<%=filter[:name]%>_filter_input" autocomplete="off" placeholder="Add..." tabindex="<%=20+index%>" class="filter_input filter_input_inactive" />
-<div style="position:relative;"><ul id="<%=filter[:name]%>_filter_tips" class="autocomplete_box" style="margin-top: 0px; padding-top: 0px; margin-left: 0px; margin-right: 0px; width:300px; z-index:<%=10999-index%>; display: none; position:absolute; top: 0px; left: 0px;"></div>
-</ul>
+<input type="text" id="<%=filter[:name]%>_filter_input" name="<%=filter[:name]%>_filter_input" autocomplete="off" placeholder="<%= filter[:single] ? 'Set...' : 'Add...' %>" tabindex="<%=20+index%>" class="filter_input filter_input_inactive" />
+<div style="position:relative;"><ul id="<%=filter[:name]%>_filter_tips" class="autocomplete_box" style="margin-top: 0px; padding-top: 0px; margin-left: 0px; margin-right: 0px; width:300px; z-index:<%=10999-index%>; display: none; position:absolute; top: 0px; left: 0px;"></ul></div>
+<%- if filter[:name] == "within" -%>
+<%- if @filter_bank["loc"].blank? -%>
+of zip
+<%- else -%>
+<%- if @filter_bank["loc"][:value].blank? -%>
+of zip
+<%- else -%>
+of <%= link_to 'location', { :action=> 'show', :controller => 'locations', :id =>@filter_bank["loc"][:value][0].to_i } %> 
+<%- end -%>
+<%- end -%>
+<%- end -%>
 </form>
+<% end %>
 <% end %>
 <div class="clearboth"></div>
 
@@ -80,6 +92,10 @@ function filter_submit_link(lnk,prefix) {
 }
 
 function filter_instrument(prefix,completer,state,linkify,submitify) {
+  var in_id = prefix + "_input";
+  var out_id = prefix + "_tips";
+  var form_id = prefix + "_form";
+  if ($(in_id) == undefined) return;
   var store = state[prefix] = new Object();
   store.current_tags = [];
   store.current_tag_at = -1;
@@ -126,9 +142,6 @@ function filter_instrument(prefix,completer,state,linkify,submitify) {
    };
  };
 
-  var in_id = prefix + "_input";
-  var out_id = prefix + "_tips";
-  var form_id = prefix + "_form";
   $(in_id).observe('focus', updater);
   $(in_id).observe('blur', function(event) { Element.hide.delay(0.25,$(out_id)); });
 
@@ -143,8 +156,8 @@ function filter_instrument(prefix,completer,state,linkify,submitify) {
   });
   new Form.Element.Observer(in_id, 0.1, updater);
 }
-<% @all_filters.each do |filter| %>
 var filter_state = new Object();
+<% @all_filters.each do |filter| %>
 filter_instrument("<%=filter[:name]%>_filter","auto_complete_<%=filter[:name]%>",filter_state,filter_link,filter_submit_link);
 <% end %>
 </script>

@@ -207,6 +207,14 @@ class Location < ActiveRecord::Base
     return nil
   end
 
+  def summary_country
+    country = blank_is_nil(physical_country)
+    unless country
+      country = blank_is_nil(mailing_country)
+    end
+    country
+  end
+
   def summary_state
     state = blank_is_nil(physical_state)
     country = blank_is_nil(physical_country)

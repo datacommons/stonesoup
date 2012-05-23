@@ -162,13 +162,13 @@ module ApplicationHelper
   end
 
 
-  def ApplicationHelper.get_org_select
+  def ApplicationHelper.get_org_select(sel)
     org_address = ["address1","address2","city","state","zip","country","county"].map{|x| ["physical_" + x, "mailing_" + x]}.flatten.map{|x| "locations.#{x} AS #{x}"}.join(', ')
-    "DISTINCT organizations.*, locations.latitude AS latitude, locations.longitude AS longitude, #{org_address}"
+    (["DISTINCT organizations.*, locations.latitude AS latitude, locations.longitude AS longitude, #{org_address}"] + sel).join(",")
   end
   
   def search_core_org_ppl(search_query,pagination,opts)
-    joinSQL, condSQLs, condParams = Organization.all_join(session,opts)
+    joinSQL, condSQLs, condParams, org_select, org_order = Organization.all_join(session,opts)
 
     org_joinSQL, org_condSQLs, org_condParams = [joinSQL, condSQLs, condParams]
     # org_joinSQL = nil if org_condSQLs.empty?
@@ -183,13 +183,16 @@ module ApplicationHelper
 
     # includes = [:access_rule, :users]
 
-    org_select = ApplicationHelper.get_org_select
+    org_select = ApplicationHelper.get_org_select(org_select)
+    org_order = nil if org_order.blank?
+
     if search_query == ""
       entries = Organization.find(:all,
                                   :limit => :all,
                                   :conditions => org_conditions,
                                   :joins => org_joinSQL,
-                                  :select => org_select)
+                                  :select => org_select,
+                                  :order => org_order)
       entries2 = Person.find(:all,
                              :limit => :all,
                              :conditions => ppl_conditions,
@@ -208,7 +211,8 @@ module ApplicationHelper
                                      :limit => :all,
                                      :conditions => { :organization => org_conditions, :person => ppl_conditions },
                                      :joins => { :organization => org_joinSQL, :person => ppl_joinSQL },
-                                     :select => { :organization => org_select, :person => "DISTINCT people.*"}
+                                     :select => { :organization => org_select, :person => "DISTINCT people.*"},
+                                     :order => { :organization => org_order }
                                    })
     end
     entries

@@ -452,6 +452,15 @@ module ActsAsFerret
     return select
   end
 
+  # check for per-model order and return these if provided
+  def self.order_for_model(model, order = {})
+    if Hash === order
+      key = model.name.underscore.to_sym
+      order = order[key]
+    end
+    return order
+  end
+
   # retrieves search result records from a data structure like this:
   # { 'Model1' => { '1' => [ rank, score ], '2' => [ rank, score ] }
   #
@@ -491,6 +500,9 @@ module ActsAsFerret
       # get select
       select = select_for_model model_class, find_options[:select]
 
+      # get order
+      order = order_for_model model_class, find_options[:order]
+
       # check for include association that might only exist on some models in case of multi_search
       filtered_include_options = nil
       if include_options = find_options[:include]
@@ -501,7 +513,8 @@ module ActsAsFerret
       tmp_result = model_class.find(:all, find_options.merge(:conditions => conditions, 
                                                              :joins => joins,
                                                              :select => select,
-                                                             :include    => filtered_include_options))
+                                                             :order => order,
+                                                             :include => filtered_include_options))
 
       # set scores and rank
       tmp_result.each do |record|

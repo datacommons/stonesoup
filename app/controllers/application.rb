@@ -74,6 +74,20 @@ public
     if _params[:zip]
       session[:active_zip_filter] = _params[:zip].split(/,/)
     end
+    if _params[:location]
+      if _params[:location].blank?
+        session[:active_loc_filter] = nil
+      else
+        session[:active_loc_filter] = [_params[:location]]
+      end
+    end
+    if _params[:within]
+      if _params[:location].blank?
+        session[:active_within_filter] = nil
+      else
+        session[:active_within_filter] = [_params[:within]]
+      end
+    end
     if _params[:country]
       alt_form = Location::COUNTRY_SHORT[_params[:country]]
       alt_form = _params[:country] unless alt_form
@@ -86,6 +100,8 @@ public
                         { :key => :state_filter, :label => "State" },
                         { :key => :city_filter, :label => "City" },
                         { :key => :zip_filter, :label => "Zip" },
+                        { :key => :within_filter, :label => "Within", :single => true },
+                        { :key => :loc_filter, :label => "Loc", :single => true },
                         { :key => :dso_filter, :label => "Team" },
                         { :key => :org_type_filter, :label => "Organization Type" },
                         { :key => :sector_filter, :label => "Business Sector" },
@@ -93,6 +109,7 @@ public
                        ]
     default_filters = []
     active_filters = []
+    @filter_bank = {}
     all_filters = []
     all_default = true
     possible_filters.each do |possible_filter|
@@ -113,8 +130,9 @@ public
         is_default = false
         all_default = false
       end
-      f = { :name => name, :label => possible_filter[:label], :value => filter, :original => filter0, :is_default => is_default, :has_default => has_default }
+      f = { :name => name, :label => possible_filter[:label], :value => filter, :original => filter0, :is_default => is_default, :has_default => has_default, :single => possible_filter[:single] }
       all_filters << f
+      @filter_bank[f[:name]] = f
     end
     default_filters.compact!
     active_filters.compact!

@@ -303,10 +303,16 @@ class Organization < ActiveRecord::Base
   end
 
   def Organization.location_join(filters,opts = {})
+    select = []
+    order = []
+
     country_filter = ApplicationHelper.get_filter(filters,:country_filter,opts)
     state_filter = ApplicationHelper.get_filter(filters,:state_filter,opts)
     city_filter = ApplicationHelper.get_filter(filters,:city_filter,opts)
     zip_filter = ApplicationHelper.get_filter(filters,:zip_filter,opts)
+    within_filter = ApplicationHelper.get_filter(filters,:within_filter,opts)
+    loc_filter = ApplicationHelper.get_filter(filters,:loc_filter,opts)
+
     condSQLs = []
     condParams = []
     join_type = "INNER"
@@ -336,15 +342,65 @@ class Organization < ActiveRecord::Base
       condParams += cities + cities
     end
 
+    origin = nil
+
     unless zip_filter.nil? or zip_filter.empty?
       logger.debug("applying session zip filters to search results: #{zip_filter.inspect}")
-      zips = [zip_filter].flatten.collect{|x| x.sub('*','%')}
-      zip_str = zips.collect{|z| "(locations.physical_zip LIKE ?)"}.join(" OR ")
-      # condSQLs << "(locations.physical_zip IN (#{cities.collect{'?'}.join(',')})) OR (locations.mailing_zip IN (#{cities.collect{'?'}.join(',')}))"
-      condSQLs << zip_str
-      condParams += zips
+      if within_filter.nil? or within_filter.empty? or within_filter.length != 1 or !(loc_filter.nil? or loc_filter.blank?)
+        zips = [zip_filter].flatten.collect{|x| x.to_s + "%"}
+        # zips = [zip_filter].flatten.collect{|x| x.sub('*','%')}
+        zip_str = zips.collect{|z| "(locations.physical_zip LIKE ?)"}.join(" OR ")
+        # condSQLs << "(locations.physical_zip IN (#{cities.collect{'?'}.join(',')})) OR (locations.mailing_zip IN (#{cities.collect{'?'}.join(',')}))"
+        condSQLs << zip_str
+        condParams += zips
+      else
+        origin = [zip_filter].flatten[0].to_s
+      end
     end
-    return [joinSQL, condSQLs, condParams]
+
+    unless loc_filter.nil? or loc_filter.empty?
+      origin = Location.find(loc_filter[0].to_i)
+    end
+
+    unless origin.nil? or within_filter.nil? or within_filter.empty? or within_filter.length != 1
+      # Within filter takes single zip code
+      withins = [within_filter].flatten
+      distance, unit = withins[0].split(' ')
+      unit = "miles" if unit.nil?
+      if unit.downcase[0] == "kms"[0]
+        unit = :kms
+      else
+        unit = :miles
+      end
+      distance = distance.to_f
+      if (distance-distance.to_i).abs<0.001
+        distance = distance.to_i
+      end
+
+      distance_sql = Location.distance_sql(Geokit::LatLng.normalize(origin),unit)
+      bounds = GeoKit::Bounds.from_point_and_radius(origin, distance, :units=>unit) 
+
+      condSQLs << "locations.latitude >= ?"
+      condSQLs << "locations.latitude <= ?"
+      condSQLs << "locations.longitude >= ?"
+      condSQLs << "locations.longitude <= ?"
+      # need to repeat formula (distance field not avail to WHERE, could use
+      # HAVING but probably slower for important cases)
+      condSQLs << "#{distance_sql} <= ?"
+      condParams << bounds.sw.lat
+      condParams << bounds.ne.lat
+      condParams << bounds.sw.lng
+      condParams << bounds.ne.lng
+      condParams << distance
+
+      select << "#{distance_sql} AS distance"
+      select << "'#{unit.to_s}' AS distance_unit"
+      order << "distance ASC"
+
+      # For debugging offline, set origin to: "42.59,-72.6"
+    end
+
+    return [joinSQL, condSQLs, condParams, select, order]
   end
 
   def Organization.tag_join(filters, opts = {})
@@ -381,36 +437,26 @@ class Organization < ActiveRecord::Base
       end
     end
     
-    # unless org_type_filter.nil? or org_type_filter.empty?
-    #   logger.debug("applying session org_type filters to search results: #{org_type_filter.inspect}")
-    #   ids = org_type_filter.map{|x| Tag.find_by_name(x)}.compact.map{|x| x.effective_root}.compact.select{|x| x.kind_of? OrgType}.compact
-    #   joinSQL = "#{joinSQL} INNER JOIN taggings AS taggings_org ON taggings_org.taggable_id = organizations.id INNER JOIN tags AS tags_org ON taggings_org.tag_id = tags_org.id"
-    #   condSQLs << "tags_org.root_id IN (#{ids.collect{'?'}.join(',')})"
-    #   condParams += ids.map{|x| x.id}
-    #   condSQLs << "taggings_org.taggable_type = ?"
-    #   condParams += ["Organization"]
-    #   condSQLs << "tags_org.root_type = ?"
-    #   condParams += ["OrgType"]
-    # end
-
-    return [joinSQL, condSQLs, condParams]
+    return [joinSQL, condSQLs, condParams, [], []]
   end
 
   def Organization.all_join(filters,opts = {})
-    joinSQL, condSQLs, condParams = Organization.location_join(filters,opts)
-    joinSQL2, condSQLs2, condParams2 = Organization.tag_join(filters,opts)
+    joinSQL, condSQLs, condParams, select, order = Organization.location_join(filters,opts)
+    joinSQL2, condSQLs2, condParams2, select2, order2 = Organization.tag_join(filters,opts)
     joinSQL = joinSQL + joinSQL2
     condSQLs = condSQLs + condSQLs2
     condParams = condParams + condParams2
-    return [joinSQL,condSQLs,condParams]
+    select = select + select2
+    order = order + order2
+    return [joinSQL,condSQLs,condParams,select,order]
   end
 
   def Organization.latest_changes(filters)
-    joinSQL, condSQLs, condParams = Organization.all_join(filters)
+    joinSQL, condSQLs, condParams, sel = Organization.all_join(filters)
     conditions = []
     conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
     logger.debug("After applying filters, conditions = #{conditions.inspect}")
-    Organization.find(:all, :select => ApplicationHelper.get_org_select, :order => 'organizations.updated_at DESC', 
+    Organization.find(:all, :select => ApplicationHelper.get_org_select(sel), :order => 'organizations.updated_at DESC', 
                       :limit => 15,
                       :conditions => conditions,
                       :joins => joinSQL)
