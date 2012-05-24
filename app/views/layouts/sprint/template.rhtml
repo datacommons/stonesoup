@@ -27,27 +27,20 @@
 
 <!-- begin header div -->
 <div id="header">
-        <div class='loginblock'>
+        <div class='loginblock nohover'>
 	<%=render :partial => 'layouts/usermenu'%>
         </div>
 	<div class='titleblock nohover clearboth'>
           <%- unless @site.use_logo -%>
 	  <div class='clearboth title'><b><a href='/'>Find</a></b><span class='minor'><a href='/'>.COOP</a></span></div>
-	  <div class='subtitle'><a href='/'>A directory of the cooperative economy</a></div>
           <%- else -%>
           <a href="/"><img src="/images/<%= @site.name %>/logo2.png" /></a>
           <%- end -%>
 	</div>
         <%= render :partial => 'search/search_form', :locals => { :this_is_the_header => true } %>
-<div id="post-header"></div>
 </div>
-<%- if @filter_override -%>
-<div id="search_filters">
-<%= render :partial => 'search/filters' %>
-</div>
-<%- else -%>
-<div id="search_filters" style="display: none;"></div>
-<%- end -%>
+<div id="post_header"></div>
+<%= render :partial => 'search/post_search_form', :locals => { :this_is_the_header => true } %>
 <div id="front-bar">
 <div class="button-right flip-color"><%= link_to '<b>+</b> Add Organization', :controller => 'organizations', :action => 'new' %></div>
 <div class="button-right"><%= link_to 'Recent Changes', recent_path %></div>

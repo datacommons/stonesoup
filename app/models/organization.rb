@@ -428,7 +428,7 @@ class Organization < ActiveRecord::Base
         logger.debug("applying session tag filters to search results: #{filter.inspect}")
         name = klass.to_s
         tags = filter.map{|x| Tag.find_by_name_and_root_type(x,name)}.compact.map{|x| x.synonyms}.flatten
-        puts "TAGS: #{tags.inspect}"
+        tags = [0] if tags.length == 0
         joinSQL = "#{joinSQL} INNER JOIN taggings AS taggings_#{name} ON taggings_#{name}.taggable_id = organizations.id"
         condSQLs << "taggings_#{name}.taggable_type = ?"
         condParams += ["Organization"]

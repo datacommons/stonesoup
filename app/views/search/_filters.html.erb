@@ -1,3 +1,5 @@
+<div id="hide_filters_wrap" class="nohover"><%= link_to_function('Hide', "Element.hide('search_filters'); Element.show('search_tips')", :id=>'hide_filters') %> <%= link_to_function('<img src="/images/sprint/x.png" />', "Element.hide('search_filters'); Element.show('search_tips')", :id=>'hide_filters') %></div>
+
 <% @all_filters.reject{|x| x[:name]=="loc"}.each_with_index do |filter,index| %>
 <% unless filter[:name] == "within" and @active_filters.select{|x| (x[:name] == "zip" || x[:name]=="loc") and !x[:value].blank? and x[:value].length == 1}.length == 0 %>
 <form id="<%=filter[:name]%>_filter_form" class="filter_listing<%- if !(filter[:value].blank?) -%> active<%- elsif filter[:has_default] -%> disable<%- else -%> default<%- end -%>">

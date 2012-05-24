@@ -230,7 +230,7 @@ form.button-to {
 	position:relative;
 	width:100%;
 	background-color: #fff;
-        min-height: 150px;
+        min-height: 110px;
 }
 
 .nohover a {
@@ -260,13 +260,18 @@ form.button-to {
   font-size: 5em;
   color: #384637;
   line-height:75%;
+  position: absolute;
+  bottom: 0px;
+  left: 0p;x
 }
 
 #header .minor { 
   font-size: 0.75em;
 }
 
-#header .subtitle {
+#search_tips .subtitle {
+  display: float;
+  float: left;
   font-size: 1.1em;
   font-style: italic;
   margin-left: 0.5em;
@@ -277,8 +282,8 @@ form.button-to {
 }
 
 #header .titleblock { 
-  float: left;
 }
+
 #logo {
 	/*height:107px;*/
 	/*width:693px;*/
@@ -291,6 +296,10 @@ form.button-to {
 #userstatus {
 	float: left;
 	margin: 10px 0 0 15px;
+}
+
+#userstatus a {
+  color: #149;
 }
 
 .listing_info {
@@ -504,6 +513,21 @@ div.menu-container {
 	border-bottom: 1px gray dashed;
 }
 
+#hide_filters_wrap {
+  display: block;
+  text-align: right;
+  margin-right: 5px;
+}
+
+#hide_filters_wrap img {
+  vertical-align: bottom;
+}
+
+.example_wrapper {  
+  width: 400px;
+  float: right;
+}
+
 .example_preamble, .example_bubble {
     font-size: 80%;
     float: left;
@@ -705,7 +729,10 @@ body.page-users-prefs .listing {
 }
 
 #basic_search {  
-  float: right;
+  /*float: right;*/
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
  }
 
 #search_label {  
@@ -720,9 +747,10 @@ body.page-users-prefs .listing {
   padding: 0px;
   margin: 0px;
   width: 581px;
-  height: 76px;
-  background-image:url("/images/sprint/searchbar.png");
+  height: 75px;
+  background-image:url("/images/sprint/searchbar_tight.png");
   background-repeat:no-repeat;
+  background-position:right bottom;
   position: relative;
 }
 
@@ -731,11 +759,11 @@ body.page-users-prefs .listing {
   border: 0px;
   background-color:transparent;
   position:absolute;
-  top:20px;
+  bottom:0px;
   left:28px;
   width:453px;
   vertical-align: middle;
-  padding: 5px 0px 5px 45px; 
+  padding: 0px 0px 5px 45px; 
   font-size: 33px;
   line-height: 33px;
   outline: 0;
@@ -763,11 +791,12 @@ body.page-users-prefs .listing {
   display: none;
 }
 
-#see_advanced { 
-  position:absolute;
-  top:75px;
-  left:430px;
+#see_advanced_wrap { 
+  float: right;
+  width: 150px;
+  text-align: right;
   font-weight: bold;
+  color: #149;
 }
 
 #see_list {
@@ -888,7 +917,7 @@ body.page-users-prefs .listing {
 }
 
 
-#post-header { 
+#post_header { 
   clear: both;
   padding: 0px;
   margin: 0px;
@@ -962,16 +991,24 @@ body.page-users-prefs .listing {
   color: #88f;
 }
 
-#search_filters {  
-  margin-top: 0px;
-  margin-bottom: 10px;
+#search_tips {  
+  min-height: 50px;
+}
+
+#search_filters {
+  min-height: 50px;
+  background: #ddddaa;
+  padding-bottom: 5px;
+  margin-bottom: 15px;
 }
 
 .filter_listing {
   display: block;
   float: right;
   margin: 5px;
-  padding: 10px;
+  padding: 5px;
+  margin-left: 0px;
+  margin-right: 10px;
   max-width: 150px;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
@@ -981,6 +1018,7 @@ body.page-users-prefs .listing {
 
 .filter_title {
   font-size: 0.9em;
+  font-weight: bold;
 }
 
 .filter_listing input {  
@@ -1008,19 +1046,20 @@ body.page-users-prefs .listing {
 }
 
 .filter_listing.active {
-  background: #384637;
-  color: #cccc66;
-  border: 1px solid #cccc66;
+  color: #384637;
+  background: #cccc66;
 }
 
 .filter_listing.default {
-  background: #cccc66;
-  border: 1px solid #ddddaa;
+  /*background: #cccc66;
+  border: 1px solid #ddddaa;*/
+  background: none;
+  border: none;
 }
 
 .filter_listing.disable {
   background: #ddddaa;
-  border: 1px solid #384637;
+  border: 1px dotted #384637;
 }
 
 .filter_listing.active .filter_title {

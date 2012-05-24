@@ -67,8 +67,8 @@ public
                         { :key => :state_filter, :label => "State" },
                         { :key => :city_filter, :label => "City" },
                         { :key => :zip_filter, :label => "Zip" },
-                        { :key => :within_filter, :label => "Within", :single => true },
                         { :key => :loc_filter, :label => "Loc", :single => true },
+                        { :key => :within_filter, :label => "Within", :single => true },
                         { :key => :dso_filter, :label => "Team" },
                         { :key => :org_type_filter, :label => "Organization Type" },
                         { :key => :sector_filter, :label => "Business Sector" },
@@ -140,8 +140,20 @@ public
       if filter2
         active_filters << { :name => name, :label => possible_filter[:label], :value => filter2 } 
         filter = filter2
+        applicable = true
+        if name == "within"
+          if @filter_bank["loc"].blank?
+            applicable = false
+          else
+            applicable = false if @filter_bank["loc"][:value].blank?
+          end
+        end
+        if applicable
+          all_default = false if has_default
+          all_default = false unless filter2.blank?
+          puts "Not default because of #{name} (#{@filter_bank['loc'].inspect})"
+        end
         is_default = false
-        all_default = false
       end
       f = { :name => name, :label => possible_filter[:label], :value => filter, :original => filter0, :is_default => is_default, :has_default => has_default, :single => possible_filter[:single] }
       all_filters << f
