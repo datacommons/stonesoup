@@ -10,7 +10,7 @@
     <li>Download as <%= link_to 'PDF', clean_params.merge(:format => 'pdf') %></li>
    </ul>
  <% else %>
- <h2>Not complete?</h2>
+ <b>Not complete?</b><br />
  <%= link_to "Add #{@title.downcase.singularize}", new_link(@model) %>
  <% end %>
   </div>

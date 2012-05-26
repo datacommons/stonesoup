@@ -218,6 +218,30 @@ public
     auto_complete_tag("LegalStructure",opts)
   end
 
+  def auto_complete_tag_all
+    search = params[:search]
+    search = "" if search.nil?
+    name = search
+    template = "name LIKE ?"
+    value = (name.length>2 ? "%" : "")+name+"%"
+    limit = 50
+    tags = Tag.find(:all, :conditions => [template, value], :limit => limit)
+    results = []
+    tags.each do |h|
+      root = h.effective_root
+      label = h.literal_qualified_name
+      results << {
+        :name => h.name,
+        :label => label,
+        :id => h.id,
+        :root_name => root ? root.name : nil,
+        :root_link => root ? @template.url_for(root) : nil
+        }
+    end
+    results.sort!{|a,b| diff(a[:label],b[:label],true,true,search)}
+    render :json => results.to_json
+  end
+
   def auto_complete_dso
     auto_complete_named(DataSharingOrg,{})
   end
@@ -442,13 +466,13 @@ protected
     return areaize1("physical_city",loc,txt) || areaize1("physical_zip",loc,txt) || areaize1("physical_state",loc,txt) || areaize1("physical_country",loc,txt)
   end
 
-  def render_auto_complete(groups,search, should_sort = true)
+  def render_auto_complete(groups,search, should_sort = true, should_root = true)
     results = []
     groups.each do |result_set|
       result_set.each do |h|
         target = h
         is_tag = false
-        if h.respond_to? "effective_root"
+        if h.respond_to? "effective_root" and should_root
           is_tag = true
           target = h.effective_root
           target = h if target.nil?

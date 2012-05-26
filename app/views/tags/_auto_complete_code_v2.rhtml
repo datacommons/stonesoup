@@ -1,0 +1,97 @@
+// This should be factored out into global js.  We need it a lot.
+
+function filter_tag_key(in_id,out_id,code,store) {
+  var result = true;
+  var obj = $(in_id);
+  if (store.current_tag_at!=-1) {
+    $$('#' + out_id + ' li')[store.current_tag_at].removeClassName("autocomplete_select");
+  }
+  if (code==38) {
+    // up
+    if (store.current_tags.length>store.current_tag_at-1 && store.current_tag_at>=1) {
+       store.current_tag_at--;
+       store.ignore_value = store.current_tags[store.current_tag_at].ac_label;
+       obj.value = store.current_tags[store.current_tag_at].ac_label;
+       result = false;
+    }
+  } else if (code==40||code==9) {
+    // down
+    if (store.current_tags.length>store.current_tag_at+1) {
+       store.current_tag_at++;
+       store.ignore_value = store.current_tags[store.current_tag_at].ac_label;
+       obj.value = store.current_tags[store.current_tag_at].ac_label;
+       result = false;
+    }
+    if (code==9) return result;
+  }
+  if (store.current_tag_at!=-1) {
+    $$('#' + out_id + ' li')[store.current_tag_at].addClassName("autocomplete_select");
+  }
+  return result;
+}
+
+function filter_instrument(prefix,completer,state,linkify,submitify) {
+  var in_id = prefix + "_input";
+  var out_id = prefix + "_tips";
+  var form_id = prefix + "_form";
+  if ($(in_id) == undefined) return;
+  var store = state[prefix] = new Object();
+  store.current_tags = [];
+  store.current_tag_at = -1;
+  store.ignore_value = "__INVALID__";
+  var updater = function(event) {
+    $(in_id).removeClassName("filter_input_inactive");
+    $(in_id).addClassName("filter_input_active");
+    var string = $F(in_id);
+    if (string==store.ignore_value) return;
+    store.want_value = string;
+    if (string.length >= 0) {
+      new Ajax.Request('/search/'+completer, {method:'get',parameters:{search:string},
+        onSuccess: function(transport) {
+          if (string!=store.want_value) return;
+          store.current_tags = [];
+          store.current_tag_at = -1;
+          var taggers = transport.responseJSON;
+          var lis = $(out_id).descendants();
+          if (lis.length > 0) {
+            lis.each(function(l) {
+              l.remove();
+            });
+          };
+          var ct = 0;
+          taggers.each(function(a) {
+            if (ct<20) {
+            var full_item = linkify(a);
+            var item = full_item['ac_bullet'];
+            $(out_id).insert(item);
+            store.current_tags.push(full_item);
+            }
+            ct++;
+          });
+          if (ct>0) { $(out_id).show(); } else { $(out_id).hide(); }
+        }
+      });
+    } else {
+      var lis = $(out_id).descendants();
+      if (lis.length > 0) {
+        lis.each(function(l) {
+          l.remove();
+        });
+     };
+   };
+ };
+
+  $(in_id).observe('focus', updater);
+  $(in_id).observe('blur', function(event) { Element.hide.delay(0.25,$(out_id)); });
+
+  $(in_id).observe('keydown', function(event) { return filter_tag_key(in_id,out_id,event.keyCode,store); });
+  $(form_id).observe('submit',function(event) {
+    event.stop();
+    var string = $F(in_id);
+    if (string==store.ignore_value && store.current_tag_at!=-1) {
+      return submitify(store.current_tags[store.current_tag_at]);
+    }
+    return submitify(string,prefix);
+  });
+  new Form.Element.Observer(in_id, 0.1, updater);
+}

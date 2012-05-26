@@ -1,6 +1,24 @@
 class TagsController < ApplicationController
   before_filter :login_required, :only => [:associate, :dissociate]
-  before_filter :admin_required, :only => [:new, :create, :edit, :update, :destroy, :update_identities]
+  before_filter :admin_required, :only => [:associate_root, :dissociate_root, :new, :create, :edit, :update, :destroy, :update_identities]
+
+  def dissociate_root
+    tag = Tag.find(params[:tag_id])
+    tag.root = nil
+    tag.save!
+    @tag = params[:root_type].constantize.find(params[:root_id])
+    render :partial => 'search/root_summary'
+  end
+
+  def associate_root
+    root = params[:root_type].constantize.find(params[:root_id])
+    tag = Tag.find(params[:tag_id])
+    tag.root = root
+    tag.save!
+    root.reload
+    @tag = root
+    render :partial => 'search/root_summary'
+  end
 
   def dissociate
     @tagging = Tagging.find(params[:tagging_id])

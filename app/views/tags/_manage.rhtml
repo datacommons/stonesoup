@@ -1,45 +1,4 @@
-<script>
-function instrument(prefix,taggable_type,taggable_id,seed) {
-  var in_id = prefix + "_input";
-  var out_id = prefix + "_tips";
-  var form_id = prefix + "_form";
-  $(form_id).observe('submit',function(event) {
-    event.stop();
-    var string = $F(in_id);
-    if (confirm("Add custom " + seed + " tag '" + string + "'?")) {
-      new Ajax.Updater('tags', "/tags/associate/0?type=" + seed + "&taggable_type=" + taggable_type + "&taggable_id=" + taggable_id + "&text=" + escape(string), {asynchronous:true, evalScripts:true});
-    }
-    return false;
-  });
-  new Form.Element.Observer(in_id, 0.1, function(event) {
-    var string = $F(in_id);
-    if (string.length > 0) {
-      new Ajax.Request('/tags/search', {method:'get',parameters:{search:string,parent:seed},
-        onSuccess: function(transport) {
-          var taggers = transport.responseJSON;
-          var lis = $(out_id).descendants();
-          if (lis.length > 0) {
-            lis.each(function(l) {
-              l.remove();
-            });
-          };
-          taggers.each(function(a) {
-            var item = "<li class='tagger" + (a.direct?" direct":" indirect") + "'><a href=\"#\" onclick=\"new Ajax.Updater('tags', '/tags/associate/" + a.id + "?type=" + a.family + "&amp;taggable_type=" + taggable_type + "&amp;taggable_id=" + taggable_id + "', {asynchronous:true, evalScripts:true}); return false;\">Add " + a.label  + "</a> " + " <a href='/" + a.family + "/" + a.id + "' class='tagger-link'>*</a></li>";
-            $(out_id).insert(item);
-          });
-        }
-      });
-    } else {
-      var lis = $(out_id).descendants();
-      if (lis.length > 0) {
-        lis.each(function(l) {
-          l.remove();
-        });
-     };
-   };
- });
-}
-</script>
+<%= render :partial => "tags/auto_complete_code" %>
 
 <% 
 

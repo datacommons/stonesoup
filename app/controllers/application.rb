@@ -263,18 +263,21 @@ public
     else
       # for now, let's assume we are tagging organizations only
       joinSQL = "#{joinSQL} INNER JOIN taggings AS taggings2 ON taggings2.taggable_id = organizations.id INNER JOIN tags AS tags2 ON taggings2.tag_id = tags2.id"
-      condSQLs << "tags2.root_id = ?"
-      condSQLs << "tags2.root_type = ?"
       if tag.respond_to? "root_id"
-        condParams << tag.root_id
-        condParams << tag.root_type
+        condSQLs << "tags2.id = ?"
+        condParams << tag.id
       else
+        condSQLs << "tags2.root_id = ?"
+        condSQLs << "tags2.root_type = ?"
         condParams << tag.id
         condParams << tag.class.to_s
       end
       conditions = []
       conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
       results = Organization.find(:all, :conditions => conditions, :joins => joinSQL, :select => ApplicationHelper.get_org_select([]))
+    end
+    if tag.respond_to? "children"
+      results = results + tag.children
     end
     if @unlimited_search
       @entries = results.paginate(:per_page => 50000, :page => 1)

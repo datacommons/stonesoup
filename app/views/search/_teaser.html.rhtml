@@ -1,34 +1,36 @@
 <%- @orgs_seen = {} unless @orgs_seen -%>
 <%- show_country = true if local_assigns[:show_country].nil? -%>
 <%- show_state = true if local_assigns[:show_state].nil? -%>
+<%- show_class = true if local_assigns[:show_class].nil? -%>
 <div id='listing_<%=entry.id%>' class='listing <%= "listing_merge_target" if is_merge_target(entry) %>'>
 <b><%= show_link entry %></b><br />
 <%- if entry.respond_to? "website" and !entry.website.blank? -%>
 	<i><%= website_link(entry.website, :shorten => true) %></i><br/>
 <%- end -%>
 <% if entry.respond_to? "physical_city" %>
- 	<% loc = entry %>
-		<span class="search_location"><%= render :partial => 'locations/display_primary', :locals => {:location => loc, :show_street => !(show_country||show_state), :show_country => show_country, :show_state => show_state} %></span>
+     <%- unless entry.physical_city.blank? and entry.mailing_city.blank? -%>
+		<span class="search_location"><%= render :partial => 'locations/display_primary', :locals => {:location => entry, :show_street => !(show_country||show_state), :show_country => show_country, :show_state => show_state} %></span><br />
         <%- if @orgs_seen[entry.id] -%>
-        <br />(Alternate location)
+        (Alternate location)<br />
         <%- end -%>
+      <%- end -%>
     <%- unless entry.description.blank? or @orgs_seen[entry.id] -%>
-      <br /><%= entry.description.nil? ? "" : truncate_string(entry.description.gsub(/[\n\r+]/,'').strip,70) %>
+      <%= entry.description.nil? ? "" : truncate_string(entry.description.gsub(/[\n\r+]/,'').strip,70) %><br />
     <%- end -%>
         <%- @orgs_seen[entry.id] = true -%>
 <% elsif entry.kind_of? Person %>
  <%= OrganizationsPerson.find_all_by_person_id(entry.id).collect{|op| [op.organization.name]}.join(", ") %>
 <% else %>
-  <%= entry.class.to_s.underscore.singularize.humanize %><br />
+  <%- if show_class -%><%= entry.class.to_s.underscore.singularize.humanize %><br /><%- end -%>
   <% if entry.respond_to? "description" %>
-    <%= entry.description %>
+    <%- unless entry.description.blank? -%>
+      <%= entry.description %><br />
+    <%- end -%>
   <% end %>
-  <% if is_admin? %>
-  <br />
-  <i>
-  <%= link_to "edit", edit_link(entry) %>
-  <%= link_to "delete", delete_link(entry) %>
-  </i>
+  <% if entry.respond_to? "literal_qualified_name" %>
+    <%- if entry.parent -%>
+      <%= entry.parent.literal_qualified_name %><br />
+    <%- end -%>
   <% end %>
 <% end %>
 <%- if @merge_active and entry.kind_of? Organization -%>
