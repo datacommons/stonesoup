@@ -1,6 +1,7 @@
 ActionController::Routing::Routes.draw do |map|
 
   map.connect 'tags/search', :controller => "tags", :action => "search"
+  map.connect 'tags/dashboard', :controller => "tags", :action => "dashboard"
   map.connect 'tags/update_identities', :controller => "tags", :action => "update_identities"
 
   map.resources :data_sharing_orgs

@@ -242,6 +242,34 @@ public
     render :json => results.to_json
   end
 
+  def auto_complete_root_all
+    search = params[:search]
+    search = "" if search.nil?
+    name = search
+    template = "name LIKE ?"
+    value = (name.length>2 ? "%" : "")+name+"%"
+    limit = 50
+    models = [LegalStructure, MemberOrg, OrgType, Sector]
+    tags = []
+    models.each do |model|
+      tags << model.find(:all, :conditions => [template, value], :limit => limit)
+    end
+    results = []
+    tags.flatten.each do |h|
+      root = nil
+      label = h.name
+      results << {
+        :name => h.name,
+        :label => label,
+        :id => h.id,
+        :root_type => h.class.to_s,
+        :root_link => @template.url_for(root)
+        }
+    end
+    results.sort!{|a,b| diff(a[:label],b[:label],true,true,search)}
+    render :json => results.to_json
+  end
+
   def auto_complete_dso
     auto_complete_named(DataSharingOrg,{})
   end

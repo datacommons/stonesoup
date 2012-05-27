@@ -1,6 +1,6 @@
 class TagsController < ApplicationController
   before_filter :login_required, :only => [:associate, :dissociate]
-  before_filter :admin_required, :only => [:associate_root, :dissociate_root, :new, :create, :edit, :update, :destroy, :update_identities]
+  before_filter :admin_required, :only => [:associate_root, :dissociate_root, :new, :create, :edit, :update, :destroy, :update_identities, :dashboard]
 
   def dissociate_root
     tag = Tag.find(params[:tag_id])
@@ -15,8 +15,12 @@ class TagsController < ApplicationController
     tag = Tag.find(params[:tag_id])
     tag.root = root
     tag.save!
-    root.reload
-    @tag = root
+    if params[:view] == "root"
+      root.reload
+      @tag = root
+    else
+      @tag = tag
+    end
     render :partial => 'search/root_summary'
   end
 
@@ -62,7 +66,6 @@ class TagsController < ApplicationController
   def show
     show_tag(Tag.find(params[:id]))
   end
-
 
   def search
     search = params[:search]
@@ -134,5 +137,17 @@ class TagsController < ApplicationController
 
   def update_identities
     @count = Tag.update_all_identities
+  end
+
+  def dashboard
+    @count = Tag.update_all_identities
+    @orphan_tags = Tag.find_all_by_root_type(nil)
+    models = [LegalStructure, MemberOrg, OrgType, Sector]
+    @orphan_things = []
+    models.each do |model|
+      name = model.to_s.tableize
+      @orphan_things << model.find_by_sql(["SELECT * FROM #{name} WHERE NOT EXISTS (SELECT id FROM tags WHERE #{name}.id = tags.root_id AND tags.root_type = ?)", model.to_s])
+    end
+    @orphan_things.flatten!
   end
 end

@@ -242,7 +242,7 @@ public
     @title = model.to_s.underscore.pluralize.humanize unless tc
     @title = tc.friendly_name if tc
     @model = model
-    @entries = model.paginate(:per_page => 15, :page => (params[:page]||1))
+    @entries = model.find(:all, :order => 'name').paginate(:per_page => 300, :page => (params[:page]||1))
     respond_to do |format|
       format.html { render :template => 'search/search' }
       format.xml  { render :xml => @entries }

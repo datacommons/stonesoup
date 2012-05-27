@@ -1,32 +1,31 @@
 <%- if is_admin? -%>
-<% if @tag.respond_to? "tags" %>
   <div id="root_summary">
   <ul>
   <li>(only admins see these bullets)</li>
+<% if @tag.respond_to? "tags" %>
   <li><%= link_to "edit", edit_link(@tag) %></li>
   <li><%= link_to "delete", @tag, delete_link(@tag) %></li>
-<%- @tag.tags.each do |t| -%>
+ <%- @tag.tags.each do |t| -%>
   <li>Filed under: <%= link_to t.literal_qualified_name, t %> 
 		[ <%= link_to_remote( 'remove', 
 			:url => {:controller => 'tags', :action => 'dissociate_root', :tag_id => t.id, :root_id => @tag.id, :root_type => @tag.class.to_s},
 			:update => 'root_summary',
 			:confirm => 'Remove tag?') %>
 		]</li>
-<%- end -%>
-  </ul>
+ <%- end -%>
 
 
 <form id="add_root_form">
-Add <input type="text" id="add_root_input" autocomplete="off" />
+<li>Add <input type="text" id="add_root_input" autocomplete="off" />
 <ul id="add_root_tips">
-</ul>
+</ul></li>
 </form>
 <script>
 <%= render :partial => "tags/auto_complete_code_v2" %>
 function root_link(a) {
   var lnk = new Object();
   lnk["ac_label"] = a.label;
-  lnk["ac_link"] = "/tags/associate_root?root_id=<%=@tag.id%>&root_type=<%=@tag.class.to_s%>&tag_id=" + a.id;
+  lnk["ac_link"] = "/tags/associate_root?root_id=<%=@tag.id%>&root_type=<%=@tag.class.to_s%>&tag_id=" + a.id + "&view=root";
   lnk["ac_cat"] = a.cat;
   var item = "<li class='tagger'>" + a.label  
   if (a.root_link) {
@@ -56,6 +55,56 @@ filter_instrument("add_root","auto_complete_tag_all",root_state,
 	root_link,root_submit_link);
 </script>
 
-  </div>
-<% end %>
+<%- else -%>
+
+<li>Full name: <%= @tag.literal_qualified_name %></li>
+<%- if @tag.root -%>
+<li><%= @tag.parent.name %> <%= show_link(@tag.root) %> is linked with this tag</li>
+<%- else -%>
+<li>This tag is unclassified.</li>
+<%- end -%>
+
+<form id="add_root_form">
+<li>Set root <input type="text" id="add_root_input" autocomplete="off" />
+<ul id="add_root_tips">
+</ul></li>
+</form>
+<script>
+<%= render :partial => "tags/auto_complete_code_v2" %>
+function root_link(a) {
+  var lnk = new Object();
+  lnk["ac_label"] = a.label;
+  lnk["ac_link"] = "/tags/associate_root?tag_id=<%=@tag.id%>&root_type=" + a.root_type + "&root_id=" + a.id + "&view=tag";
+  lnk["ac_cat"] = a.cat;
+  var item = "<li class='tagger'>" + a.label  
+  item += " (" + a.root_type + ")";
+  item = item + "</li>";
+  lnk["ac_bullet"] = item;
+  return lnk;
+}
+
+function root_submit_link(lnk,prefix) {
+  var ac_link = null;
+  if (typeof(lnk) == 'object') {
+    ac_link = lnk.ac_link;
+  } else {
+    ac_link = null; // for now
+  }
+  if (ac_link) {
+    new Ajax.Updater('root_summary', ac_link, {asynchronous:true, evalScripts:true}); 
+  }
+
+  return false;
+}
+
+var root_state = new Object();
+filter_instrument("add_root","auto_complete_root_all",root_state,
+	root_link,root_submit_link);
+</script>
+
+
+<%- end -%>
+
+</ul>
+</div>
 <%- end -%>
