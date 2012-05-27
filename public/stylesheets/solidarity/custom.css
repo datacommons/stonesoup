@@ -3,13 +3,12 @@ html,body {
   background-color: #444;
 }
 
-#header { 
-  background-color: #88e1e0;
-}
-
-#pagewidth { 
-        background-color: #ddf;
+.header_material {
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 #maincol { 
+  background-color: #ddf;
+  padding: 20px;
 }

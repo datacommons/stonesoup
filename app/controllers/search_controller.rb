@@ -7,7 +7,7 @@ public
       search
       render :action => 'search'
     else
-      @latest_changes = get_latest_changes
+      @welcome_page = true
       render :action => 'welcome'
     end
   end

@@ -20,6 +20,19 @@ class CanadianWorkerSite < Site
     :sprint
   end
 
+  def menu
+    [
+     {
+       :name => "Canadian Worker Co-op Federation",
+       :link => "http://www.canadianworker.coop"
+     },
+     {
+       :name => "Data Commons Cooperative",
+       :link => "http://datacommons.find.coop"
+     },
+    ]
+  end
+
   def use_logo
     true
   end

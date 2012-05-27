@@ -74,6 +74,7 @@ class Site
   end
 
   def title
+    return dso_filter[0] if self.dso_filter
     'Data Commons Directory'
   end
 
@@ -91,6 +92,15 @@ class Site
 
   def use_logo
     false
+  end
+
+  def menu
+    [
+     {
+       :name => "About the Data Commons Cooperative",
+       :link => "http://datacommons.find.coop/about"
+     }
+    ]
   end
 
   def self.scan

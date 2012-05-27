@@ -27,4 +27,17 @@ class MaineSite < Site
   def title
     'Cooperative Maine Directory'
   end
+
+  def menu
+    [
+     {
+       :name => "Cooperative Maine",
+       :link => "http://www.cooperativemaine.org/"
+     },
+     {
+       :name => "Data Commons Cooperative",
+       :link => "http://datacommons.find.coop"
+     },
+    ]
+  end
 end

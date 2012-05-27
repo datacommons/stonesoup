@@ -27,4 +27,17 @@ class UsworkerSite < Site
   def use_logo
     true
   end
+
+ def menu
+    [
+     {
+       :name => "US Federation of Worker Cooperatives",
+       :link => "http://www.usworker.coop"
+     },
+     {
+       :name => "Data Commons Cooperative",
+       :link => "http://datacommons.find.coop"
+     },
+    ]
+  end
 end

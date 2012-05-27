@@ -3,26 +3,13 @@ html,body {
         background-repeat: repeat;
 }
 
-#pagewidth { 
-  background-color: #ECECEC;
-}
-
-.titleblock {
+.header_material {
   margin-left: 20px;
-}
-
-.loginblock {
   margin-right: 20px;
-}
-
-#basic_search {
-  margin-right: 20px;
-}
-
-#post-header {
-  padding: 5px;
 }
 
 #maincol { 
   background: url("header_geese.jpg") bottom left no-repeat;
+  background-color: #ECECEC;
+  padding: 20px;
 }

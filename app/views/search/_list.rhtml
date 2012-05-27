@@ -1,5 +1,14 @@
-<% if @map_style %>
-<%= render :partial => 'search/map_main' %>
+<% if @welcome_page %>
+  <div id="carousel-area"><div id="carousel-content"><div class="slide">
+  <% if current_map_type == :openlayers %>
+  Hold down the shift key, then click and drag the mouse to select an area.
+  <% end %>
+  <%= render :partial => "search/map", :locals => { :orgs => get_listing("","all",{:no_override => false}), :name => "all", :link => { } } %>
+  </div></div><div class="clearboth"></div></div>
 <% else %>
-<%= render :partial => 'search/list_main' %>
+  <% if @map_style %>
+  <%= render :partial => 'search/map_main' %>
+  <% else %>
+  <%= render :partial => 'search/list_main' %>
+  <% end %>
 <% end %>

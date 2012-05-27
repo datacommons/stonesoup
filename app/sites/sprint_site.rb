@@ -15,4 +15,21 @@ class SprintSite < Site
   def layout
     :sprint
   end
+
+  def menu
+    [
+     {
+       :name => "About",
+       :link => "http://datacommons.find.coop/about"
+     },
+     {
+       :name => "Contact",
+       :link => "http://datacommons.find.coop/contact"
+     },
+     {
+       :name => "Donate",
+       :link => "http://datacommons.find.coop/donate"
+     },
+    ]
+  end
 end

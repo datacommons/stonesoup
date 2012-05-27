@@ -1,10 +1,10 @@
 <% hide_examples = true if @site.site_searches.nil? %>
 <% hide_examples = false if hide_examples.nil? %>
-<div id="search_tips"<%- if @filter_override -%> style="display: none;"<%- end -%>>
+<div id="search_tips"<%- if @filter_override -%> style="display: none;"<%- end -%>><div class="header_material">
   <%- unless @site.use_logo -%>
   <div class='subtitle nohover'><a href='/'>A directory of the cooperative economy</a></div>
   <%- else -%>
-  <div class='subtitle nohover'><a href='http://datacommons.find.coop'>Hosted by the Data Commons Cooperative</a></div>
+  <div class='subtitle nohover'>A <a href='http://datacommons.find.coop'>Data Commons</a> Directory</div>
   <%- end -%>
 
 
@@ -25,7 +25,7 @@
 	<% end %>
 
   <div class="clearboth"></div>
-</div>
+</div></div>
 
 <%- if @filter_override -%>
 <div id="search_filters">

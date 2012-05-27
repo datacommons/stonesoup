@@ -1,6 +1,11 @@
 # Methods added to this helper will be available to all templates in the application.
+
 module ApplicationHelper
-  
+
+  require 'models/organization'
+  require 'models/location'
+  require 'models/person'
+
   def data_import_plugins
     dir = Dir.open IMPORT_PLUGINS_DIRECTORY
     plugin_names = []
@@ -498,15 +503,16 @@ module ApplicationHelper
   def get_listing_uncached(query,opts)
     p = {}
     p[:q] = query
-    opts = opts.merge({:no_override => true, :unlimited_search => true})
+    opts = {:no_override => true, :unlimited_search => true}.merge(opts)
     opts.inspect
     search_core(p,nil,opts)
   end
 
   def get_listing(query,name,opts = {})
     # long cache for now
-    result = YAML::load(Rails.cache.fetch("findcoop_get_listingv14:"+name, :expires_in => 14400.minute) { get_listing_uncached(query,opts).to_yaml })
-    return result
+    key = "findcoop_get_listingv23:#{@site.name}:#{name}"
+    puts key
+    YAML::load(Rails.cache.fetch(key, :expires_in => 14400.minute) { get_listing_uncached(query,opts).to_yaml })
   end
 
   def is_merge_target(entry)
