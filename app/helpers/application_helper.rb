@@ -2,10 +2,6 @@
 
 module ApplicationHelper
 
-  require 'models/organization'
-  require 'models/location'
-  require 'models/person'
-
   def data_import_plugins
     dir = Dir.open IMPORT_PLUGINS_DIRECTORY
     plugin_names = []
@@ -510,6 +506,12 @@ module ApplicationHelper
 
   def get_listing(query,name,opts = {})
     # long cache for now
+    unless defined?(STATE)
+      require 'models/organization'
+      require 'models/location'
+      require 'models/person'
+    end
+
     key = "findcoop_get_listingv23:#{@site.name}:#{name}"
     puts key
     YAML::load(Rails.cache.fetch(key, :expires_in => 14400.minute) { get_listing_uncached(query,opts).to_yaml })
