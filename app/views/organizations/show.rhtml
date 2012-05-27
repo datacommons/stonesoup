@@ -109,7 +109,7 @@
   Meet the neighbors:
   <ul>
    <%- @organization.locations.each do |loc| -%>
-     <li>Near <%= link_to loc.name, :action => 'map', :controller => 'search', :params => { :within => "20 miles", :location => loc.id, :reset => 1 } %></li>
+     <li>Near <%= link_to loc.name, :action => 'map', :controller => 'search', :params => { :within => "20 miles", :location_origin => loc.id, :reset => 1 } %></li>
    <%- end -%>
   <% if @organization.primary_location %>
      <% @zip = @organization.primary_location.summary_zip %>

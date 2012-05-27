@@ -99,15 +99,15 @@ public
     if _params[:dso]
       session[:active_dso_filter] = _params[:dso].split(/;/)
     end
-    if _params[:location]
-      if _params[:location].blank?
+    if _params[:location_origin]
+      if _params[:location_origin].blank?
         session[:active_loc_filter] = nil
       else
-        session[:active_loc_filter] = [_params[:location]]
+        session[:active_loc_filter] = [_params[:location_origin]]
       end
     end
     if _params[:within]
-      if _params[:location].blank?
+      if _params[:location_origin].blank?
         session[:active_within_filter] = nil
       else
         session[:active_within_filter] = [_params[:within]]

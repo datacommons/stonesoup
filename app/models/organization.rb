@@ -359,11 +359,7 @@ class Organization < ActiveRecord::Base
     end
 
     unless loc_filter.nil? or loc_filter.empty?
-      begin
-        origin = Location.find(loc_filter[0].to_i)
-      rescue
-        origin = nil
-      end
+      origin = Location.find(loc_filter[0].to_i)
     end
 
     unless origin.nil? or within_filter.nil? or within_filter.empty? or within_filter.length != 1
