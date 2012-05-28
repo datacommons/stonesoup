@@ -507,7 +507,6 @@ module ApplicationHelper
   def get_listing_core(query,name,opts = {})
     # long cache for now
     key = "findcoop_get_listingv23:#{@site.name}:#{name}"
-    puts "hello #{key}"
     YAML::load(Rails.cache.fetch(key, :expires_in => 14400.minute) { get_listing_uncached(query,opts).to_yaml })
   end
 
