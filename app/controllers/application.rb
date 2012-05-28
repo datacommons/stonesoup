@@ -3,9 +3,14 @@
 require_dependency "login_system"
 
 require 'sites'
+require 'location'
+require 'organization'
+require 'person'
 
 class ApplicationController < ActionController::Base
   include LoginSystem
+
+  helper ApplicationHelper
 
   before_filter :login_from_cookie, :set_current_user_on_model, :set_custom_filters, :check_for_map
   
