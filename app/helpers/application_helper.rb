@@ -507,6 +507,14 @@ module ApplicationHelper
   def get_listing_core(query,name,opts = {})
     # long cache for now
     key = "findcoop_get_listingv23:#{@site.name}:#{name}"
+    if Rails.env.development?
+        # needed in development mode, due to YAML bug, but poison in
+        # production mode, due to a ferret bug.
+        require 'models/organization'
+        require 'models/location'
+        require 'models/person'
+        require 'models/access_rule'
+    end
     YAML::load(Rails.cache.fetch(key, :expires_in => 14400.minute) { get_listing_uncached(query,opts).to_yaml })
   end
 

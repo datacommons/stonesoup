@@ -3,9 +3,6 @@
 require_dependency "login_system"
 
 require 'sites'
-require 'location'
-require 'organization'
-require 'person'
 
 class ApplicationController < ActionController::Base
   include LoginSystem
