@@ -32,4 +32,8 @@ class LegalStructure < ActiveRecord::Base
   def accessible?(u)
     true
   end
+
+  def to_param
+    "#{id}-#{name.parameterize}"
+  end
 end
