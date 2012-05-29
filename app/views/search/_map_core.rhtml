@@ -32,9 +32,9 @@
   map.center_zoom_on_bounds_init([[x1-dx,y1-dy],[x2+dx,y2+dy]]) if @have_something
   %>
   <% if @have_something %>
-  <%= map.to_html %>
-  <% end %>
-  <% if @have_something %>
   <div<%- if map_class -%> class="<%= map_class %>"<%- end -%> id="<%= map_id %>"></div>
   <div class="clearboth"></div>
+  <% if @have_something %>
+  <%= map.to_html(:no_load => true) %>
+  <% end %>
   <% end %>

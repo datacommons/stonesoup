@@ -1,3 +1,17 @@
+<%-
+if @rendered
+  orgs = @orgs
+  name = @name
+  link = @link
+  immediate = true
+else
+  if immediate 
+    orgs = get_listing_for_link(name,link,request.host)
+  end
+end
+-%>
+
+<% if @rendered or immediate %>
 
   <div class="surround_map_insert">
   <%= render :partial => "search/map_core", :locals => { :map_id => "the_map_" + name, :map_class => "map_insert", :orgs => orgs } %>
@@ -19,10 +33,19 @@
   </div>
   <% end %>
 <% end %>
-<%- if local_assigns[:link] -%>
 <div class="search_link_backdrop"></div>
 <div class="search_link">
 <%= link_to "more...", { :controller => "search", :action => "search", :reset => 1 }.merge(link) %>  
 </div>
-<%- end -%>
 </div>
+
+<% else %>
+
+<div id="<%= name+'_update' %>">
+<script>
+  new Ajax.Updater("<%=name%>_update","<%= url_for(:action => "mini_map", :controller => "search", :name => name, :link => link.to_yaml, :site => request.host).gsub("&amp;","&") %>",{asynchronous:true, evalScripts:true});
+</script>
+<img src="/images/loading.gif" style="padding: 20px;" />
+</div>
+
+<% end %>

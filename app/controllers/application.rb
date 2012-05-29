@@ -29,7 +29,7 @@ protected
 
 
   def get_site
-    site = Site.get_subsite(request.host)
+    site = Site.get_subsite(params[:site] || request.host)
     if site.nil?
       site = Site.get_subsite('find.coop') 
     end
@@ -153,7 +153,7 @@ public
         if applicable
           all_default = false if has_default
           all_default = false unless filter2.blank?
-          puts "Not default because of #{name} (#{@filter_bank['loc'].inspect})"
+          # puts "Not default because of #{name} (#{@filter_bank['loc'].inspect})"
         end
         is_default = false
       end

@@ -7,7 +7,7 @@ units = []
 standard_group_names = ['LegalStructure','OrgType','Sector','MemberOrg','Tag']
 
 groups = {}
-@organization.taggings.group_by{|x| x.tag.effective_parent}.each {|parent,taggings| groups[(parent.nil? ? "Tag" : parent.name)] = taggings}
+@organization.taggings.select{|x| x.tag}.group_by{|x| x.tag.effective_parent}.each {|parent,taggings| groups[(parent.nil? ? "Tag" : parent.name)] = taggings}
 
 groups2 = {} 
 if @organization2

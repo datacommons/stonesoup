@@ -1,10 +1,8 @@
 <%- if is_admin? -%>
   <div id="root_summary">
+  <b>Administrator information</b><br />
   <ul>
-  <li>(only admins see these bullets)</li>
-  <li><%= link_to "delete", @tag, delete_link(@tag) %></li>
 <% if @tag.respond_to? "tags" %>
-  <li><%= link_to "edit", edit_link(@tag) %></li>
  <%- @tag.tags.each do |t| -%>
   <li>Filed under: <%= link_to t.literal_qualified_name, t %> 
 		[ <%= link_to_remote( 'remove', 
@@ -105,6 +103,7 @@ filter_instrument("add_root","auto_complete_root_all",root_state,
 
 <%- end -%>
 
+  <li><%= link_to "edit", edit_link(@tag) %> / <%= link_to "delete", @tag, delete_link(@tag) %></li>
 </ul>
 </div>
 <%- end -%>

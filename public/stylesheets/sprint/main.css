@@ -1091,3 +1091,10 @@ body.page-users-prefs .listing {
 .left_listing { 
   width: 600px;
 }
+
+#root_summary { 
+  display: inline-block;
+  border: 1px dashed gray;
+  padding: 5px;
+  margin: 5px;
+}

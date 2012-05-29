@@ -302,6 +302,12 @@ class Organization < ActiveRecord::Base
     Location.get_primary_for(self)
   end
 
+  def Organization.split_pro_con(lst) 
+    choices = lst.map{|x| [x.starts_with?("-"), x.gsub(/^-/,"")]}
+    [choices.select{|x| !x[0]}.map{|x| x[1]}, 
+     choices.select{|x| x[0]}.map{|x| x[1]}]
+  end
+
   def Organization.location_join(filters,opts = {})
     select = []
     order = []
@@ -425,15 +431,25 @@ class Organization < ActiveRecord::Base
 
     tag_filters.each do |filter,klass|
       unless filter.nil? or filter.empty?
+        pro, con = Organization.split_pro_con(filter)
+
         logger.debug("applying session tag filters to search results: #{filter.inspect}")
         name = klass.to_s
-        tags = filter.map{|x| Tag.find_by_name_and_root_type(x,name)}.compact.map{|x| x.synonyms}.flatten
+        tags = pro.map{|x| Tag.find_by_name_and_root_type(x,name)}.compact.map{|x| x.synonyms}.flatten
         tags = [0] if tags.length == 0
         joinSQL = "#{joinSQL} INNER JOIN taggings AS taggings_#{name} ON taggings_#{name}.taggable_id = organizations.id"
         condSQLs << "taggings_#{name}.taggable_type = ?"
         condParams += ["Organization"]
         condSQLs << "taggings_#{name}.tag_id IN (#{tags.collect{'?'}.join(',')})"
         condParams += tags.map{|x| x.id}
+
+        unless con.empty?
+          tags = con.map{|x| Tag.find_by_name_and_root_type(x,name)}.compact.map{|x| x.synonyms}.flatten
+          tags = [0] if tags.length == 0
+          condSQLs << "NOT EXISTS (SELECT 1 FROM taggings WHERE taggings.taggable_id = organizations.id AND taggings.taggable_type = ? AND taggings.tag_id IN (#{tags.collect{'?'}.join(',')}))"
+          condParams += ["Organization"]
+          condParams += tags.map{|x| x.id}
+        end
       end
     end
     

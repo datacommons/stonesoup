@@ -500,25 +500,34 @@ module ApplicationHelper
     p = {}
     p[:q] = query
     opts = {:no_override => true, :unlimited_search => true}.merge(opts)
-    opts.inspect
     search_core(p,nil,opts)
   end
 
-  def get_listing_core(query,name,opts = {})
+  def get_listing_core(query,name,site_name,opts = {})
     # long cache for now
-    key = "findcoop_get_listingv23:#{@site.name}:#{name}"
+    key = "findcoop_get_listingv26:#{site_name}:#{name}"
     if Rails.env.development?
-      # needed in development mode, due to YAML bug, but poison in
-      # production mode, due to a ferret bug.
-      Dir["#{RAILS_ROOT}/app/models/**/*.rb"].each do |path|
-        require path
-      end
+      # Say the magic words to avoid a YAML problem
+      logger.debug([Organization,Person])
     end
-    YAML::load(Rails.cache.fetch(key, :expires_in => 14400.minute) { get_listing_uncached(query,opts).to_yaml })
+    result = YAML::load(Rails.cache.fetch(key, :expires_in => 14400.minute) { { :list => get_listing_uncached(query,opts), :query => query, :opts => opts }.to_yaml })
+    return [] if result[:query] != query or result[:opts] != opts
+    result[:list]
   end
 
-  def get_listing(query,name,opts = {})
-    get_listing_core(query,name,opts)
+  def get_listing(query,name,site_name,opts = {})
+    get_listing_core(query,name,site_name,opts)
+  end
+
+  def get_listing_for_link(name,link,site_name)
+    opts = {}
+    query = link[:q] || ""
+    opts[:no_override] = link[:no_override]
+    link.reject{|k,v| k == :q or k == :no_override}.each do |k,v|
+      opts[(k.to_s + "_filter").to_sym] = v.split(/;/)
+    end
+    puts "MAP: #{query.inspect} // #{name} // #{opts.inspect} // #{site_name}"
+    get_listing(query,name,site_name,opts)
   end
 
   def is_merge_target(entry)

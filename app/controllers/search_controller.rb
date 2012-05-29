@@ -140,6 +140,14 @@ public
     render :file => 'rendered_includes/' + params[:src] + '.rhtml'
   end
 
+  def mini_map
+    @name = params[:name]
+    @link = YAML::load(params[:link])
+    @orgs = @template.get_listing_for_link(@name,@link,@site.name)
+    @rendered = true
+    render :partial => "search/map"
+  end
+
   def change_filter
     if params[:name]
       key = ("active_" + params[:name] + "_filter").to_sym

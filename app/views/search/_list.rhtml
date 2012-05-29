@@ -3,7 +3,7 @@
   <% if current_map_type == :openlayers %>
   Hold down the shift key, then click and drag the mouse to select an area.
   <% end %>
-  <%= render :partial => "search/map", :locals => { :orgs => get_listing("","all",{:no_override => false}), :name => "all", :link => { } } %>
+  <%= render :partial => "search/map", :locals => { :name => "all", :link => { :no_override => false }, :immediate => false } %>
   </div></div><div class="clearboth"></div></div>
 <% else %>
   <% if @map_style %>

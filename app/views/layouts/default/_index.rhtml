@@ -12,23 +12,23 @@ var carousel_active = true;
 
 <div id="slide1" class="slide">
 <h3>Cooperative Development</h3>
-<%= render :partial => "search/map", :locals => { :orgs => get_listing("","coopdev",{:sector_filter => ["Cooperative Development"]}), :name => "coopdev", :link => { :sector => "Cooperative Development" } } %>
+<%= render :partial => "search/map", :locals => { :name => "coopdev2", :immediate => true, :link => { :sector => "Cooperative Development" } } %>
 </div>
 
 <div id="slide2" class="slide">
 <h3>Coops in Maine</h3>
-<%= render :partial => "search/map", :locals => { :orgs => get_listing("","maine", {:dso_filter => ["Cooperative Maine"], :state_filter => ["Maine"]}), :name => "maine", :link => { :dso => "Cooperative Maine", :state => "Maine" } } %>
+<%= render :partial => "search/map", :locals => { :name => "maine2", :link => { :dso => "Cooperative Maine", :state => "Maine" }, :immediate => false } %>
 </div>
 
 
 <div id="slide3" class="slide">
 <h3>Web development</h3>
-<%= render :partial => "search/map", :locals => { :orgs => get_listing("","webdev",{:sector_filter => ["Web development"]}), :name => "webdev", :link => { :sector => "Web development" } } %>
+<%= render :partial => "search/map", :locals => { :name => "webdev2", :link => { :sector => "Web development" }, :immediate => false } %>
 </div>
 
 <div id="slide4" class="slide">
 <h3>Bikes</h3>
-<%= render :partial => "search/map", :locals => { :orgs => get_listing("bikes OR bicycles OR cycli*","bikes"), :name => "bikes", :link => { :q => "bikes OR bicycles OR cycli*" } } %>
+<%= render :partial => "search/map", :locals => { :name => "bikes2", :link => { :q => "bikes OR bicycles OR cycli*" }, :immediate => false } %>
 </div>
 
     </div>
