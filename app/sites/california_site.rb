@@ -1,7 +1,7 @@
 class CaliforniaSite < Site
 
   def site_searches
-    ['housing','tech*','Arizmendi','zip:941*','*']
+    nil
   end
 
   def aliases
@@ -12,19 +12,32 @@ class CaliforniaSite < Site
     ['California', 'CA']
   end
 
-  def should_show_latest_people
-    false
-  end
-
   def custom_css
-    nil
-  end
-
-  def style
-    :default
+    :california
   end
 
   def layout
-    :california
+    :sprint
+  end
+  
+  def use_logo
+    true
+  end
+
+  def home
+    nil
+  end
+
+  def menu
+    [
+     {
+       :name => "Home Page",
+       :link => "http://www.cccd.coop/"
+     },
+     {
+       :name => "Donate",
+       :link => "https://www.networkforgood.org/donation/ExpressDonation.aspx?ORGID2=392065673"
+     },
+    ]
   end
 end

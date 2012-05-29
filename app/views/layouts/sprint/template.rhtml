@@ -9,7 +9,9 @@
 <body class="section-<%=params[:controller]%> page-<%=params[:controller]%>-<%=params[:action]%>">
 
 <%=render :partial => 'layouts/adminmenu'%>
-
+<%- 
+   homepage = @site.home || "/"
+-%>
 <!-- begin wrapper div -->
 <div id="bigwrapper">
 
@@ -25,7 +27,7 @@
           <%- unless @site.use_logo -%>
 	  <div class='clearboth title'><b><a href='/'>Find</a></b><span class='minor'><a href='/'>.COOP</a></span></div>
           <%- else -%>
-          <a href="/"><img src="/images/<%= @site.name %>/logo2.png" /></a>
+          <a href="<%=homepage%>"><img src="/images/<%= @site.name %>/logo2.png" /></a>
           <%- end -%>
 	</div>
         <%= render :partial => 'search/search_form', :locals => { :this_is_the_header => true } %>

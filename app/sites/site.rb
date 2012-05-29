@@ -94,6 +94,9 @@ class Site
     false
   end
 
+  def home
+  end
+
   def menu
     [
      {

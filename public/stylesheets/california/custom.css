@@ -1,0 +1,77 @@
+/* This stylesheet is used by the frontpage template */
+@charset "UTF-8";
+body  {
+	margin: 0; /* it's good practice to zero the margin and padding of the body element to account for differing browser defaults */
+	padding: 0; /* this centers the container in IE 5* browsers. The text is then set to the left aligned default in the #container selector */
+	color: #000000;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 100%;
+/*	text-align: center; */
+	background-color: #FFFFFF;
+	background-image: url("shadow.gif");
+	background-position: 918px 0px;
+	background-repeat: repeat-y;
+}
+a:hover {
+	text-decoration: none;
+}
+#pagewidth {
+	width: 918px;  /* using 20px less than a full 800px width allows for browser chrome and avoids a horizontal scroll bar */
+	background: #FFFFFF;
+	text-align: left; /* this overrides the text-align: center on the body element. */
+	margin-top: 0;
+	margin-right: 0px;
+	margin-bottom: 0;
+	margin-left: 0px;
+} 
+
+#header .header_material {
+	background-color: #91A327;
+} 
+
+#pagewidth {
+	background-color: #91A327;
+} 
+
+.header_material {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+#maincol {
+  background-color: #fff; 
+  padding: 20px;
+}
+
+#userstatus a { 
+  color: #fff;
+  font-weight: bold;
+}
+
+#see_advanced { 
+  color: #fff;
+  font-weight: bold;
+}
+
+#search_form { 
+  background-image:url("searchbar_tight_transparent.png");
+  width: 446px;
+}
+
+#qq { 
+  top:62px;
+  left:22px;
+  width:382px;
+}
+
+#search_filters { 
+  margin-bottom: 0px;
+}
+
+.listing {
+  width: 240px;
+}
+
+.subtitle { 
+  color: #fff;
+}

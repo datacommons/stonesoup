@@ -1,0 +1,24 @@
+
+<p>This is a directory of organizations looking to build a cooperative economy.
+(<a href='http://datacommons.find.coop/about'>learn more</a>...)
+</p>
+
+<%= render :partial => 'search/search_form' %>
+<br class="clearboth" />
+
+<p>
+The Data Commons Project is a collaborative effort among a diverse array of organizations in the U.S. and Canada who share a mission of building and supporting the development of a cooperative economy.  Our goal is to develop an accurate, comprehensive, public database of cooperative economic initiatives in North America. (<a href='http://datacommons.find.coop/about'>read more</a>...)
+</p>
+
+<p>
+Want to help out? <%= link_to 'Add your organization', :controller => 'organizations', :action => 'new' %>, 
+<%= link_to 'join our programmers', "http://datacommons.find.coop/content/code-commons" %>, <%= link_to "file bug reports", "https://bugs.launchpad.net/datacommons" %>, <%= link_to "surprise us", "http://datacommons.find.coop/contact" %>, or:
+</p>
+
+<p>
+<form style="display: inline;" action="https://www.paypal.com/cgi-bin/webscr" method="post"> <input name="cmd" type="hidden" value="_s-xclick" /><input alt="Donate to the Data Commons Project" name="submit" src="https://www.paypal.com/en_US/i/btn/btn_donate_LG.gif" type="image" /><input name="encrypted" type="hidden" value="-----BEGIN PKCS7-----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-----END PKCS7-----" /></form>
+(via <a href='http://www.cdi.coop'>Cooperative Development Institute</a>, our fiscal sponsor).
+
+</p>
+
+

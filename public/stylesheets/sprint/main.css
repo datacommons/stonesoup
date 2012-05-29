@@ -203,8 +203,6 @@ form.button-to {
 
 #footer {
 	font-size: 70%;
-	text-align: center;
-	vertical-align: middle;
 	height:60px;
 	clear:both;
 	padding: 0;
@@ -779,12 +777,14 @@ body.page-users-prefs .listing {
   border: 1px solid #339966;
   padding-bottom: 20px;
   list-style-type: square;
+  top: 0px;
+  left: 0px;
 }
 
 #qq { 
-  top:65px;
-  left:28px;
-  width:453px;
+  top:62px;
+  left:31px;
+  width:457px;
   z-index:11000;
   border-top: none;
 }
@@ -807,9 +807,13 @@ body.page-users-prefs .listing {
   background-color:transparent;
   position:absolute;
   top:21px;
-  left:526px;
+  right:0px;
   width:49px;
   height:49px;
+}
+
+#see_list a { 
+  outline: 0;
 }
 
 #carousel-wrapper {

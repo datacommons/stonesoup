@@ -1,17 +1,13 @@
-class DefaultSite < Site
+class ClassicSite < Site
 
   def site_searches
-    nil
+    ['Startup','Connecticut','cooperative','zip:01301','tech*', 'sector:food AND (organic OR local)']
   end
 
   def aliases
-    ['find.coop', 'www.find.coop', 'sprint.find.coop', 'testsprint.find.coop', 'proto.find.coop']
+    ['classic.find.coop', 'testclassic.find.coop']
   end
 
-  def layout
-    :sprint
-  end
-  
   def blank_search
     'Data Commons'
   end
