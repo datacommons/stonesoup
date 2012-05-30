@@ -303,7 +303,7 @@ public
     if search.length > 0
       tags.reject!{|t| t.name.index(search.downcase) != 0}
     end
-    render_auto_complete([tags],search,false)
+    render_auto_complete([tags],search,{:should_sort => false})
   end
 
   def auto_complete
@@ -423,20 +423,28 @@ public
     global_limit = 25
 
     if groups.flatten.length>global_limit
+      if areas.length>0
+        locations = []
+      end
+    end
+
+    if groups.flatten.length>global_limit
       organizations = self.whittle(organizations,name,useful_limit,limit)
       groups = [tags, areas, organizations, people, locations]
     end
 
-    while groups.flatten.length>global_limit
-      groups.each_with_index do |result_set,idx|
-        if idx==0
-          if result_set.length<global_limit*0.5
-            next
+    if groups.flatten.length>global_limit
+      while groups.flatten.length>global_limit
+        groups.each_with_index do |result_set,idx|
+          if idx==0
+            if result_set.length<global_limit*0.5
+              next
+            end
           end
+          result_set.slice!((result_set.length*0.8).floor,result_set.length)
         end
-        result_set.slice!((result_set.length*0.8).floor,result_set.length)
+        groups = [tags, areas, organizations, people, locations]
       end
-      groups = [tags, areas, organizations, people, locations]
     end
     render_auto_complete(groups,search)
   end
@@ -502,7 +510,10 @@ protected
     return areaize1("physical_city",loc,txt) || areaize1("physical_zip",loc,txt) || areaize1("physical_state",loc,txt) || areaize1("physical_country",loc,txt)
   end
 
-  def render_auto_complete(groups,search, should_sort = true, should_root = true)
+  def render_auto_complete(groups,search, opts = {})
+    should_sort = opts[:should_sort] || true
+    should_root = opts[:should_root] || true
+    negated = opts[:negated] || false
     results = []
     groups.each do |result_set|
       result_set.each do |h|
@@ -516,15 +527,18 @@ protected
         next if target.kind_of? TagContext
         next if target.kind_of? TagWorld
         label = target.name
-        results << {
-          :name => h.name,
-          :label => h.name,
-          :family => (target.respond_to? "family") ? target.family : target.class.to_s.underscore.humanize,
-          :type => target.class.to_s.underscore.pluralize,
-          :id => target.id,
-          :pid => target.to_param,
-          :is_tag => is_tag
-        }
+        prefix = negated ? "-" : ""
+        if label.length>0
+          results << {
+            :name => prefix + h.name,
+            :label => prefix + h.name,
+            :family => (target.respond_to? "family") ? target.family : target.class.to_s.underscore.humanize,
+            :type => target.class.to_s.underscore.pluralize,
+            :id => target.id,
+            :pid => target.to_param,
+            :is_tag => is_tag
+          }
+        end
       end
     end
     if should_sort
@@ -577,6 +591,8 @@ protected
   def auto_complete_tag(key,opts)
     search = params[:search]
     search = "" if search.nil?
+    negated = search.starts_with?("-")
+    search.gsub!(/^-/,"") if negated
     name = search
     template = "name LIKE ?"
     value = (name.length>2 ? "%" : "")+name+"%"
@@ -606,7 +622,7 @@ protected
       conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
       tags = Tag.find(:all, :conditions => conditions, :joins => joinSQL, :limit => limit)
     end
-    render_auto_complete([tags],search)
+    render_auto_complete([tags],search,{:negated => negated})
   end
 
   def auto_complete_named(model,opts)
