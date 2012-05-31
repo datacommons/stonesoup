@@ -5,7 +5,7 @@ class CanadianWorkerSite < Site
   end
 
   def aliases
-    ['canadianworker.find.coop','testcanadianworker.find.coop']
+    ['canadianworker.find.coop','testcanadianworker.find.coop','cwcftest.find.coop']
   end
 
   def should_show_latest_people
