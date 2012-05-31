@@ -174,8 +174,16 @@ module ApplicationHelper
     org_address = ["address1","address2","city","state","zip","country","county"].map{|x| ["physical_" + x, "mailing_" + x]}.flatten.map{|x| "locations.#{x} AS #{x}"}.join(', ')
     (["DISTINCT organizations.*, locations.latitude AS latitude, locations.longitude AS longitude, #{org_address}"] + sel).join(",")
   end
+
+  def ApplicationHelper.count_tags(entries)
+    # this is currently being called inefficiently in some cases, where
+    # it would be faster to repeat sql joins rather than list entries
+    lst = entries.select{|x| Organization === x}.map{|x| x.id}.join(",")
+    return [] if lst == ""
+    Tag.find_by_sql("SELECT t.*, COUNT(DISTINCT o.id) AS count FROM organizations o, tags t, taggings ot WHERE ot.tag_id = t.id AND ot.taggable_id = o.id AND ot.taggable_type = 'Organization' AND ot.taggable_id IN (#{lst}) GROUP BY t.id ORDER BY count DESC")
+  end
   
-  def search_core_org_ppl(search_query,pagination,opts)
+  def search_core_org_ppl(search_query,pagination,opts,include_counts = false)
     joinSQL, condSQLs, condParams, org_select, org_order = Organization.all_join(session,opts)
 
     org_joinSQL, org_condSQLs, org_condParams = [joinSQL, condSQLs, condParams]
@@ -211,11 +219,13 @@ module ApplicationHelper
         @entry_name = "result"
       end
       entries += entries2
-      entries = entries.paginate(pagination)
     else
       entries = ActsAsFerret::find(search_query,
                                    [Organization,Person],
-                                   pagination,
+                                   { 
+                                     :page => 1, 
+                                     :per_page => 50000,
+                                   }, # disable pagination, we need counts
                                    {
                                      :limit => :all,
                                      :conditions => { :organization => org_conditions, :person => ppl_conditions },
@@ -224,10 +234,16 @@ module ApplicationHelper
                                      :order => { :organization => org_order }
                                    })
     end
+    if include_counts
+      counts = ApplicationHelper.count_tags(entries)
+      entries = entries.paginate(pagination)
+      return [entries, counts]
+    end
+    entries = entries.paginate(pagination)
     entries
   end
 
-  def search_core(_params,site,opts = {})
+  def search_core(_params,site,opts = {}, include_counts = false)
     search_query = _params[:q].to_s + ''
     pagination = { 
       :page => _params[:page], 
@@ -250,7 +266,7 @@ module ApplicationHelper
     #  end
     #end
     search_query = "" if search_query == "*"
-    search_core_org_ppl(search_query,pagination,opts)
+    search_core_org_ppl(search_query,pagination,opts,true)
   end
 
   def search_core_old(_params,site, opts = {})

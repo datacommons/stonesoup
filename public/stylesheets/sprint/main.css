@@ -355,6 +355,10 @@ body.page-users-login #signupform {
   border: 1px solid #ccc;
 }
 
+.map_bar { 
+  width: 310px;
+}
+
 #near_map { 
   width: 400px;
   height: 300px;
@@ -1097,4 +1101,12 @@ body.page-users-prefs .listing {
   border: 1px dashed gray;
   padding: 5px;
   margin: 5px;
+}
+
+.category_box { 
+  float: right;
+  width: 300px;                
+  max-height: 200px;
+  overflow: auto;
+  background-color: #eee;
 }

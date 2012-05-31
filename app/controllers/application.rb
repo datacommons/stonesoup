@@ -276,11 +276,12 @@ public
       end
       conditions = []
       conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
-      results = Organization.find(:all, :conditions => conditions, :joins => joinSQL, :select => ApplicationHelper.get_org_select([]))
+      results = Organization.find(:all, :conditions => conditions, :joins => joinSQL, :select => ApplicationHelper.get_org_select([])).uniq # should move uniq into sql
     end
     if tag.respond_to? "children"
       results = results + tag.children
     end
+    @counts = ApplicationHelper.count_tags(results)
     if @unlimited_search
       @entries = results.paginate(:per_page => 50000, :page => 1)
     else
