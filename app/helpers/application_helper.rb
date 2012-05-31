@@ -266,7 +266,7 @@ module ApplicationHelper
     #  end
     #end
     search_query = "" if search_query == "*"
-    search_core_org_ppl(search_query,pagination,opts,true)
+    search_core_org_ppl(search_query,pagination,opts,include_counts)
   end
 
   def search_core_old(_params,site, opts = {})
@@ -516,12 +516,12 @@ module ApplicationHelper
     p = {}
     p[:q] = query
     opts = {:no_override => true, :unlimited_search => true}.merge(opts)
-    search_core(p,nil,opts)
+    search_core(p,nil,opts,false)
   end
 
   def get_listing_core(query,name,site_name,opts = {})
     # long cache for now
-    key = "findcoop_get_listingv27:#{site_name}:#{name}"
+    key = "findcoop_get_listingv29:#{site_name}:#{name}"
     if Rails.env.development?
       # Say the magic words to avoid a YAML problem
       logger.debug([Organization,Person])
@@ -542,7 +542,6 @@ module ApplicationHelper
     link.reject{|k,v| k == :q or k == :no_override}.each do |k,v|
       opts[(k.to_s + "_filter").to_sym] = v.split(/;/)
     end
-    puts "MAP: #{query.inspect} // #{name} // #{opts.inspect} // #{site_name}"
     get_listing(query,name,site_name,opts)
   end
 
