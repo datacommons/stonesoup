@@ -505,7 +505,7 @@ module ApplicationHelper
 
   def get_listing_core(query,name,site_name,opts = {})
     # long cache for now
-    key = "findcoop_get_listingv26:#{site_name}:#{name}"
+    key = "findcoop_get_listingv27:#{site_name}:#{name}"
     if Rails.env.development?
       # Say the magic words to avoid a YAML problem
       logger.debug([Organization,Person])
@@ -522,7 +522,7 @@ module ApplicationHelper
   def get_listing_for_link(name,link,site_name)
     opts = {}
     query = link[:q] || ""
-    opts[:no_override] = link[:no_override]
+    opts[:no_override] = link[:no_override] unless link[:no_override].nil?
     link.reject{|k,v| k == :q or k == :no_override}.each do |k,v|
       opts[(k.to_s + "_filter").to_sym] = v.split(/;/)
     end
