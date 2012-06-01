@@ -29,6 +29,10 @@ class Person < ActiveRecord::Base
     [firstname, lastname].compact.join(' ')
   end  
 
+  def oname 
+    "p" + name
+  end
+
   def locations
     organizations.map{|o| o.locations}.flatten
   end

@@ -55,12 +55,19 @@ public
           :disposition => ("attachment; filename=search.csv")
         end
         f.pdf do
-          report = SearchReport.new(:data => @entries, :search => @search_text,
+          report = SearchReport.new(:data => @entries.uniq.sort{|a,b| a.oname <=> b.oname}, :search => @search_text,
                                     :user => current_user,
                                     :style => params[:style])
-          send_data report.to_pdf, :filename => "search.pdf",
-          :type => "application/pdf",
-          :disposition => 'inline'
+          data = report.to_pdf
+          if Hash === data
+            @report = data
+            @template_format = :html
+            render :action => "no_report", :content_type => "text/html"
+          else
+            send_data data, :filename => "search.pdf",
+            :type => "application/pdf",
+            :disposition => 'inline'
+          end
         end
         f.json { render :json => @entries }
       end

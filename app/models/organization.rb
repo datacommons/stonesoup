@@ -516,4 +516,8 @@ class Organization < ActiveRecord::Base
   def to_param
     "#{id}-#{name.parameterize}"
   end 
+
+  def oname
+    "o" + (name.nil? ? "" : name)
+  end
 end
