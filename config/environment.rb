@@ -236,3 +236,5 @@ class ActiveRecord::Base
 end
 
 IMPORT_PLUGINS_DIRECTORY = "#{RAILS_ROOT}/lib/import_plugins"
+
+

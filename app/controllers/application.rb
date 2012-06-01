@@ -292,4 +292,10 @@ public
       format.xml  { render :xml => @entries }
     end
   end
+
+  rescue_from ActiveRecord::StatementInvalid, :with => :rescue_db
+
+  def rescue_db(exception)
+    render :template => "errors/db"
+  end
 end
