@@ -285,7 +285,7 @@ public
     if @unlimited_search
       @entries = results.paginate(:per_page => 50000, :page => 1)
     else
-      @entries = results.paginate(:per_page => 15, :page => (params[:page]||1))
+      @entries = results.paginate(:per_page => 30, :page => (params[:page]||1))
     end
     respond_to do |format|
       format.html { render :template => 'search/search' }

@@ -4,7 +4,14 @@
 	<title><%- if @content_for_title -%><%=h yield(:title) %><%- else -%><%= @site.title %>: <%= controller.action_name %><%- end -%></title>
 	<%=render :partial => 'layouts/common_header'%>
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700' rel='stylesheet' type='text/css'>
-<%= javascript_include_tag :defaults, 'carousel-min' %>
+<script>
+var masonry_list = [];
+Event.observe(window, 'load', function() {
+  for (var unit in $$('.mason')) {
+    //masonry_list.push(new Masonry(unit));
+  }
+});
+</script>
 </head>
 <body class="section-<%=params[:controller]%> page-<%=params[:controller]%>-<%=params[:action]%>">
 

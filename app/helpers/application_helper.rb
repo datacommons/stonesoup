@@ -247,7 +247,7 @@ module ApplicationHelper
     search_query = _params[:q].to_s + ''
     pagination = { 
       :page => _params[:page], 
-      :per_page => 15,
+      :per_page => 30,
     }
     if _params[:format]=='xml' or _params[:format]=='csv' or _params[:format]=='pdf' or opts[:unlimited_search] or _params['Map'] 
       # When providing xml or csv, there should be no
@@ -486,7 +486,7 @@ module ApplicationHelper
 
       pagination = { 
         :page => _params[:page], 
-        :per_page => 15,
+        :per_page => 30,
       }
       if _params[:format]=='xml' or _params[:format]=='csv' or _params[:format]=='pdf' or defined? @unlimited_search or _params['Map'] 
         # When providing xml or csv, there should be no
