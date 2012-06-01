@@ -5,7 +5,7 @@ class MaineSite < Site
   end
 
   def aliases
-    ['maine.find.coop','me.find.coop','testme.find.coop']
+    ['maine.find.coop','me.find.coop','testme.find.coop', 'mainetest.find.coop']
   end
 
   def state_filter
