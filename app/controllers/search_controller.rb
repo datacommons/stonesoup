@@ -12,6 +12,15 @@ public
     end
   end
 
+  def test
+    _params = {}
+    @entries, @counts = @template.search_core(_params,@site,{ :unlimited_search => true }, true)
+    @entries.reject!{|e| e.kind_of? Person}
+    @entries.uniq!
+    @entries.sort!{|a,b| a.oname <=> b.oname}
+    render :layout => "#{@site.layout}/printable", :template => "layouts/#{@site.name}/_directory"
+  end
+
   def search
     params[:q] = "" unless params[:q]
     @query = params[:q].to_s + ''

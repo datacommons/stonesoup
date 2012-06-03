@@ -1,0 +1,105 @@
+<center>
+<h1>STRONGER<br />TOGETHER</h1>
+<h2>A Live Directory of Maine's Cooperative Economy</h2>
+
+<p>
+<img src="/images/maine/coop_maine_medium.png" />
+</p>
+
+Compiled by
+<h3>Cooperative Maine</h3>
+
+<a href="http://www.cooperativemaine.org">www.cooperativemaine.org</a>
+
+<br />
+
+This is a test, with imprecise search queries (so organizations
+may not be in the category claimed for them).
+
+</center>
+
+<%-
+
+@list_ct = 0
+@list_version = 6
+
+def listing(link)
+  @list_ct = @list_ct + 1
+  get_listing_for_link("maine_directory_#{@list_ct}_#{@list_version}",link,request.host).select{|x| x.kind_of? Organization}
+end
+
+sections = [
+  {
+	:title => "Food Cooperatives",
+	:link => {:sector => "food"}
+  },
+  {
+	:title => "Nursery & Preschool Cooperatives",
+	:link => {:sector => "academic/education", :q => "nursery OR preschool"}
+  },
+  {
+	:title => "Electric Utility Cooperatives",
+	:link => {:sector => "electric"}
+  },
+  {
+	:title => "Housing Cooperatives & Collectives",
+	:link => {:sector => "housing"}
+  },
+  {
+	:title => "Agricultural Cooperatives",
+	:link => {:org_type => "cooperative", :sector => "agriculture"}
+  },
+  {
+	:title => "Artist & Craft Cooperatives",
+	:link => {:org_type => "artist run/owned space"}
+  },
+  {
+	:title => "Publishing Cooperatives",
+	:link => {:q => "\"alice james\" OR \"maine authors\""}
+  },
+  {
+	:title => "Worker Cooperatives",
+	:link => {:org_type => "Worker Cooperative"}
+  },
+  {
+	:title => "Multi-Stakeholder Cooperatives",
+	:link => {:q => "\"Fedco Seeds\" OR \"Justice Clothing\""}
+  },
+  {
+	:title => "Credit Unions",
+	:link => {:q => "credit union"}
+  },
+  {
+	:title => "Retailer-Owned Cooperatives",
+	:link => {:q => "Oy where are they??" }
+  },
+  {
+	:title => "Business & Municipal-Owned Cooperatives",
+	:link => {:q => "Synernet"}
+  },
+  {
+	:title => "Community Land Trusts",
+	:link => {:q => "name:\"community land trust\""}
+  },
+  {
+	:title => "Service Communities",
+	:link => {:q => "name:\"H.O.M.E. Co-op\""}
+  },
+  {
+	# this section is interesting; may need to suppress default filter
+	# to get stuff that is not in Maine (e.g. CDI)
+	:title => "Networking & Support Organizations",
+	:link => {:sector => "co-op development"}
+  }
+]
+
+-%>
+
+<% sections.each do |section| %>
+
+<h2><%= section[:title] %></h2>
+<div class="wall">
+<%= render :partial => "search/listings", :locals => { :entries => listing(section[:link]) } %>
+</div>
+
+<% end %>
