@@ -9,15 +9,17 @@ a {
   text-decoration: none;
   color: inherit;
 }
+.onpage {
+}
 .wall {
   width: 100%;
   padding: 0px;
   margin: 10px;
-  border-top: 1px solid green;
-  border-bottom: 1px solid blue;
+  /*border-top: 1px solid green;
+  border-bottom: 1px solid blue;*/
   position: relative;
 }
-.wall div {
+.directory div {
  	display: block;
 	margin: 5px;
 	padding: 5px;
@@ -50,7 +52,9 @@ h1, h2, h3 {
     margin: 0px;
 }
 
-.nextpage {
+.break_after {
+}
+.break_before {
 }
 
 </style>
@@ -74,6 +78,10 @@ h1, h2, h3 {
  */
 
 /*jshint forin: false, undef: true, eqeqeq: true, curly: true, browser: true */
+
+var state_ct = -1;
+var state_last_wall = null;
+var state_last_wall_page = -1;
 
 (function( window, undefined ) {
 
@@ -251,27 +259,27 @@ h1, h2, h3 {
   // -------------------------- Masonry -------------------------- //
 
     function Masonry( elem, wrapper, options ) {
-    if ( !elem ) {
-      // console.error('Element not found for Masonry.')
-      return;
+	if ( !elem ) {
+	    // console.error('Element not found for Masonry.')
+	    return;
+	}
+	
+	this.element = elem;
+	this.wrapper = wrapper;
+	
+	this.options = {};
+	
+	for ( var prop in Masonry.defaults ) {
+	    this.options[ prop ] = Masonry.defaults[ prop ];
+	}
+	
+	for ( prop in options ) {
+	    this.options[ prop ] = options[ prop ];
+	}
+	
+	this._create();
+	this.build();
     }
-
-    this.element = elem;
-    this.wrapper = wrapper;
-
-    this.options = {};
-
-    for ( var prop in Masonry.defaults ) {
-      this.options[ prop ] = Masonry.defaults[ prop ];
-    }
-
-    for ( prop in options ) {
-      this.options[ prop ] = options[ prop ];
-    }
-
-    this._create();
-    this.build();
-  }
 
   // styles of container element we want to keep track of
   var masonryContainerStyles = [ 'position', 'height' ];
@@ -307,35 +315,35 @@ h1, h2, h3 {
 	  return h - a;
       },
 
-    _create: function() {
+      _create: function() {
+	  
+	  // need to get bricks
+	  this.reloadItems();
+	  
+	  // get original styles in case we re-apply them in .destroy()
+	  var elemStyle = this.element.style;
+	  this._originalStyle = {};
+	  for ( var i=0, len = masonryContainerStyles.length; i < len; i++ ) {
+              var prop = masonryContainerStyles[i];
+              this._originalStyle[ prop ] = elemStyle[ prop ] || '';
+	  }
+	  
+	  this.element.style.position = 'relative';
+	  
+	  // add masonry class first time around
+	  var instance = this;
+	  setTimeout( function() {
+              addClass( instance.element, 'masonry' );
+	  });
 
-      // need to get bricks
-      this.reloadItems();
-
-      // get original styles in case we re-apply them in .destroy()
-      var elemStyle = this.element.style;
-      this._originalStyle = {};
-      for ( var i=0, len = masonryContainerStyles.length; i < len; i++ ) {
-        var prop = masonryContainerStyles[i];
-        this._originalStyle[ prop ] = elemStyle[ prop ] || '';
-      }
-
-      this.element.style.position = 'relative';
-
-      // add masonry class first time around
-      var instance = this;
-      setTimeout( function() {
-        addClass( instance.element, 'masonry' );
-      });
-
-      // bind resize method
-      if ( this.options.isResizable ) {
-        addEvent( window, 'resize', function(){
-          instance._handleResize();
-        });
-      }
-
-    },
+	  // bind resize method
+	  if ( this.options.isResizable ) {
+              addEvent( window, 'resize', function(){
+		  instance._handleResize();
+              });
+	  }
+	  
+      },
 
     // build fires when instance is first created
     // and when instance is triggered again -> myMasonry.build();
@@ -370,6 +378,7 @@ h1, h2, h3 {
 	  var column_width = state["column_width"];
 	  var width = state["width"];
 	  var ymargin = state["ymargin"];
+	  var output_page = -1;
 
 	  var yfirst = ypage*page;
 	  if (page==first_page) {
@@ -465,6 +474,9 @@ h1, h2, h3 {
 	      ycol.push(yy);
 	      hcol.push(hh);
               ymax = Math.max(yy+hh,ymax);
+	      if (output_page==-1) {
+		  output_page = Math.floor((yy+hh/2)/ypage);
+	      }
               //console.log("Set! " + xx + " " + yy);
 	      yy += hh + margin;
 	      col.push(brick);
@@ -474,10 +486,12 @@ h1, h2, h3 {
              last_page = last_page+1;
           }
 
-	  result = [last_page_index,last_page,raggedness,col_count,ymax];
+	  result = [last_page_index,last_page,raggedness,col_count,ymax,
+		   output_page];
 	  if (debugging) console.log("balance: " + result);
 	  return result;
       },
+
 
     layout: function( bricks, callback ) {
 	var state = new Object();
@@ -488,15 +502,22 @@ h1, h2, h3 {
 	var yfirst = 200;
 
         var offset = findPos(this.element);
+
 	state["offset"] = offset;
-	state["ymargin"] = (getWH(this.wrapper,'height',true)-getWH(this.wrapper,'height',false))/2;
+	var ymargin = (getWH(this.wrapper,'height',true)-getWH(this.wrapper,'height',false))/2;
+	state["ymargin"] = ymargin;
 
 	var dy = 0;
-	if (hasClass(this.element,"nextpage")) {
-	  var yy = (Math.floor(offset[1]/ypage)+1)*ypage + state["ymargin"];
+	if (hasClass(this.element,"break_before")) {
+	  var yy = (Math.floor(offset[1]/ypage)+1)*ypage + ymargin;
 	  dy = yy-offset[1];
+	} else {
+	    var off = offset[1]-(Math.floor(offset[1]/ypage)*ypage)
+	    if (off<ymargin) {
+		dy = ymargin-off;
+	    }
 	}
-
+	
 	state["bricks"] = bricks;
 	if (bricks.length==0) return;
 	state["initial_index"] = 0;
@@ -511,6 +532,7 @@ h1, h2, h3 {
 	state["width"] = getWH(this.element,'width',false);
 
 	var result = this._balance(state);
+	var output_page = result[5];
 
 	var last_page_index = result[0];
 	var last_page = result[1];
@@ -543,6 +565,28 @@ h1, h2, h3 {
 	}
 	state["final_yoffset"] = ypage*(1-best_mid);
 	result = this._balance(state);
+
+	if (last_page_index==0) {
+	    output_page = result[5];
+	}
+
+	console.log(state_ct + " page " + output_page + " / " + page + " / " + state_last_wall_page);
+	var page_slip = false;
+	if (output_page!=state_last_wall_page && state_last_wall_page!=-1) {
+	    if (hasClass(this.element,"with_previous")) {
+		page_slip = true;
+	    }
+	}
+	state_last_wall_page = output_page;
+	if (page_slip) {
+	    addClass(state_last_wall.element,"break_before");
+	    console.log("Redo...");
+	    state_last_wall_page = -1;
+	    state_last_wall._reLayout();
+	    this._reLayout(callback);
+	    return;
+	}
+
         var ymax = result[4];
 
         if (debugging) {
@@ -555,6 +599,11 @@ h1, h2, h3 {
 	var ylast = ymax;
 	//var ylast = Math.max((best_mid + last_page)*ypage,ymax);
 	var yfirst = offset[1];
+
+	if (hasClass(this.element,"break_after")) {
+	    ylast = (Math.floor(ylast/ypage)+1)*ypage;
+	}
+
 	this.element.style.height = (ylast-yfirst) + "px";
 
       // provide bricks as context for the callback
@@ -580,7 +629,7 @@ h1, h2, h3 {
     },
 
     resize: function() {
-      this._reLayout();
+      //this._reLayout();
     },
 
     // ====================== methods ======================
@@ -630,15 +679,15 @@ h1, h2, h3 {
 window.onload = function() {
     var walls = document.getElementsByClassName("wall");
     for (var i in walls) {
-      var mason = new Masonry(walls[i],
-  	      		     document.getElementById('wrapper'));
+	state_ct = i;
+	if (typeof walls[i] == 'object') {
+	    var mason = new Masonry(walls[i],
+  	      			    document.getElementById('wrapper'));
+	    state_last_wall = mason;
+	}
     }
 };
 </script>
-
-<p>
-And that is the end of that saga.
-</p>
 
 </div>
 

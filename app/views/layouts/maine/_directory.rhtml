@@ -1,3 +1,6 @@
+<div class="wall break_after">
+  <div>
+
 <center>
 <h1>STRONGER<br />TOGETHER</h1>
 <h2>A Live Directory of Maine's Cooperative Economy</h2>
@@ -18,6 +21,99 @@ may not be in the category claimed for them).
 
 </center>
 
+  </div>
+</div>
+
+
+
+
+<div class="wall break_after">
+<div>
+
+<h2>ABOUT COOPERATIVE MAINE</h2>
+
+<p>The purpose of Cooperative Maine is to connect, strengthen and support
+cooperatives and their allies across the state.  We believe that
+cooperatives are powerful and effective tools in the work of creating
+a more sustainable, equitable and democratic economy in Maine.
+Cooperative Maine aspires to increase the visibility of the
+cooperative model as an economic development strategy for our
+communities, to support existing cooperatives in their work, and to
+encourage new cooperative efforts.</p>
+
+<p>As a first step toward achieving these goals, we have compiled this
+directory of diverse cooperatives across the state of Maine. We hope
+that these listings will help to educate readers about cooperative
+businesses and organizations in general; to raise awareness about the
+resources, services and goods that Maine's co­ops have to offer; and
+to provide sparks of inspiration for people and organizations looking
+to strengthen Maine's people and communities through the creation of
+practical, effective and democratic institutions to meet the needs of
+current and future generations.</p>
+
+<p>This directory is a collaborative effort with two other cooperative
+support organizations. The Cooperative Development Institute (based in
+Greenfield, MA) is a nonprofit organization offering cooperative
+business education, training and technical assistance to communities
+in New England and New York. For more information, please see
+http://www.cdi.coop. The Data Commons Project is a bi­national effort
+(U.S. and Canada) to create a comprehensive, public directory of the
+North American cooperative economy. Please see
+http://dcp.usworker.coop for more information about this project.</p>
+
+<p>In you are inspired by the information you find here, if you would
+like to discuss your ideas for cooperative projects, or if you have
+any questions about co­op structures and options, please contact us.
+We are excited to offer whatever resources we can!</p>
+
+<p>In Cooperation,</p>
+
+<p>
+Ethan Miller<br />
+Survey coordinator and directory editor<br />
+Cooperative Maine<br />
+info@cooperativemaine.org<br />
+http://www.cooperativemaine.org
+</p>
+
+</div>
+</div>
+
+
+
+<div class="wall break_after">
+<div style="border: 1px solid black; padding: 20px;">
+Important Disclaimers and Requests:
+
+<ul>
+
+<li>The listing of an organization or business in this directory is
+not meant in any way to imply an affiliation with Cooperative Maine,
+its values, statements, or activities. Groups are listed here only for
+purposes of public education and awareness, and to facilitate direct
+contact between listed groups and interested individuals.</li>
+
+<li>Although we have made every effort to verify the information for
+each listing in this directory, there were some cooperatives that we
+were unable to contact. Therefore, some listings contained here are
+unverified and are marked accordingly with an asterisk (*). NOT
+IMPLEMENTED YET.</li>
+
+<li> We are certain that there are cooperatives in Maine that were
+unintentionally left out of this directory. If you are aware of any
+organization, business or project that should be listed here, please
+let us know!</li>
+</ul>
+
+</div>
+</div>
+
+
+
+
+
+
+
 <%-
 
 @list_ct = 0
@@ -25,7 +121,7 @@ may not be in the category claimed for them).
 
 def listing(link)
   @list_ct = @list_ct + 1
-  get_listing_for_link("maine_directory_#{@list_ct}_#{@list_version}",link,request.host).select{|x| x.kind_of? Organization}
+  get_listing_for_link("maine_directory_#{@list_ct}_#{@list_version}",link,request.host).select{|x| x.kind_of? Organization}.sort{|a,b| a.oname <=> b.oname}
 end
 
 sections = [
@@ -97,9 +193,20 @@ sections = [
 
 <% sections.each do |section| %>
 
-<h2><%= section[:title] %></h2>
 <div class="wall">
+<div><h2><%= section[:title] %></h2></div>
+</div>
+<div class="wall directory with_previous">
 <%= render :partial => "search/listings", :locals => { :entries => listing(section[:link]) } %>
 </div>
 
 <% end %>
+
+<div class="wall">
+
+<div>
+That's it.  Bye!
+</div>
+
+</div>
+
