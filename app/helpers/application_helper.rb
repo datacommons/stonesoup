@@ -197,8 +197,6 @@ module ApplicationHelper
     ppl_conditions = []
     ppl_conditions = [ppl_condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + ppl_condParams unless ppl_condSQLs.empty?
 
-    # includes = [:access_rule, :users]
-
     org_select = ApplicationHelper.get_org_select(org_select)
     org_order = nil if org_order.blank?
     org_order = 'organizations.updated_at DESC' if org_order.blank?
