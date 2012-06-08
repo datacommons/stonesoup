@@ -57,7 +57,7 @@ filter_instrument("add_root","auto_complete_tag_all",root_state,
 
 <li>Full name: <%= @tag.literal_qualified_name %></li>
 <%- if @tag.root -%>
-<li><%- if @tag.parent %><%= @tag.parent.name %> <%- end -%><%= show_link(@tag.root) %> is linked with this tag</li>
+<li><% if @tag.parent %><%= @tag.parent.name %> <% end %><%= show_link(@tag.root) %> is linked with this tag</li>
 <%- else -%>
 <li>This tag is unclassified.</li>
 <%- end -%>
