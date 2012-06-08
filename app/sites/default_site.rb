@@ -5,7 +5,7 @@ class DefaultSite < Site
   end
 
   def aliases
-    ['find.coop', 'www.find.coop', 'sprint.find.coop', 'testsprint.find.coop', 'proto.find.coop']
+    ['find.coop', 'www.find.coop', 'proto.find.coop']
   end
 
   def layout
