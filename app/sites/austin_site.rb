@@ -1,7 +1,7 @@
 class AustinSite < Site
 
   def site_searches
-    ['wheatsville','zip:78704','hous*','*']
+    ['wheatsville','Worker Cooperative']
   end
 
   def aliases
@@ -26,5 +26,18 @@ class AustinSite < Site
 
   def should_show_latest_people
     false
+  end
+
+  def menu
+    [
+     {
+       :name => "Austin Co-op Think Tank",
+       :link => "http://www.thinktank.coop/"
+     },
+     {
+       :name => "Data Commons Cooperative",
+       :link => "http://datacommons.find.coop"
+     }
+    ]
   end
 end
