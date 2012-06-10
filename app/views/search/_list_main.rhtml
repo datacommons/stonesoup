@@ -1,0 +1,64 @@
+<%= javascript_include_tag :defaults, "masonry-min" %>
+<script>
+var masonry_list = [];
+Event.observe(window, 'load', function() {
+  var walls = $$('div.mason_wall');
+  if (walls.length>=1) {
+    var m = new Masonry(walls[0]);
+    masonry_list.push(m);
+  }
+});
+</script>
+<% title = @title || "Search Results" %>
+<% 
+if @entries
+  @entry_name = "result" if @entries.map{|e| e.class.to_s}.uniq.length>1 
+end
+%>
+
+<h2><%= title %></h2>
+
+<%- if @tag -%>
+  <%= render :partial => "#{@tag.class.to_s.underscore.pluralize}/summary", :locals => {:entry => @tag} %>
+<%- end -%>
+
+<% if @entries %>
+ <% if @entries.blank? and not(@tag) %>
+  <p>
+  No results were found for this search.
+    <% if not(params[:unrestricted]) %>
+    <% if session[:state_filter] or session[:state_filter] or session[:dso_filter] or session[:org_type_filter] %>
+      Would you like to try an <%= link_to 'unrestricted search', params.merge(:unrestricted => true) %>?
+    <% end %>
+    <% if session[:state_filter] %>
+    <br />The state was restricted to: <%= session[:state_filter].join(" / ") %>.
+    <% end %>
+    <% if session[:city_filter] %>
+    <br />The city was restricted to: <%= session[:city_filter].join(" / ") %>.
+    <% end %>
+    <% if session[:dso_filter] %>
+    <br />The search was restricted to known members of: <%= session[:dso_filter].join(" / ") %>.
+    <% end %>
+    <% if session[:org_type_filter] %>
+    <br />The search was restricted to organizations of type: <%= session[:org_type_filter].join(" / ") %>.
+    <% end %>
+    <% end %>
+  </p>
+  <p><%= link_to 'Would you like to add a new organization?', :controller => 'organizations', :action => 'new' %></p>
+ <% else %>
+  <%= render :partial => "search/list_map" %>
+  <div class="left_listing">
+  <div class="list_header">
+  <div class="listing_info"><%= page_entries_info @entries, (@entry_name ? {:entry_name => @entry_name} : {}) %></div>
+  <%= will_paginate @entries %>
+  </div>
+  <div class="mason_wall">
+  <%= render :partial => "search/listings" %>
+  </div>
+  <div class='clearboth'></div>
+  <%= will_paginate @entries %>
+ </div>
+ <% end %>
+<% else %>
+  <%= render :partial => 'latest' %>
+<% end %>

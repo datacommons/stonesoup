@@ -1,6 +1,6 @@
 class MemberOrgsController < ApplicationController
   before_filter :login_required, :only => [:associate, :dissociate]
-  before_filter :admin_required, :only => [:index, :new, :create, :edit, :update, :destroy]
+  before_filter :admin_required, :only => [:new, :create, :edit, :update, :destroy]
   def dissociate
     @member_org = MemberOrg.find(params[:member_org_id])
     @organization = Organization.find(params[:organization_id])
@@ -24,26 +24,13 @@ class MemberOrgsController < ApplicationController
   # GET /member_orgs
   # GET /member_orgs.xml
   def index
-    @member_orgs = MemberOrg.find(:all)
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @member_orgs }
-    end
+    show_tag_context(MemberOrg)
   end
 
   # GET /member_orgs/1
   # GET /member_orgs/1.xml
   def show
-    @member_org = MemberOrg.find(params[:id])
-    unless @member_org.root_term == @member_org
-      redirect_to member_org_path(@member_org.root_term) and return
-    end
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @member_org }
-    end
+    show_tag(MemberOrg.find(params[:id]))
   end
 
   # GET /member_orgs/new

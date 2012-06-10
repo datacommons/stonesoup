@@ -1,0 +1,111 @@
+<%- auto_complete_input_id = nil unless auto_complete_input_id -%>
+<%- auto_complete_output_id = nil unless auto_complete_output_id -%>
+<%- geo = false unless geo -%>
+<%- any = false unless any -%>
+<%- if auto_complete_input_id.nil? -%>
+<form>
+<input type="text" id="plane_tagger_id" name="plane_tagger_id" autocomplete="off" />
+</form>
+<%- end -%>
+
+<%- if auto_complete_output_id.nil? -%>
+<ul id="tagger-list">
+</ul>
+<%- end -%>
+
+<%-
+   auto_complete_input_id = "plane_tagger_id" if auto_complete_input_id.nil?
+   auto_complete_output_id = "tagger-list" if auto_complete_output_id.nil?
+-%>
+
+<script>
+function tag_me(name,family,id) {
+<%- if act == :open_tag -%>
+	 document.location = '/' + family + '/' + id;
+         return true;
+<%- else -%>
+	 Form.Element.setValue('<%=auto_complete_input_id%>',name);
+         return false;
+<%- end -%>
+}
+var current_tags = [];
+var current_tag_at = -1;
+var ignore_value = "";
+var want_value = "";
+function tag_key(obj,code) {
+  var result = true;
+  if (current_tag_at!=-1) {
+    $$('#<%=auto_complete_output_id%> li')[current_tag_at].removeClassName("autocomplete_select");
+  }
+  if (code==38) {
+    // up
+    if (current_tags.length>current_tag_at-1 && current_tag_at>=1) {
+       current_tag_at--;
+       ignore_value = current_tags[current_tag_at];
+       obj.value = current_tags[current_tag_at];
+       result = false;
+    }
+  } else if (code==40||code==9) {
+    // down
+    if (current_tags.length>current_tag_at+1) {
+       current_tag_at++;
+       ignore_value = current_tags[current_tag_at];
+       obj.value = current_tags[current_tag_at];
+       result = false;
+    }
+    if (code==9) return result;
+  }
+  if (current_tag_at!=-1) {
+    $$('#<%=auto_complete_output_id%> li')[current_tag_at].addClassName("autocomplete_select");
+  }
+  return result;
+}
+
+if($("<%=auto_complete_input_id%>")) {
+                $('<%=auto_complete_output_id%>').hide();
+                $('<%=auto_complete_input_id%>').observe('keydown', function(event) { return tag_key($('<%=auto_complete_input_id%>'),event.keyCode); });
+                $('<%=auto_complete_input_id%>').observe('blur', function(event) { Element.hide.delay(0.25,'<%=auto_complete_output_id%>'); return false; });
+		new Form.Element.Observer('<%=auto_complete_input_id%>', 0.1, function(event) {
+			var string = $F('<%=auto_complete_input_id%>');
+                        if (string==ignore_value && string!="") return;
+                        want_value = string;
+			if (string.length > 0) {
+				new Ajax.Request('<%= any ? '/search/auto_complete' : '/tags/search' %>', {method:'get',parameters:{search:string,exact:<%= exact %>,geo:<%= geo %>},
+					onSuccess: function(transport) {
+                                                if (string!=want_value) return;
+                                                current_tags = [];
+                                                current_tag_at = -1;
+						var taggers = transport.responseJSON;
+						var lis = $('<%=auto_complete_output_id%>').descendants();
+						if (lis.length > 0) {
+							lis.each(function(l) {
+								l.remove();
+							});
+						};
+                                                var ct = 0;
+						taggers.each(function(a) {
+<%- if act == :open_tag -%>
+							var item = "<li class='tagger'><a href='/" + a.type + "/" + a.pid + "' class='tagger-link'>" + a.label + "</a> (" + a.family + ")</li>";
+                                                        if (typeof a.pid == "object") { item = "<li class='tagger'><a href='/search/search?act=search"; for (var p in a.pid) { item = item + "&amp;" + p + "="; item = item + escape(a.pid[p]); }; item = item + "' class='tagger-link'>" + a.label + "</a> (" + a.family + ")</li>"; }
+<%- else -%>
+							var item = "<li class='tagger'><a href='javascript:;' onclick='return tag_me(\"" + a.name + "\",\"" + a.family + "\"," + a.id + ");' class='tagger-link'>" + a.label + "</a></li>";
+<%- end -%>
+							$('<%=auto_complete_output_id%>').insert(item);
+                                                        ct++;
+                                                        current_tags.push(a.label);
+                                                });
+                                                if (ct>0) { $('<%=auto_complete_output_id%>').show(); } else { $('<%=auto_complete_output_id%>').hide(); }
+					}
+				});
+			} else {
+                                $('<%=auto_complete_output_id%>').hide();
+				var lis = $('<%=auto_complete_output_id%>').descendants();
+				if (lis.length > 0) {
+					lis.each(function(l) {
+						l.remove();
+					});
+				};
+			};
+		});
+	};
+</script>

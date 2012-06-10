@@ -1,14 +1,9 @@
 class LegalStructuresController < ApplicationController
-  before_filter :admin_required, :only => [:index, :new, :create, :edit, :update, :destroy]
+  before_filter :admin_required, :only => [:new, :create, :edit, :update, :destroy]
   # GET /legal_structures
   # GET /legal_structures.xml
   def index
-    @legal_structures = LegalStructure.find(:all)
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @legal_structures }
-    end
+    show_tag_context(LegalStructure)
   end
 
   # GET /legal_structures/new
@@ -25,6 +20,10 @@ class LegalStructuresController < ApplicationController
   # GET /legal_structures/1/edit
   def edit
     @legal_structure = LegalStructure.find(params[:id])
+  end
+
+  def show
+    show_tag(LegalStructure.find(params[:id]))
   end
 
   # POST /legal_structures

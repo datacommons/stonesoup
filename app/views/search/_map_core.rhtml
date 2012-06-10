@@ -1,0 +1,40 @@
+  <%
+  map = Mapstraction.new(map_id,current_map_type)
+  map.control_init(:small => true)
+  at = 0
+  markers = {}
+  bounds = [10000, 10000, -10000, -10000]
+  @have_something = false
+  for e in orgs
+   if e.respond_to? "latitude"
+    unless e.latitude.nil? or e.longitude.nil?
+     unless Float(e.latitude).abs+Float(e.longitude).abs<0.001
+      icon = "/openlayers/img/marker-star.png"
+      pt = [Float(e.latitude), Float(e.longitude)]
+      markers[e.id] = icon
+      bounds = [[bounds[0], pt[0]].min,
+                [bounds[1], pt[1]].min,
+                [bounds[2], pt[0]].max,
+                [bounds[3], pt[1]].max]
+      mkr = Marker.new(pt, :info_bubble => show_link(e), :icon => icon, :icon_size => [22,22])
+      map.marker_init(mkr)
+      @have_something = true
+     end
+    end
+   end
+  end
+  x1 = bounds[0]
+  y1 = bounds[1]
+  x2 = bounds[2]
+  y2 = bounds[3]
+  dx = (x2-x1)/10
+  dy = (y2-y1)/10
+  map.center_zoom_on_bounds_init([[x1-dx,y1-dy],[x2+dx,y2+dy]]) if @have_something
+  %>
+  <% if @have_something %>
+  <div<%- if map_class -%> class="<%= map_class %>"<%- end -%> id="<%= map_id %>"></div>
+  <div class="clearboth"></div>
+  <% if @have_something %>
+  <%= map.to_html(:no_load => true) %>
+  <% end %>
+  <% end %>

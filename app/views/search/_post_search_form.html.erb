@@ -1,0 +1,37 @@
+<% hide_examples = true if @site.site_searches.nil? %>
+<% hide_examples = false if hide_examples.nil? %>
+<div id="search_tips"<%- if @filter_override -%> style="display: none;"<%- end -%>><div class="header_material">
+  <%- unless @site.use_logo -%>
+  <div class='subtitle nohover'><a href='/'>A directory of the cooperative economy</a></div>
+  <%- else -%>
+  <div class='subtitle nohover'><a href='/'>Collaborative Directory</a></div>
+  <%- end -%>
+
+
+                <div id="see_advanced_wrap" class="nohover">
+		<%- if @site.search_bar_in_header %>
+                  <%= link_to_remote( 'Advanced Search',{:url => {:controller => 'search', :action => 'change_filter'},:update => 'search_filters',:before => "Element.toggle('search_filters'); Element.toggle('search_tips');"}, {:id=>'see_advanced'}) %>
+                <%- else -%>
+		  <%= link_to_function('Options...', "Element.show('advanced_search'); Element.hide('basic_search')", :id=>'see_advanced') %>
+                <%- end -%>
+                </div>
+	<% unless hide_examples %>
+	      <div class='example_wrapper'>
+		<div class='example_preamble'>Search<br />examples:</div>
+		<% for example in @site.site_searches %>
+		<div class='example_bubble'><%= link_to example, :controller => 'search', :action => 'search', :q => example %></div>
+		<% end %>
+              </div>
+	<% end %>
+
+  <div class="clearboth"></div>
+</div></div>
+
+<%- if @filter_override -%>
+<div id="search_filters">
+<%= render :partial => 'search/filters' %>
+</div>
+<%- else -%>
+<div id="search_filters" style="display: none;"></div>
+<%- end -%>
+

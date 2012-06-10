@@ -70,10 +70,11 @@ class Site
   end
 
   def style
-    :default
+    self.layout
   end
 
   def title
+    return dso_filter[0] if self.dso_filter
     'Data Commons Directory'
   end
 
@@ -86,7 +87,23 @@ class Site
   end
 
   def search_bar_in_header
+    self.layout == :sprint
+  end
+
+  def use_logo
     false
+  end
+
+  def home
+  end
+
+  def menu
+    [
+     {
+       :name => "About the Data Commons Cooperative",
+       :link => "http://datacommons.find.coop/about"
+     }
+    ]
   end
 
   def self.scan

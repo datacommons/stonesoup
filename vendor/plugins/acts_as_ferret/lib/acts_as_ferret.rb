@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright (c) 2006 Kasper Weibel Nielsen-Refs, Thomas Lockney, Jens Krämer
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -433,6 +434,33 @@ module ActsAsFerret
     return conditions
   end
 
+  # check for per-model joins and return these if provided
+  def self.joins_for_model(model, joins = {})
+    if Hash === joins
+      key = model.name.underscore.to_sym
+      joins = joins[key]
+    end
+    return joins
+  end
+
+  # check for per-model select and return these if provided
+  def self.select_for_model(model, select = {})
+    if Hash === select
+      key = model.name.underscore.to_sym
+      select = select[key]
+    end
+    return select
+  end
+
+  # check for per-model order and return these if provided
+  def self.order_for_model(model, order = {})
+    if Hash === order
+      key = model.name.underscore.to_sym
+      order = order[key]
+    end
+    return order
+  end
+
   # retrieves search result records from a data structure like this:
   # { 'Model1' => { '1' => [ rank, score ], '2' => [ rank, score ] }
   #
@@ -466,6 +494,15 @@ module ActsAsFerret
                                         id_array.keys ], 
                                       conditions)
 
+      # get joins
+      joins = joins_for_model model_class, find_options[:joins]
+
+      # get select
+      select = select_for_model model_class, find_options[:select]
+
+      # get order
+      order = order_for_model model_class, find_options[:order]
+
       # check for include association that might only exist on some models in case of multi_search
       filtered_include_options = nil
       if include_options = find_options[:include]
@@ -474,7 +511,10 @@ module ActsAsFerret
 
       # fetch
       tmp_result = model_class.find(:all, find_options.merge(:conditions => conditions, 
-                                                             :include    => filtered_include_options))
+                                                             :joins => joins,
+                                                             :select => select,
+                                                             :order => order,
+                                                             :include => filtered_include_options))
 
       # set scores and rank
       tmp_result.each do |record|

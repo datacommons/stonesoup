@@ -1,6 +1,7 @@
 class SectorsController < ApplicationController
-  before_filter :login_required
-  before_filter :admin_required, :only => [:index, :show, :new, :create, :edit, :update, :destroy]
+  before_filter :login_required, :only => [:dissociate, :associate]
+  before_filter :admin_required, :only => [:new, :create, :edit, :update, :destroy]
+  # :show is ok
   def dissociate
     @sector = Sector.find(params[:sector_id])
     @organization = Organization.find(params[:organization_id])
@@ -26,23 +27,13 @@ class SectorsController < ApplicationController
   # GET /sectors
   # GET /sectors.xml
   def index
-    @sectors = Sector.find(:all, :order => 'name ASC')
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @sectors }
-    end
+    show_tag_context(Sector)
   end
 
   # GET /sectors/1
   # GET /sectors/1.xml
   def show
-    @sector = Sector.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @sector }
-    end
+    show_tag(Sector.find(params[:id]))
   end
 
   # GET /sectors/new

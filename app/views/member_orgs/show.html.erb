@@ -9,8 +9,5 @@
 	<%= link_to 'Edit', edit_member_org_path(@member_org) %> |
 	<%= link_to 'List Member Orgs', member_orgs_path %>
 <% end %>
-<hr/>
-Organizations who are Members:
-<br/>
 <% @organizations = @member_org.get_organizations %>
 <%= render :file => 'organizations/index' %>

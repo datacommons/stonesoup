@@ -1,48 +1,51 @@
-  <%
-  map = Mapstraction.new("the_map_" + name,current_map_type)
-  map.control_init(:small => true)
-  at = 0
-  markers = {}
-  bounds = [10000, 10000, -10000, -10000]
-  for e in orgs
-   if e.is_a?(Organization)
-    unless e.latitude.nil? or e.longitude.nil?
-      icon = "/openlayers/img/marker-star.png"
-      pt = [Float(e.latitude), Float(e.longitude)]
-      markers[e.id] = icon
-      bounds = [[bounds[0], pt[0]].min,
-                [bounds[1], pt[1]].min,
-                [bounds[2], pt[0]].max,
-                [bounds[3], pt[1]].max]
-      mkr = Marker.new(pt, :info_bubble => show_link(e), :icon => icon, :icon_size => [22,22])
-      map.marker_init(mkr)
-    end
-   end
+<%-
+if @rendered
+  orgs = @orgs
+  name = @name
+  link = @link
+  immediate = true
+else
+  if immediate 
+    orgs = get_listing_for_link(name,link,request.host)
   end
-  x1 = bounds[0]
-  y1 = bounds[1]
-  x2 = bounds[2]
-  y2 = bounds[3]
-  dx = (x2-x1)/10
-  dy = (y2-y1)/10
-  map.center_zoom_on_bounds_init([[x1-dx,y1-dy],[x2+dx,y2+dy]])
-  %>
-  <%= map.to_html %>
+end
+-%>
+
+<% if @rendered or immediate %>
+
   <div class="surround_map_insert">
-  <div class="map_insert" id="the_map_<%= name %>"></div>
+  <%= render :partial => "search/map_core", :locals => { :map_id => "the_map_" + name, :map_class => "map_insert", :orgs => orgs } %>
   </div>
 
 <% shown = {} %>
 <div class="search_listing">
 <% for entry in orgs[0,20] %>
   <% unless shown.key?(entry.name) or !entry.is_a?(Organization) %>
+  <div class="search_entry">
     <% shown[entry.name] = true %>
-    <p><%= show_link entry %> 
+    <%= show_link entry %><br />
     <% if entry.primary_location %>
-       <%= entry.primary_location.physical_city %> <%= entry.primary_location.physical_state %>
+       <span class="search_location"><%= entry.primary_location.summary_city %> <%= entry.primary_location.summary_state %></span><br />
     <% end %>
-    <br /><%= truncate_string(entry.description,70) %>
-    </p>
+    <%- unless entry.description.blank? -%>
+    <%= entry.description.nil? ? "" : truncate_string(entry.description.gsub(/[\n\r+]/,'').strip,70) %><br />
+    <%- end -%>
+  </div>
   <% end %>
 <% end %>
+<div class="search_link_backdrop"></div>
+<div class="search_link">
+<%= link_to "more...", { :controller => "search", :action => "search", :reset => 1 }.merge(link) %>  
 </div>
+</div>
+
+<% else %>
+
+<div id="<%= name+'_update' %>">
+<script>
+  new Ajax.Updater("<%=name%>_update","<%= url_for(:action => "mini_map", :controller => "search", :name => name, :link => link.to_yaml, :site => request.host).gsub("&amp;","&") %>",{asynchronous:true, evalScripts:true});
+</script>
+<img src="/images/loading.gif" style="padding: 20px;" />
+</div>
+
+<% end %>

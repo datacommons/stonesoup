@@ -125,7 +125,6 @@ if FileTest.exist?(email_config_file)
   ActionMailer::Base.smtp_settings = email_settings[RAILS_ENV] unless email_settings[RAILS_ENV].nil?
 end
 
-
 # add "essentially the same" operator to relevant classes, for the change_message method in Common
 class String
   def same_value?(other)
@@ -237,3 +236,5 @@ class ActiveRecord::Base
 end
 
 IMPORT_PLUGINS_DIRECTORY = "#{RAILS_ROOT}/lib/import_plugins"
+
+

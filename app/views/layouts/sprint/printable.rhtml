@@ -1,0 +1,694 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15">
+<title>Directory</title>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>
+<style type="text/css">
+a {
+  text-decoration: none;
+  color: inherit;
+}
+.onpage {
+}
+.wall {
+  width: 100%;
+  padding: 0px;
+  margin: 10px;
+  /*border-top: 1px solid green;
+  border-bottom: 1px solid blue;*/
+  position: relative;
+}
+.directory div {
+ 	display: block;
+	margin: 5px;
+	padding: 5px;
+	width: 30%;
+	overflow: hidden;
+	-webkit-border-radius: 9px;	
+        border: 1px solid #ccc;
+}
+
+body {
+  height: 11in !important;
+  width: 8.5in !important;
+  padding: 0;
+  margin: 0;
+}
+
+@font-face {
+    font-family: 'PT Sans';
+    src: local('PT Sans');
+    font-weight: normal;
+    font-style: normal;
+}
+
+h1, h2, h3 {
+  font-family: 'PT Sans', cursive;
+}
+
+#wrapper {
+    padding: 50px;
+    margin: 0px;
+}
+
+.break_after {
+}
+.break_before {
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="wrapper">
+
+<%= yield %>
+
+<script>
+
+/**
+ * Vanilla Masonry v1.0.04
+ * Dynamic layouts for the flip-side of CSS Floats
+ * http://vanilla-masonry.desandro.com
+ *
+ * Licensed under the MIT license.
+ * Copyright 2012 David DeSandro
+ */
+
+/*jshint forin: false, undef: true, eqeqeq: true, curly: true, browser: true */
+
+var state_ct = -1;
+var state_last_wall = null;
+var state_last_wall_page = -1;
+
+(function( window, undefined ) {
+
+  var document = window.document;
+
+  var debugging = false;
+
+  // -------------------------- DOM Utility -------------------------- //
+
+  // from bonzo.js, by Dustin Diaz - https://github.com/ded/bonzo
+
+  // use classList API if available
+  var supportClassList = 'classList' in document.createElement('div');
+
+  function classReg(c) {
+    return new RegExp("(^|\\s+)" + c + "(\\s+|$)");
+  }
+
+  var hasClass = supportClassList ? function (el, c) {
+    return el.classList.contains(c);
+  } : function (el, c) {
+    return classReg(c).test(el.className);
+  };
+
+  var addClass = supportClassList ? function (el, c) {
+    el.classList.add(c);
+  } : function (el, c) {
+    if ( !hasClass(el, c) ) {
+      el.className = el.className + ' ' + c;
+    }
+  };
+
+  var removeClass = supportClassList ? function (el, c) {
+    el.classList.remove(c);
+  } : function (el, c) {
+    el.className = el.className.replace(classReg(c), ' ');
+  };
+
+  // -------------------------- getStyle -------------------------- //
+
+  var defView = document.defaultView;
+
+  var getStyle = defView && defView.getComputedStyle ?
+    function( elem ) {
+      return defView.getComputedStyle( elem, null );
+    } :
+    function( elem ) {
+      return elem.currentStyle;
+    };
+
+  // -------------------------- Percent Margin support -------------------------- //
+
+  // hack for WebKit bug, which does not return proper values for percent-margins
+  // Hard work done by Mike Sherov https://github.com/jquery/jquery/pull/616
+
+  var body = document.getElementsByTagName("body")[0],
+      div = document.createElement('div');
+
+  div.style.marginTop = '1%';
+  body.appendChild( div );
+
+  var supportsPercentMargin = getStyle( div ).marginTop !== '1%';
+
+  body.removeChild( div );
+
+  // https://github.com/mikesherov/jquery/blob/191c9c1be/src/css.js
+
+  function hackPercentMargin( elem, computedStyle, marginValue ) {
+    if ( marginValue.indexOf('%') === -1 ) {
+      return marginValue;
+    }
+
+    var elemStyle = elem.style,
+        originalWidth = elemStyle.width,
+        ret;
+
+    // get measure by setting it on elem's width
+    elemStyle.width = marginValue;
+    ret = computedStyle.width;
+    elemStyle.width = originalWidth;
+
+    return ret;
+  }
+
+  function findPos(obj) {
+      var curleft = curtop = 0;
+      do {
+	  curleft += obj.offsetLeft;
+	  curtop += obj.offsetTop;
+      } while (obj = obj.offsetParent);
+      return [curleft,curtop];
+  }
+
+  // -------------------------- getWH -------------------------- //
+
+  // returns width/height of element, refactored getWH from jQuery
+  function getWH( elem, measure, isOuter ) {
+    // Start with offset property
+    var isWidth = measure !== 'height',
+        val = isWidth ? elem.offsetWidth : elem.offsetHeight,
+        dirA = isWidth ? 'Left' : 'Top',
+        dirB = isWidth ? 'Right' : 'Bottom',
+        computedStyle = getStyle( elem ),
+        paddingA = parseFloat( computedStyle[ 'padding' + dirA ] ) || 0,
+        paddingB = parseFloat( computedStyle[ 'padding' + dirB ] ) || 0,
+        borderA = parseFloat( computedStyle[ 'border' + dirA + 'Width' ] ) || 0,
+        borderB = parseFloat( computedStyle[ 'border' + dirB + 'Width' ] ) || 0,
+        computedMarginA = computedStyle[ 'margin' + dirA ],
+        computedMarginB = computedStyle[ 'margin' + dirB ],
+        marginA, marginB;
+
+    if ( !supportsPercentMargin ) {
+      computedMarginA = hackPercentMargin( elem, computedStyle, computedMarginA );
+      computedMarginB = hackPercentMargin( elem, computedStyle, computedMarginB );
+    }
+
+    marginA = parseFloat( computedMarginA ) || 0;
+    marginB = parseFloat( computedMarginB ) || 0;
+
+    if ( val > 0 ) {
+
+      if ( isOuter ) {
+        // outerWidth, outerHeight, add margin
+        val += marginA + marginB;
+      } else {
+        // like getting width() or height(), no padding or border
+        val -= paddingA + paddingB + borderA + borderB;
+      }
+
+    } else {
+
+      // Fall back to computed then uncomputed css if necessary
+      val = computedStyle[ measure ];
+      if ( val < 0 || val == null ) {
+        val = elem.style[ measure ] || 0;
+      }
+      // Normalize "", auto, and prepare for extra
+      val = parseFloat( val ) || 0;
+
+      if ( isOuter ) {
+        // Add padding, border, margin
+        val += paddingA + paddingB + marginA + marginB + borderA + borderB;
+      }
+    }
+
+    return val;
+  }
+
+  // -------------------------- addEvent / removeEvent -------------------------- //
+
+  // by John Resig - http://ejohn.org/projects/flexible-javascript-events/
+
+  function addEvent( obj, type, fn ) {
+    if ( obj.addEventListener ) {
+      obj.addEventListener( type, fn, false );
+    } else if ( obj.attachEvent ) {
+      obj[ 'e' + type + fn ] = fn;
+      obj[ type + fn ] = function() {
+        obj[ 'e' + type + fn ]( window.event );
+      };
+      obj.attachEvent( "on" + type, obj[ type + fn ] );
+    }
+  }
+
+  function removeEvent( obj, type, fn ) {
+    if ( obj.removeEventListener ) {
+      obj.removeEventListener( type, fn, false );
+    } else if ( obj.detachEvent ) {
+      obj.detachEvent( "on" + type, obj[ type + fn ] );
+      obj[ type + fn ] = null;
+      obj[ 'e' + type + fn ] = null;
+    }
+  }
+
+  // -------------------------- Masonry -------------------------- //
+
+    function Masonry( elem, wrapper, options ) {
+	if ( !elem ) {
+	    // console.error('Element not found for Masonry.')
+	    return;
+	}
+	
+	this.element = elem;
+	this.wrapper = wrapper;
+	
+	this.options = {};
+	
+	for ( var prop in Masonry.defaults ) {
+	    this.options[ prop ] = Masonry.defaults[ prop ];
+	}
+	
+	for ( prop in options ) {
+	    this.options[ prop ] = options[ prop ];
+	}
+	
+	this._create();
+	this.build();
+    }
+
+  // styles of container element we want to keep track of
+  var masonryContainerStyles = [ 'position', 'height' ];
+
+  Masonry.defaults = {
+    isResizable: true,
+    gutterWidth: 0,
+    isRTL: false,
+    isFitWidth: false
+  };
+
+  Masonry.prototype = {
+
+    _getBricks: function( items ) {
+      var item;
+      for (var i=0, len = items.length; i < len; i++ ) {
+        item = items[i];
+        item.style.position = 'absolute';
+        addClass( item, 'masonry-brick' );
+        this.bricks.push( item );
+      }
+    },
+
+      _straddle : function(b,h) {
+	  return b>=h;
+      },
+
+      _excess : function(b,h) {
+	  return b - h;
+      },
+
+      _missing : function(a,h) {
+	  return h - a;
+      },
+
+      _create: function() {
+	  
+	  // need to get bricks
+	  this.reloadItems();
+	  
+	  // get original styles in case we re-apply them in .destroy()
+	  var elemStyle = this.element.style;
+	  this._originalStyle = {};
+	  for ( var i=0, len = masonryContainerStyles.length; i < len; i++ ) {
+              var prop = masonryContainerStyles[i];
+              this._originalStyle[ prop ] = elemStyle[ prop ] || '';
+	  }
+	  
+	  this.element.style.position = 'relative';
+	  
+	  // add masonry class first time around
+	  var instance = this;
+	  setTimeout( function() {
+              addClass( instance.element, 'masonry' );
+	  });
+
+	  // bind resize method
+	  if ( this.options.isResizable ) {
+              addEvent( window, 'resize', function(){
+		  instance._handleResize();
+              });
+	  }
+	  
+      },
+
+    // build fires when instance is first created
+    // and when instance is triggered again -> myMasonry.build();
+    build: function( callback ) {
+      this._reLayout( callback );
+    },
+
+    // goes through all children again and gets bricks in proper order
+    reloadItems: function() {
+      this.bricks = [];
+      this._getBricks( this.element.children );
+    },
+
+    // ====================== General Layout ======================
+
+    _reLayout: function( callback ) {
+      this.layout( this.bricks, callback );
+    },
+
+
+      _balance: function(state) {
+          var ymax = 0;
+	  var bricks = state["bricks"];
+	  var initial_index = state["initial_index"];
+	  var xpage = state["page_width"];
+	  var ypage = state["page_height"];
+	  var initial_yoffset = state["initial_yoffset"];
+	  var final_yoffset = state["final_yoffset"];
+	  var page = state["page"];
+	  var first_page = state["first_page"];
+	  var offset = state["offset"];
+	  var column_width = state["column_width"];
+	  var width = state["width"];
+	  var ymargin = state["ymargin"];
+	  var output_page = -1;
+
+	  var yfirst = ypage*page;
+	  if (page==first_page) {
+	      yfirst = initial_yoffset;
+	  } else {
+	      yfirst += ymargin;
+	  }
+
+	  var xx = offset[0];
+	  var yy = yfirst;
+	  var margin = 10;
+	  var nudge = 6;
+	  var nudged = 0;
+	  var col_count = 0;
+	  var raggedness = 0;
+	  var col = [];
+	  var ycol = [];
+	  var hcol = [];
+	  var ybar = 0;
+	  var ynext = 0;
+	  var len = bricks.length;
+	  var last_page_index = 0;
+	  var last_page = page;
+          for (var i=initial_index; i < len; i++ ) {
+              var brick = bricks[i];
+	      var hh = getWH(brick, 'height', true);
+              var ww = getWH(brick, 'width', true);
+	      ybar = (page+1)*ypage-Math.max(final_yoffset,ymargin);
+	      ynext = (page+1)*ypage+ymargin;
+
+	      var fixed = false;
+	      if (this._straddle(yy+hh,ybar)) {
+		  var excess = this._excess(yy+hh,ybar);
+		  var avail = (col.length-1)*nudge - nudged;
+		  //console.log("Tweak? excess " + excess + " avail " + avail);
+		  if (avail>excess) {
+		      for (var j=0; j<col.length; j++) {
+			  var y = ycol[j];
+			  var dy = Math.floor(excess*(j/(col.length)))
+			  col[j].style.top = ( y-dy-offset[1] ) + 'px';
+			  ycol[j] = y-dy;
+			  ymax = Math.max(ycol[j]+hcol[j],ymax);
+		      }
+		      yy -= excess;
+		      nudged += nudge;
+		      fixed = true;
+		      //console.log("Tweak needed and possible");
+		      if (debugging) brick.style.background = "red";
+		  }
+              }
+
+	      if (this._straddle(yy+hh,ybar) && (!fixed) && col.length>0) {
+		  var base_missing = this._missing(yy-margin,ybar);
+		  if (nudged == 0) {
+		      var avail = (col.length-1)*nudge;
+		      //console.log("Tweak? missing " + missing + " avail " + avail);
+		      var missing = Math.min(avail,base_missing);
+		      for (var j=0; j<col.length; j++) {
+			  var y = ycol[j];
+			  var dy = Math.floor(missing*(j/(col.length)))
+			  col[j].style.top = ( y+dy-offset[1] ) + 'px';
+			  ycol[j] = y+dy;
+			  ymax = Math.max(ycol[j]+hcol[j],ymax);
+		      }
+
+		      //console.log("Tweak needed and possible");
+		      if (debugging) brick.style.background = "green";
+		      fixed = true;
+		      base_missing -= missing;
+		  }
+		  raggedness += base_missing;
+		  col.length = 0;
+		  ycol.length = 0;
+		  hcol.length = 0;
+		  nudged = 0;
+		  yy = yfirst;
+		  xx += column_width;
+                  col_count++;
+		  if (xx+column_width>=width+offset[0]) {
+		      yfirst = ynext;
+		      page = page + 1;
+		      yy = ynext;
+		      xx = offset[0];
+                      last_page_index = i;
+		      last_page = page;
+		      col_count = 0;
+		      raggedness = 0;
+		  }
+              }
+
+              brick.style.top = ( yy-offset[1] ) + 'px';
+              brick.style.left = ( xx-offset[0] ) + 'px';
+	      ycol.push(yy);
+	      hcol.push(hh);
+              ymax = Math.max(yy+hh,ymax);
+	      if (output_page==-1) {
+		  output_page = Math.floor((yy+hh/2)/ypage);
+	      }
+              //console.log("Set! " + xx + " " + yy);
+	      yy += hh + margin;
+	      col.push(brick);
+	  }
+	  raggedness += Math.abs(ybar-(yy-margin));
+	  if (yy>ybar) {
+             last_page = last_page+1;
+          }
+
+	  result = [last_page_index,last_page,raggedness,col_count,ymax,
+		   output_page];
+	  if (debugging) console.log("balance: " + result);
+	  return result;
+      },
+
+
+    layout: function( bricks, callback ) {
+	var state = new Object();
+
+        var xpage = getWH(document.body,"width",true);
+        var ypage = getWH(document.body,"height",true);
+	var ystart = 0;
+	var yfirst = 200;
+
+        var offset = findPos(this.element);
+
+	state["offset"] = offset;
+	var ymargin = (getWH(this.wrapper,'height',true)-getWH(this.wrapper,'height',false))/2;
+	state["ymargin"] = ymargin;
+
+	var dy = 0;
+	if (hasClass(this.element,"break_before")) {
+	  var yy = (Math.floor(offset[1]/ypage)+1)*ypage + ymargin;
+	  dy = yy-offset[1];
+	} else {
+	    var off = offset[1]-(Math.floor(offset[1]/ypage)*ypage)
+	    if (off<ymargin) {
+		dy = ymargin-off;
+	    }
+	}
+	
+	state["bricks"] = bricks;
+	if (bricks.length==0) return;
+	state["initial_index"] = 0;
+	state["page_height"] = ypage;
+	state["page_width"] = xpage;
+	state["initial_yoffset"] = offset[1]+dy;
+	var page = Math.floor(state["initial_yoffset"]/ypage);
+	state["page"] = page;
+	state["first_page"] = page;
+	state["final_yoffset"] = 0;
+	state["column_width"] = getWH(bricks[0],'width',true);
+	state["width"] = getWH(this.element,'width',false);
+
+	var result = this._balance(state);
+	var output_page = result[5];
+
+	var last_page_index = result[0];
+	var last_page = result[1];
+	state["initial_index"] = last_page_index;
+	state["page"] = last_page;
+
+	var lower = 0;
+	var upper = 1;
+	var best_mid = 1;
+	var best = 100000;
+
+	for (var i=0; i<20; i++) {
+	    var mid = (lower+upper)/2;
+	    state["final_yoffset"] = ypage*(1-mid);
+	    var result = this._balance(state);
+	    var page = result[1]
+	    var raggedness = result[2];
+	    var col_count = result[3];
+	    var value = 0;
+	    if (page!=last_page) value += 100000;
+	    value += (10-col_count)*100;
+	    value += raggedness/100;
+	    if (value<best) {
+		best_mid = mid;
+		best = value;
+		upper = upper+(mid-upper)/4;
+	    } else {
+		lower = lower+(mid-lower)/4;
+	    }
+	}
+	state["final_yoffset"] = ypage*(1-best_mid);
+	result = this._balance(state);
+
+	if (last_page_index==0) {
+	    output_page = result[5];
+	}
+
+	console.log(state_ct + " page " + output_page + " / " + page + " / " + state_last_wall_page);
+	var page_slip = false;
+	if (output_page!=state_last_wall_page && state_last_wall_page!=-1) {
+	    if (hasClass(this.element,"with_previous")) {
+		page_slip = true;
+	    }
+	}
+	state_last_wall_page = output_page;
+	if (page_slip) {
+	    addClass(state_last_wall.element,"break_before");
+	    console.log("Redo...");
+	    state_last_wall_page = -1;
+	    state_last_wall._reLayout();
+	    this._reLayout(callback);
+	    return;
+	}
+
+        var ymax = result[4];
+
+        if (debugging) {
+	    for (var i=last_page_index, len = bricks.length; i < len; i++ ) {
+		brick = bricks[i];
+		brick.style.background = "yellow";
+	    }
+	}
+
+	var ylast = ymax;
+	//var ylast = Math.max((best_mid + last_page)*ypage,ymax);
+	var yfirst = offset[1];
+
+	if (hasClass(this.element,"break_after")) {
+	    ylast = (Math.floor(ylast/ypage)+1)*ypage;
+	}
+
+	this.element.style.height = (ylast-yfirst) + "px";
+
+      // provide bricks as context for the callback
+      if ( callback ) {
+        callback.call( bricks );
+      }
+
+    },
+
+    _handleResize: function() {
+      var instance = this;
+
+      function delayed() {
+        instance.resize();
+        instance._resizeTimeout = null;
+      }
+
+      if ( this._resizeTimeout ) {
+        clearTimeout( this._resizeTimeout );
+      }
+
+      this._resizeTimeout = setTimeout( delayed, 100 );
+    },
+
+    resize: function() {
+      //this._reLayout();
+    },
+
+    // ====================== methods ======================
+
+    // for prepending
+    reload: function( callback ) {
+      this.reloadItems();
+      this.build( callback );
+    },
+
+    destroy: function() {
+      var brick;
+      for (var i=0, len = this.bricks.length; i < len; i++) {
+        brick = this.bricks[i];
+        brick.style.position = '';
+        brick.style.top = '';
+        brick.style.left = '';
+        removeClass( brick, 'masonry-brick' );
+      }
+
+      // re-apply saved container styles
+      var elemStyle = this.element.style;
+      len = masonryContainerStyles.length;
+      for ( i=0; i < len; i++ ) {
+        var prop = masonryContainerStyles[i];
+        elemStyle[ prop ] = this._originalStyle[ prop ];
+      }
+
+      removeClass( this.element, 'masonry' );
+
+      if ( this.resizeHandler ) {
+        removeEvent( window, 'resize', this.resizeHandler );
+      }
+
+    }
+
+  };
+
+  // add utility function
+  Masonry.getWH = getWH;
+  // add Masonry to global namespace
+  window.Masonry = Masonry;
+
+})( window );
+
+
+window.onload = function() {
+    var walls = document.getElementsByClassName("wall");
+    for (var i in walls) {
+	state_ct = i;
+	if (typeof walls[i] == 'object') {
+	    var mason = new Masonry(walls[i],
+  	      			    document.getElementById('wrapper'));
+	    state_last_wall = mason;
+	}
+    }
+};
+</script>
+
+</div>
+
+</body> </html>

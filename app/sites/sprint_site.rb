@@ -12,19 +12,24 @@ class SprintSite < Site
     'Data Commons'
   end
 
-  def custom_css
-    nil
-  end
-
-  def style
-    name
-  end
-
   def layout
-    name
+    :sprint
   end
 
-  def search_bar_in_header
-    true
+  def menu
+    [
+     {
+       :name => "About",
+       :link => "http://datacommons.find.coop/about"
+     },
+     {
+       :name => "Contact",
+       :link => "http://datacommons.find.coop/contact"
+     },
+     {
+       :name => "Donate",
+       :link => "http://datacommons.find.coop/donate"
+     },
+    ]
   end
 end

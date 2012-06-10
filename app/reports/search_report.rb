@@ -87,6 +87,7 @@ class SearchReport < Prawn::Document
 
   def latex(s)
     return "" if s.nil?
+    s = s.clone
     #s.gsub!(/\\/,"\\textbackslash{}")
     #s.gsub!(/~/,"\\textasciitilde{}")
     s.gsub!(/<[^>]*>/,"")
@@ -96,14 +97,14 @@ class SearchReport < Prawn::Document
         s = sn+"..."
       end
     end
-    s.gsub!("#","\\#")
-    s.gsub!("%","\\%")
+    s.gsub!("#","{\\#}")
+    s.gsub!("%","{\\%}")
     s.gsub!("\r"," ")
     s.gsub!("\n"," ")
     # s.gsub!("-","\\hyp{}")
-    s.gsub!("&"){'\&'}
-    s.gsub!("_","\\_")
-    s.gsub!("\$","\\\$")
+    s.gsub!("&"){'{\&}'}
+    s.gsub!("_","{\\_}")
+    s.gsub!("\$","{\\\$}")
     return s
   end
 
@@ -125,10 +126,20 @@ class SearchReport < Prawn::Document
 
 \\usepackage{longtable}
 %%\\usepackage{savetrees}
-\\usepackage[margin=0.5in]{geometry}
-\\usepackage[utf8]{inputenc}
+\\usepackage[margin=0.3in]{geometry}
+\\usepackage[ansinew,utf8x]{inputenc}
 \\usepackage{array}
 \\usepackage{hyphenat}
+\\usepackage{hyperref}
+\\urlstyle{same}
+\\hypersetup{
+    colorlinks,%
+    citecolor=black,%
+    filecolor=black,%
+    linkcolor=black,%
+    urlcolor=black
+}
+%%\\DeclareUnicodeCharacter{00A0}{~}
 
 \\def\\yy{\\\\\\rowcolor{red}}
 \\usepackage{colortbl,ifthen}
@@ -141,14 +152,13 @@ class SearchReport < Prawn::Document
 
 
 \\begin{center}
-\\begin{longtable}{>{\\raggedright}p{1.5in}>{\\raggedright}p{1.5in}>{\\raggedright}p{1.5in}p{2in}}
+\\begin{longtable}{>{\\raggedright}p{1.7in}>{\\raggedright}p{2.2in}p{3in}}
 %\\caption[findcoop]{Caption} \\label{thelabel} \\\\
 %
 %%\\multicolumn{4}{c}{Data} \\\\[0.5ex]
   \\hline \\\\ [-2ex] \\hline \\\\ [-2ex]
 \\textbf{Name} & 
-\\textbf{Address} & 
-\\textbf{Phone, Email} & 
+\\textbf{Contact} & 
 \\textbf{Description} \\\\[0.5ex] \\hline
 \\\\[-1.8ex]
 \\endhead
@@ -160,40 +170,66 @@ DOC
     for d in @data
       sz = 8
       if d.respond_to?('firstname')
-        fout.write(latex(d['firstname']) + latex(d['lastname']))
+        fout.write(latex(d['firstname']) + " " + latex(d['lastname']))
+        fout.write("\\newline ")
       else
         fout.write(latex(d['name']))
+        fout.write("\\newline ")
+      end
+      if d.respond_to?('website')
+        fout.write("{\\tt\\url{" + latex(safe(urly(d['website']).gsub('http://','').gsub(/\/$/,''))) + "}}")
+        fout.write("\\newline ")
       end
       fout.write(" & ")
       location = ""
       if d.respond_to?('locations')
         for l in d.locations
+          need_comma = false
+          need_newline = false
           unless l.physical_address1.blank?
-            location = location + latex(l.physical_address1) + "\\newline "
+            location = location + latex(l.physical_address1)
+            need_comma = need_newline = true
           end
           unless l.physical_address2.blank?
-            location = location + latex(l.physical_address2) + "\\newline "
+            location = location + ", " if need_comma
+            need_comma = false
+            location = location + latex(l.physical_address2)
           end
+          location = location + "\\newline " if need_newline
+          need_newline = false
           unless l.physical_city.blank?
-            location = location + latex(l.physical_city) + "\\newline "
+            location = location + latex(l.physical_city)
+            need_comma = need_newline = true
           end
           unless l.physical_state.blank?
-            location = location + latex(l.physical_state) + "\\newline "
+            location = location + ", " if need_comma
+            need_comma = false
+            location = location + latex(l.physical_state)
+            need_comma = need_newline = true
           end
           unless l.physical_country.blank?
-            location = location + latex(l.physical_country) + "\\newline "
+            location = location + ", " if need_comma
+            need_comma = false
+            location = location + latex(l.physical_country)
+            need_comma = need_newline = true
           end
+          location = location + "\\newline " if need_newline
+          need_newline = false
         end
         fout.write(location)
       end
-      fout.write(" & ")
-      if d['phone']
+      unless d['phone'].blank?
         fout.write(boxed(latex(d['phone'])))
         fout.write("\\newline ")
       end
-      fout.write(latex(d['email']))
+      unless d['email'].blank?
+        m = latex(d['email'])
+        fout.write("{\\tt \\href{mailto:" + m + "}{" + m + "}}")
+        fout.write("\\newline ")
+      end
       fout.write(" & ")
       fout.write(latex(safe(d['description']).gsub('<p>'," ").gsub('<P>'," ")))
+      fout.write("\\newline ")
       fout.write(" \\xx\n")
     end
 
@@ -209,13 +245,17 @@ DOC
     fout.write(doc)
     fout.close()
 
-    system "cd #{dir}; /usr/bin/pdflatex report > /dev/null 2>&1"
-    # system "cd #{dir}; /usr/bin/pdflatex report > /dev/null 2>&1"
-    data = File.open("#{dir}/report.pdf", 'r') {|f| f.read() }
-    if need_rm
-      FileUtils.rm_rf dir
+    begin
+      system "cd #{dir}; /usr/bin/pdflatex report > /dev/null 2>&1"
+      # system "cd #{dir}; /usr/bin/pdflatex report > /dev/null 2>&1"
+      data = File.open("#{dir}/report.pdf", 'r') {|f| f.read() }
+      if need_rm
+        FileUtils.rm_rf dir
+      end
+      return data
+    rescue
+      return { :dir => dir }
     end
-    data
   end
 
   def list_name(d)
@@ -360,9 +400,10 @@ DOC
 
 
   def to_pdf
-    return to_pdf_prawn unless @style
+    return to_pdf_latex_style1 unless @style
     return to_pdf_prawn if @style == "prawn"
     return to_pdf_latex_style2 if @style == "article"
+    return to_pdf_latex_style1 if @style == "table"
     to_pdf_latex_style1
   end
 

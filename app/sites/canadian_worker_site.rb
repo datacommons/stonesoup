@@ -5,7 +5,7 @@ class CanadianWorkerSite < Site
   end
 
   def aliases
-    ['canadianworker.find.coop','testcanadianworker.find.coop']
+    ['canadianworker.find.coop','testcanadianworker.find.coop','cwcftest.find.coop']
   end
 
   def should_show_latest_people
@@ -16,7 +16,24 @@ class CanadianWorkerSite < Site
     ["Canadian Worker Cooperative Federation"]
   end
 
-  #def custom_css
-  #  name
-  #end
+  def layout
+    :sprint
+  end
+
+  def menu
+    [
+     {
+       :name => "Canadian Worker Co-op Federation",
+       :link => "http://www.canadianworker.coop"
+     },
+     {
+       :name => "Data Commons Cooperative",
+       :link => "http://datacommons.find.coop"
+     },
+    ]
+  end
+
+  def use_logo
+    true
+  end
 end

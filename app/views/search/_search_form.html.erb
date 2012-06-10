@@ -1,28 +1,24 @@
+<%- this_is_the_header = false unless this_is_the_header -%>
+<%- unless @site.search_bar_in_header and not(this_is_the_header) -%>
 <% hide_examples = true if @site.site_searches.nil? %>
 <% hide_examples = false if hide_examples.nil? %>
 <div id="basic_search" style="<%= params[:advanced] ? 'display:none' : ''%>">
 	<% form_tag( {:controller => 'search', :action => 'search'}, :id => 'search_form', :name => 'search_form', :method => 'get' ) do %>
 		<div><label id="search_label" for="q">Search the directory:</label>
 		<%- if @site.search_bar_in_header %>
-		  <%= text_field_tag 'q', @query, :size => 30, :placeholder=>'Search...' %><%= image_submit_tag "/images/spacer.gif", :id => "see_list" %>
+		  <%= text_field_tag 'q', @query, :size => 30, :placeholder=>'Search...', :autocomplete => "off" %><%= image_submit_tag "/images/spacer.gif", :id => "see_list" %>
+		  <ul id="qq" class="autocomplete_box">
+		  </ul>
                 <%- else -%>
 		  <%= text_field_tag 'q', @query, :size => 30 %><%= submit_tag "see list", :id => "see_list" %>
                 <%- end -%>
 		<%= submit_tag 'See Map', :name => 'Map', :id => "see_map" %>
-		<%= link_to_function(@site.search_bar_in_header ? 'Advanced Search' : 'Options...', "Element.show('advanced_search'); Element.hide('basic_search')", :id=>'see_advanced') %>
 		 <%= link_to 'Add...', {:controller => 'organizations', :action => 'new'}, {:id=>'see_add'} %>
 		</div>
 	<% end %>
 
-	<% unless hide_examples %>
-	      <div class='example_wrapper'>
-		<div class='example_preamble'>Search<br />examples:</div>
-		<% for example in @site.site_searches %>
-		<div class='example_bubble'><%= link_to example, :controller => 'search', :action => 'search', :q => example %></div>
-		<% end %>
-              </div>
-	<% end %>
 </div>
+<%- unless @site.search_bar_in_header %>
 <div id="advanced_search" style="<%= params[:advanced] ? '' : 'display:none'%>">
 	<%= link_to_function('Switch to Basic Search', "Element.hide('advanced_search'); Element.show('basic_search')") %>
 	<br/>
@@ -68,3 +64,6 @@
 	<br/>
 	<br/>
 </div>
+<%- end -%>
+<%- end -%>
+

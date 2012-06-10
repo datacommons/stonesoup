@@ -1,0 +1,30 @@
+<div id="surround_map" class="map_bar">
+<%= render :partial => "search/map_core", :locals => { :map_id => "the_map", :map_class => nil, :orgs => @entries } %>
+ <% unless @model %>
+   <ul>  
+    <% if @have_something %>
+    <li>View <%= link_to 'larger map', clean_params.merge(:style => 'map') %></li>
+    <% end %>
+    <li>Download as <%= link_to 'CSV', clean_params.merge(:format => 'csv') %></li>
+    <li>Download as <%= link_to 'XML', clean_params.merge(:format => 'xml') %></li>
+    <li>Download as <%= link_to 'PDF', clean_params.merge(:format => 'pdf') %></li>
+   </ul>
+    <% unless @counts.blank? %>
+      <h3>Categories</h3>
+      The search results contain organizations with the following tags:
+      <div class="category_box">
+      <table>
+      <% @counts.each do |tag| %>
+        <tr><td><%= tag.count %></td><td><%= link_to tag.name, tag.leaf %></td></tr>
+      <% end %>
+      </table>
+      </div>
+      <div class="clearboth"></div>
+      Remember: not all organizations are tagged.
+    <% end %>
+
+ <% else %>
+ <b>Not complete?</b><br />
+ <%= link_to "Add #{@title.downcase.singularize}", new_link(@model) %>
+ <% end %>
+  </div>

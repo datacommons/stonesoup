@@ -3,10 +3,13 @@ html,body {
         background-repeat: repeat;
 }
 
-#pagewidth { 
-        background-color: #ECECEC;
+.header_material {
+  margin-left: 20px;
+  margin-right: 20px;
 }
 
 #maincol { 
   background: url("header_geese.jpg") bottom left no-repeat;
+  background-color: #ECECEC;
+  padding: 20px;
 }

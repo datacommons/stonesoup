@@ -15,4 +15,12 @@ class DcSite < Site
   def should_show_latest_people
     false
   end
+
+  def layout
+    :sprint
+  end
+
+  def use_logo
+    true
+  end
 end

@@ -1,7 +1,7 @@
 class StartupSite < Site
 
   def site_searches
-    []
+    ["data commons", "manchester"]
   end
 
   def aliases
@@ -18,5 +18,13 @@ class StartupSite < Site
 
   def blank_search
     '*'
+  end
+
+  def layout
+    :sprint
+  end
+
+  def use_logo
+    true
   end
 end

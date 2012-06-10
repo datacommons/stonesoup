@@ -2,6 +2,8 @@ class MemberOrg < ActiveRecord::Base
   has_and_belongs_to_many :organizations
   belongs_to :synonym_of, :class_name => 'MemberOrg', :foreign_key => 'effective_id'
   has_many :synonyms, :class_name => 'MemberOrg', :foreign_key => 'effective_id'
+
+  has_many :tags, :as => :root
   
   validates_uniqueness_of :name
   
@@ -48,4 +50,12 @@ class MemberOrg < ActiveRecord::Base
   def <=>(other)
     self.to_s <=> other.to_s
   end
+
+  def accessible?(u)
+    true
+  end
+
+  def to_param
+    "#{id}-#{name.parameterize}"
+  end 
 end

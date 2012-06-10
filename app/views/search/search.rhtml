@@ -1,3 +1,4 @@
+<% unless @title %>
 <ul class="menu_bar">
 	<li><%= link_to 'Add New Organization', :controller => 'organizations', :action => 'new' %></li>
 	<li><%= link_to 'Add New Person', :controller => 'people', :action => 'new' %></li>
@@ -7,9 +8,10 @@
 	  <li><%= link_to 'Merge Entries', params.merge(:merge => 'start') %></li>
         <% end %>
 </ul>
+<% end %>
 <%- unless @site.search_bar_in_header -%>
-<%= render :partial => 'search_form', :locals => {:hide_examples => true} %>
+<%= render :partial => 'search/search_form', :locals => {:hide_examples => true} %>
 <%- end %>
 
-<%= render :partial => "list" %>
+<%= render :partial => "search/list" %>
 

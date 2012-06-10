@@ -7,14 +7,29 @@ require 'sites'
 class ApplicationController < ActionController::Base
   include LoginSystem
 
-  before_filter :login_from_cookie, :set_current_user_on_model, :set_custom_filters
+  helper ApplicationHelper
+
+  before_filter :login_from_cookie, :set_current_user_on_model, :set_custom_filters, :check_for_map
   
   layout :custom_layout
   
 private
 
+protected
+
+  def check_for_map
+    @map_style = false
+    if params[:style]
+      if params[:style] == "map"
+        @unlimited_search = true
+        @map_style = true
+      end
+    end
+  end
+
+
   def get_site
-    site = Site.get_subsite(request.host)
+    site = Site.get_subsite(params[:site] || request.host)
     if site.nil?
       site = Site.get_subsite('find.coop') 
     end
@@ -42,9 +57,116 @@ public
     session[:zip_filter] = @site.zip_filter
     session[:dso_filter] = @site.dso_filter
     session[:org_type_filter] = @site.org_type_filter
+    get_filters # session[:filter_active]
     
     Email.website_hostname = @site.canonical_name
     logger.debug("Set Email.website_hostname to: #{Email.website_hostname.inspect}")
+  end
+
+  def get_filters
+    possible_filters = [
+                        { :key => :country_filter, :label => "Country" },
+                        { :key => :state_filter, :label => "State" },
+                        { :key => :city_filter, :label => "City" },
+                        { :key => :zip_filter, :label => "Zip" },
+                        { :key => :loc_filter, :label => "Loc", :single => true },
+                        { :key => :within_filter, :label => "Within", :single => true },
+                        { :key => :dso_filter, :label => "Team" },
+                        { :key => :org_type_filter, :label => "Organization Type" },
+                        { :key => :sector_filter, :label => "Business Sector" },
+                        { :key => :legal_structure_filter, :label => "Legal Structure" }
+                       ]
+
+    _params = params
+    if _params[:reset]
+      possible_filters.each do |f|
+        name = ("active_" + f[:key].to_s).to_sym
+        session[name] = nil
+      end
+    end
+    if _params[:state]
+      long_state = Location::STATE_SHORT[_params[:state]]
+      long_state = _params[:state] unless long_state
+      session[:active_state_filter] = long_state.split(/,/)
+    end
+    if _params[:city]
+      session[:active_city_filter] = _params[:city].split(/,/)
+    end
+    if _params[:zip]
+      session[:active_zip_filter] = _params[:zip].split(/,/)
+    end
+    if _params[:sector]
+      session[:active_sector_filter] = _params[:sector].split(/;/)
+    end
+    if _params[:dso]
+      session[:active_dso_filter] = _params[:dso].split(/;/)
+    end
+    if _params[:location_origin]
+      if _params[:location_origin].blank?
+        session[:active_loc_filter] = nil
+      else
+        session[:active_loc_filter] = [_params[:location_origin]]
+      end
+    end
+    if _params[:within]
+      if _params[:location_origin].blank?
+        session[:active_within_filter] = nil
+      else
+        session[:active_within_filter] = [_params[:within]]
+      end
+    end
+    if _params[:country]
+      alt_form = Location::COUNTRY_SHORT[_params[:country]]
+      alt_form = _params[:country] unless alt_form
+      session[:active_country_filter] = alt_form.split(/,/)
+    end
+    @filter_unrestricted = _params[:unrestricted]
+
+    default_filters = []
+    active_filters = []
+    @filter_bank = {}
+    all_filters = []
+    all_default = true
+    possible_filters.each do |possible_filter|
+      key = possible_filter[:key]
+      name = key.to_s.gsub("_filter","")
+      filter0 = filter = session[key]
+      is_default = !filter.nil?
+      has_default = is_default
+      default_filters << { :name => name, :label => possible_filter[:label], :value => filter } if filter
+      filter2 = session[("active_"+key.to_s).to_sym]
+      if @filter_unrestricted
+        filter2 = session[("active_"+key.to_s).to_sym] = [] if filter
+        filter2 = session[("active_"+key.to_s).to_sym] = nil if filter2 and !filter
+      end
+      if filter2
+        active_filters << { :name => name, :label => possible_filter[:label], :value => filter2 } 
+        filter = filter2
+        applicable = true
+        if name == "within"
+          if @filter_bank["loc"].blank?
+            applicable = false
+          else
+            applicable = false if @filter_bank["loc"][:value].blank?
+          end
+        end
+        if applicable
+          all_default = false if has_default
+          all_default = false unless filter2.blank?
+          # puts "Not default because of #{name} (#{@filter_bank['loc'].inspect})"
+        end
+        is_default = false
+      end
+      f = { :name => name, :label => possible_filter[:label], :value => filter, :original => filter0, :is_default => is_default, :has_default => has_default, :single => possible_filter[:single] }
+      all_filters << f
+      @filter_bank[f[:name]] = f
+    end
+    default_filters.compact!
+    active_filters.compact!
+    @default_filters = default_filters
+    @active_filters = active_filters
+    @all_filters = all_filters
+    @filter_override = !all_default
   end
 
   def valid_password?(password, username)
@@ -117,5 +239,63 @@ public
     true  # so we can do "render_404 and return"
   end
 
+  def show_tag_context(model)
+    tc = TagContext.find_by_name(model.to_s)
+    @title = model.to_s.underscore.pluralize.humanize unless tc
+    @title = tc.friendly_name if tc
+    @model = model
+    @entries = model.find(:all, :order => 'name').paginate(:per_page => 300, :page => (params[:page]||1))
+    respond_to do |format|
+      format.html { render :template => 'search/search' }
+      format.xml  { render :xml => @entries }
+    end
+  end
 
+  def show_tag(tag)
+    joinSQL, condSQLs, condParams = Organization.all_join(session)
+    # joinSQL = nil if condSQLs.empty?
+    @tag = tag
+    @title = tag.name
+    if joinSQL.nil?
+      if tag.respond_to? "tags"
+        results = tag.tags.map{|t| t.taggings}.flatten.map{|t| t.taggable}
+      else
+        results = tag.taggings.flatten.map{|t| t.taggable}
+      end
+    else
+      # for now, let's assume we are tagging organizations only
+      joinSQL = "#{joinSQL} INNER JOIN taggings AS taggings2 ON taggings2.taggable_id = organizations.id INNER JOIN tags AS tags2 ON taggings2.tag_id = tags2.id"
+      if tag.respond_to? "root_id"
+        condSQLs << "tags2.id = ?"
+        condParams << tag.id
+      else
+        condSQLs << "tags2.root_id = ?"
+        condSQLs << "tags2.root_type = ?"
+        condParams << tag.id
+        condParams << tag.class.to_s
+      end
+      conditions = []
+      conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
+      results = Organization.find(:all, :conditions => conditions, :joins => joinSQL, :select => ApplicationHelper.get_org_select([])).uniq # should move uniq into sql
+    end
+    if tag.respond_to? "children"
+      results = results + tag.children
+    end
+    @counts = ApplicationHelper.count_tags(results)
+    if @unlimited_search
+      @entries = results.paginate(:per_page => 50000, :page => 1)
+    else
+      @entries = results.paginate(:per_page => 30, :page => (params[:page]||1))
+    end
+    respond_to do |format|
+      format.html { render :template => 'search/search' }
+      format.xml  { render :xml => @entries }
+    end
+  end
+
+  rescue_from ActiveRecord::StatementInvalid, :with => :rescue_db
+
+  def rescue_db(exception)
+    render :template => "errors/db"
+  end
 end

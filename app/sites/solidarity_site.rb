@@ -16,7 +16,15 @@ class SolidaritySite < Site
     ["Solidarity Economy", "US Federation of Worker Cooperatives"]
   end
 
+  def layout
+    :sprint
+  end
+
   def custom_css
     name
+  end
+
+  def use_logo
+    true
   end
 end

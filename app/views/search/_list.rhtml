@@ -1,68 +1,14 @@
-<%
-
-def is_merge_target(entry)
-  if @merge_active and entry.kind_of? Organization
-    if @merge_target
-      return @merge_target[:id].to_s == entry.id.to_s
-    end
-  end
-  false
-end
-
-%>
-
-<% if @entries %>
- <% if @entries.blank? %>
-  <p>
-  No results were found for this search.
-    <% if not(params[:unrestricted]) %>
-    <% if session[:state_filter] or session[:state_filter] or session[:dso_filter] or session[:org_type_filter] %>
-      Would you like to try an <%= link_to 'unrestricted search', params.merge(:unrestricted => true) %>?
-    <% end %>
-    <% if session[:state_filter] %>
-    <br />The state was restricted to: <%= session[:state_filter].join(" / ") %>.
-    <% end %>
-    <% if session[:city_filter] %>
-    <br />The city was restricted to: <%= session[:city_filter].join(" / ") %>.
-    <% end %>
-    <% if session[:dso_filter] %>
-    <br />The search was restricted to known members of: <%= session[:dso_filter].join(" / ") %>.
-    <% end %>
-    <% if session[:org_type_filter] %>
-    <br />The search was restricted to organizations of type: <%= session[:org_type_filter].join(" / ") %>.
-    <% end %>
-    <% end %>
-  </p>
-  <p><%= link_to 'Would you like to add a new organization?', :controller => 'organizations', :action => 'new' %></p>
- <% else %>
- <h2>Search Results</h2>
-  <div class="listing_info"><%= page_entries_info @entries %></div>
-  <%= will_paginate @entries %>
-  <% for entry in @entries %>
-   <% if entry.accessible? current_user %>
-    <%= render :partial => 'search/teaser', :locals => {:entry => entry} %>
-   <% else %>
-    <div class="listing private">
-    Result withheld.<br />
-    <% if entry.access_rule.access_type == 'PRIVATE' %>
-    Only editors may view this.
-    <% end %>
-    <% if entry.access_rule.access_type == 'LOGGEDIN' %>
-    Visible only when logged in.
-    <% end %>
-    </div>
-   <% end %>
+<% if @welcome_page %>
+  <div id="carousel-area"><div id="carousel-content"><div class="slide">
+  <% if current_map_type == :openlayers %>
+  Hold down the shift key, then click and drag the mouse to select an area.
   <% end %>
-  <div class='clearboth'></div>
-  <%= will_paginate @entries %>
- <h2>View Options</h2>
-   <ul>  
-    <li>View results on a <%= link_to 'map', clean_params.merge(:action => 'map') %></li>
-    <li>Download as <%= link_to 'CSV', clean_params.merge(:format => 'csv') %> (suitable for spreadsheet programs)</li>
-    <li>Download as <%= link_to 'XML', clean_params.merge(:format => 'xml') %></li>
-    <li>Download as <%= link_to 'PDF', clean_params.merge(:format => 'pdf') %></li>
-   </ul>
- <% end %>
+  <%= render :partial => "search/map", :locals => { :name => "all", :link => { :no_override => false }, :immediate => false } %>
+  </div></div><div class="clearboth"></div></div>
 <% else %>
-  <%= render :partial => 'latest' %>
+  <% if @map_style %>
+  <%= render :partial => 'search/map_main' %>
+  <% else %>
+  <%= render :partial => 'search/list_main' %>
+  <% end %>
 <% end %>

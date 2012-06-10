@@ -1,0 +1,22 @@
+<p>
+Welcome to the dashboard.
+</p>
+
+<p>
+Scanned and updated tag synonym cache.<br />  
+Update count: <%= @count %>.
+</p>
+
+<h3>Unclassified tags</h3>
+<ul>
+<% @orphan_tags.each do |tag| %>
+<li><%= show_link(tag) %></li>
+<% end %>
+</ul>
+
+<h3>Untagged classifications</h3>
+<ul>
+<% @orphan_things.each do |tag| %>
+<li><%= show_link(tag) %></li>
+<% end %>
+</ul>

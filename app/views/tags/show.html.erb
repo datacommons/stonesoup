@@ -1,0 +1,39 @@
+<h1><%=h @tag.name %></h1>
+
+<ul>
+<li>Name: <%= @tag.name %></li>
+<%- if @tag.effective -%>
+<li>Synonym of tag: <%= show_link(@tag.effective) %></li>
+<%- else -%>
+ <% Tag.find_all_by_effective_id(@tag.id).each do |t| %>
+   <li>--- Synonym: <%= show_link(t) %></li>
+ <% end %> 
+<%- end -%>
+<li>Rooted in: <%= show_link(@tag.root) %></li>
+<li>Qualified name: <%= @tag.qualified_name %></li>
+<li>Literal qualified name: <%= @tag.literal_qualified_name %></li>
+<li>Parent: <%= show_link(@tag.parent) %></li>
+<% @tag.children.each do |t| %>
+   <li>Child: <%= show_link(t) %></li>
+<% end %>
+</ul>
+
+<%- if @tag.effective -%>
+<h2>Things tagged with this literal tag</h2>
+
+<ul>
+ <% @tag.taggings.each do |t| %>
+   <li><%= show_link(t.taggable) %></li>
+ <% end %>
+</ul>
+<%- else -%>
+
+<h2>Things tagged with this tag or its synonyms</h2>
+
+<ul>
+ <% @tag.taggings_via_synonyms.each do |t| %>
+   <li><%= show_link(t.taggable) %></li>
+ <% end %>
+</ul>
+
+<%- end -%>

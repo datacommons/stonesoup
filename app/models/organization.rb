@@ -1,4 +1,5 @@
 class Organization < ActiveRecord::Base
+
   # NOTE on object relationships:
   # DO NOT use [ :dependent => :destroy ] or [ :dependent => :delete_all ] 
   # as this removes the related objects BEFORE the before_destroy callback is processed for the object itself
@@ -19,6 +20,8 @@ class Organization < ActiveRecord::Base
   has_many :data_sharing_orgs, :through => :data_sharing_orgs_organizations
   belongs_to :updated_by, :class_name => 'User', :foreign_key => 'updated_by_id'
   belongs_to :created_by, :class_name => 'User', :foreign_key => 'created_by_id'
+  has_many :tags, :through => :taggings
+  has_many :taggings, :as => :taggable
 
   acts_as_ferret(:fields => {
                    :name => {:boost => 2.0, :store => :yes },
@@ -191,11 +194,19 @@ class Organization < ActiveRecord::Base
   end
   
   def get_org_types
-    org_types.collect{|ot| ot.root_term}.uniq
+    # org_types.collect{|ot| ot.root_term}.uniq
+    # [OrgType.find_by_name("Producer Cooperative")]
+    tags.select{|t| t.relevant_to? "OrgType"}.map{|x| x.effective_root}
   end
   
   def get_member_orgs
-    member_orgs.collect{|mo| mo.root_term}.uniq
+    # member_orgs.collect{|mo| mo.root_term}.uniq
+    tags.select{|t| t.relevant_to? "MemberOrg"}.map{|x| x.effective_root}
+  end
+
+
+  def get_sectors
+    tags.select{|t| t.relevant_to? "Sector"}.map{|x| x.effective_root}
   end
   
   def access_type
@@ -227,11 +238,13 @@ class Organization < ActiveRecord::Base
   end
   
   def sectors_to_s
-    self.sectors.collect{|sect| sect.name}.join(', ')
+    # temporarily hijacking for tags
+    # self.sectors.collect{|sect| sect.name}.join(', ')
+    self.tags.map{|t| t.synonyms}.flatten.collect{|t| t.name}.uniq.join(' ; ')
   end
   
   def org_types_to_s
-    self.org_types.collect{|org_type| org_type.name}.join(', ')
+    self.org_types.map{|x| x.tags}.flatten.collect{|t| t.name}.uniq.join(' ; ')
   end
 
   def pool_to_s
@@ -267,32 +280,60 @@ class Organization < ActiveRecord::Base
     self.access_rule.access_type == AccessRule::ACCESS_TYPE_PUBLIC
   end
   
-  def longitude
-    if self.primary_location
-      self.primary_location.longitude
-    else
-      nil
-    end
-  end
+  # def xlongitude
+  #   return Float(self.filtered_longitude) if self.respond_to? "filtered_longitude"
+  #   if self.primary_location
+  #     self.primary_location.longitude
+  #   else
+  #     nil
+  #   end
+  # end
   
-  def latitude
-    if self.primary_location
-      self.primary_location.latitude
-    else
-      nil
-    end
+  # def xlatitude
+  #   return Float(self.filtered_latitude) if self.respond_to? "filtered_latitude"
+  #   if self.primary_location
+  #     self.primary_location.latitude
+  #   else
+  #     nil
+  #   end
+  # end
+
+  def get_primary
+    Location.get_primary_for(self)
   end
-  
-  def Organization.latest_changes(state_filter = [], city_filter = [], zip_filter = [], dso_filter = [], org_type_filter = [])
-    user = User.current_user
-    conditions = nil
+
+  def Organization.split_pro_con(lst) 
+    choices = lst.map{|x| [x.starts_with?("-"), x.gsub(/^-/,"")]}
+    [choices.select{|x| !x[0]}.map{|x| x[1]}, 
+     choices.select{|x| x[0]}.map{|x| x[1]}]
+  end
+
+  def Organization.location_join(filters,opts = {})
+    select = []
+    order = []
+
+    country_filter = ApplicationHelper.get_filter(filters,:country_filter,opts)
+    state_filter = ApplicationHelper.get_filter(filters,:state_filter,opts)
+    city_filter = ApplicationHelper.get_filter(filters,:city_filter,opts)
+    zip_filter = ApplicationHelper.get_filter(filters,:zip_filter,opts)
+    within_filter = ApplicationHelper.get_filter(filters,:within_filter,opts)
+    loc_filter = ApplicationHelper.get_filter(filters,:loc_filter,opts)
+
     condSQLs = []
     condParams = []
     join_type = "INNER"
-    if [state_filter,city_filter,zip_filter].compact.collect{|f| f.length}.inject(0){|a,b| a+b}==0
+    if [country_filter,state_filter,city_filter,zip_filter].compact.collect{|f| f.length}.inject(0){|a,b| a+b}==0
       join_type = "LEFT"
     end
     joinSQL = "#{join_type} JOIN locations ON locations.organization_id = organizations.id"
+
+    unless country_filter.nil? or country_filter.empty?
+      logger.debug("applying session country filters to search results: #{country_filter.inspect}")
+      countries = [country_filter].flatten
+      condSQLs << "(locations.physical_country IN (#{countries.collect{'?'}.join(',')})) OR (locations.mailing_country IN (#{countries.collect{'?'}.join(',')}))"
+      condParams += countries + countries
+    end
+
     unless state_filter.nil? or state_filter.empty?
       logger.debug("applying session state filters to search results: #{state_filter.inspect}")
       states = [state_filter].flatten
@@ -307,15 +348,75 @@ class Organization < ActiveRecord::Base
       condParams += cities + cities
     end
 
+    origin = nil
+
     unless zip_filter.nil? or zip_filter.empty?
       logger.debug("applying session zip filters to search results: #{zip_filter.inspect}")
-      zips = [zip_filter].flatten.collect{|x| x.sub('*','%')}
-      zip_str = zips.collect{|z| "(locations.physical_zip LIKE ?)"}.join(" OR ")
-      # condSQLs << "(locations.physical_zip IN (#{cities.collect{'?'}.join(',')})) OR (locations.mailing_zip IN (#{cities.collect{'?'}.join(',')}))"
-      condSQLs << zip_str
-      condParams += zips
+      if within_filter.nil? or within_filter.empty? or within_filter.length != 1 or !(loc_filter.nil? or loc_filter.blank?)
+        zips = [zip_filter].flatten.collect{|x| x.to_s + "%"}
+        # zips = [zip_filter].flatten.collect{|x| x.sub('*','%')}
+        zip_str = zips.collect{|z| "(locations.physical_zip LIKE ?)"}.join(" OR ")
+        # condSQLs << "(locations.physical_zip IN (#{cities.collect{'?'}.join(',')})) OR (locations.mailing_zip IN (#{cities.collect{'?'}.join(',')}))"
+        condSQLs << zip_str
+        condParams += zips
+      else
+        origin = [zip_filter].flatten[0].to_s
+      end
     end
 
+    unless loc_filter.nil? or loc_filter.empty?
+      origin = Location.find(loc_filter[0].to_i)
+    end
+
+    unless origin.nil? or within_filter.nil? or within_filter.empty? or within_filter.length != 1
+      # Within filter takes single zip code
+      withins = [within_filter].flatten
+      distance, unit = withins[0].split(' ')
+      unit = "miles" if unit.nil?
+      if unit.downcase[0] == "kms"[0]
+        unit = :kms
+      else
+        unit = :miles
+      end
+      distance = distance.to_f
+      if (distance-distance.to_i).abs<0.001
+        distance = distance.to_i
+      end
+
+      distance_sql = Location.distance_sql(Geokit::LatLng.normalize(origin),unit)
+      bounds = GeoKit::Bounds.from_point_and_radius(origin, distance, :units=>unit) 
+
+      condSQLs << "locations.latitude >= ?"
+      condSQLs << "locations.latitude <= ?"
+      condSQLs << "locations.longitude >= ?"
+      condSQLs << "locations.longitude <= ?"
+      # need to repeat formula (distance field not avail to WHERE, could use
+      # HAVING but probably slower for important cases)
+      condSQLs << "#{distance_sql} <= ?"
+      condParams << bounds.sw.lat
+      condParams << bounds.ne.lat
+      condParams << bounds.sw.lng
+      condParams << bounds.ne.lng
+      condParams << distance
+
+      select << "#{distance_sql} AS distance"
+      select << "'#{unit.to_s}' AS distance_unit"
+      order << "distance ASC"
+
+      # For debugging offline, set origin to: "42.59,-72.6"
+    end
+
+    return [joinSQL, condSQLs, condParams, select, order]
+  end
+
+  def Organization.tag_join(filters, opts = {})
+    dso_filter = ApplicationHelper.get_filter(filters,:dso_filter,opts)
+    org_type_filter = ApplicationHelper.get_filter(filters,:org_type_filter,opts) || []
+    sector_filter = ApplicationHelper.get_filter(filters,:sector_filter,opts) || []
+    legal_structure_filter = ApplicationHelper.get_filter(filters,:legal_structure_filter,opts) || []
+    condSQLs = []
+    condParams = []
+    joinSQL = ""
     unless dso_filter.nil? or dso_filter.empty?
       logger.debug("applying session dso filters to search results: #{dso_filter.inspect}")
       joinSQL = "#{joinSQL} INNER JOIN data_sharing_orgs_organizations ON data_sharing_orgs_organizations.organization_id = organizations.id INNER JOIN data_sharing_orgs ON data_sharing_orgs_organizations.data_sharing_org_id = data_sharing_orgs.id"
@@ -324,18 +425,57 @@ class Organization < ActiveRecord::Base
       condParams += dsos
     end
 
-    unless org_type_filter.nil? or org_type_filter.empty?
-      logger.debug("applying session org_type filters to search results: #{org_type_filter.inspect}")
-      joinSQL = "#{joinSQL} INNER JOIN org_types_organizations ON org_types_organizations.organization_id = organizations.id INNER JOIN org_types ON org_types_organizations.org_type_id = org_types.id"
-      org_types = [org_type_filter].flatten
-      condSQLs << "org_types.name IN (#{org_types.collect{'?'}.join(',')})"
-      condParams += org_types
-    end
+    tag_filters = [[org_type_filter, OrgType],
+                   [sector_filter, Sector],
+                   [legal_structure_filter, LegalStructure]]
 
+    tag_filters.each do |filter,klass|
+      unless filter.nil? or filter.empty?
+        pro, con = Organization.split_pro_con(filter)
+
+        logger.debug("applying session tag filters to search results: #{filter.inspect}")
+        name = klass.to_s
+
+        unless pro.empty?
+          tags = pro.map{|x| Tag.find_by_name_and_root_type(x,name)}.compact.map{|x| x.synonyms}.flatten
+          tags = [0] if tags.length == 0
+          joinSQL = "#{joinSQL} INNER JOIN taggings AS taggings_#{name} ON taggings_#{name}.taggable_id = organizations.id"
+          condSQLs << "taggings_#{name}.taggable_type = ?"
+          condParams += ["Organization"]
+          condSQLs << "taggings_#{name}.tag_id IN (#{tags.collect{'?'}.join(',')})"
+          condParams += tags.map{|x| x.id}
+        end
+
+        unless con.empty?
+          tags = con.map{|x| Tag.find_by_name_and_root_type(x,name)}.compact.map{|x| x.synonyms}.flatten
+          tags = [0] if tags.length == 0
+          condSQLs << "NOT EXISTS (SELECT 1 FROM taggings WHERE taggings.taggable_id = organizations.id AND taggings.taggable_type = ? AND taggings.tag_id IN (#{tags.collect{'?'}.join(',')}))"
+          condParams += ["Organization"]
+          condParams += tags.map{|x| x.id}
+        end
+      end
+    end
+    
+    return [joinSQL, condSQLs, condParams, [], []]
+  end
+
+  def Organization.all_join(filters,opts = {})
+    joinSQL, condSQLs, condParams, select, order = Organization.location_join(filters,opts)
+    joinSQL2, condSQLs2, condParams2, select2, order2 = Organization.tag_join(filters,opts)
+    joinSQL = joinSQL + joinSQL2
+    condSQLs = condSQLs + condSQLs2
+    condParams = condParams + condParams2
+    select = select + select2
+    order = order + order2
+    return [joinSQL,condSQLs,condParams,select,order]
+  end
+
+  def Organization.latest_changes(filters)
+    joinSQL, condSQLs, condParams, sel = Organization.all_join(filters)
+    conditions = []
     conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
     logger.debug("After applying filters, conditions = #{conditions.inspect}")
-
-    Organization.find(:all, :select => 'organizations.*, locations.latitude AS filtered_latitude, locations.longitude AS filtered_longitude', :order => 'organizations.updated_at DESC', 
+    Organization.find(:all, :select => ApplicationHelper.get_org_select(sel), :order => 'organizations.updated_at DESC', 
                       :limit => 15,
                       :conditions => conditions,
                       :joins => joinSQL)
@@ -348,6 +488,7 @@ class Organization < ActiveRecord::Base
   
   def link_hash
     {:controller => 'organizations', :action => 'show', :id => self.id}
+    self
   end
 
   def to_s
@@ -372,4 +513,11 @@ class Organization < ActiveRecord::Base
     txt
   end
 
+  def to_param
+    "#{id}-#{name.parameterize}"
+  end 
+
+  def oname
+    "o" + (name.nil? ? "" : name)
+  end
 end

@@ -1,6 +1,7 @@
 # Methods added to this helper will be available to all templates in the application.
+
 module ApplicationHelper
-  
+
   def data_import_plugins
     dir = Dir.open IMPORT_PLUGINS_DIRECTORY
     plugin_names = []
@@ -37,7 +38,12 @@ module ApplicationHelper
       if obj.link_hash.nil?
         return obj.link_name
       else
-        return link_to(obj.link_name, obj.link_hash)
+        # problem with user
+        begin
+          return link_to(obj.link_name, obj)
+        rescue
+          return link_to(obj.link_name, obj.link_hash)
+        end
       end
     else
       return ''
@@ -127,12 +133,16 @@ module ApplicationHelper
     ].join
   end
 
-  def website_link(website)
+  def website_link(website,opts = {})
     return '' if website.blank?
+    txt = website
+    if opts[:shorten]
+      txt.gsub!(/https?:\/\/(www\.)?/,'')
+    end
     if /https?:\/\/(.*)/.match(website)==nil
-      link_to website, 'http://' + website
+      link_to txt, 'http://' + website
     else
-      link_to website, website
+      link_to txt, website
     end
   end
 
@@ -151,22 +161,141 @@ module ApplicationHelper
   end
 
   def truncate_string(s,len)
+    s.gsub!(/<[^>]*>/,'')
+    s.gsub!(/\.\.\./,'')
+    s.gsub!(/  +/,' ')
     return s if s.index(/[a-z]/i).nil?
     s = s[0,len-4].gsub(/[^ ]*$/,"")
     return s + " ..."
   end
 
-  def search_core(_params)
-    if _params[:state] and _params[:advanced] != '1'
-      long_state = Location::STATE_SHORT[_params[:state]]
-      long_state = _params[:state] unless long_state
-      _params[:state] = long_state
+
+  def ApplicationHelper.get_org_select(sel)
+    org_address = ["address1","address2","city","state","zip","country","county"].map{|x| ["physical_" + x, "mailing_" + x]}.flatten.map{|x| "locations.#{x} AS #{x}"}.join(', ')
+    (["DISTINCT organizations.*, locations.latitude AS latitude, locations.longitude AS longitude, #{org_address}"] + sel).join(",")
+  end
+
+  def ApplicationHelper.count_tags(entries)
+    # this is currently being called inefficiently in some cases, where
+    # it would be faster to repeat sql joins rather than list entries
+    lst = entries.select{|x| Organization === x}.map{|x| x.id}.join(",")
+    return [] if lst == ""
+    Tag.find_by_sql("SELECT t.*, COUNT(DISTINCT o.id) AS count FROM organizations o, tags t, taggings ot WHERE ot.tag_id = t.id AND ot.taggable_id = o.id AND ot.taggable_type = 'Organization' AND ot.taggable_id IN (#{lst}) GROUP BY t.id ORDER BY count DESC")
+  end
+  
+  def search_core_org_ppl(search_query,pagination,opts,include_counts = false)
+    joinSQL, condSQLs, condParams, org_select, org_order = Organization.all_join(session,opts)
+
+    org_joinSQL, org_condSQLs, org_condParams = [joinSQL, condSQLs, condParams]
+    # org_joinSQL = nil if org_condSQLs.empty?
+    org_conditions = []
+    org_conditions = [org_condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + org_condParams unless org_condSQLs.empty?
+
+    ppl_joinSQL, ppl_condSQLs, ppl_condParams = [joinSQL, condSQLs, condParams]
+    ppl_joinSQL = "INNER JOIN organizations_people ON organizations_people.person_id = people.id INNER JOIN organizations ON organizations_people.organization_id = organizations.id #{ppl_joinSQL}"
+    # ppl_joinSQL = nil if ppl_condSQLs.empty?
+    ppl_conditions = []
+    ppl_conditions = [ppl_condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + ppl_condParams unless ppl_condSQLs.empty?
+
+    org_select = ApplicationHelper.get_org_select(org_select)
+    org_order = nil if org_order.blank?
+    org_order = 'organizations.updated_at DESC' if org_order.blank?
+
+    if search_query == ""
+      entries = Organization.find(:all,
+                                  :limit => :all,
+                                  :conditions => org_conditions,
+                                  :joins => org_joinSQL,
+                                  :select => org_select,
+                                  :order => org_order)
+      entries2 = Person.find(:all,
+                             :limit => :all,
+                             :conditions => ppl_conditions,
+                             :joins => ppl_joinSQL,
+                             :select => "DISTINCT people.*")
+      if entries.length>0 and entries2.length>0
+        @entry_name = "result"
+      end
+      entries += entries2
+    else
+      entries = ActsAsFerret::find(search_query,
+                                   [Organization,Person],
+                                   { 
+                                     :page => 1, 
+                                     :per_page => 50000,
+                                   }, # disable pagination, we need counts
+                                   {
+                                     :limit => :all,
+                                     :conditions => { :organization => org_conditions, :person => ppl_conditions },
+                                     :joins => { :organization => org_joinSQL, :person => ppl_joinSQL },
+                                     :select => { :organization => org_select, :person => "DISTINCT people.*"},
+                                     :order => { :organization => org_order }
+                                   })
+    end
+    if include_counts
+      counts = ApplicationHelper.count_tags(entries)
+      entries = entries.paginate(pagination)
+      return [entries, counts]
+    end
+    entries = entries.paginate(pagination)
+    entries
+  end
+
+  def search_core(_params,site,opts = {}, include_counts = false)
+    search_query = _params[:q].to_s + ''
+    pagination = { 
+      :page => _params[:page], 
+      :per_page => 30,
+    }
+    if _params[:format]=='xml' or _params[:format]=='csv' or _params[:format]=='pdf' or opts[:unlimited_search] or _params['Map'] 
+      # When providing xml or csv, there should be no
+      # effective limit on the download size.  However,
+      # depending on server load, we might want to 
+      # restrict this to logged in users?
+      pagination = { 
+        :page => 1, 
+        :per_page => 50000,
+      }
+    end
+    #using_blank = search_query.blank?
+    #if using_blank
+    #  if site
+    #    search_query = site.blank_search
+    #  end
+    #end
+    search_query = "" if search_query == "*"
+    search_core_org_ppl(search_query,pagination,opts,include_counts)
+  end
+
+  def search_core_old(_params,site, opts = {})
+    if (_params[:state]||_params[:city]||_params[:country]||_params[:zip]) and _params[:advanced] != '1'
       q = _params[:q].to_s + ''
-      q.gsub!(/\+state:\'[^\']+\' +/,'')
-      _params[:q] = "+state:'#{long_state}' #{q}"
+      if _params[:state]
+        long_state = Location::STATE_SHORT[_params[:state]]
+        long_state = _params[:state] unless long_state
+        _params[:state] = long_state
+        q.gsub!(/\+state:\"[^\"]+\" +/,'')
+        q = _params[:q] = "+state:\"#{long_state}\" #{q}"
+      end
+      if _params[:city]
+        q.gsub!(/\+city:\"[^\"]+\" +/,'')
+        q = _params[:q] = "+city:\"#{_params[:city]}\" #{q}"
+      end
+      if _params[:zip]
+        q.gsub!(/\+zip:\"[^\"]+\" +/,'')
+        q = _params[:q] = "+zip:\"#{_params[:zip]}\" #{q}"
+      end
+      if _params[:country]
+        alt_form = Location::COUNTRY_SHORT[_params[:country]]
+        alt_form = _params[:country] unless alt_form
+        _params[:country] = alt_form
+        q.gsub!(/\+country:\"[^\"]+\" +/,'')
+        q = _params[:q] = "+country:\"#{_params[:country]}\" #{q}"
+      end
     end
 
     search_query = _params[:q].to_s + ''
+    using_blank = search_query.blank?
 
     entries = []
 
@@ -205,27 +334,31 @@ module ApplicationHelper
         end
         unless _params[:org_type_id].blank?
           org_type = OrgType.find_by_id(_params[:org_type_id])
-          search_query << " +org_type:'#{org_type.name}'" unless org_type.nil?
+          search_query << " +org_type:\"#{org_type.name}\"" unless org_type.nil?
         end
         unless _params[:sector_id].blank?
           sector = Sector.find_by_id(_params[:sector_id])
-          newterm = "+sector:'#{sector.name}'"
+          newterm = "+sector:\"#{sector.name}\""
           search_query << ' ' + newterm unless sector.nil? or search_query.include?(newterm)
         end
         unless _params[:county].blank?
-          newterm = "+county:'#{_params[:county]}'"
+          newterm = "+county:\"#{_params[:county]}\""
+          search_query << ' ' + newterm unless search_query.include?(newterm)
+        end
+        unless _params[:city].blank?
+          newterm = "+city:\"#{_params[:city]}\""
           search_query << ' ' + newterm unless search_query.include?(newterm)
         end
         unless _params[:country].blank?
           alt_form = Location::COUNTRY_SHORT[_params[:country]]
           alt_form = _params[:country] unless alt_form
-          newterm = "+country:'#{alt_form}'"
+          newterm = "+country:\"#{alt_form}\""
           search_query << ' ' + newterm unless search_query.include?(newterm)
         end
         unless _params[:state].blank?
           alt_form = Location::STATE_SHORT[_params[:state]]
           alt_form = _params[:state] unless alt_form
-          newterm = "+state:'#{alt_form}'"
+          newterm = "+state:\"#{alt_form}\""
           search_query << ' ' + newterm unless search_query.include?(newterm)
         end
         unless _params[:within].blank? or _params[:origin].blank?
@@ -241,10 +374,9 @@ module ApplicationHelper
           proximity_conditionSQL = 'organizations.id IN ('+close_organization_ids.join(',')+')'
           logger.debug("close_organization_ids = #{close_organization_ids.inspect}")
         end
-        search_query = '*' if search_query.blank? # give it something to force the query, even if the actual "search terms" are blank
         logger.debug("After adding advanced search terms, query is: #{search_query}")
       end
-      
+
       unless proximity_conditionSQL.nil?
         conditionSQL[:organization] <<= proximity_conditionSQL
       end
@@ -256,15 +388,27 @@ module ApplicationHelper
       end
       
       #condSQL = [access_conditionSQL, proximity_conditionSQL].compact.collect{|sql| '('+sql+')'}.join(' AND ')
-      logger.debug("flat conditions: #{flatSQL.inspect}")
       filtered_query = search_query
       append_query = ""
 
       if not(_params[:unrestricted])
-        unless session[:state_filter].blank?
-          logger.debug("applying session state filters to search results: #{session[:state_filter].inspect}")
+        country_filter = ApplicationHelper.get_filter(session,:country_filter,opts)
+        unless country_filter.blank?
+          logger.debug("applying country filters to search results: #{country_filter.inspect}")
           addl_criteria = []
-          [session[:state_filter]].flatten.each do |state|
+          [country_filter].flatten.each do |country|
+            addl_criteria << "country:\"#{country}\""
+          end
+          append_query = "#{append_query} +(#{addl_criteria.join(' OR ')})"
+          filtered_query = "+(#{search_query})#{append_query}"
+          logger.debug("After adding country filter to query, query is: #{filtered_query}")
+        end
+
+        state_filter = ApplicationHelper.get_filter(session,:state_filter,opts)
+        unless state_filter.blank?
+          logger.debug("applying session state filters to search results: #{state_filter.inspect}")
+          addl_criteria = []
+          [state_filter].flatten.each do |state|
             # Nested parentheses do not seem to work, omit for now.
             # could solve during indexing with a virtual field.
             #if state.length == 2  # abbreviation, make sure it's qualified with USA country:
@@ -279,10 +423,11 @@ module ApplicationHelper
           logger.debug("After adding state filter to query, query is: #{filtered_query}")
         end
 
-        unless session[:city_filter].blank?
-          logger.debug("applying city filters to search results: #{session[:city_filter].inspect}")
+        city_filter = ApplicationHelper.get_filter(session,:city_filter,opts)
+        unless city_filter.blank?
+          logger.debug("applying city filters to search results: #{city_filter.inspect}")
           addl_criteria = []
-          [session[:city_filter]].flatten.each do |city|
+          [city_filter].flatten.each do |city|
             addl_criteria << "city:\"#{city}\""
           end
           append_query = "#{append_query} +(#{addl_criteria.join(' OR ')})"
@@ -290,10 +435,11 @@ module ApplicationHelper
           logger.debug("After adding city filter to query, query is: #{filtered_query}")
         end
 
-        unless session[:zip_filter].blank?
-          logger.debug("applying zip filters to search results: #{session[:zip_filter].inspect}")
+        zip_filter = ApplicationHelper.get_filter(session,:zip_filter,opts)
+        unless zip_filter.blank?
+          logger.debug("applying zip filters to search results: #{zip_filter.inspect}")
           addl_criteria = []
-          [session[:zip_filter]].flatten.each do |zip|
+          [zip_filter].flatten.each do |zip|
             addl_criteria << "zip:#{zip}"
           end
           append_query = "#{append_query} +(#{addl_criteria.join(' OR ')})"
@@ -302,10 +448,11 @@ module ApplicationHelper
           logger.debug("After adding zip filter to query, query is: #{filtered_query}")
         end
 
-        unless session[:dso_filter].blank?
-          logger.debug("applying dso filters to search results: #{session[:dso_filter].inspect}")
+        dso_filter = ApplicationHelper.get_filter(session,:dso_filter,opts)
+        unless dso_filter.blank?
+          logger.debug("applying dso filters to search results: #{dso_filter.inspect}")
           addl_criteria = []
-          [session[:dso_filter]].flatten.each do |x|
+          [dso_filter].flatten.each do |x|
             addl_criteria << "pool:\"#{x}\""
           end
           append_query = "#{append_query} +(#{addl_criteria.join(' OR ')})"
@@ -314,10 +461,11 @@ module ApplicationHelper
           logger.debug("After adding dso filter to query, query is: #{filtered_query}")
         end
 
-        unless session[:org_type_filter].blank?
-          logger.debug("applying org_type filters to search results: #{session[:org_type_filter].inspect}")
+        org_type_filter = ApplicationHelper.get_filter(session,:org_type_filter,opts)
+        unless org_type_filter.blank?
+          logger.debug("applying org_type filters to search results: #{org_type_filter.inspect}")
           addl_criteria = []
-          [session[:org_type_filter]].flatten.each do |x|
+          [org_type_filter].flatten.each do |x|
             addl_criteria << "org_type:\"#{x}\""
           end
           append_query = "#{append_query} +(#{addl_criteria.join(' OR ')})"
@@ -327,9 +475,16 @@ module ApplicationHelper
         end
       end
 
+      filtered_query.gsub!("+() ","")
+      if using_blank and filtered_query == ""
+        if site
+          filtered_query = site.blank_search
+        end
+      end
+
       pagination = { 
         :page => _params[:page], 
-        :per_page => 15,
+        :per_page => 30,
       }
       if _params[:format]=='xml' or _params[:format]=='csv' or _params[:format]=='pdf' or defined? @unlimited_search or _params['Map'] 
         # When providing xml or csv, there should be no
@@ -338,6 +493,9 @@ module ApplicationHelper
         # restrict this to logged in users?
         pagination = { }
       end
+
+      logger.debug("flat conditions: #{flatSQL.inspect}")
+      logger.debug("filtered query: #{filtered_query}")
       
       entries = ActsAsFerret::find(filtered_query,
                                    record_types,
@@ -352,15 +510,100 @@ module ApplicationHelper
     entries
   end
 
-  def get_listing_uncached(query)
+  def get_listing_uncached(query,opts)
     p = {}
     p[:q] = query
-    search_core(p)
+    opts = {:no_override => true, :unlimited_search => true}.merge(opts)
+    search_core(p,nil,opts,false)
   end
 
-  def get_listing(query)
+  def get_listing_core(query,name,site_name,opts = {})
     # long cache for now
-    result = YAML::load(Rails.cache.fetch("findcoop_get_listing:"+query, :expires_in => 14400.minute) { get_listing_uncached(query).to_yaml })
-    return result
+    key = "findcoop_get_listingv29:#{site_name}:#{name}"
+    if Rails.env.development?
+      # Say the magic words to avoid a YAML problem
+      logger.debug([Organization,Person])
+    end
+    result = YAML::load(Rails.cache.fetch(key, :expires_in => 14400.minute) { { :list => get_listing_uncached(query,opts), :query => query, :opts => opts }.to_yaml })
+    return [] if result[:query] != query or result[:opts] != opts
+    result[:list]
+  end
+
+  def get_listing(query,name,site_name,opts = {})
+    get_listing_core(query,name,site_name,opts)
+  end
+
+  def get_listing_for_link(name,link,site_name)
+    opts = {}
+    query = link[:q] || ""
+    opts[:no_override] = link[:no_override] unless link[:no_override].nil?
+    link.reject{|k,v| k == :q or k == :no_override}.each do |k,v|
+      opts[(k.to_s + "_filter").to_sym] = v.split(/;/)
+    end
+    get_listing(query,name,site_name,opts)
+  end
+
+  def is_merge_target(entry)
+    if @merge_active and entry.kind_of? Organization
+      if @merge_target
+        return @merge_target[:id].to_s == entry.id.to_s
+      end
+    end
+    false
+  end
+
+  def clean_params
+    return params.reject{|x,y| ['Map','commit','page'].member? x}
+  end
+
+  def is_admin?
+    u = current_user
+    return false if u.nil?
+    return u.is_admin?
+  end
+
+  def edit_link(obj)
+    return {} if obj.nil?
+    return {} unless obj.respond_to?('link_hash')
+    h = obj.link_hash
+    h[:action] = "edit"
+    return h
+  end
+
+  def delete_link(obj)
+    return {} if obj.nil?
+    return {} unless obj.respond_to?('link_hash')
+    h = obj.link_hash
+    h[:method] = "delete"
+    h[:confirm] = 'Are you sure?'
+    return h
+  end
+
+  def new_link(model)
+    return {} if model.nil?
+    {
+      :controller => model.to_s.underscore.pluralize,
+      :action => 'new'
+    }
+  end
+
+  def ApplicationHelper.get_filter(filters,key,opts = {})
+    if opts.include? key
+      return opts[key]
+    end
+    if opts[:only]
+      return nil unless opts[:only].include? key
+    end
+    if opts[:omit]
+      return nil if opts[:omit].include? key
+    end
+    unless opts[:no_override]
+      filter = filters[("active_" + key.to_s).to_sym]
+      if filter
+        return nil if filter.length == 0
+        return filter
+      end
+    end
+    filters[key]
   end
 end

@@ -18,6 +18,7 @@
 	</div>
 <% end %>
 <dl class="address" id='location_<%=location.id%>' style='<%=(expanded ? 'display:none' : '')%>'>
+    <%- if @organization -%>
 	<dt><%- if location.organization_id != @organization.id -%>Unmerged: <%- end -%><%= location.note.blank? ? 'Address' : location.note %>
 		<% unless hide_links %>
 			<span class="actions">
@@ -39,6 +40,7 @@
 			</span>
 		<% end %>
 	</dt>
+    <%- end -%>
 <% unless location.mailing_same_as_physical? or location.physical_address_blank? %>
 	<dd>Physical Address</dd>
 <% end %>

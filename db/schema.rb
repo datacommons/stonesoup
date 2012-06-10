@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111006034655) do
+ActiveRecord::Schema.define(:version => 20120503014251) do
 
   create_table "access_rules", :force => true do |t|
     t.string "access_type"
@@ -258,6 +258,43 @@ ActiveRecord::Schema.define(:version => 20111006034655) do
     t.datetime "updated_at"
   end
 
+  create_table "tag_contexts", :force => true do |t|
+    t.string "name"
+    t.string "friendly_name"
+  end
+
+  add_index "tag_contexts", ["name"], :name => "index_tag_contexts_on_name"
+
+  create_table "tag_worlds", :force => true do |t|
+    t.string "name"
+  end
+
+  add_index "tag_worlds", ["name"], :name => "index_tag_worlds_on_name"
+
+  create_table "taggings", :force => true do |t|
+    t.integer  "tag_id"
+    t.integer  "taggable_id"
+    t.string   "taggable_type"
+    t.datetime "created_at"
+  end
+
+  add_index "taggings", ["tag_id"], :name => "index_taggings_on_tag_id"
+  add_index "taggings", ["taggable_id", "taggable_type"], :name => "index_taggings_on_taggable_id_and_taggable_type"
+
+  create_table "tags", :force => true do |t|
+    t.string   "name"
+    t.integer  "root_id"
+    t.string   "root_type"
+    t.integer  "parent_id"
+    t.integer  "effective_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "tags", ["name"], :name => "index_tags_on_name"
+  add_index "tags", ["parent_id"], :name => "index_tags_on_parent_id"
+  add_index "tags", ["root_id", "root_type"], :name => "index_tags_on_root_id_and_root_type"
+
   create_table "users", :force => true do |t|
     t.string   "login",                        :limit => 80
     t.string   "password",                     :limit => 40
@@ -266,6 +303,11 @@ ActiveRecord::Schema.define(:version => 20111006034655) do
     t.datetime "last_login"
     t.integer  "person_id"
     t.boolean  "update_notifications_enabled",               :default => true
+  end
+
+  create_table "zig", :force => true do |t|
+    t.string  "name", :limit => 30
+    t.integer "age"
   end
 
 end

@@ -76,6 +76,8 @@ module ActsAsFerret
         # merge conditions
         conditions = ActsAsFerret::conditions_for_model model, ar_options[:conditions]
         count_options[:conditions] = ActsAsFerret::combine_conditions([ "#{model.table_name}.#{model.primary_key} in (?)", id_array.keys ], conditions)
+        count_options[:joins] = ActsAsFerret::joins_for_model model, ar_options[:joins]
+        # count_options[:select] = ActsAsFerret::select_for_model model, ar_options[:select]
         count_options[:include] = ActsAsFerret::filter_include_list_for_model(model, ar_options[:include]) if ar_options[:include]
         cnt = model.count count_options
         if cnt.is_a?(ActiveSupport::OrderedHash) # fixes #227
