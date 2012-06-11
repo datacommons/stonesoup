@@ -1,5 +1,5 @@
 class DataSharingOrgsController < ApplicationController
-  before_filter :admin_or_DSOmembership_required, :only => [:show, :edit, :update, :link_org, :unlink_org, :import, :add_org]
+  before_filter :admin_or_DSOmembership_required, :only => [:show, :edit, :update, :link_taggable, :unlink_taggable, :import, :add_org]
   before_filter :admin_required, :only => [:index, :new, :create, :destroy, :link_user, :unlink_user]
 protected
   def admin_or_DSOmembership_required
@@ -142,7 +142,7 @@ public
             raise "Unknown record_status returned by import plug-in: '#{result[:record_status]}'"
           end
           # set verification status for this org/DSO
-          DataSharingOrgsOrganization.set_status(@dso, organization, true)
+          DataSharingOrgsTaggable.set_status(@dso, organization, true)
         end
       else
         num_errors += result[:errors].length
@@ -175,13 +175,13 @@ public
     end
   end
 
-  def link_org
+  def link_taggable
     dso = DataSharingOrg.find(params[:data_sharing_org_id])
-    org = Organization.find(params[:organization_id])
+    org = params[:taggable_type].constantize.find(params[:taggable_id])
     unless current_user.member_of_dso?(dso)
       flash[:error] = "You must be a member of the DSO to modify the data pool."
     else
-      if(DataSharingOrgsOrganization.set_status(dso, org, params[:verified] || false))
+      if(DataSharingOrgsTaggable.set_status(dso, org, params[:verified] || false))
         status = (params[:verified] ? 'verified' : 'unverified')
         flash[:notice] = "#{org.name} was successfully added to the data pool for #{dso.name} as #{status}"
          org.ferret_update
@@ -192,13 +192,13 @@ public
     redirect_to org
   end
   
-  def unlink_org
+  def unlink_taggable
     dso = DataSharingOrg.find(params[:data_sharing_org_id])
-    org = Organization.find(params[:organization_id])
+    org = params[:taggable_type].constantize.find(params[:taggable_id])
     unless current_user.member_of_dso?(dso)
       flash[:error] = "You must be a member of the DSO to modify the data pool."
     else
-      link = DataSharingOrgsOrganization.get_status(dso, org)
+      link = DataSharingOrgsTaggable.get_status(dso, org)
       link.destroy unless link.nil?
       flash[:notice] = "#{org.name} was successfully removed from the data pool for #{dso.name}"
     end

@@ -374,7 +374,7 @@ public
       unless last.nil?
         last = nil if last == ""
       end
-      joinSQL, condSQLs, condParams = Organization.all_join(session)
+      joinSQL, condSQLs, condParams = Organization.all_join(session,{ :entity => "Person"})
       joinSQL = "INNER JOIN organizations_people ON organizations_people.person_id = people.id INNER JOIN organizations ON organizations_people.organization_id = organizations.id #{joinSQL}"
       joinSQL = nil if condSQLs.empty?
       unless last.nil?
@@ -395,7 +395,7 @@ public
     if name.length>=2
       ignore, locCondSQLs, locCondParams = Organization.location_join(session)
       joinSQL, condSQLs, condParams = Organization.tag_join(session)
-      joinSQL = "INNER JOIN organizations ON organizations.id = locations.organization_id #{joinSQL}"
+      joinSQL = "INNER JOIN organizations ON organizations.id = locations.taggable_id AND locations.taggable_type = 'Organization' #{joinSQL}"
       condSQLs = condSQLs + locCondSQLs
       condParams = condParams + locCondParams
       joinSQL = nil if condSQLs.empty?
@@ -413,7 +413,7 @@ public
     if name.length>=1
       ignore, locCondSQLs, locCondParams = Organization.location_join(session)
       joinSQL, condSQLs, condParams = Organization.tag_join(session)
-      joinSQL = "INNER JOIN organizations ON organizations.id = locations.organization_id #{joinSQL}"
+      joinSQL = "INNER JOIN organizations ON organizations.id = locations.taggable_id AND locations.taggable_type = 'Organization' #{joinSQL}"
       condSQLs = condSQLs + locCondSQLs
       condParams = condParams + locCondParams
       joinSQL = nil if condSQLs.empty?
@@ -575,7 +575,7 @@ protected
     if name.length>=0
       ignore, locCondSQLs, locCondParams = Organization.location_join(session,opts)
       joinSQL, condSQLs, condParams = Organization.tag_join(session,opts)
-      joinSQL = "INNER JOIN organizations ON organizations.id = locations.organization_id #{joinSQL}"
+      joinSQL = "INNER JOIN organizations ON organizations.id = locations.taggable_id AND locations.taggable_type = 'Organization' #{joinSQL}"
       condSQLs = condSQLs + locCondSQLs
       condParams = condParams + locCondParams
       joinSQL = nil if condSQLs.empty?

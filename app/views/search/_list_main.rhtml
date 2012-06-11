@@ -27,20 +27,20 @@ end
   <p>
   No results were found for this search.
     <% if not(params[:unrestricted]) %>
-    <% if session[:state_filter] or session[:state_filter] or session[:dso_filter] or session[:org_type_filter] %>
+    <% if session[:active_state_filter] or session[:active_state_filter] or session[:active_dso_filter] or session[:active_org_type_filter] or session[:active_dso_filter] %>
       Would you like to try an <%= link_to 'unrestricted search', params.merge(:unrestricted => true) %>?
     <% end %>
-    <% if session[:state_filter] %>
-    <br />The state was restricted to: <%= session[:state_filter].join(" / ") %>.
+    <% if session[:active_state_filter] %>
+    <br />The state was restricted to: <%= session[:active_state_filter].join(" / ") %>.
     <% end %>
-    <% if session[:city_filter] %>
-    <br />The city was restricted to: <%= session[:city_filter].join(" / ") %>.
+    <% if session[:active_city_filter] %>
+    <br />The city was restricted to: <%= session[:active_city_filter].join(" / ") %>.
     <% end %>
-    <% if session[:dso_filter] %>
-    <br />The search was restricted to known members of: <%= session[:dso_filter].join(" / ") %>.
+    <% if session[:active_dso_filter] %>
+    <br />The search was restricted to known members of: <%= session[:active_dso_filter].join(" / ") %>.
     <% end %>
-    <% if session[:org_type_filter] %>
-    <br />The search was restricted to organizations of type: <%= session[:org_type_filter].join(" / ") %>.
+    <% if session[:active_org_type_filter] %>
+    <br />The search was restricted to entries of type: <%= session[:active_org_type_filter].join(" / ") %>.
     <% end %>
     <% end %>
   </p>

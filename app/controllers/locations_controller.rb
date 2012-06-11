@@ -55,7 +55,7 @@ public
   # POST /locations.xml
   def create
     process_params(params)
-    @organization = Organization.find(params[:id])
+    @organization = params[:type].constantize.find(params[:id])
     merge_check
     @location = @organization.locations.create(params[:location])
     @location.save!
@@ -79,7 +79,7 @@ public
   # PUT /locations/1.xml
   def update
     @location = Location.find(params[:id])
-    @organization = @location.organization
+    @organization = @location.taggable
     merge_check
 
     respond_to do |format|
@@ -99,9 +99,10 @@ public
 
   def move
     @location = Location.find(params[:id])
-    @organization = @location.organization
+    @organization = @location.taggable
     merge_check
-    @location.update_attribute(:organization_id, @organization1.id)
+    @location.update_attribute(:taggable, @organization1)
+    # @location.update_attribute(:taggable_type, @organization1.class.to_s)
     if @organization2.primary_location == @location
       @organization2.update_attribute(:primary_location, nil)
     end
@@ -118,7 +119,7 @@ public
   # DELETE /locations/1.xml
   def destroy
     @location = Location.find(params[:id])
-    @organization = @location.organization
+    @organization = @location.taggable
     merge_check
     @location.destroy
     @organization.ferret_update

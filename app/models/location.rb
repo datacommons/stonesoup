@@ -1,5 +1,10 @@
 class Location < ActiveRecord::Base
-  belongs_to :organization
+  # belongs_to :organization
+
+  belongs_to :taggable, :polymorphic => true
+  belongs_to :organization, :class_name => "Organization", :foreign_key => "taggable_id"
+  belongs_to :person, :class_name => "Person", :foreign_key => "taggable_id"
+
   after_save :set_organizations_primary_location
   before_save :save_ll
   include LinkedRecordNotification
@@ -10,7 +15,7 @@ class Location < ActiveRecord::Base
                    :lng_column_name => 'longitude',
                    :distance_field_name => 'distance'
 
-  validates_presence_of :organization_id, :on => :save
+  validates_presence_of :taggable_id, :on => :save
   validates_each :physical_city, :physical_country do |record, attr, value|
     record.errors.add attr, "(or mailing city & country) must be specified" unless \
       (!record.physical_city.blank? and !record.physical_country.blank?) or \
@@ -95,6 +100,7 @@ class Location < ActiveRecord::Base
   end
   
   def set_organizations_primary_location
+    return unless taggable_type == "Organization"
     if organization.primary_location.nil?  # if this is the first location added, assign it as the primary location
       organization.primary_location = self
       organization.send(:update_without_callbacks)
@@ -180,7 +186,7 @@ class Location < ActiveRecord::Base
   end
 
   def accessible?(current_user)
-    return self.organization.accessible?(current_user)
+    return self.taggable.accessible?(current_user)
   end
 
   def address_summary
@@ -258,11 +264,15 @@ class Location < ActiveRecord::Base
   end
 
   def link_name
-    organization.name + " (" + address_summary + ")"
+    taggable.name + " (" + address_summary + ")"
   end
   
   def link_hash
-    {:controller => 'organizations', :action => 'show', :id => organization.id}
+    if taggable_type == "Organization"
+      {:controller => 'organizations', :action => 'show', :id => organization.id}
+    else
+      {:controller => 'people', :action => 'show', :id => person.id}
+    end
   end
 
   def <=>(other)

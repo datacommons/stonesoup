@@ -12,7 +12,7 @@ hide_org = false if hide_org.nil?
 <% unless hide_org %>
 	<tr>
 		<th><label for="organizations_person_organization_id">Organization:</label></th>
-		<td><%= select 'organizations_person', 'organization_id', Organization.find(:all).collect{|o| [o.name, o.id]} %></td>
+		<td><%- if @organizations_person %><%# (this select explodes) select 'organizations_person', 'organization_id', Organization.find(:all).collect{|o| [o.name, o.id]} %><%= link_to @organizations_person.organization.name, @organizations_person.organization %><%- end -%></td>
 	</tr>
 <% end %>
 	<tr>

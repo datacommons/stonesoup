@@ -9,5 +9,10 @@
   </p>
 <% end %>
 
+<div id="locations" class="attribute_section">
+	<%= render :partial => 'locations/manage' %>
+</div>
+
 <%= link_to 'Show Entry & Manage Associations', @person %> |
+<%= link_to link_to 'Delete entire entry', @person, :confirm => 'Are you sure?', :method => :delete %> |
 <%= link_to 'Back to Directory of People', people_path %>
