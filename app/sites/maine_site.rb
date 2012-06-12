@@ -8,8 +8,8 @@ class MaineSite < Site
     ['maine.find.coop','me.find.coop','testme.find.coop', 'mainetest.find.coop']
   end
 
-  def state_filter
-    ['Maine', 'ME']
+  def dso_filter
+    ["Cooperative Maine"]
   end
 
   def should_show_latest_people
