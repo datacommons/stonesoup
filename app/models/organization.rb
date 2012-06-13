@@ -5,7 +5,7 @@ class Organization < ActiveRecord::Base
   # as this removes the related objects BEFORE the before_destroy callback is processed for the object itself
   # (because we need to have the DSO relations intact to be able to notify the DSO of the removal)
   # those related objects are now destroyed in the after_destroy callback manually
-  has_many :locations
+  has_many :locations, :as => :taggable
   belongs_to :primary_location, :class_name => 'Location'
   has_many :products_services, :class_name => 'ProductService'
   belongs_to :legal_structure
@@ -16,8 +16,14 @@ class Organization < ActiveRecord::Base
   has_many :organizations_people
   has_many :people, :through => :organizations_people
   has_and_belongs_to_many :users
-  has_many :data_sharing_orgs_organizations
-  has_many :data_sharing_orgs, :through => :data_sharing_orgs_organizations
+
+  # has_many :data_sharing_orgs_organizations
+  # has_many :data_sharing_orgs, :through => :data_sharing_orgs_organizations
+  has_many :data_sharing_orgs_taggables, :as => :taggable
+  has_many :data_sharing_orgs, :through => :data_sharing_orgs_taggables
+
+  has_many :data_sharing_orgs_organizations, :class_name => "DataSharingOrgsTaggable", :as => :taggable, :conditions => "data_sharing_orgs_taggables.taggable_type = 'Organization'"
+
   belongs_to :updated_by, :class_name => 'User', :foreign_key => 'updated_by_id'
   belongs_to :created_by, :class_name => 'User', :foreign_key => 'created_by_id'
   has_many :tags, :through => :taggings
@@ -105,6 +111,8 @@ class Organization < ActiveRecord::Base
   end
   
   def send_notifications(change_message, type = :update)
+    return unless @organization # e.g. working from console
+
     # send notifications to all the other editors on this entry, except the person making the update
     other_editors = self.users.reject{|u| u == User.current_user}
     logger.debug("other editors on this entry: #{other_editors.collect{|u| u.login}.join(', ')}")
@@ -122,7 +130,7 @@ class Organization < ActiveRecord::Base
       self.data_sharing_orgs.each do |dso|
         unless self.destruction_in_progress
           # set the entry's status to "unverified"
-          DataSharingOrgsOrganization.set_status(dso, self, false)
+          DataSharingOrgsTaggable.set_status(dso, self, false)
         end
 
         # send a notification to that DSO
@@ -309,6 +317,9 @@ class Organization < ActiveRecord::Base
   end
 
   def Organization.location_join(filters,opts = {})
+    entity = opts[:entity] || "Organization"
+    entities = entity.downcase.pluralize
+
     select = []
     order = []
 
@@ -325,7 +336,11 @@ class Organization < ActiveRecord::Base
     if [country_filter,state_filter,city_filter,zip_filter].compact.collect{|f| f.length}.inject(0){|a,b| a+b}==0
       join_type = "LEFT"
     end
-    joinSQL = "#{join_type} JOIN locations ON locations.organization_id = organizations.id"
+    # if entity == "Organization"
+    joinSQL = "#{join_type} JOIN locations ON locations.taggable_id = #{entities}.id AND locations.taggable_type = '#{entity}'"
+    #else
+    #  joinSQL = "#{join_type} JOIN locations ON (locations.taggable_id = #{entities}.id AND locations.taggable_type = '#{entity}') OR (locations.taggable_id = organizations.id AND locations.taggable_type = 'Organization')"
+    #end
 
     unless country_filter.nil? or country_filter.empty?
       logger.debug("applying session country filters to search results: #{country_filter.inspect}")
@@ -410,6 +425,9 @@ class Organization < ActiveRecord::Base
   end
 
   def Organization.tag_join(filters, opts = {})
+    entity = opts[:entity] || "Organization"
+    entities = entity.downcase.pluralize
+
     dso_filter = ApplicationHelper.get_filter(filters,:dso_filter,opts)
     org_type_filter = ApplicationHelper.get_filter(filters,:org_type_filter,opts) || []
     sector_filter = ApplicationHelper.get_filter(filters,:sector_filter,opts) || []
@@ -419,8 +437,16 @@ class Organization < ActiveRecord::Base
     joinSQL = ""
     unless dso_filter.nil? or dso_filter.empty?
       logger.debug("applying session dso filters to search results: #{dso_filter.inspect}")
-      joinSQL = "#{joinSQL} INNER JOIN data_sharing_orgs_organizations ON data_sharing_orgs_organizations.organization_id = organizations.id INNER JOIN data_sharing_orgs ON data_sharing_orgs_organizations.data_sharing_org_id = data_sharing_orgs.id"
+      if entity == "Organization"
+        joinSQL = "#{joinSQL} INNER JOIN data_sharing_orgs_taggables ON data_sharing_orgs_taggables.taggable_id = #{entities}.id AND data_sharing_orgs_taggables.taggable_type = '#{entity}' INNER JOIN data_sharing_orgs ON data_sharing_orgs_taggables.data_sharing_org_id = data_sharing_orgs.id"
+      else
+        joinSQL = "#{joinSQL} INNER JOIN data_sharing_orgs_taggables ON (data_sharing_orgs_taggables.taggable_id = #{entities}.id AND data_sharing_orgs_taggables.taggable_type = '#{entity}') OR (data_sharing_orgs_taggables.taggable_id = organizations.id AND data_sharing_orgs_taggables.taggable_type = 'Organization') INNER JOIN data_sharing_orgs ON data_sharing_orgs_taggables.data_sharing_org_id = data_sharing_orgs.id"
+      end
+
+      # joinSQL = "#{joinSQL} INNER JOIN data_sharing_orgs_organizations ON data_sharing_orgs_organizations.organization_id = organizations.id INNER JOIN data_sharing_orgs ON data_sharing_orgs_organizations.data_sharing_org_id = data_sharing_orgs.id"
       dsos = [dso_filter].flatten
+      # condSQLs << "data_sharing_orgs_taggables.taggable_type = ?"
+      # condParams << entity
       condSQLs << "data_sharing_orgs.name IN (#{dsos.collect{'?'}.join(',')})"
       condParams += dsos
     end

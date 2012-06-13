@@ -1,4 +1,4 @@
-One of the entries <%= @why_notified %> has been <%= @updated_or_removed %><%= @by_line %>.
+<%- @organization = @person unless @organization %>One of the entries <%= @why_notified %> has been <%= @updated_or_removed %><%= @by_line %>.
 ----------
 Entry: <%= @organization.name %>
 <%- if @type == :update -%>
@@ -6,7 +6,7 @@ Changes:
 <%= @change_msg %>
 
 To see the updated entry, go to:
-<%= Email.website_base_url %><%= url_for :controller => 'organizations', :action => 'show', :id => @organization %>
+<%= Email.website_base_url %><%= url_for @organization %>
 From there, you may log in and make further updates or corrections as necessary.
 <%- end -%>
 ----------

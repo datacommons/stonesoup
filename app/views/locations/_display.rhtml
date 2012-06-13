@@ -19,10 +19,10 @@
 <% end %>
 <dl class="address" id='location_<%=location.id%>' style='<%=(expanded ? 'display:none' : '')%>'>
     <%- if @organization -%>
-	<dt><%- if location.organization_id != @organization.id -%>Unmerged: <%- end -%><%= location.note.blank? ? 'Address' : location.note %>
+	<dt><%- if location.taggable_id != @organization.id -%>Unmerged: <%- end -%><%= location.note.blank? ? 'Address' : location.note %>
 		<% unless hide_links %>
 			<span class="actions">
-			<%- if location.organization_id != @organization.id -%>
+			<%- if location.taggable_id != @organization.id -%>
 			[ <%= link_to_remote( 'merge', 
 				:url => {:controller => 'locations', :action => 'move', :id => location.id, :trunk_id => get_trunk_id, :branch_id => get_branch_id },
 				:update => 'locations',

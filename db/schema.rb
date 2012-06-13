@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120503014251) do
+ActiveRecord::Schema.define(:version => 20120610192455) do
 
   create_table "access_rules", :force => true do |t|
     t.string "access_type"
@@ -22,16 +22,17 @@ ActiveRecord::Schema.define(:version => 20120503014251) do
     t.string   "default_import_plugin_name"
   end
 
-  create_table "data_sharing_orgs_organizations", :force => true do |t|
-    t.integer  "data_sharing_org_id",                    :null => false
-    t.integer  "organization_id",                        :null => false
-    t.boolean  "verified",            :default => false, :null => false
+  create_table "data_sharing_orgs_taggables", :force => true do |t|
+    t.integer  "data_sharing_org_id",                             :null => false
+    t.integer  "taggable_id",                                     :null => false
+    t.boolean  "verified",            :default => false,          :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "foreign_key_id"
+    t.string   "taggable_type",       :default => "Organization"
   end
 
-  add_index "data_sharing_orgs_organizations", ["data_sharing_org_id", "foreign_key_id"], :name => "dsoo_dso_fk", :unique => true
+  add_index "data_sharing_orgs_taggables", ["data_sharing_org_id", "foreign_key_id"], :name => "dsoo_dso_fk", :unique => true
 
   create_table "data_sharing_orgs_users", :id => false, :force => true do |t|
     t.integer  "data_sharing_org_id", :null => false

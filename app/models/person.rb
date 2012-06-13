@@ -4,6 +4,11 @@ class Person < ActiveRecord::Base
   has_many :organizations, :through => :organizations_people
   has_one :user
 
+  has_many :data_sharing_orgs_taggables, :as => :taggable
+  has_many :data_sharing_orgs, :through => :data_sharing_orgs_taggables
+
+  has_many :locations, :as => :taggable
+
   acts_as_reportable
 
   validates_presence_of :firstname
@@ -33,9 +38,9 @@ class Person < ActiveRecord::Base
     "p" + name
   end
 
-  def locations
-    organizations.map{|o| o.locations}.flatten
-  end
+  #def locations
+  #  organizations.map{|o| o.locations}.flatten
+  #end
   
   def accessible?(current_user)
     return true if !current_user.nil? and current_user.is_admin? # admins can access everything
@@ -82,4 +87,20 @@ class Person < ActiveRecord::Base
   def to_param
     "#{id}-#{name.parameterize}"
   end 
+
+  def primary_location
+    nil
+  end
+
+  def primary_location_id
+    0
+  end
+
+  def get_primary
+    Location.get_primary_for(self)
+  end
+
+  def description
+    organizations.collect{|o| [o.name]}.join(", ")
+  end
 end

@@ -10,14 +10,14 @@
 <% if entry.respond_to? "physical_city" %>
      <%- unless entry.physical_city.blank? and entry.mailing_city.blank? -%>
 		<span class="search_location"><%= render :partial => 'locations/display_primary', :locals => {:location => entry, :show_street => !(show_country||show_state), :show_country => show_country, :show_state => show_state} %></span><br />
-        <%- if @orgs_seen[entry.id] -%>
+        <%- if @orgs_seen[url_for(entry)] -%>
         (Alternate location)<br />
         <%- end -%>
       <%- end -%>
-    <%- unless entry.description.blank? or @orgs_seen[entry.id] -%>
+    <%- unless entry.description.blank? or @orgs_seen[url_for(entry)] -%>
       <%= entry.description.nil? ? "" : truncate_string(entry.description.gsub(/[\n\r+]/,'').strip,70) %><br />
     <%- end -%>
-        <%- @orgs_seen[entry.id] = true -%>
+        <%- @orgs_seen[url_for(entry)] = true -%>
 <% elsif entry.kind_of? Person %>
  <%= OrganizationsPerson.find_all_by_person_id(entry.id).collect{|op| [op.organization.name]}.join(", ") %>
 <% else %>

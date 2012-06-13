@@ -1,0 +1,37 @@
+<%- included_view = (params && params[:widget]) if included_view.nil? -%>
+<%- if !included_view and current_user and current_user.data_sharing_orgs.any? # DSO MEMBER VIEW -%>
+	<div id="dso_admin">
+		<h2>DSO Admin Menu</h2>
+		<%- if (current_user.data_sharing_orgs - entry.data_sharing_orgs).any? # offer to add to DSO's data pool '%>
+			<p>
+				<%= form_tag :controller => 'data_sharing_orgs', :action => 'link_taggable' %>
+					<%= hidden_field_tag 'taggable_id', entry.id %>
+					<%= hidden_field_tag 'taggable_type', entry.class.to_s %>
+					Add To DSO Data Pool for: 
+					<%= select_tag 'data_sharing_org_id', options_from_collection_for_select((current_user.data_sharing_orgs - entry.data_sharing_orgs), "id", "name") %>
+					<%= check_box_tag 'verified', 1 %>
+					<label for="verified">Verified?</label>
+					<%= submit_tag 'Add' %>
+				</form>
+			</p>
+		<%- end -%>
+		<%- if((current_user.data_sharing_orgs & entry.data_sharing_orgs).any?)	# offer to change current status -%>
+			DSO: Current Status
+			<ul>
+			<%- (current_user.data_sharing_orgs & entry.data_sharing_orgs).each do |dso| -%>
+				<li>
+					<%= dso.name %>: 
+					<%- if dso.status_for(entry) -%>
+						verified
+						<%= button_to 'UNverify', :controller => 'data_sharing_orgs', :action => 'link_taggable', :data_sharing_org_id => dso.id, :taggable_id => entry.id, :taggable_type => entry.class.to_s, :verified => false %>
+					<%- else -%>
+						UNverified
+						<%= button_to 'verify', :controller => 'data_sharing_orgs', :action => 'link_taggable', :data_sharing_org_id => dso.id, :taggable_id => entry.id, :taggable_type => entry.class.to_s, :verified => true %>
+					<%- end -%>
+					<%= button_to 'Remove From Data Pool', :controller => 'data_sharing_orgs', :action => 'unlink_taggable', :data_sharing_org_id => dso.id, :taggable_id => entry.id, :taggable_type => entry.class.to_s %>
+				</li>
+			<%- end -%>
+			</ul>
+		<%- end -%>
+	</div>
+<%- end # NON-DSO MEMBER VIEW -%>

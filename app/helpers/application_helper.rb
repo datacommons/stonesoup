@@ -184,15 +184,24 @@ module ApplicationHelper
   end
   
   def search_core_org_ppl(search_query,pagination,opts,include_counts = false)
-    joinSQL, condSQLs, condParams, org_select, org_order = Organization.all_join(session,opts)
+    # In SQL conditions, we replace:
+    #   MACRO_Entity with Organization or Person
+    # and
+    #   MACRO_entities with organizations or persons
+    # as appropriate.  This *may* be used in DSO or tag logic, depending
+    # on the active filters.
+
+    joinSQL, condSQLs, condParams, org_select, org_order = Organization.all_join(session,opts.merge(:entity => "Entity"))
 
     org_joinSQL, org_condSQLs, org_condParams = [joinSQL, condSQLs, condParams]
     # org_joinSQL = nil if org_condSQLs.empty?
     org_conditions = []
     org_conditions = [org_condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + org_condParams unless org_condSQLs.empty?
+    org_joinSQL = org_joinSQL.gsub('Entity','Organization').gsub('entities','organizations')
 
     ppl_joinSQL, ppl_condSQLs, ppl_condParams = [joinSQL, condSQLs, condParams]
     ppl_joinSQL = "INNER JOIN organizations_people ON organizations_people.person_id = people.id INNER JOIN organizations ON organizations_people.organization_id = organizations.id #{ppl_joinSQL}"
+    ppl_joinSQL = ppl_joinSQL.gsub('Entity','Person').gsub('entities','people')
     # ppl_joinSQL = nil if ppl_condSQLs.empty?
     ppl_conditions = []
     ppl_conditions = [ppl_condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + ppl_condParams unless ppl_condSQLs.empty?
@@ -200,6 +209,8 @@ module ApplicationHelper
     org_select = ApplicationHelper.get_org_select(org_select)
     org_order = nil if org_order.blank?
     org_order = 'organizations.updated_at DESC' if org_order.blank?
+
+    ppl_select = org_select.gsub("DISTINCT organizations","DISTINCT people")
 
     if search_query == ""
       entries = Organization.find(:all,
@@ -212,7 +223,7 @@ module ApplicationHelper
                              :limit => :all,
                              :conditions => ppl_conditions,
                              :joins => ppl_joinSQL,
-                             :select => "DISTINCT people.*")
+                             :select => ppl_select)
       if entries.length>0 and entries2.length>0
         @entry_name = "result"
       end
@@ -228,7 +239,7 @@ module ApplicationHelper
                                      :limit => :all,
                                      :conditions => { :organization => org_conditions, :person => ppl_conditions },
                                      :joins => { :organization => org_joinSQL, :person => ppl_joinSQL },
-                                     :select => { :organization => org_select, :person => "DISTINCT people.*"},
+                                     :select => { :organization => org_select, :person => ppl_select },
                                      :order => { :organization => org_order }
                                    })
     end

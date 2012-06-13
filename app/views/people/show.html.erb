@@ -21,7 +21,15 @@
 		<% if @person.email_contact_preferred %> <span class="preferred_contact">preferred contact method</span> <% end %>
 <% end %>
 <br/>Data Access: <%= AccessRule::ACCESS_TYPE_DESCRIPTION[@person.access_rule.access_type] %>
-<br/><br/>
+<br/>
+<%= render :partial => "tags/dso_link", :locals => { :entry => @person } %>
+<br/>
+<% if @person.locations.length > 0 %>
+	<h2>Locations</h2>
+	<% @person.locations.each do |loc| %>
+		<%= render :partial => 'locations/display', :locals => {:location => loc, :hide_links => true}%>
+	<% end %>
+<% end %>
 <div id="organizations_people">
 <%= render :partial => 'organizations_people/manage_for_person' %>
 </div>
