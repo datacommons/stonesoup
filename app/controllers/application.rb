@@ -293,7 +293,7 @@ public
     end
   end
 
-  rescue_from ActiveRecord::StatementInvalid, :with => :rescue_db
+  # rescue_from ActiveRecord::StatementInvalid, :with => :rescue_db
 
   def rescue_db(exception)
     render :template => "errors/db"

@@ -30,12 +30,12 @@ function checkForm() {
 	<div class="tab-content">
 			<h1 class="tab" title="Unverified Entries">Unverified Entries</h1>
 			<p>
-				<%- if @data_sharing_org.unverified_orgs.empty? -%>
+				<%- if @data_sharing_org.unverified_entries.empty? -%>
 					There are no unverified entries in the data pool.
 				<%- else -%>
 					To approve an entry, view the Organization's record and click the "VERIFY" button on that screen.
 					<ul>
-					<%- @data_sharing_org.unverified_orgs.each do |org| %>
+					<%- @data_sharing_org.unverified_entries.each do |org| %>
 						<li><%= link_to org.name, org %></li>
 					<%- end -%>
 					</ul>

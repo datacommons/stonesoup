@@ -1,4 +1,5 @@
 <% existing_expanded = 0 if existing_expanded.nil? %>
+<% @organization = @person unless @organization %>
 <% new_expanded = false if new_expanded.nil? %>
 <h2>Locations</h2>
 <%= render :partial => 'locations/manage_list', :locals => { :org => @organization, :existing_expanded => existing_expanded, :new_expanded => new_expanded } %>
@@ -16,6 +17,7 @@
 		:failure => %(resetSaveButton('newlocation_savebutton'); showFailure('Could not create location')),
 		:success => %(resetSaveButton('newlocation_savebutton'); Element.hide('block_location_new_form'); Element.show('block_location_new_link');) do %>
 		<%= hidden_field_tag 'id', @organization.id %>
+		<%= hidden_field_tag 'type', @organization.class.to_s %>
 		[<%= link_to_function('cancel', "Element.hide('block_location_new_form'); Element.show('block_location_new_link');") %>]
 		<br/>
 		<%= render :partial => 'locations/form', :locals => { :location => @new_location} %>
