@@ -243,7 +243,6 @@ module ApplicationHelper
                                      :order => { :organization => org_order }
                                    })
     end
-    puts entries.map{|x| x.to_xml}.inspect
     if include_counts
       counts = ApplicationHelper.count_tags(entries)
       entries = entries.paginate(pagination)
