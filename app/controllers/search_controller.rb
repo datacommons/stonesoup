@@ -1,5 +1,7 @@
 class SearchController < ApplicationController
 
+  # before_filter :login_required, :only => [:inspect]
+
 public
 
   def index

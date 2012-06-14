@@ -157,7 +157,7 @@ public
         end
         is_default = false
       end
-      f = { :name => name, :label => possible_filter[:label], :value => filter, :original => filter0, :is_default => is_default, :has_default => has_default, :single => possible_filter[:single] }
+      f = { :name => name, :label => possible_filter[:label], :value => filter, :original => filter0, :is_default => is_default, :has_default => has_default, :single => possible_filter[:single], :active => !filter.blank? }
       all_filters << f
       @filter_bank[f[:name]] = f
     end
