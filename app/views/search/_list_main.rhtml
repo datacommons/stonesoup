@@ -27,20 +27,20 @@ end
   <p>
   No results were found for this search.
     <% if not(params[:unrestricted]) %>
-    <% if session[:active_state_filter] or session[:active_state_filter] or session[:active_dso_filter] or session[:active_org_type_filter] or session[:active_dso_filter] %>
+    <% if @filter_bank["country"][:active] or @filter_bank["state"][:active] or @filter_bank["city"][:active] or @filter_bank["org_type"][:active] or @filter_bank["dso"][:active] %>
       Would you like to try an <%= link_to 'unrestricted search', params.merge(:unrestricted => true) %>?
     <% end %>
-    <% if session[:active_state_filter] %>
-    <br />The state was restricted to: <%= session[:active_state_filter].join(" / ") %>.
+    <% if @filter_bank["state"][:active] %>
+    <br />The state was restricted to: <%= @filter_bank["state"][:value].join(" / ") %>.
     <% end %>
-    <% if session[:active_city_filter] %>
-    <br />The city was restricted to: <%= session[:active_city_filter].join(" / ") %>.
+    <% if @filter_bank["city"][:active] %>
+    <br />The city was restricted to: <%= @filter_bank["city"][:value].join(" / ") %>.
     <% end %>
-    <% if session[:active_dso_filter] %>
-    <br />The search was restricted to known members of: <%= session[:active_dso_filter].join(" / ") %>.
+    <% if @filter_bank["dso"][:active] %>
+    <br />The search was restricted to entries selected by: <%= @filter_bank["dso"][:value].join(" / ") %>.
     <% end %>
-    <% if session[:active_org_type_filter] %>
-    <br />The search was restricted to entries of type: <%= session[:active_org_type_filter].join(" / ") %>.
+    <% if @filter_bank["org_type"][:active] %>
+    <br />The search was restricted to entries of type: <%= @filter_bank["org_type"][:value].join(" / ") %>.
     <% end %>
     <% end %>
   </p>
