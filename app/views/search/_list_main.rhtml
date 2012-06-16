@@ -20,6 +20,22 @@ end
 
 <%- if @tag -%>
   <%= render :partial => "#{@tag.class.to_s.underscore.pluralize}/summary", :locals => {:entry => @tag} %>
+<%- else -%>
+	<div id="search_criteria">
+		<span class="title">Current Search Criteria</span>
+		<%- unless @search_text.blank? -%>
+			<div class="filter_listing active">
+				<span class="label">Keyword(s):</span>
+				<span class="value"><%= @search_text %></span>
+			</div>
+		<%- end -%>
+		<%- @active_filters.each do |filter| -%>
+			<div class="filter_listing active">
+				<span class="label"><%= filter[:label] %>:</span>
+				<span class="value"><%= filter[:value] %></span>
+			</div>
+		<%- end -%>
+	</div>
 <%- end -%>
 
 <% if @entries %>
