@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120611021937) do
+ActiveRecord::Schema.define(:version => 20120616194703) do
 
   create_table "access_rules", :force => true do |t|
     t.string "access_type"
@@ -121,7 +121,6 @@ ActiveRecord::Schema.define(:version => 20120611021937) do
 
   create_table "legal_structures", :force => true do |t|
     t.text     "name"
-    t.boolean  "custom"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -154,10 +153,8 @@ ActiveRecord::Schema.define(:version => 20120611021937) do
 
   create_table "member_orgs", :force => true do |t|
     t.text     "name"
-    t.boolean  "custom"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "effective_id"
   end
 
   create_table "member_orgs_organizations", :id => false, :force => true do |t|
@@ -168,10 +165,8 @@ ActiveRecord::Schema.define(:version => 20120611021937) do
   create_table "org_types", :force => true do |t|
     t.string   "name"
     t.text     "description"
-    t.boolean  "custom"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "effective_id"
   end
 
   create_table "org_types_organizations", :id => false, :force => true do |t|
