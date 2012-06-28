@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120610192455) do
+ActiveRecord::Schema.define(:version => 20120616194703) do
 
   create_table "access_rules", :force => true do |t|
     t.string "access_type"
@@ -121,13 +121,12 @@ ActiveRecord::Schema.define(:version => 20120610192455) do
 
   create_table "legal_structures", :force => true do |t|
     t.text     "name"
-    t.boolean  "custom"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "locations", :force => true do |t|
-    t.integer  "organization_id",   :null => false
+    t.integer  "taggable_id",                                   :null => false
     t.string   "note"
     t.string   "physical_address1"
     t.string   "physical_address2"
@@ -147,16 +146,15 @@ ActiveRecord::Schema.define(:version => 20120610192455) do
     t.datetime "updated_at"
     t.string   "mailing_county"
     t.string   "physical_county"
+    t.string   "taggable_type",     :default => "Organization"
   end
 
-  add_index "locations", ["organization_id"], :name => "index_locations_on_organization_id"
+  add_index "locations", ["taggable_id"], :name => "index_locations_on_organization_id"
 
   create_table "member_orgs", :force => true do |t|
     t.text     "name"
-    t.boolean  "custom"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "effective_id"
   end
 
   create_table "member_orgs_organizations", :id => false, :force => true do |t|
@@ -167,10 +165,8 @@ ActiveRecord::Schema.define(:version => 20120610192455) do
   create_table "org_types", :force => true do |t|
     t.string   "name"
     t.text     "description"
-    t.boolean  "custom"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "effective_id"
   end
 
   create_table "org_types_organizations", :id => false, :force => true do |t|
@@ -304,11 +300,6 @@ ActiveRecord::Schema.define(:version => 20120610192455) do
     t.datetime "last_login"
     t.integer  "person_id"
     t.boolean  "update_notifications_enabled",               :default => true
-  end
-
-  create_table "zig", :force => true do |t|
-    t.string  "name", :limit => 30
-    t.integer "age"
   end
 
 end

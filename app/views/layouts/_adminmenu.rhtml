@@ -1,8 +1,22 @@
 <%- if current_user and (current_user.is_admin? or current_user.member_of_dso?(:any)) -%>
+<script>
+function toggleMenu(menu_name) {
+	// get the current status
+	var menu_status = (document.getElementById(menu_name).style.display == 'none' ? 'hidden' : 'visible');
+	// change status & store it
+	if(menu_status == 'hidden') {
+		Effect.SlideDown(menu_name);
+		setClientVar(menu_name, 'visible');
+	} else {
+		Effect.SlideUp(menu_name);
+		setClientVar(menu_name, 'hidden');
+	}
+}
+</script>
 	<div id="admin_menu">
 		<%- if current_user.is_admin? -%>
 			<div class="menu-container">
-				<div class="title"><%= link_to 'Administration (show/hide)', 'javaScript:Effect.toggle("admin-menu-bar", "slide");'%></div>
+				<div class="title"><%= link_to_function 'Administration (show/hide)', 'toggleMenu("admin-menu-bar");'%></div>
 				<div id="admin-menu-bar">
 					<ul class="menu_bar">
 						<li class="menu_item"><%= link_to 'Legal Structures', :controller => 'legal_structures' %></li>
@@ -18,7 +32,7 @@
 			</div>
 		<%- end -%>
 		<%- if current_user.member_of_dso?(:any) -%>
-			<span class="title"><%= link_to 'Data Sharing (show/hide)', 'javaScript:Effect.toggle("dso-menu-bar", "slide");'%></span>
+			<span class="title"><%= link_to_function 'Data Sharing (show/hide)', 'toggleMenu("dso-menu-bar");'%></span>
 			<div id="dso-menu-bar">
 				<ul class="menu_bar">
 					<%- current_user.data_sharing_orgs.each do |dso| -%>
@@ -28,4 +42,19 @@
 			</div>
 		<%- end -%>
 	</div>
+<script>
+// set menu status correct on first page load
+function initMenu(menu_name) {
+	// get the current status
+	var menu_status = getClientVar(menu_name);
+	// set CSS style
+	if(menu_status == 'hidden') {
+		Element.hide(menu_name);
+	} else {
+		Element.show(menu_name);
+	}
+}
+initMenu('admin-menu-bar');
+initMenu('dso-menu-bar');
+</script>
 <%- end -%>

@@ -1110,3 +1110,18 @@ body.page-users-prefs .listing {
   overflow: auto;
   background-color: #eee;
 }
+
+#search_criteria {
+	border: 1px dashed gray;
+	padding: 10px;
+	margin-bottom: 8px;
+}
+#search_criteria .title {
+	font-size: 1.2em;
+	font-weight: bold;
+	padding-right: 10px;
+}
+#search_criteria .filter_listing {
+	float:none;
+	display: inline;
+}
