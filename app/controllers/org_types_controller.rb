@@ -55,9 +55,6 @@ class OrgTypesController < ApplicationController
   # POST /org_types
   # POST /org_types.xml
   def create
-    if params[:org_type][:custom].nil?  # no "custom" value vas provided, so that means this is being submitted via AJAX
-      params[:org_type].merge!(:custom => true)  # make it a custom entry
-    end
     # search for an existing record
     @org_type = OrgType.find_by_name(params[:org_type][:name])
     if(@org_type.nil?)
