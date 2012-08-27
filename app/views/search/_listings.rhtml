@@ -13,6 +13,7 @@
     <%= render :partial => 'search/teaser', :locals => {:entry => entry, :show_country => show_country, :show_state => show_state, :show_class => show_class} %>
    <% else %>
     <div class="listing private">
+    <%= link_to entry.name, entry %><br />
     Result withheld.<br />
     <% if entry.access_rule.access_type == 'PRIVATE' %>
     Only editors may view this.

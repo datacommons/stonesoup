@@ -98,6 +98,9 @@ public
     if _params[:sector]
       session[:active_sector_filter] = _params[:sector].split(/;/)
     end
+    if _params[:org_type]
+      session[:active_org_type_filter] = _params[:org_type].split(/;/)
+    end
     if _params[:dso]
       session[:active_dso_filter] = _params[:dso].split(/;/)
     end

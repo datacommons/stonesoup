@@ -39,11 +39,12 @@ Data imported using the <b><%= params[:plugin_name] %></b> plugin.
 	    <br />
 	    <%= m[:local]['summary_text'] %> <b>(import)</b><br />
 	    <%= m[:remote].summary_text %> <b>(find.coop)</b><br />
-	        <% form_remote_tag :url => {:action => 'link_org'}, 
+	        <% form_remote_tag :url => {:action => 'link_taggable'}, 
 		:loading => %(showLinkingButton('#{button_name}')),
 		:failure => %(resetLinkButton('#{button_name}'); showLinkMessage('#{msg_name}','Link failed')),
 		:success => %(hideLinkButton('#{button_name}'); showLinkMessage('#{msg_name}','Done!')) do %>
-		<%= hidden_field_tag 'organization_id', m[:remote].id %>
+		<%= hidden_field_tag 'taggable_id', m[:remote].id %>
+		<%= hidden_field_tag 'taggable_type', m[:remote].class.to_s %>
 		<%= hidden_field_tag 'data_sharing_org_id', @dso.id %>
 		<%= submit_tag 'Add ' + m[:remote].name.to_s, :id => button_name %>
 		<% end %>

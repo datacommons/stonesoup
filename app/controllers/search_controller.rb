@@ -15,12 +15,12 @@ public
   end
 
   def test
-    _params = {}
-    @entries, @counts = @template.search_core(_params,@site,{ :unlimited_search => true }, true)
-    @entries.reject!{|e| e.kind_of? Person}
-    @entries.uniq!
-    @entries.sort!{|a,b| a.oname <=> b.oname}
-    render :layout => "#{@site.layout}/printable", :template => "layouts/#{@site.name}/_directory"
+    # _params = {}
+    # @entries, @counts = @template.search_core(_params,@site,{ :unlimited_search => true }, true)
+    # @entries.reject!{|e| e.kind_of? Person}
+    # @entries.uniq!
+    # @entries.sort!{|a,b| a.oname <=> b.oname}
+    # render :layout => "#{@site.layout}/printable", :template => "layouts/#{@site.name}/_directory"
   end
 
   def search
@@ -170,7 +170,7 @@ public
     if params[:name]
       key = ("active_" + params[:name] + "_filter").to_sym
       if params[:value]
-        session[key] = params[:value].split(/,/).map{|x| x.strip}
+        session[key] = params[:value].split(/;/).map{|x| x.strip}
       else
         # key = nil means use default; key = [] means filter inactive
         if session[key].nil?
@@ -184,13 +184,18 @@ public
       end
     end
     if params[:act]
+      adding = ( params[:act] != "remove")
       params.select{|k,v| k.include? "_filter"}.each do |k,v|
         k = "dso_filter" if k == "data_sharing_orgs_filter"
         k = k.gsub("s_filter","_filter")
         key = "active_" + k
         record = session[key.to_sym]
         record = [] if session[key.to_sym].nil? or key == "active_within_filter"
-        record << v
+        if adding
+          record << v
+        else
+          record.delete(v)
+        end
         record.uniq!
         record.sort!
         session[key.to_sym] = record
@@ -202,7 +207,7 @@ public
       end
     end
     self.get_filters
-    render :partial => 'filters'
+    render :partial => 'filters2'
   end
 
   def auto_complete_test
@@ -563,6 +568,15 @@ protected
       results = results.group_by{|x| x[:label]}.collect{|n, v| v[0]}
       results.sort!{|a,b| diff(a[:label],b[:label],a[:is_tag],b[:is_tag],search)}
     end
+    if params[:fallback]
+      if params[:fallback] == "1"
+        matches = "no exact match"
+        if (results.length>0) 
+          matches = "matches found" 
+        end
+        results << { :fallback => search, :name => "#{search}; #{matches}", :pid => { params[:base].sub(/_filter/,'') => search } }
+      end
+    end
     render :json => results.to_json
   end
 
@@ -573,6 +587,7 @@ protected
     template = "name LIKE ?"
     value = (name.length>2 ? "%" : "")+name+"%"
     limit = 50
+    limit = 50 + params[:limit].to_i if params[:limit]
     areas = []
     if name.length>=0
       ignore, locCondSQLs, locCondParams = Organization.location_join(session,opts)

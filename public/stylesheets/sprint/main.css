@@ -1088,6 +1088,16 @@ body.page-users-prefs .listing {
   width: 40px;
 }
 
+.filter_editable { 
+  background: white;
+  font-family: Arial, Sans-Serif;
+  font-size: 13px;
+  margin-bottom: 5px;
+  display: block;
+  padding: 4px;
+  border: 1px solid #ddddaa;
+}
+
 .filter_input_active { 
   width: 90px;
 }
