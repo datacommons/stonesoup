@@ -166,6 +166,12 @@ public
     end
     default_filters.compact!
     active_filters.compact!
+    if @filter_bank["within"][:active]
+      unless @filter_bank["loc"][:active] or @filter_bank["zip"][:active]
+        active_filters.reject!{|x| x[:name] == "within"}
+        @filter_bank["within"][:active] = false
+      end
+    end
     @default_filters = default_filters
     @active_filters = active_filters
     @all_filters = all_filters

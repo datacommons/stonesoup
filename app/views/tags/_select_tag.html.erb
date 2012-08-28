@@ -95,6 +95,7 @@ a.label = a.label.replace(/;/g,",");
                                                         ct++;
                                                         current_tags.push(a.label);
                                                 });
+					        if (ct>6) $('<%=auto_complete_output_id%>').insert("<div class='autocomplete_box_fade'></div>");
                                                 if (ct>0) { $('<%=auto_complete_output_id%>').show(); } else { $('<%=auto_complete_output_id%>').hide(); }
 					}
 				});

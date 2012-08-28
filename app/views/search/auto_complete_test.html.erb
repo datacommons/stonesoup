@@ -1,4 +1,39 @@
 Hello!
 
-<%= render :partial => 'tags/select_tag', :locals => { :any => true, :act => :open_tag, :exact => false, :geo => true }%>
+<div "newsearch">
+
+<form>
+<input id="qn" name="qn" type="hidden" style="width: 300px;" />
+</form>
+
+</div>
+
+<script>
+    jQuery("#qn").addClass("sprint_debug");
+    if (1) jQuery("#qn").select2({
+    placeholder: "Editing...",
+    allowClear: false,
+    multiple: true,
+    minimumInputLength: 1,
+    formatNoMatches: function () { return ""; },
+    formatInputTooShort: function (input, min) { return ""; },
+    ajax: {
+	url: '/search/auto_complete',
+	dataType: 'json',
+	data: function(term,page) {
+            var fallback = 0;
+	    if (term.length>0) fallback = 1;
+	    return { search: term, exact: false, geo: false, limit: 101, fallback: fallback, base: 'base' };
+	},
+	results: function(data,page) {
+            var r = data.map(function(e) { return { id: 4, text: e.name }; });
+	    return {
+		results: r
+	    };
+	}
+    }
+});
+jQuery("#qn").select2("focus");
+</script>
+
 

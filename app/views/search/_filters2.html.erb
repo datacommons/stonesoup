@@ -1,4 +1,4 @@
-<div id="hide_filters_wrap" class="nohover"><div class="header_material"><%= link_to_function('Hide', "Element.hide('search_filters'); Element.show('search_tips')", :id=>'hide_filters') %> <%= link_to_function('<img src="/images/sprint/x.png" />', "Element.hide('search_filters'); Element.show('search_tips')", :id=>'hide_filters') %></div></div>
+<div id="hide_filters_wrap" class="nohover"><div class="header_material"><%= link_to_remote('Hide', {:url => {:controller => 'search', :action => 'change_filter', :act => 'reset'}, :update => 'search_filters', :after => "Element.hide('search_filters'); Element.show('search_tips')", :id=>'hide_filters1'}) %> <%= link_to_remote('<img src="/images/sprint/x.png" />', {:url => {:controller => 'search', :action => 'change_filter', :act => 'reset'}, :update => 'search_filters', :after => "Element.hide('search_filters'); Element.show('search_tips')", :id=>'hide_filters1'}) %></div></div>
 
 <% @all_filters.reject{|x| x[:name]=="loc"}.each_with_index do |filter,index| %>
 <% unless filter[:name] == "within" and @active_filters.select{|x| (x[:name] == "zip" || x[:name]=="loc") and !x[:value].blank? and x[:value].length == 1}.length == 0 %>
@@ -16,7 +16,7 @@
  <%- if filter[:has_default] -%>
   <s><%= filter[:original].join(', ') %></s><br />
  <%- else -%>
-  Add...
+  <%= filter[:single] ? 'Set...' : 'Add...' %>
  <%- end -%>
 <% end %>
 </div>
@@ -45,6 +45,10 @@ of <%= link_to 'location', { :action=> 'show', :controller => 'locations', :id =
 <script>
 
 function filter_apply_change(e,name) {
+    var addition = e.added;
+    if (!e.added && !e.removed) {
+       e.added = jQuery("#" + name + "_select2").select2('data');
+    }
     if (e.added) {
 	var a = e.added.details;
 	var lnk = new Object();
@@ -126,25 +130,27 @@ function format_no_matches(term) {
     return "No matches found, sorry";
 }
 
-function filter_instrument2(name,autocompleter) {
+function filter_instrument2(name,autocompleter,single) {
   var base_name = name;
   jQuery("#" + name + "_input").bind('click', function(e) {
     e.stopPropagation();
     place_filter_editor(jQuery("#" + name + "_input"), name);
-    jQuery("#" + name + "_select2").select2({
+    var base = jQuery("#" + name + "_select2");
+    base.select2({
 	placeholder: "Editing...",
 	allowClear: true,
         formatResult: filter_format,
 	formatNoMatches: format_no_matches,
 	formatSearching: format_searching,
-	multiple: true,
+	multiple: !single,
                 initSelection : function (element, callback) {
                   var data = [];
-		  var base = this;
                   jQuery(element.val().split(",")).each(function () {
-                    data.push({id: cache_filter_option(base, this), text: this});
+		    var txt = this+'';
+                    data.push({id: cache_filter_option(base[0], txt), text: txt, long_text: txt, details: null});
                   });
-                  callback(data);
+		  if (data.length==1 && single) { callback(data[0]); }
+                  else { callback(data); }
                 },
 	ajax: {
 		url: autocompleter,
@@ -160,7 +166,7 @@ function filter_instrument2(name,autocompleter) {
                        data = [];
                     }
 		  return { 
-		      results: data.map(function(e) { var name = e.name.split(/;/)[0]; return { id: cache_filter_option(this,e.name), text: name, long_text: e.name, details: e }; }
+		      results: data.map(function(e) { var name = e.name.split(/;/)[0]; return { id: cache_filter_option(base[0],e.name), text: name, long_text: e.name, details: e }; }
 		  ) };
 		}
 	}
@@ -177,7 +183,7 @@ function filter_instrument2(name,autocompleter) {
 
 var filter_state = new Object();
 <% @all_filters.each do |filter| %>
-filter_instrument2("<%=filter[:name]%>_filter","/search/auto_complete_<%=filter[:name]%>");
+filter_instrument2("<%=filter[:name]%>_filter","/search/auto_complete_<%=filter[:name]%>",<%=filter[:single] ? 'true' : 'false'%>);
 <% end %>
 </script>
 

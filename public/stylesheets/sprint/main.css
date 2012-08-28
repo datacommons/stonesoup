@@ -775,14 +775,27 @@ body.page-users-prefs .listing {
 }
 
 .autocomplete_box {
-  background: white;
+  background: #efe;
   position: absolute;
   text-align: left;
-  border: 1px solid #339966;
+  border: 1px solid #55BB88;
   padding-bottom: 20px;
-  list-style-type: square;
+  list-style-type: none;
   top: 0px;
   left: 0px;
+}
+
+.autocomplete_box_fade {
+  position: absolute; 
+  left: 0px; 
+  bottom: 0px; 
+  margin: 0px;
+  padding: 0px;
+  text-align: center;
+  height:50px;
+  width: 100%;
+  background-image:url("/images/sprint/trans_white_1x50.png");
+  background-repeat:repeat-x;
 }
 
 #qq { 
@@ -1134,4 +1147,9 @@ body.page-users-prefs .listing {
 #search_criteria .filter_listing {
 	float:none;
 	display: inline;
+}
+
+#q.sprint_debug { 
+  border: 5px solid red;
+  background: red;
 }
