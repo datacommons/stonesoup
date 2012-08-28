@@ -12,7 +12,6 @@ end
 %>
 
 <% if content_run %>
-<h2>Help!</h2>
 
 <div>
 
@@ -37,39 +36,6 @@ We're a helpful bunch, when not hiding behind a computer.
 <% end %>
 </ul>
 
-<%= faq("uptodate","How up-to-date is the information I find in this directory?",content_run) %>
-
-<% if content_run %>
-<div>
-
-The directory is curated by small teams of moderators from various
-member organizations of the Data Commons Co-op.  At the start of any
-listing, you should see a note about when it was last updated.
-Anything older than a year or two is not likely to be accurate.  Each
-listing will also give all editors of that listing.  Listings with
-editors are more likely to be accurate.
-
-</div>
-<% end %>
-
-<%= faq("dontlike","I found an organization I don\'t like in your directory.  Why is it there?",content_run) %>
-
-<% if content_run %>
-<div>
-
-If the listing for that organization says it is in the &ldquo;data pool&rdquo;
-of such-and-such, that shows which of our co-op members approve it.
-If there is no language like that, then nobody is very attached to 
-it, it just wafted in on the breeze.  You could tag it as evil (or
-some more polite keyword) to warn others, or
-<a href="http://datacommons.find.coop/contact">report it</a>,
-or <%= faq_link 'delete it', 'defunct' %> (this should be a last resort, since negative knowledge
-about an organization is valuable).
-We're working on better communicating the quality of individual listings.
-
-</div>
-<% end %>
-
 <%= faq("add","Can I add a missing organization?",content_run) %>
 
 <% if content_run %>
@@ -92,7 +58,7 @@ and moderators.
 <div>
 
 There should be a &ldquo;Login&rdquo; link at the top right of every page,
-leading to the <%= link_to "login page", :controller=>"users", :action=>"login" %>.  If you forget the password for an existing acount, click the &ldquo;Forgot Password&rdquo; button on this page.
+leading to the <%= link_to "login page", :controller=>"users", :action=>"login" %>.  If you forget the password for an existing acount, click the &ldquo;Forgot Password&rdquo; button on the <%= link_to "login page", :controller=>"users", :action=>"login" %>.
 
 </div>
 <% end %>
@@ -143,6 +109,42 @@ at the bottom of every listing.
 <% end %>
 
 
+
+<%= faq("uptodate","How up-to-date is the information I find in this directory?",content_run) %>
+
+<% if content_run %>
+<div>
+
+The directory is curated by small teams of moderators from various
+member organizations of the <a href="http://datacommons.find.coop">Data Commons Co-op</a>.  At the start of any
+listing, you should see a note about when it was last updated.
+Anything older than a year or two is not likely to be accurate.  Each
+listing will also give all editors of that listing.  Listings with
+editors are more likely to be accurate.
+
+</div>
+<% end %>
+
+<%= faq("dontlike","I found an organization I don\'t like in your directory.  Why is it there?",content_run) %>
+
+<% if content_run %>
+<div>
+
+If the listing for that organization says it is in the &ldquo;data pool&rdquo;
+of such-and-such, that shows which of our co-op members have approved it.
+If there is no language like that, then nobody is very attached to 
+it, it just wafted in on the breeze.  You could tag it as evil (or
+some more polite keyword) to warn others, or
+<a href="http://datacommons.find.coop/contact">report it</a>,
+or <%= faq_link 'delete it', 'defunct' %> (this should be a last resort, since negative knowledge
+about an organization is valuable).
+We're working on better communicating the quality of individual listings.
+
+</div>
+<% end %>
+
+
+
 <%= faq("database","Can I get access to the database that runs this directory?",content_run) %>
 
 <% if content_run %>
@@ -156,24 +158,25 @@ history since DCC incorporation, plus contributed data in source
 format from members, plus continuous updates for the duration of your
 membership).  
 We are working to migrate as much data as possible to an
-ODBL open-data license, for public release, but we don't yet have all
+ODbL open-data license, for public release, but we don't yet have all
 our ducks in a row on this.  In the meantime, there are several export
 options for saving information from searches (XML, CSV).  New and
 updated listings can be monitored with an <%= link_to 'RSS feed',
 feed_path %>.  Parts of the database are drawn from sources maintained
-by members of the Co-op. Those members are free to provide the data to
+by members of the Co-op. Those members are of course free to provide the data to
 you under different terms than they provide it to the Co-op.
 
 </div>
 <% end %>
 
-<%= faq("software","Can I use the software runs this directory?",content_run) %>
+<%= faq("software","Can I use the software that runs this directory?",content_run) %>
 
 <% if content_run %>
 <div>
 Be our guest!  The Data Commons Directory software is
 available under a free license at 
-<%= link_to 'datacommons.launchpad.net', "http://datacommons.launchpad.net/" %>.
+<%= link_to 'launchpad.net/datacommons', "https://code.launchpad.net/~datacommons/datacommons/trunk" %>.
+There are tips on installing it on <%= link_to 'Cultivate', "http://cultivate.coop/wiki/Data_Commons_Directory" %>.
 We'd appreciate if you share improvements you make to the software.
 If you need to integrate the directory with an existing website,
 and don't have a team in place to do it,
