@@ -98,6 +98,9 @@ public
     if _params[:sector]
       session[:active_sector_filter] = _params[:sector].split(/;/)
     end
+    if _params[:org_type]
+      session[:active_org_type_filter] = _params[:org_type].split(/;/)
+    end
     if _params[:dso]
       session[:active_dso_filter] = _params[:dso].split(/;/)
     end
@@ -163,6 +166,12 @@ public
     end
     default_filters.compact!
     active_filters.compact!
+    if @filter_bank["within"][:active]
+      unless @filter_bank["loc"][:active] or @filter_bank["zip"][:active]
+        active_filters.reject!{|x| x[:name] == "within"}
+        @filter_bank["within"][:active] = false
+      end
+    end
     @default_filters = default_filters
     @active_filters = active_filters
     @all_filters = all_filters

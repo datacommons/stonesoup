@@ -84,6 +84,7 @@ if($("<%=auto_complete_input_id%>")) {
 						};
                                                 var ct = 0;
 						taggers.each(function(a) {
+a.label = a.label.replace(/;/g,",");
 <%- if act == :open_tag -%>
 							var item = "<li class='tagger'><a href='/" + a.type + "/" + a.pid + "' class='tagger-link'>" + a.label + "</a> (" + a.family + ")</li>";
                                                         if (typeof a.pid == "object") { item = "<li class='tagger'><a href='/search/search?act=search"; for (var p in a.pid) { item = item + "&amp;" + p + "="; item = item + escape(a.pid[p]); }; item = item + "' class='tagger-link'>" + a.label + "</a> (" + a.family + ")</li>"; }
@@ -94,6 +95,7 @@ if($("<%=auto_complete_input_id%>")) {
                                                         ct++;
                                                         current_tags.push(a.label);
                                                 });
+					        if (ct>6) $('<%=auto_complete_output_id%>').insert("<div class='autocomplete_box_fade'></div>");
                                                 if (ct>0) { $('<%=auto_complete_output_id%>').show(); } else { $('<%=auto_complete_output_id%>').hide(); }
 					}
 				});

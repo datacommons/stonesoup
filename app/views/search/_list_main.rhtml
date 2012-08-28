@@ -30,10 +30,12 @@ end
 			</div>
 		<%- end -%>
 		<%- @active_filters.each do |filter| -%>
+		  <%- unless filter[:value].blank? -%>
 			<div class="filter_listing active">
 				<span class="label"><%= filter[:label] %>:</span>
-				<span class="value"><%= filter[:value] %></span>
+				<span class="value"><%= filter[:value].join(', ') %></span>
 			</div>
+		  <%- end -%>
 		<%- end -%>
 	</div>
 <%- end -%>

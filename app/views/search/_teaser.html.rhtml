@@ -15,7 +15,7 @@
         <%- end -%>
       <%- end -%>
     <%- unless entry.description.blank? or @orgs_seen[url_for(entry)] -%>
-      <%= entry.description.nil? ? "" : truncate_string(entry.description.gsub(/[\n\r+]/,'').strip,70) %><br />
+      <%= entry.description.nil? ? "" : truncate_string(entry.description.gsub(/[\n\r]+/,' ').strip,70) %><br />
     <%- end -%>
         <%- @orgs_seen[url_for(entry)] = true -%>
 <% elsif entry.kind_of? Person %>

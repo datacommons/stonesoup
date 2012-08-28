@@ -25,7 +25,7 @@ class ImportHelper
     match_status = {}
     orgs = []
 
-    orgName = org_attr[:name]
+    orgName = org_attr[:name] || "NOTHINGTOSEEHEARMOVEALONGFOLKS"
     seek_name = orgName.gsub(/\(.*\)/,'')
     orgs = Organization.find_with_ferret("\"#{seek_name}\"")
     prev_seek_name = ""
@@ -123,7 +123,7 @@ class ImportHelper
       organization.set_access_rule(default_access_type)
       organization.save!
 
-      DataSharingOrgsOrganization.linked_org_to_dso(organization, dso, nil)
+      DataSharingOrgsTaggable.linked_org_to_dso(organization, dso, nil)
 
       loc = organization.locations.new(loc_attr)
       loc.save!
@@ -156,10 +156,10 @@ class ImportHelper
     organization.set_access_rule(default_access_type)
     organization.save!
     
-    DataSharingOrgsOrganization.linked_org_to_dso(organization, dso, nil)
+    DataSharingOrgsTaggable.linked_org_to_dso(organization, dso, nil)
 
     # now process org_type_names, loading or creating as necessary...
-    organization.org_types = proto.org_type_names.collect{|name| OrgType.find_or_create_custom(name.strip)}
+    organization.org_types = proto.org_type_names.collect{|name| OrgType.find_or_create_custom(name.strip)} if proto.org_type_names
 
     # process legal structure, loading or creating as necessary
     unless(proto.legal_structure_name.blank?)
@@ -167,66 +167,72 @@ class ImportHelper
       organization.legal_structure = LegalStructure.find_or_create_custom(proto.legal_structure_name.strip)
     end
 
-    # process sectors: find/link or report error
-    organization.sectors = []
-    RAILS_DEFAULT_LOGGER.debug("IMPORT: setting org's sectors to: #{proto.sector_names.inspect}")
-    proto.sector_names.each do |sector_name|
-      ## sector_name = SECTOR_MAP[sector_name] unless SECTOR_MAP[sector_name].nil? # if there's a mapped value, use it
-      sector = Sector.find_by_name(sector_name.strip)
-      if(sector.nil?)
-        msg = "Sector not found for '#{sector_name}' - import value should be updated to match existing selections or new Sector must be added by Admin."
-        RAILS_DEFAULT_LOGGER.error('IMPORT: ' + msg)
-        errors.push(msg)
-      else
-        organization.sectors.push(sector)
+    if proto.sector_names
+      # process sectors: find/link or report error
+      organization.sectors = []
+      RAILS_DEFAULT_LOGGER.debug("IMPORT: setting org's sectors to: #{proto.sector_names.inspect}")
+      proto.sector_names.each do |sector_name|
+        ## sector_name = SECTOR_MAP[sector_name] unless SECTOR_MAP[sector_name].nil? # if there's a mapped value, use it
+        sector = Sector.find_by_name(sector_name.strip)
+        if(sector.nil?)
+          msg = "Sector not found for '#{sector_name}' - import value should be updated to match existing selections or new Sector must be added by Admin."
+          RAILS_DEFAULT_LOGGER.error('IMPORT: ' + msg)
+          errors.push(msg)
+        else
+          organization.sectors.push(sector)
+        end
       end
     end
     
-    # link in member orgs, if any
-    current_member_org_names = organization.member_orgs.map(&:name).sort
-    new_member_org_names = proto.member_orgs.map(&:name).sort
-    if(current_member_org_names != new_member_org_names)
-      RAILS_DEFAULT_LOGGER.debug("IMPORT: Current MO names: #{current_member_org_names.inspect}")
-      RAILS_DEFAULT_LOGGER.debug("IMPORT: New MO names: #{new_member_org_names.inspect}")
-      # first, remove any now missing
-      organization.member_orgs.each do |mo|
-        unless current_member_org_names.include?(mo.name)
-          RAILS_DEFAULT_LOGGER.debug("IMPORT: Removing MemberOrg: #{mo.name}")
-          mo.destroy
+    if proto.member_orgs
+      # link in member orgs, if any
+      current_member_org_names = organization.member_orgs.map(&:name).sort
+      new_member_org_names = proto.member_orgs.map(&:name).sort
+      if(current_member_org_names != new_member_org_names)
+        RAILS_DEFAULT_LOGGER.debug("IMPORT: Current MO names: #{current_member_org_names.inspect}")
+        RAILS_DEFAULT_LOGGER.debug("IMPORT: New MO names: #{new_member_org_names.inspect}")
+        # first, remove any now missing
+        organization.member_orgs.each do |mo|
+          unless current_member_org_names.include?(mo.name)
+            RAILS_DEFAULT_LOGGER.debug("IMPORT: Removing MemberOrg: #{mo.name}")
+            mo.destroy
+          end
         end
-      end
-      # next, add any new ones
-      new_member_org_names.each do |mo_name|
-        unless(current_member_org_names.include?(mo_name))
-          RAILS_DEFAULT_LOGGER.debug("IMPORT: Adding MemberOrg: #{mo_name}")
-          organization.member_orgs.push(MemberOrg.find_or_create_custom(mo_name))
+        # next, add any new ones
+        new_member_org_names.each do |mo_name|
+          unless(current_member_org_names.include?(mo_name))
+            RAILS_DEFAULT_LOGGER.debug("IMPORT: Adding MemberOrg: #{mo_name}")
+            organization.member_orgs.push(MemberOrg.find_or_create_custom(mo_name))
+          end
         end
+        RAILS_DEFAULT_LOGGER.debug("IMPORT: After update, new MO names: #{organization.member_orgs.map(&:name).inspect}")
       end
-      RAILS_DEFAULT_LOGGER.debug("IMPORT: After update, new MO names: #{organization.member_orgs.map(&:name).inspect}")
     end
 
-    # link in products/services, if new/changed
-    current_ps_names = organization.products_services.map(&:name)
-    if(current_ps_names.sort != proto.product_service_names.sort)
-      # lists are different, need to update...
-      RAILS_DEFAULT_LOGGER.debug("IMPORT: Current PS names: #{current_ps_names.inspect}")
-      RAILS_DEFAULT_LOGGER.debug("IMPORT: New PS names: #{proto.product_service_names.inspect}")
-      # first, remove any now missing
-      organization.products_services.each do |ps|
-        unless proto.product_service_names.include?(ps.name)
-          RAILS_DEFAULT_LOGGER.debug("IMPORT: Removing Product/Service: #{ps.name}")
-          ps.destroy
+    if proto.product_service_names
+      # link in products/services, if new/changed
+      current_ps_names = organization.products_services.map(&:name)
+      if(current_ps_names.sort != proto.product_service_names.sort)
+        # lists are different, need to update...
+        RAILS_DEFAULT_LOGGER.debug("IMPORT: Current PS names: #{current_ps_names.inspect}")
+        RAILS_DEFAULT_LOGGER.debug("IMPORT: New PS names: #{proto.product_service_names.inspect}")
+        # first, remove any now missing
+        organization.products_services.each do |ps|
+          unless proto.product_service_names.include?(ps.name)
+            RAILS_DEFAULT_LOGGER.debug("IMPORT: Removing Product/Service: #{ps.name}")
+            ps.destroy
+          end
         end
-      end
-      # next, add any new ones
-      proto.product_service_names.each do |ps_name|
-        unless(current_ps_names.include?(ps_name))
-          RAILS_DEFAULT_LOGGER.debug("IMPORT: Adding Product/Service: #{ps_name}")
-          ps = organization.products_services.find_or_create_by_name(:name => ps_name)
-          ps.save!
+        # next, add any new ones
+        proto.product_service_names.each do |ps_name|
+          unless(current_ps_names.include?(ps_name))
+            RAILS_DEFAULT_LOGGER.debug("IMPORT: Adding Product/Service: #{ps_name}")
+            ps = organization.products_services.find_or_create_by_name(:name => ps_name)
+            ps.save!
+          end
         end
+        RAILS_DEFAULT_LOGGER.debug("IMPORT: After update, new PS names: #{organization.products_services.map(&:name).inspect}")
       end
-      RAILS_DEFAULT_LOGGER.debug("IMPORT: After update, new PS names: #{organization.products_services.map(&:name).inspect}")
     end
 
     # set primary location to the first if not already set

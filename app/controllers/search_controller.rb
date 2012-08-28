@@ -170,7 +170,7 @@ public
     if params[:name]
       key = ("active_" + params[:name] + "_filter").to_sym
       if params[:value]
-        session[key] = params[:value].split(/,/).map{|x| x.strip}
+        session[key] = params[:value].split(/;/).map{|x| x.strip}
       else
         # key = nil means use default; key = [] means filter inactive
         if session[key].nil?
@@ -183,14 +183,25 @@ public
         end
       end
     end
-    if params[:act]
+    reset = params[:act] == "reset"
+    if reset
+      @active_filters.each do |f|
+        session["active_#{f[:name]}_filter".to_sym] = nil
+      end
+    end
+    if params[:act] and not(reset)
+      adding = ( params[:act] != "remove" and not(reset))
       params.select{|k,v| k.include? "_filter"}.each do |k,v|
         k = "dso_filter" if k == "data_sharing_orgs_filter"
         k = k.gsub("s_filter","_filter")
         key = "active_" + k
         record = session[key.to_sym]
         record = [] if session[key.to_sym].nil? or key == "active_within_filter"
-        record << v
+        if adding
+          record << v
+        else
+          record.delete(v)
+        end
         record.uniq!
         record.sort!
         session[key.to_sym] = record
@@ -202,7 +213,7 @@ public
       end
     end
     self.get_filters
-    render :partial => 'filters'
+    render :partial => 'filters2'
   end
 
   def auto_complete_test
@@ -313,14 +324,22 @@ public
         units = ["kilometers","miles"]
       end
     end
+    standards = [10, 20, 50]
     units.each do |u|
-      [10, 20, 50].each do |x|
+      standards.each do |x|
+        tags << SearchItem.new("#{x} #{u}","within",{ :within => "#{x} #{u}" })
+      end
+    end
+    x = search.to_i
+    if x > 0 and not(standards.include? x)
+      units.each do |u|
         tags << SearchItem.new("#{x} #{u}","within",{ :within => "#{x} #{u}" })
       end
     end
     if search.length > 0
       tags.reject!{|t| t.name.index(search.downcase) != 0}
     end
+
     render_auto_complete([tags],search,{:should_sort => false})
   end
 
@@ -515,7 +534,8 @@ protected
     if field == "physical_city"
       return SearchItem.new(loc.physical_city,"City",{:city => loc.physical_city, :state => loc.physical_state, :country => loc.physical_country}) 
     elsif field == "physical_zip"
-      return SearchItem.new(loc.physical_zip,"Postal code",{:zip => loc.physical_zip, :city => loc.physical_city, :state => loc.physical_state, :country => loc.physical_country})
+      zip = loc.physical_zip.sub(/-.*/,'')
+      return SearchItem.new(zip,"Postal code",{:zip => zip, :city => loc.physical_city, :state => loc.physical_state, :country => loc.physical_country})
     elsif field == "physical_state"
       return SearchItem.new(loc.physical_state,"State",{:state => loc.physical_state, :country => loc.physical_country})
     elsif field == "physical_country"
@@ -529,8 +549,10 @@ protected
   end
 
   def render_auto_complete(groups,search, opts = {})
-    should_sort = opts[:should_sort] || true
-    should_root = opts[:should_root] || true
+    should_sort = true
+    should_root = true
+    should_sort = opts[:should_sort] unless opts[:should_sort].nil?
+    should_root = opts[:should_root] unless opts[:should_root].nil?
     negated = opts[:negated] || false
     results = []
     groups.each do |result_set|
@@ -563,6 +585,15 @@ protected
       results = results.group_by{|x| x[:label]}.collect{|n, v| v[0]}
       results.sort!{|a,b| diff(a[:label],b[:label],a[:is_tag],b[:is_tag],search)}
     end
+    if params[:fallback]
+      if params[:fallback] == "1"
+        matches = "no exact match"
+        if (results.length>0) 
+          matches = "matches found" 
+        end
+        results << { :fallback => search, :name => "#{search}; #{matches}", :pid => { params[:base].sub(/_filter/,'') => search } }
+      end
+    end
     render :json => results.to_json
   end
 
@@ -573,6 +604,7 @@ protected
     template = "name LIKE ?"
     value = (name.length>2 ? "%" : "")+name+"%"
     limit = 50
+    limit = 50 + params[:limit].to_i if params[:limit]
     areas = []
     if name.length>=0
       ignore, locCondSQLs, locCondParams = Organization.location_join(session,opts)

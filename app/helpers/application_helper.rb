@@ -165,6 +165,7 @@ module ApplicationHelper
     s.gsub!(/\.\.\./,'')
     s.gsub!(/  +/,' ')
     return s if s.index(/[a-z]/i).nil?
+    return s if s.length<len*0.75
     s = s[0,len-4].gsub(/[^ ]*$/,"")
     return s + " ..."
   end
