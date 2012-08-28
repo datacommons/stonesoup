@@ -1,0 +1,257 @@
+<%
+
+def faq(key,title,content_run)
+  return "<a name=\"faq_#{key}\"></a><h3>#{title}</h3>" if content_run
+  "<li><a href=\"#faq_#{key}\">#{title}</a></li>"
+end
+
+def faq_link(text,key)
+  link_to text, "#faq_#{key}"
+end
+
+%>
+
+<% if content_run %>
+<h2>Help!</h2>
+
+<div>
+
+Problems with this directory are the responsibility of the 
+<a href="http://datacommons.find.coop">Data Commons Cooperative</a>.
+Please believe we are not deliberately setting out to ruin your day
+and make your blood boil.  If we had but world enough and time, and
+you didn't have any allergies, we'd arrange for fluffy kittens to
+gambol around your feet whenever you chose to visit, and we'd have a team
+of enthusiastic researchers on call to find whatever you needed.
+Unfortunately we've made the questionable decision to use computers
+instead, inevitably leading to sadness and ill-feeling.
+When that happens, please <a href="http://datacommons.find.coop/contact">contact us</a>!
+We're a helpful bunch, when not hiding behind a computer.
+
+</div>
+<% end %>
+
+<ul>
+<% if content_run %>
+<%= render :partial => "help_main", :locals => { :content_run => false } %>
+<% end %>
+</ul>
+
+<%= faq("uptodate","How up-to-date is the information I find in this directory?",content_run) %>
+
+<% if content_run %>
+<div>
+
+The directory is curated by small teams of moderators from various
+member organizations of the Data Commons Co-op.  At the start of any
+listing, you should see a note about when it was last updated.
+Anything older than a year or two is not likely to be accurate.  Each
+listing will also give all editors of that listing.  Listings with
+editors are more likely to be accurate.
+
+</div>
+<% end %>
+
+<%= faq("dontlike","I found an organization I don\'t like in your directory.  Why is it there?",content_run) %>
+
+<% if content_run %>
+<div>
+
+If the listing for that organization says it is in the &ldquo;data pool&rdquo;
+of such-and-such, that shows which of our co-op members approve it.
+If there is no language like that, then nobody is very attached to 
+it, it just wafted in on the breeze.  You could tag it as evil (or
+some more polite keyword) to warn others, or
+<a href="http://datacommons.find.coop/contact">report it</a>,
+or <%= faq_link 'delete it', 'defunct' %> (this should be a last resort, since negative knowledge
+about an organization is valuable).
+We're working on better communicating the quality of individual listings.
+
+</div>
+<% end %>
+
+<%= faq("add","Can I add a missing organization?",content_run) %>
+
+<% if content_run %>
+<div>
+
+Absolutely! Just follow the 
+<%= link_to '+ Add Organization', new_organization_path %> link.  
+For the purposes of accountability, you'll need to create an account
+and give an email address.  You'll be able to change details of 
+your listing later, and monitor changes made to it be anyone else.
+Additions are subject to verification and reversion by editors
+and moderators.
+</div>
+<% end %>
+
+
+<%= faq("login","How do I log in, or sign on, or whatever you call it?",content_run) %>
+
+<% if content_run %>
+<div>
+
+There should be a &ldquo;Login&rdquo; link at the top right of every page,
+leading to the <%= link_to "login page", :controller=>"users", :action=>"login" %>.  If you forget the password for an existing acount, click the &ldquo;Forgot Password&rdquo; button on this page.
+
+</div>
+<% end %>
+
+
+<%= faq("edit","I found a mistake in a listing.  Can I fix it myself?",content_run) %>
+
+<% if content_run %>
+<div>
+
+Absolutely!  Just click the &ldquo;Edit&rdquo; link at the end of every
+listing.  Changes are subject to verification and reversion by editors
+and moderators.
+
+</div>
+<% end %>
+
+<%= faq("dups","I found some near-duplicate listings. Can I merge them?",content_run) %>
+
+<% if content_run %>
+<div>
+
+Absolutely!  Do a search that includes the duplicates.
+Then click the &ldquo;Merge Entries&rdquo; link.  You should
+now see a new &ldquo;Set as main version&rdquo; link beneath
+each search result.  Click this link for the best of the
+near-duplicates.  Then click &ldquo;Merge&rdquo; for one other version,
+and follow the guidance on merging any useful bits and pieces from it.
+Or just <a href="http://datacommons.find.coop/contact">send us a note</a> 
+and we'll do it.
+
+</div>
+<% end %>
+
+<%= faq("defunct","I found a defunct organization. Should I delete it?",content_run) %>
+
+<% if content_run %>
+<div>
+
+You may, but we would prefer that you tag it as
+&ldquo;Inactive&rdquo;.  That way people looking to contact 
+this organization will positively know it is defunct, rather than simply
+not finding any information about it.  If you decide to delete
+a listing, this is done by clicking the &ldquo;Delete&rdquo; link
+at the bottom of every listing.
+
+</div>
+<% end %>
+
+
+<%= faq("database","Can I get access to the database that runs this directory?",content_run) %>
+
+<% if content_run %>
+<div>
+
+Access to the database is currently limited to members of the Data
+Commons Cooperative.  We encourage you to <a
+href="http://datacommons.find.coop/join">apply for membership</a> to
+get complete access (including the full database, plus full database
+history since DCC incorporation, plus contributed data in source
+format from members, plus continuous updates for the duration of your
+membership).  
+We are working to migrate as much data as possible to an
+ODBL open-data license, for public release, but we don't yet have all
+our ducks in a row on this.  In the meantime, there are several export
+options for saving information from searches (XML, CSV).  New and
+updated listings can be monitored with an <%= link_to 'RSS feed',
+feed_path %>.  Parts of the database are drawn from sources maintained
+by members of the Co-op. Those members are free to provide the data to
+you under different terms than they provide it to the Co-op.
+
+</div>
+<% end %>
+
+<%= faq("software","Can I use the software runs this directory?",content_run) %>
+
+<% if content_run %>
+<div>
+Be our guest!  The Data Commons Directory software is
+available under a free license at 
+<%= link_to 'datacommons.launchpad.net', "http://datacommons.launchpad.net/" %>.
+We'd appreciate if you share improvements you make to the software.
+If you need to integrate the directory with an existing website,
+and don't have a team in place to do it,
+we may be able to put you in touch with a co-op familiar with 
+the software that is available to do 
+the work - 
+<a href="http://datacommons.find.coop/contact">contact us</a> (or 
+check the fine print at the bottom of any page for leads).
+</div>
+<% end %>
+
+<%= faq("funding","How is all this work paid for?",content_run) %>
+
+<% if content_run %>
+<div>
+
+Love.  It is the one thing we have plenty of.  Also, as of July 2012,
+membership fees of the Data commons Cooperative.  Along the way, we've
+had wonderful help from funders and volunteers, check the acknowledgments
+at the bottom of this page, and the list on our
+<a href="http://datacommons.find.coop/donate">donation page</a>.
+
+</div>
+<% end %>
+
+
+
+
+<%= faq("moderator","How do I become a moderator?",content_run) %>
+
+<% if content_run %>
+<div>
+
+Individuals who are listed as editors for several listings and have 
+proven to be responsible may become a moderator.  Members of the
+Data Commons Cooperative can also nominate moderators.
+
+</div>
+<% end %>
+
+
+
+
+<%= faq("moderator_do","Ok, I\'m a moderator. What can I actually do?",content_run) %>
+
+<% if content_run %>
+<div>
+
+When you log on, you should see a little box in the top left that says
+&ldquo;Data Sharing (show/hide)&rdquo;.  If you don't see that little
+box, then you are not recognized as a moderator.  The box will list
+all the &ldquo;teams&rdquo; you are a moderator for.  If you click on
+the name of a team, you'll see some of the powers you have.  f you
+click on &ldquo;Member editors&rdquo; you can add/remove other users
+to have moderator powers for that team.  Be careful, if you remove
+yourself, you'll need to ask another moderator to put you back.
+
+Another place where you have new powers is on individual listing
+pages.  There, you'll be given the option to add or remove
+an association between your team (or teams) and individual listings.
+
+</div>
+<% end %>
+
+
+
+<%= faq("moderator_recent","How can I see a list of recent changes?",content_run) %>
+
+<% if content_run %>
+<div>
+
+Click the <%= link_to 'Recent Changes', recent_path %> link on the menu bar.
+If you have filters active, only recent changes that pass those filters
+will be shown.  If you don't want this, remove the filters and click
+<%= link_to 'Recent Changes', recent_path %> again.
+Note that at the time of writing, not all possible changes to a listing
+result in it floating to the top of this recent changes list (if you
+need a complete report before we fix this, an administrator can produce it for you).
+
+</div>
+<% end %>
