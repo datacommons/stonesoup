@@ -43,6 +43,7 @@ Event.observe(window, 'load', function() {
 <%= render :partial => 'search/post_search_form', :locals => { :this_is_the_header => true } %>
 <div id="front-bar">
 <div class="button-right flip-color"><%= link_to '<b>+</b> Add Organization', :controller => 'organizations', :action => 'new' %></div>
+<div class="button-right"><%= link_to 'Help!', help_path %></div>
 <div class="button-right"><%= link_to 'Recent Changes', recent_path %></div>
 <%- @site.menu.each do |button| -%><div class="button"><a href="<%= button[:link] %>"><%= button[:name] %></a></div><%- end -%>
 </div>
