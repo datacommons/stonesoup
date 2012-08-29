@@ -1148,16 +1148,41 @@ Mapstraction.prototype.addMarker = function(marker,old) {
       this.layers['markers'].addMarker(olmarker);
       if (! old) { this.markers.push(marker); }
 
-      var markerClick = function (evt) {
-          popup = this.createPopup(true);
+      var markerClick = function (obj) {
+          popup = obj.createPopup(true);
+	  popup.panMapIfOutOfView = false;
           map.addPopup(popup,true);
           popup.show();
-          currentPopup = this.popup;
-          OpenLayers.Event.stop(evt);
+          currentPopup = obj.popup;
       };
-      //olmarker.events.register("mousedown", olmarker.feat, markerClick);
-      olmarker.events.register("mouseover", olmarker.feat, markerClick);
-      //olmarker.events.register("mouseout", olmarker.feat, markerClick);
+      var markerClickWrap = function (evt) {
+	  if (typeof map.keep_marker == "undefined") map.keep_marker = false;
+	  if (!map.keep_marker) {
+            var base = this;
+	    map.show_marker = setTimeout(function() { markerClick(base); }, 250);
+	  }
+      }
+      var markerClickDirect = function (evt) {
+	  markerClick(this);
+          OpenLayers.Event.stop(evt);
+      }
+      var markerClickKeep = function (evt) {
+	  markerClick(this);
+	  map.keep_marker = true;
+          OpenLayers.Event.stop(evt);
+      }
+      var markerClickRemove = function (evt) {
+	  if (typeof map.keep_marker == "undefined") map.keep_marker = false;
+	  if (!map.keep_marker) {
+	      if (typeof popup != "undefined") {
+		  popup.hide();
+	      }
+	      clearTimeout(map.show_marker);
+	  }
+      }
+      olmarker.events.register("mousedown", olmarker.feat, markerClickKeep);
+      olmarker.events.register("mouseover", olmarker.feat, markerClickWrap);
+      olmarker.events.register("mouseout", olmarker.feat, markerClickRemove);
 
       break;
     case 'multimap':

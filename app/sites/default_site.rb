@@ -23,12 +23,12 @@ class DefaultSite < Site
        :link => "http://datacommons.find.coop/about"
      },
      {
-       :name => "Contact",
-       :link => "http://datacommons.find.coop/contact"
+       :name => "Join",
+       :link => "http://datacommons.find.coop/join"
      },
      {
-       :name => "Donate",
-       :link => "http://datacommons.find.coop/donate"
+       :name => "Contact",
+       :link => "http://datacommons.find.coop/contact"
      },
     ]
   end
