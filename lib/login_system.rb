@@ -85,12 +85,16 @@ module LoginSystem
   # the default action is to redirect to the login screen
   # example use :
   # a popup window might just close itself for instance
-  def access_denied(msg = "Access to that function is restricted.")
-    logger.debug("# access is denied: #{msg}")
-    flash[:error] = msg
+  def access_denied(msg = nil)
     unless session[:user]
+      msg = "Please log in or sign up first."
+      logger.debug("# access is denied: #{msg}")
+      flash[:error] = msg
       redirect_to :controller=>"users", :action =>"login" # redirect to login form if not logged in yet
     else
+      msg = "Access to that function is restricted."
+      logger.debug("# access is denied: #{msg}")
+      flash[:error] = msg
       redirect_to :controller=>"search"
     end
   end
