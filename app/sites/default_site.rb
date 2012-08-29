@@ -24,7 +24,7 @@ class DefaultSite < Site
      },
      {
        :name => "Join",
-       :link => "http://datacommons.find.coop/join"
+       :link => "http://datacommons.find.coop/content/member-packet"
      },
      {
        :name => "Contact",
