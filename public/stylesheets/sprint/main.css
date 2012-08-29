@@ -595,6 +595,10 @@ div.menu-container {
         vertical-align: top;
 }
 
+a { 
+    text-decoration: none;
+}
+
 .listing a { 
     text-decoration: none;
 }
@@ -1152,4 +1156,13 @@ body.page-users-prefs .listing {
 #q.sprint_debug { 
   border: 5px solid red;
   background: red;
+}
+
+.recipe { 
+display: float; 
+float: right; 
+width: 35%; 
+padding-left: 30px; 
+font-size: 80%; 
+position: relative;
 }
