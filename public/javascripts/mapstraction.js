@@ -1156,21 +1156,31 @@ Mapstraction.prototype.addMarker = function(marker,old) {
           currentPopup = obj.popup;
       };
       var markerClickWrap = function (evt) {
-          var base = this;
-	  base.show_marker = setTimeout(function() { markerClick(base); }, 250);
-          OpenLayers.Event.stop(evt);
+	  if (typeof map.keep_marker == "undefined") map.keep_marker = false;
+	  if (!map.keep_marker) {
+            var base = this;
+	    map.show_marker = setTimeout(function() { markerClick(base); }, 250);
+	  }
       }
       var markerClickDirect = function (evt) {
 	  markerClick(this);
           OpenLayers.Event.stop(evt);
       }
-      var markerClickRemove = function (evt) {
-	  if (typeof popup != "undef") {
-	      popup.hide();
-	  }
-	  clearTimeout(this.show_marker);
+      var markerClickKeep = function (evt) {
+	  markerClick(this);
+	  map.keep_marker = true;
+          OpenLayers.Event.stop(evt);
       }
-      //olmarker.events.register("mousedown", olmarker.feat, markerClickDirect);
+      var markerClickRemove = function (evt) {
+	  if (typeof map.keep_marker == "undefined") map.keep_marker = false;
+	  if (!map.keep_marker) {
+	      if (typeof popup != "undefined") {
+		  popup.hide();
+	      }
+	      clearTimeout(map.show_marker);
+	  }
+      }
+      olmarker.events.register("mousedown", olmarker.feat, markerClickKeep);
       olmarker.events.register("mouseover", olmarker.feat, markerClickWrap);
       olmarker.events.register("mouseout", olmarker.feat, markerClickRemove);
 
