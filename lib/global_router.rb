@@ -41,7 +41,9 @@ module RoutingFilter
       args << params
 
       yield.tap do |result|
-        prepend_segment!(result, locale) if prepend_locale?(locale)
+        if locale.to_s != "en"
+          prepend_segment!(result, locale) if prepend_locale?(locale)
+        end
       end
     end
 
@@ -59,21 +61,4 @@ module RoutingFilter
         locale && (self.class.include_default_locale? || !default_locale?(locale))
       end
   end
-
-    # DB_SEGMENT = %r(^/(en|es|fr)(/)?)
-    
-    # def around_recognize(path, env, &block)
-    #   db = extract_segment!(DB_SEGMENT, path)
-    #   yield.tap do |params|
-    #     params[:db] = db if db
-    #   end
-    # end
-
-    # def around_generate(*args, &block)
-    #   params = args.extract_options! 
-    #   db = params.delete(:db)
-    #   yield.tap do |result|
-    #     prepend_segment!(result, "#{db}") if db
-    #   end
-    # end
 end
