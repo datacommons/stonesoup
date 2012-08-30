@@ -9,13 +9,18 @@ class ApplicationController < ActionController::Base
 
   helper ApplicationHelper
 
-  before_filter :login_from_cookie, :set_current_user_on_model, :set_custom_filters, :check_for_map
+  before_filter :set_locale, :login_from_cookie, :set_current_user_on_model, :set_custom_filters, :check_for_map
   
   layout :custom_layout
   
-private
-
 protected
+
+before_filter :set_locale 
+  def set_locale 
+    # if params[:locale] is nil then I18n.default_locale will be used 
+    I18n.locale = params[:locale]
+    logger.debug("locale is #{I18n.locale}")
+  end
 
   def check_for_map
     @map_style = false
@@ -306,5 +311,9 @@ public
 
   def rescue_db(exception)
     render :template => "errors/db"
+  end
+
+  def default_url_options(*args) 
+    {:locale => params[:locale]}
   end
 end
