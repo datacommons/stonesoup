@@ -10,7 +10,7 @@
 
                 <div id="see_advanced_wrap" class="nohover">
 		<%- if @site.search_bar_in_header %>
-                  <%= link_to_remote( 'Advanced Search',{:url => {:controller => 'search', :action => 'change_filter'},:update => 'search_filters',:before => "Element.toggle('search_filters'); Element.toggle('search_tips');"}, {:id=>'see_advanced'}) %>
+                  <%= link_to_remote( t(:advanced_search),{:url => {:controller => 'search', :action => 'change_filter'},:update => 'search_filters',:before => "Element.toggle('search_filters'); Element.toggle('search_tips');"}, {:id=>'see_advanced'}) %>
                 <%- else -%>
 		  <%= link_to_function('Options...', "Element.show('advanced_search'); Element.hide('basic_search')", :id=>'see_advanced') %>
                 <%- end -%>

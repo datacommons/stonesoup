@@ -6,7 +6,7 @@
 	<% form_tag( {:controller => 'search', :action => 'search'}, :id => 'search_form', :name => 'search_form', :method => 'get' ) do %>
 		<div><label id="search_label" for="q">Search the directory:</label>
 		<%- if @site.search_bar_in_header %>
-		  <%= text_field_tag 'q', @query, :size => 30, :placeholder=>'Search...', :autocomplete => "off" %><%= image_submit_tag "/images/spacer.gif", :id => "see_list" %>
+		  <%= text_field_tag 'q', @query, :size => 30, :placeholder=>"#{t :search}...", :autocomplete => "off" %><%= image_submit_tag "/images/spacer.gif", :id => "see_list" %>
 		  <ul id="qq" class="autocomplete_box">
 		  </ul>
                 <%- else -%>
