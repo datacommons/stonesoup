@@ -1,0 +1,11 @@
+default:
+  help: Help!
+  recent_changes: Recent changes
+  join: Join
+  about: About
+  contact: Contact
+  add_organization: Add an organization
+  search: Search
+  advanced_search: Advanced search
+  go: Go
+  hide: Hide
