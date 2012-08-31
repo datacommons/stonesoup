@@ -90,8 +90,22 @@ class Location < ActiveRecord::Base
     'WA' => 'Washington',
     'WV' => 'West Virginia',
     'WI' => 'Wisconsin',
-    'WY' => 'Wyoming'
-  }  
+    'WY' => 'Wyoming',
+
+    'AB' => 'Alberta',
+    'BC' => 'British Columbia',
+    'MB' => 'Manitoba',
+    'NB' => 'New Brunswick',
+    'NL' => 'Newfoundland and Labrador',
+    'NT' => 'Northwest Territories',
+    'NS' => 'Nova Scotia',
+    'NU' => 'Nunavut',
+    'ON' => 'Ontario',
+    'PE' => 'Prince Edward Island',
+    'QC' => 'Quebec',
+    'SK' => 'Saskatchewan',
+    'YT' => 'Yukon'
+  }
 
   def Location.unique_counties(state)
     pcs = Location.find(:all, :select => 'DISTINCT physical_county AS county', :conditions => ['physical_state = ?', state]).collect{|loc| loc.county}
