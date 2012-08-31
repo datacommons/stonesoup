@@ -106,6 +106,10 @@ class Site
     ]
   end
 
+  def should_redirect
+    false
+  end
+
   def self.scan
     get_subclasses.each do |c|
       s = c.new

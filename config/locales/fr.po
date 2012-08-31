@@ -1,0 +1,54 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\n"
+"X-Language: fr\n"
+
+#, ok
+msgctxt "about"
+msgid "About"
+msgstr "Qui sommes-nous?"
+
+#, ok
+msgctxt "add_organization"
+msgid "Add an organization"
+msgstr "Ajoute une organisation"
+
+#, ok
+msgctxt "advanced_search"
+msgid "Advanced search"
+msgstr "Recherche avancée"
+
+#, ok
+msgctxt "contact"
+msgid "Contact"
+msgstr "Contact"
+
+#, ok
+msgctxt "go"
+msgid "Go"
+msgstr "Va"
+
+#, ok
+msgctxt "help"
+msgid "Help!"
+msgstr "A l'aide!"
+
+#, ok
+msgctxt "hide"
+msgid "Hide"
+msgstr "Supprime"
+
+#, ok
+msgctxt "join"
+msgid "Join"
+msgstr "Rejoins nous"
+
+#, ok
+msgctxt "recent_changes"
+msgid "Recent changes"
+msgstr "Changements récents"
+
+#, ok
+msgctxt "search"
+msgid "Search"
+msgstr "Rechercher"

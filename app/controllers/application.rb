@@ -57,6 +57,10 @@ before_filter :set_locale
 public
   def set_custom_filters
     @site = get_site
+    if @site.should_redirect
+      redirect_to "http://find.coop", :status => :moved_permanently
+      return
+    end
     session[:state_filter] = @site.state_filter
     session[:city_filter] = @site.city_filter
     session[:zip_filter] = @site.zip_filter
