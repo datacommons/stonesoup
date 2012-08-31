@@ -1,42 +1,11 @@
---- 
-en: 
-  about: 
-    default: About
-    flag: ok
-    translation: About
-  add_organization: 
-    default: "Add an organization"
-    flag: ok
-    translation: "Add an organization"
-  advanced_search: 
-    default: "Advanced search"
-    flag: ok
-    translation: "Advanced search"
-  contact: 
-    default: Contact
-    flag: ok
-    translation: Contact
-  go: 
-    default: Go
-    flag: ok
-    translation: Go
-  help: 
-    default: Help!
-    flag: ok
-    translation: Help!
-  hide: 
-    default: Hide
-    flag: ok
-    translation: Hide
-  join: 
-    default: Join
-    flag: ok
-    translation: Join
-  recent_changes: 
-    default: "Recent changes"
-    flag: ok
-    translation: "Recent changes"
-  search: 
-    default: Search
-    flag: ok
-    translation: Search
+en:
+  help: Help!
+  recent_changes: Recent changes
+  join: Join
+  about: About
+  contact: Contact
+  add_organization: Add an organization
+  search: Search
+  advanced_search: Advanced search
+  go: Go
+  hide: Hide

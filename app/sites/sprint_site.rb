@@ -32,4 +32,8 @@ class SprintSite < Site
      },
     ]
   end
+
+  def should_redirect
+    true
+  end
 end

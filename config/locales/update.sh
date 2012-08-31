@@ -23,7 +23,9 @@ ln -s ../config/locales locale || exit 1
 # from https://github.com/pejuko/i18n-translators-tools
 i18n-translate merge || exit 1
 
-i18n-translate convert -f po -t yml || exit 1
+# i18n-translate convert -f po -t rb || exit 1
+itranslate convert -f po -t yml || exit 1
+
 cp locale/en.po locale/findcoop.pot || exit 1
 
 cd $base || exit 1
