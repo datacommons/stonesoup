@@ -52,21 +52,27 @@ function filter_apply_change(e,name) {
     if (e.added) {
 	var a = e.added.details;
 	var lnk = new Object();
-	var item = "/search/change_filter?act=select";
+	var item = "/search/change_filter";
+        var params = {};
+	params["act"] = "select";
 	if (typeof a.pid == "object") {
-	    for (var p in a.pid) { item = item + "&" + p + "_filter="; item = item + escape(a.pid[p]); };
+	    for (var p in a.pid) { 
+		params[p+"_filter"] = a.pid[p];
+	    }
 	} else {
-	    item = item + "&" + a.type + "_filter=" + escape(a.name);
+	    params[a.type + "_filter"] = a.name;
 	}
 	lnk["ac_label"] = a.label;
 	lnk["ac_link"] = item;
 	lnk["ac_cat"] = a.cat;
-	new Ajax.Updater('search_filters', item, {asynchronous:true, evalScripts:true});
+	new Ajax.Updater('search_filters', item, {parameters: params, asynchronous:true, evalScripts:true});
     }
     if (e.removed) {
 	var a = e.removed.text;
-	var ac_link = "/search/change_filter?act=remove&" + name + "=" + escape(a);
-	new Ajax.Updater('search_filters', ac_link, {asynchronous:true, evalScripts:true}); 
+	var ac_link = "/search/change_filter";
+	var params = {act: 'remove'};
+	params[name] = a;
+	new Ajax.Updater('search_filters', ac_link, {parameters: params, asynchronous:true, evalScripts:true}); 
     }
     return false;
 }
