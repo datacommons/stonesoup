@@ -19,7 +19,6 @@ before_filter :set_locale
   def set_locale 
     # if params[:locale] is nil then I18n.default_locale will be used 
     I18n.locale = params[:locale]
-    logger.debug("locale is #{I18n.locale}")
   end
 
   def check_for_map
@@ -69,7 +68,7 @@ public
     get_filters # session[:filter_active]
     
     Email.website_hostname = @site.canonical_name
-    logger.debug("Set Email.website_hostname to: #{Email.website_hostname.inspect}")
+    # logger.debug("Set Email.website_hostname to: #{Email.website_hostname.inspect}")
   end
 
   def get_filters
