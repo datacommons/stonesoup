@@ -359,6 +359,8 @@ public
     locations = []
     areas = []
 
+    state_first = false
+
     if name.length>=1
       joinSQL, condSQLs, condParams = Organization.all_join(session)
       joinSQL = nil if condSQLs.empty?
@@ -438,17 +440,28 @@ public
       condSQLs = condSQLs + locCondSQLs
       condParams = condParams + locCondParams
       joinSQL = nil if condSQLs.empty?
-      condSQLs << "locations.physical_city LIKE ? OR locations.physical_state LIKE ? OR locations.physical_country LIKE ? OR locations.physical_zip LIKE ?"
-      condParams << value
-      condParams << value
-      condParams << value
-      condParams << value
+      alt = Location::STATE_SHORT[name.upcase]
+      if alt.nil?
+        condSQLs << "locations.physical_city LIKE ? OR locations.physical_state LIKE ? OR locations.physical_country LIKE ? OR locations.physical_zip LIKE ?"
+        condParams << value
+        condParams << value
+        condParams << value
+        condParams << value
+      else
+        condSQLs << "locations.physical_state = ?"
+        condParams << alt
+      end
       conditions = []
       conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
       area_locations = Location.find(:all, :conditions => conditions, 
                                      :joins => joinSQL,
                                      :limit => limit)
       areas = area_locations.map{|x| areaize(x,name)}.compact.uniq
+      unless alt.nil?
+        if areas.length>0
+          state_first = true
+        end
+      end
     end
 
     groups = [tags, areas, organizations, people, locations]
@@ -471,7 +484,9 @@ public
     end
 
     if groups.flatten.length>global_limit
-      while groups.flatten.length>global_limit
+      curr_len = groups.flatten.length
+      last_len = -1
+      while curr_len>global_limit and curr_len!=last_len
         groups.each_with_index do |result_set,idx|
           if idx==0
             if result_set.length<global_limit*0.5
@@ -481,9 +496,13 @@ public
           result_set.slice!((result_set.length*0.8).floor,result_set.length)
         end
         groups = [tags, areas, organizations, people, locations]
+        last_len = curr_len
+        curr_len = groups.flatten.length
       end
     end
-    render_auto_complete(groups,search)
+    opts = {}
+    opts[:state_first] = true if state_first
+    render_auto_complete(groups,search,opts)
   end
   
 protected
@@ -530,7 +549,9 @@ protected
     return nil unless val
     val.strip!
     return nil if val == ""
-    return nil unless val.downcase.include? txt
+    if field != "physical_state"
+      return nil unless val.downcase.include? txt
+    end
     if field == "physical_city"
       return SearchItem.new(loc.physical_city,"City",{:city => loc.physical_city, :state => loc.physical_state, :country => loc.physical_country}) 
     elsif field == "physical_zip"
@@ -554,6 +575,7 @@ protected
     should_sort = opts[:should_sort] unless opts[:should_sort].nil?
     should_root = opts[:should_root] unless opts[:should_root].nil?
     negated = opts[:negated] || false
+    state_first = opts[:state_first]
     results = []
     groups.each do |result_set|
       result_set.each do |h|
@@ -563,6 +585,9 @@ protected
           is_tag = true
           target = h.effective_root
           target = h if target.nil?
+        end
+        if state_first
+          is_tag = (target.respond_to? "family") ? target.family == "State" : false
         end
         next if target.kind_of? TagContext
         next if target.kind_of? TagWorld
@@ -594,6 +619,7 @@ protected
         results << { :fallback => search, :name => "#{search}; #{matches}", :pid => { params[:base].sub(/_filter/,'') => search } }
       end
     end
+    logger.debug("Result #{results.to_json}")
     render :json => results.to_json
   end
 
@@ -613,8 +639,17 @@ protected
       condSQLs = condSQLs + locCondSQLs
       condParams = condParams + locCondParams
       joinSQL = nil if condSQLs.empty?
-      condSQLs << "locations.#{key} LIKE ?"
-      condParams << value
+      alt = nil
+      alt = Location::STATE_SHORT[name.upcase] if key == "physical_state"
+      if alt.nil?
+        condSQLs << "locations.#{key} LIKE ?"
+        condParams << value
+      else
+        condSQLs << "(locations.#{key} LIKE ?) OR (locations.#{key} = ?)"
+        condParams << value
+        condParams << alt
+      end
+      logger.debug("Working on #{key} / #{value} / #{name} / #{alt} / #{search}")
       sql = 'DISTINCT locations.physical_country'
       condSQLs << "locations.physical_country IS NOT NULL AND locations.physical_country <> ''"
       unless key == "physical_country"
