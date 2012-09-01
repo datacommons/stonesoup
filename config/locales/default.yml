@@ -20,3 +20,5 @@ default:
   confirm_password: Confirm password
   forgot_password: Forgot password
   signup: Sign up
+  a_directory: A directory of the cooperative economy
+  collaborative_directory: Collaborative Directory

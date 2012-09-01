@@ -2,9 +2,9 @@
 <% hide_examples = false if hide_examples.nil? %>
 <div id="search_tips"<%- if @filter_override -%> style="display: none;"<%- end -%>><div class="header_material">
   <%- unless @site.use_logo -%>
-  <div class='subtitle nohover'><a href='/'>A directory of the cooperative economy</a></div>
+  <div class='subtitle nohover'><a href='/'><%= t(:a_directory, :default => "A directory of the cooperative economy") %></a></div>
   <%- else -%>
-  <div class='subtitle nohover'><a href='/'>Collaborative Directory</a></div>
+  <div class='subtitle nohover'><a href='/'><%= t(:collaborative_directory, :default => "Collaborative Directory") %></a></div>
   <%- end -%>
 
 

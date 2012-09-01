@@ -5,7 +5,7 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.3.5'
+RAILS_GEM_VERSION = '2.3.9'
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
@@ -54,6 +54,8 @@ Rails::Initializer.run do |config|
 
   config.load_paths << "#{RAILS_ROOT}/app/reports"
   config.load_paths << "#{RAILS_ROOT}/app/sites"
+
+  config.i18n.load_path += Dir[Rails.root.join('config', 'locales','**', '*.{rb,yml}')]
 end
 
 # Add new inflection rules using the following format 
