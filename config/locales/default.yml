@@ -9,3 +9,14 @@ default:
   advanced_search: Advanced search
   go: Go
   hide: Hide
+  login: Login
+  report_problem: Report problem
+  login_message: This directory is open and editable by anyone. However, we require that editors log in before adding or updating entries to help with accountability.
+  login_option: Already have an account?
+  signup_option: Sign up. It's easy!
+  email_address: E-mail address
+  password: Password
+  choose_password: Choose password
+  confirm_password: Confirm password
+  forgot_password: Forgot password
+  signup: Sign up

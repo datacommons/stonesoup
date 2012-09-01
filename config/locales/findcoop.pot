@@ -18,10 +18,30 @@ msgctxt "advanced_search"
 msgid "Advanced search"
 msgstr "Advanced search"
 
+#, fuzzy, untranslated
+msgctxt "choose_password"
+msgid "Choose password"
+msgstr ""
+
+#, fuzzy, untranslated
+msgctxt "confirm_password"
+msgid "Confirm password"
+msgstr ""
+
 #, ok
 msgctxt "contact"
 msgid "Contact"
 msgstr "Contact"
+
+#, fuzzy, untranslated
+msgctxt "email_address"
+msgid "E-mail address"
+msgstr ""
+
+#, fuzzy, untranslated
+msgctxt "forgot_password"
+msgid "Forgot password"
+msgstr ""
 
 #, ok
 msgctxt "go"
@@ -43,12 +63,47 @@ msgctxt "join"
 msgid "Join"
 msgstr "Join"
 
+#, fuzzy, untranslated
+msgctxt "login"
+msgid "Login"
+msgstr ""
+
+#, fuzzy, untranslated
+msgctxt "login_message"
+msgid "This directory is open and editable by anyone. However, we require that editors log in before adding or updating entries to help with accountability."
+msgstr ""
+
+#, fuzzy, untranslated
+msgctxt "login_option"
+msgid "Already have an account?"
+msgstr ""
+
+#, fuzzy, untranslated
+msgctxt "password"
+msgid "Password"
+msgstr ""
+
 #, ok
 msgctxt "recent_changes"
 msgid "Recent changes"
 msgstr "Recent changes"
 
+#, fuzzy, untranslated
+msgctxt "report_problem"
+msgid "Report problem"
+msgstr ""
+
 #, ok
 msgctxt "search"
 msgid "Search"
 msgstr "Search"
+
+#, fuzzy, untranslated
+msgctxt "signup"
+msgid "Sign up"
+msgstr ""
+
+#, fuzzy, untranslated
+msgctxt "signup_option"
+msgid "Sign up. It's easy!"
+msgstr ""
