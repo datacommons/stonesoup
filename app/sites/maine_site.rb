@@ -1,7 +1,7 @@
 class MaineSite < Site
 
   def site_searches
-    ['food','local sprouts','zip:04412','*']
+    ['Belfast food','local sprouts','fisher*']
   end
 
   def aliases
