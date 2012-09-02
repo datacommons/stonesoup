@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-30 20:21+0000\n"
-"PO-Revision-Date: 2012-08-30 20:24+0000\n"
+"POT-Creation-Date: 2012-09-01 19:01+0000\n"
+"PO-Revision-Date: 2012-09-01 19:35+0000\n"
 "Last-Translator: Paul Fitzpatrick <paulfitz@alum.mit.edu>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-09-01 04:56+0000\n"
+"X-Launchpad-Export-Date: 2012-09-02 04:39+0000\n"
 "X-Generator: Launchpad (build 15890)\n"
 "X-Language: es\n"
 
@@ -28,10 +28,30 @@ msgctxt "advanced_search"
 msgid "Advanced search"
 msgstr "Avanzada"
 
+#, untranslated
+msgctxt "choose_password"
+msgid "Choose password"
+msgstr "Elegir contraseña"
+
+#, untranslated
+msgctxt "confirm_password"
+msgid "Confirm password"
+msgstr "Confirmar contraseña"
+
 #, ok
 msgctxt "contact"
 msgid "Contact"
 msgstr "Contacto"
+
+#, untranslated
+msgctxt "email_address"
+msgid "E-mail address"
+msgstr "Dirección de correo electrónico"
+
+#, untranslated
+msgctxt "forgot_password"
+msgid "Forgot password"
+msgstr "Contraseña olvidada"
 
 #, ok
 msgctxt "go"
@@ -53,12 +73,49 @@ msgctxt "join"
 msgid "Join"
 msgstr "Únete"
 
+#, untranslated
+msgctxt "login"
+msgid "Login"
+msgstr "Iniciar sesión"
+
+#, untranslated
+msgctxt "login_message"
+msgid ""
+"This directory is open and editable by anyone. However, we require that "
+"editors log in before adding or updating entries to help with accountability."
+msgstr ""
+
+#, untranslated
+msgctxt "login_option"
+msgid "Already have an account?"
+msgstr "¿Ya tienes una cuenta?"
+
+#, untranslated
+msgctxt "password"
+msgid "Password"
+msgstr "Contraseña"
+
 #, ok
 msgctxt "recent_changes"
 msgid "Recent changes"
 msgstr "Cambios recientes"
 
+#, untranslated
+msgctxt "report_problem"
+msgid "Report problem"
+msgstr "Informar de un problema"
+
 #, ok
 msgctxt "search"
 msgid "Search"
 msgstr "Buscar"
+
+#, untranslated
+msgctxt "signup"
+msgid "Sign up"
+msgstr "Registrarse"
+
+#, untranslated
+msgctxt "signup_option"
+msgid "Sign up. It's easy!"
+msgstr ""
