@@ -26,7 +26,7 @@ Rails::Initializer.run do |config|
   # Your secret key for verifying cookie session data integrity.
   # If you change this key, all old sessions will become invalid!
   config.action_controller.session = {
-    :session_key => '_dcp_session',
+    :key => '_dcp_session',
     :secret      => '2f545e9d2a7d6df0b893695b2b2f34bb9'
   }
 
@@ -52,8 +52,8 @@ Rails::Initializer.run do |config|
   require "geokit" 
   # config.gem "geokit"
 
-  config.load_paths << "#{RAILS_ROOT}/app/reports"
-  config.load_paths << "#{RAILS_ROOT}/app/sites"
+  config.autoload_paths << "#{RAILS_ROOT}/app/reports"
+  config.autoload_paths << "#{RAILS_ROOT}/app/sites"
 
   config.i18n.load_path += Dir[Rails.root.join('config', 'locales','**', '*.{rb,yml}')]
 end
