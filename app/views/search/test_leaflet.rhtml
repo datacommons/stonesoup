@@ -1,0 +1,33 @@
+
+leaflet!
+
+<div id="the_map"></div>
+
+<script>
+var map = L.map('the_map').setView([51.505, -0.09], 13);
+
+// http://{s}.tile.cloudmade.com/29b0e9f725d7494cab38fc3e61fa4d4e/997/256/{z}/{x}/{y}.png
+
+var mapquest = 'http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png';
+var subdomains = ['otile1','otile2','otile3','otile4'];
+var attrib = '<a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> data, <a href="http://www.mapquest.com/" target="_blank">MapQuest-OSM</a> tiles.';
+L.tileLayer(mapquest, {
+    attribution: attrib,
+    subdomains: subdomains,
+    maxZoom: 18
+}).addTo(map);
+map.attributionControl.setPrefix('<a href="http://leaflet.cloudmade.com/">Leaflet</a>');
+
+var marker = L.marker([51.5, -0.09]).addTo(map);
+marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
+
+var markers = new L.MarkerClusterGroup();
+markers.addLayer(marker);
+
+var marker2 = L.marker([51.6, -0.09]).addTo(map);
+marker2.bindPopup("<b>Hello world! 2</b><br>I am a popup.").openPopup();
+markers.addLayer(marker2);
+
+map.addLayer(markers);
+
+</script>

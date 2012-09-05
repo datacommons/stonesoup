@@ -35,43 +35,9 @@
 <%- end -%>
 
 <% unless @organization.locations.length == 0 %>
-  <%
-  map = Mapstraction.new("the_map",current_map_type)
-  map.control_init(:small => true)
-  if @organization.locations.length >= 1
-    pt = nil
-    @organization.locations.each do |loc| 
-      pt = make_pointer(loc)
-      if not(pt.nil?)
-        map.marker_init(Marker.new(pt, :info_bubble => show_link(loc), :icon => "http://maps.google.com/mapfiles/marker.png"))
-      end
-    end
-    if @organization.locations.length > 1
-      sorted_latitudes = @organization.locations.collect(&:latitude).compact.sort
-      sorted_longitudes = @organization.locations.collect(&:longitude).compact.sort
-      x1 = sorted_latitudes.first
-      y1 = sorted_longitudes.first
-      x2 = sorted_latitudes.last
-      y2 = sorted_longitudes.last
-      unless x1.nil?
-        dx = (x2-x1)/10
-        dy = (y2-y1)/10
-        map.center_zoom_on_bounds_init([
-          [x1-dx,y1-dy], 
-          [x2+dx,y2+dy]])
-      end
-    else 
-      map.center_zoom_init(pt,11) unless pt.nil?
-    end
-  end
-  %>
-  <%= map.to_html %>
 
   <div id="surround_map">
-  <%= map.div() %>
-  <div class="clearboth">
-  </div>
-  <%= render :partial => "layouts/map_choice" %>
+  <%= render :partial => "search/map_core_leaflet", :locals => { :map_id => "the_map", :map_class => nil, :orgs => @organization.locations } %>
   <div class="map_offer">
   Meet the neighbors:
   <ul>

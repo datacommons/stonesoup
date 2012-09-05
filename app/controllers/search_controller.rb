@@ -23,6 +23,9 @@ public
     render :layout => "#{@site.layout}/printable", :template => "layouts/#{@site.name}/_directory"
   end
 
+  def test_leaflet
+  end
+
   def search
     params[:q] = "" unless params[:q]
     @query = params[:q].to_s + ''

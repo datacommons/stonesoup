@@ -14,7 +14,7 @@ end
 <% if @rendered or immediate %>
 
   <div class="surround_map_insert">
-  <%= render :partial => "search/map_core", :locals => { :map_id => "the_map_" + name, :map_class => "map_insert", :orgs => orgs } %>
+  <%= render :partial => "search/map_core_leaflet", :locals => { :map_id => "the_map_" + name, :map_class => "map_insert", :orgs => orgs } %>
   </div>
 
 <% shown = {} %>

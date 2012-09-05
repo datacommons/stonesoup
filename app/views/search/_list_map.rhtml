@@ -1,5 +1,5 @@
 <div id="surround_map" class="map_bar">
-<%= render :partial => "search/map_core", :locals => { :map_id => "the_map", :map_class => nil, :orgs => @entries } %>
+<%= render :partial => "search/map_core_leaflet", :locals => { :map_id => "the_map", :map_class => nil, :orgs => @entries } %>
  <% unless @model %>
    <ul>  
     <% if @have_something %>
