@@ -3,10 +3,20 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "X-Language: en\n"
 
+#, fuzzy, untranslated
+msgctxt "a_directory"
+msgid "A directory of the cooperative economy"
+msgstr ""
+
 #, ok
 msgctxt "about"
 msgid "About"
 msgstr "About"
+
+#, fuzzy, untranslated
+msgctxt "access_denied"
+msgid "Access to that function is restricted."
+msgstr ""
 
 #, ok
 msgctxt "add_organization"
@@ -24,6 +34,16 @@ msgid "Choose password"
 msgstr ""
 
 #, fuzzy, untranslated
+msgctxt "city"
+msgid "City"
+msgstr ""
+
+#, fuzzy, untranslated
+msgctxt "collaborative_directory"
+msgid "Collaborative Directory"
+msgstr ""
+
+#, fuzzy, untranslated
 msgctxt "confirm_password"
 msgid "Confirm password"
 msgstr ""
@@ -34,8 +54,28 @@ msgid "Contact"
 msgstr "Contact"
 
 #, fuzzy, untranslated
+msgctxt "country"
+msgid "Country"
+msgstr ""
+
+#, fuzzy, untranslated
+msgctxt "create_personal_entry"
+msgid "Create personal entry"
+msgstr ""
+
+#, fuzzy, untranslated
+msgctxt "edit_personal_entry"
+msgid "Edit personal entry"
+msgstr ""
+
+#, fuzzy, untranslated
 msgctxt "email_address"
 msgid "E-mail address"
+msgstr ""
+
+#, fuzzy, untranslated
+msgctxt "examples"
+msgid "Examples"
 msgstr ""
 
 #, fuzzy, untranslated
@@ -64,6 +104,16 @@ msgid "Join"
 msgstr "Join"
 
 #, fuzzy, untranslated
+msgctxt "legal"
+msgid "Legal"
+msgstr ""
+
+#, fuzzy, untranslated
+msgctxt "logged_in_as"
+msgid "Logged in as"
+msgstr ""
+
+#, fuzzy, untranslated
 msgctxt "login"
 msgid "Login"
 msgstr ""
@@ -74,13 +124,38 @@ msgid "This directory is open and editable by anyone. However, we require that e
 msgstr ""
 
 #, fuzzy, untranslated
+msgctxt "login_needed"
+msgid "Please log in or sign up first."
+msgstr ""
+
+#, fuzzy, untranslated
 msgctxt "login_option"
 msgid "Already have an account?"
 msgstr ""
 
 #, fuzzy, untranslated
+msgctxt "logout"
+msgid "Logout"
+msgstr ""
+
+#, fuzzy, untranslated
 msgctxt "password"
 msgid "Password"
+msgstr ""
+
+#, fuzzy, untranslated
+msgctxt "postal_code"
+msgid "Postal Code"
+msgstr ""
+
+#, fuzzy, untranslated
+msgctxt "preferences"
+msgid "Preferences"
+msgstr ""
+
+#, fuzzy, untranslated
+msgctxt "province"
+msgid "Province"
 msgstr ""
 
 #, ok
@@ -99,6 +174,11 @@ msgid "Search"
 msgstr "Search"
 
 #, fuzzy, untranslated
+msgctxt "sector"
+msgid "Sector"
+msgstr ""
+
+#, fuzzy, untranslated
 msgctxt "signup"
 msgid "Sign up"
 msgstr ""
@@ -106,4 +186,24 @@ msgstr ""
 #, fuzzy, untranslated
 msgctxt "signup_option"
 msgid "Sign up. It's easy!"
+msgstr ""
+
+#, fuzzy, untranslated
+msgctxt "state"
+msgid "State"
+msgstr ""
+
+#, fuzzy, untranslated
+msgctxt "team"
+msgid "Team"
+msgstr ""
+
+#, fuzzy, untranslated
+msgctxt "type"
+msgid "Type"
+msgstr ""
+
+#, fuzzy, untranslated
+msgctxt "zip"
+msgid "Zip"
 msgstr ""
