@@ -17,7 +17,7 @@
                 </div>
 	<% unless hide_examples %>
 	      <div class='example_wrapper'>
-		<div class='example_preamble'>Search<br />examples:</div>
+		<div class='example_preamble'><%= t :examples %>:</div>
 		<% for example in @site.site_searches %>
 		<div class='example_bubble'><%= link_to example, :controller => 'search', :action => 'search', :q => example %></div>
 		<% end %>

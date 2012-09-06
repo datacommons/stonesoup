@@ -1,26 +1,25 @@
 
 <div>
-This directory is open and editable by anyone. However, we require that editors log in before 
-adding or updating entries to help with accountability.
+<%= t(:login_message) %>
 </div>
 
 <div title="Account login" id="loginform" class="form" style="float: left;">
 
 <% form_tag :action=> "login" do %>
-    <h2>Already Have An Account?</h2>
+    <h2><%= t(:login_option) %></h2>
     
     <% if @message %>
       <div class="message"><%= @message %></div>
     <% end %>
 
-    <label for="user_login">E-mail address:</label><br/>
+    <label for="user_login"><%= t :email_address %>:</label><br/>
     <input type="text" name="user_login" id="user_login" size="30" value=""/><br/>
 
-    <label for="user_password">Password:</label><br/>
+    <label for="user_password"><%= t :password %>:</label><br/>
     <input type="password" name="user_password" id="user_password" size="30"/>
     <br/><br />
-    <input type="submit" name="login" value="Login &#187;" class="primary" />
-    <input type="submit" name="forgot_pass" value="Forgot Password" class="primary" />
+    <input type="submit" name="login" value="<%=t :login%> &#187;" class="primary" />
+    <input type="submit" name="forgot_pass" value="<%=t :forgot_password%>" class="primary" />
 
 <% end %>
 

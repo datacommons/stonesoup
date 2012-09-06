@@ -17,7 +17,8 @@ Event.observe(window, 'load', function() {
 
 <%=render :partial => 'layouts/adminmenu'%>
 <%- 
-   homepage = @site.home || "/"
+   homepage = @site.home || ""
+   homepage = homepage + url_for(:action => 'index', :controller => 'search')
 -%>
 <!-- begin wrapper div -->
 <div id="bigwrapper">
@@ -32,7 +33,7 @@ Event.observe(window, 'load', function() {
         </div>
 	<div class='titleblock nohover clearboth'>
           <%- unless @site.use_logo -%>
-	  <div class='clearboth title'><b><a href='/'>Find</a></b><span class='minor'><a href='/'>.COOP</a></span></div>
+	  <div class='clearboth title'><b><a href='<%= homepage %>'>Find</a></b><span class='minor'><a href='<%= homepage%>'>.COOP</a></span></div>
           <%- else -%>
           <a href="<%=homepage%>"><img src="/images/<%= @site.name %>/logo2.png" /></a>
           <%- end -%>

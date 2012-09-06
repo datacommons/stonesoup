@@ -1,16 +1,24 @@
+<div id="userstatus">
+<%
+langs = [{:code => :en, :name => "English"},
+         {:code => :es, :name => "Español"},
+         {:code => :fr, :name => "Français"}]
+lang_links = langs.reject{|x| x[:code] == I18n.locale}.map{|x| link_to(x[:name],:locale=>x[:code])}.join(", ")
+# when translations are ready, render this.
+%>
+&nbsp;&nbsp;&nbsp;
 <%- if current_user -%>
-	<div id="userstatus">
-		Logged in as: <%= current_user.login %> 
-		( <%= link_to 'Preferences', :controller => 'users', :action => 'prefs' %>
-		| <%= link_to 'Logout', :controller => 'users', :action => 'logout' %>
+		<%= t :logged_in_as %>: <%= current_user.login %> 
+		( <%= link_to t(:preferences), :controller => 'users', :action => 'prefs' %>
+		| <%= link_to t(:logout), :controller => 'users', :action => 'logout' %>
 		| 	<% if current_user.person.nil? %>
-				<%= link_to 'Create personal entry', :controller => 'people', :action => 'new', 'is_me' => 'yes' %>
+				<%= link_to t(:create_personal_entry), :controller => 'people', :action => 'new', 'is_me' => 'yes' %>
 			<% else %>
-				<%= link_to 'Edit personal entry', :controller => 'people', :action => 'edit', :id => current_user.person %>
+				<%= link_to t(:edit_personal_entry), :controller => 'people', :action => 'edit', :id => current_user.person %>
 			<% end %>
-		| <a href='http://datacommons.find.coop/contact'>Report problem</a>
+		| <%= link_to t(:report_problem), 'http://datacommons.find.coop/contact'%>
 		)
-	</div>
 <%- else -%>
-<div id="userstatus"><%= link_to 'Login', :controller => 'users', :action => 'login' %> | <a href='http://datacommons.find.coop/contact'>Report problem</a></div>
+<%= link_to t(:login), :controller => 'users', :action => 'login' %> | <a href='http://datacommons.find.coop/contact'><%= t(:report_problem) %></a>
 <% end %>
+</div>

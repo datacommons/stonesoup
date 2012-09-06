@@ -618,4 +618,17 @@ module ApplicationHelper
     end
     filters[key]
   end
+
+  def is_canada
+    @filter_bank["country"][:active] and (@filter_bank["country"][:value] == [ "Canada" ])
+  end
+  
+  def refine_filter_label(x)
+    return "Province" if x == "State" and is_canada
+    return "Postal Code" if x == "Zip" and is_canada
+    x = x.sub("Business Sector","Sector")
+    x.sub!("Organization Type","Type")
+    x.sub!("Legal Structure","Legal")
+    t(x.underscore.to_sym,:default => x)
+  end
 end

@@ -8,7 +8,7 @@
     :url => {:controller => 'search', :action => 'change_filter', :name => filter[:name]},
     :update => 'search_filters') %></div>
 <%- end -%>
-    <span id="<%=filter[:name]%>_title" class="filter_title"><%= filter[:label].sub("Business Sector","Sector").sub("Organization Type","Type").sub("Legal Structure","Legal") %></span><br />
+    <span id="<%=filter[:name]%>_title" class="filter_title"><%= refine_filter_label(filter[:label]) %></span><br />
 <div id="<%=filter[:name]%>_filter_input" class="filter_editable">
 <% unless filter[:value].blank? %>
  <%= filter[:value].join(', ') %><br />

@@ -22,3 +22,21 @@ default:
   signup: Sign up
   a_directory: A directory of the cooperative economy
   collaborative_directory: Collaborative Directory
+  login_needed: Please log in or sign up first.
+  access_denied: Access to that function is restricted.
+  logged_in_as: Logged in as
+  preferences: Preferences
+  logout: Logout
+  edit_personal_entry: Edit personal entry
+  create_personal_entry: Create personal entry
+  examples: Examples
+  legal: Legal
+  sector: Sector
+  type: Type
+  team: Team
+  zip: Zip
+  postal_code: Postal Code
+  city: City
+  state: State
+  province: Province
+  country: Country

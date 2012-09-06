@@ -537,8 +537,8 @@ div.menu-container {
 .example_preamble, .example_bubble {
     font-size: 80%;
     float: left;
-    margin-right:5px;
-    padding-right:5px;
+    margin:5px;
+    padding:5px;
 }
 
 .example_bubble  {

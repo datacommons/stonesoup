@@ -1,19 +1,19 @@
 
 <div title="Account signup" id="signupform" class="form">
 	<% form_tag :action=> "signup" do %>
-		<h3>Sign up. It's easy!</h3>
+		<h3><%= t(:signup_option) %></h3>
 		<% if @user && @user.errors %>
 			<%= error_messages_for 'user' %>
 		<% end %>
 
-		<label for="user_login">E-mail address:</label><br/>
+		<label for="user_login"><%= t :email_address %>:</label><br/>
 		<%= text_field "user", "login", :size => 30 %><br/>
-		<label for="user_password_cleartext">Choose password:</label><br/>
+		<label for="user_password_cleartext"><%= t :choose_password %>:</label><br/>
 		<%= password_field "user", "password_cleartext", :size => 30 %><br/>
-		<label for="user_password_cleartext_confirmation">Confirm password:</label><br/>
+		<label for="user_password_cleartext_confirmation"><%= t :confirm_password %>	:</label><br/>
 		<%= password_field "user", "password_cleartext_confirmation", :size => 30 %><br/>
 		<br />
-		<input type="submit" value="Signup &#187;" class="primary" />
+		<input type="submit" value="<%= t :signup %> &#187;" class="primary" />
 	<% end %>
 </div>
 

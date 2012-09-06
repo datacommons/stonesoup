@@ -31,4 +31,6 @@ cp locale/en.po locale/findcoop.pot || exit 1
 # cd $base || exit 1
 # rm -rf $tmp
 
-cp -v locale/findcoop.pot ../config/locales
+cp -v locale/findcoop.pot ../config/locales || exit 1
+cp -v ../config/locales/default.yml ../config/locales/en.yml  || exit 1
+sed -i "s/default:/en:/" ../config/locales/en.yml
