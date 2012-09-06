@@ -1,6 +1,6 @@
 class Email < ActionMailer::Base
   cattr_accessor :website_hostname
-  FROM_ADDRESS = "Data Commons Project <no-reply@dcp.usworker.coop>"
+  FROM_ADDRESS = "Data Commons Co-operative <info@find.coop>"
   
   def Email.website_base_url
     #logger.debug("Email.website_base_url: Email.website_hostname=#{Email.website_hostname.inspect}")
@@ -67,7 +67,7 @@ class Email < ActionMailer::Base
     organization.reset_email_response_token!  # generate unique token and save record
     recipients organization.email
     from sender
-    subject "Would you like to be included in the DCP Cooperative Directory?"
+    subject "Would you like to be included in the DCC Cooperative Directory?"
     content_type  "text/html"
     body :organization => organization
   end
@@ -77,7 +77,7 @@ class Email < ActionMailer::Base
     organization.reset_email_response_token!  # generate unique token and save record
     recipients organization.email
     from sender
-    subject "Your organization has been included in the DCP Cooperative Directory"
+    subject "Your organization has been included in the DCC Cooperative Directory"
     content_type  "text/html"
     body :organization => organization
   end
