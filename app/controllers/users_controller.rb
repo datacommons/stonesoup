@@ -39,7 +39,7 @@ class UsersController < ApplicationController
               user.password_cleartext = newpass
               user.save!
               Email.deliver_password_reset(user, newpass)
-              @message = "A new password was e-mailed to #{user.login}"
+              @message = "A new password was e-mailed to #{user.login} (if you don't see it, check your spam folder, or whitelist \"find.coop\")"
             end
           end
         end
