@@ -967,6 +967,7 @@ body.page-users-prefs .listing {
 #front-bar .button { 
   display:inline-block; 
   padding: 1em;
+  white-space:nowrap;                  
 }
 
 #front-bar .flip-color { 
@@ -977,7 +978,8 @@ body.page-users-prefs .listing {
   position:relative; 
   display:block; 
   float:right; 
-  padding: 1em;                    
+  padding: 1em;
+  white-space:nowrap;                  
 }
 
 

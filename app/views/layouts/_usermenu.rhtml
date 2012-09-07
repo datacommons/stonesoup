@@ -1,5 +1,5 @@
 <%- if current_user -%>
-		<%= t :logged_in_as %>: <%= current_user.login %> 
+		<%= current_user.login %> 
 		( <%= link_to t(:preferences), :controller => 'users', :action => 'prefs' %>
 		| <%= link_to t(:logout), :controller => 'users', :action => 'logout' %>
 		| 	<% if current_user.person.nil? %>
