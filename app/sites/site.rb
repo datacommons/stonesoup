@@ -90,6 +90,10 @@ class Site
     nil
   end
 
+  def canadian_by_default
+    false
+  end
+
   def search_bar_in_header
     self.layout == :sprint
   end

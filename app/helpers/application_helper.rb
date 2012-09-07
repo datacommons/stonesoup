@@ -620,6 +620,7 @@ module ApplicationHelper
   end
 
   def is_canada
+    return true if @site.canadian_by_default and !@filter_bank["country"][:active]
     @filter_bank["country"][:active] and (@filter_bank["country"][:value] == [ "Canada" ])
   end
   

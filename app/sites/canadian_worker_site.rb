@@ -27,13 +27,17 @@ class CanadianWorkerSite < Site
        :link => "http://www.canadianworker.coop"
      },
      {
-       :name => "Data Commons Cooperative",
+       :name => "DCC",
        :link => "http://datacommons.find.coop"
      },
     ]
   end
 
   def use_logo
+    true
+  end
+
+  def canadian_by_default
     true
   end
 end
