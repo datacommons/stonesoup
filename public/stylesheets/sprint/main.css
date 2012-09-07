@@ -283,6 +283,10 @@ form.button-to {
   float: right;
 }
 
+#header .languageblock { 
+  float: left;
+}
+
 #header .titleblock { 
 }
 
@@ -301,6 +305,15 @@ form.button-to {
 }
 
 #userstatus a {
+  color: #149;
+}
+
+#langstatus {
+	float: left;
+	margin: 10px 15px 0 0px;
+}
+
+#langstatus a {
   color: #149;
 }
 

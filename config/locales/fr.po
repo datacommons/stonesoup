@@ -3,20 +3,20 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-06 20:42+0000\n"
-"PO-Revision-Date: 2012-09-01 19:30+0000\n"
+"PO-Revision-Date: 2012-09-07 14:33+0000\n"
 "Last-Translator: Paul Fitzpatrick <paulfitz@alum.mit.edu>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-09-07 05:00+0000\n"
+"X-Launchpad-Export-Date: 2012-09-07 15:08+0000\n"
 "X-Generator: Launchpad (build 15914)\n"
 "X-Language: fr\n"
 
 #, untranslated
 msgctxt "a_directory"
 msgid "A directory of the cooperative economy"
-msgstr ""
+msgstr "Un répertoire de l'économie coopérative"
 
 #, ok
 msgctxt "about"
@@ -26,7 +26,7 @@ msgstr "Qui sommes-nous?"
 #, untranslated
 msgctxt "access_denied"
 msgid "Access to that function is restricted."
-msgstr ""
+msgstr "L'accès à cette fonction est limitée."
 
 #, ok
 msgctxt "add_organization"
@@ -46,12 +46,12 @@ msgstr "Choisir un mot de passe"
 #, untranslated
 msgctxt "city"
 msgid "City"
-msgstr ""
+msgstr "Ville"
 
 #, untranslated
 msgctxt "collaborative_directory"
 msgid "Collaborative Directory"
-msgstr ""
+msgstr "Répertoire Collaboratif"
 
 #, untranslated
 msgctxt "confirm_password"
@@ -66,17 +66,17 @@ msgstr "Contact"
 #, untranslated
 msgctxt "country"
 msgid "Country"
-msgstr ""
+msgstr "Pays"
 
 #, untranslated
 msgctxt "create_personal_entry"
 msgid "Create personal entry"
-msgstr ""
+msgstr "Créer biographie"
 
 #, untranslated
 msgctxt "edit_personal_entry"
 msgid "Edit personal entry"
-msgstr ""
+msgstr "Modifier biographie"
 
 #, untranslated
 msgctxt "email_address"
@@ -86,7 +86,7 @@ msgstr "Adresse email"
 #, untranslated
 msgctxt "examples"
 msgid "Examples"
-msgstr ""
+msgstr "Exemples"
 
 #, untranslated
 msgctxt "forgot_password"
@@ -116,12 +116,12 @@ msgstr "Rejoins nous"
 #, untranslated
 msgctxt "legal"
 msgid "Legal"
-msgstr ""
+msgstr "Légal"
 
 #, untranslated
 msgctxt "logged_in_as"
 msgid "Logged in as"
-msgstr ""
+msgstr "Connecté en tant que"
 
 #, untranslated
 msgctxt "login"
@@ -134,11 +134,14 @@ msgid ""
 "This directory is open and editable by anyone. However, we require that "
 "editors log in before adding or updating entries to help with accountability."
 msgstr ""
+"Ce répertoire est ouvert et modifiable par n'importe qui. Cependant, nous "
+"avons besoin que les éditeurs connecter avant d'ajouter ou de mettre à jour "
+"les entrées pour aider à la reddition de comptes."
 
 #, untranslated
 msgctxt "login_needed"
 msgid "Please log in or sign up first."
-msgstr ""
+msgstr "S'il vous plaît vous connecter ou de vous inscrire."
 
 #, untranslated
 msgctxt "login_option"
@@ -148,7 +151,7 @@ msgstr "Vous avez déjà un compte ?"
 #, untranslated
 msgctxt "logout"
 msgid "Logout"
-msgstr ""
+msgstr "Se déconnecter"
 
 #, untranslated
 msgctxt "password"
@@ -158,17 +161,17 @@ msgstr "Mot de passe"
 #, untranslated
 msgctxt "postal_code"
 msgid "Postal Code"
-msgstr ""
+msgstr "Code Postal"
 
 #, untranslated
 msgctxt "preferences"
 msgid "Preferences"
-msgstr ""
+msgstr "Préférences"
 
 #, untranslated
 msgctxt "province"
 msgid "Province"
-msgstr ""
+msgstr "Province"
 
 #, ok
 msgctxt "recent_changes"
@@ -188,7 +191,7 @@ msgstr "Rechercher"
 #, untranslated
 msgctxt "sector"
 msgid "Sector"
-msgstr ""
+msgstr "Secteur"
 
 #, untranslated
 msgctxt "signup"
@@ -198,24 +201,24 @@ msgstr "S'enregistrer"
 #, untranslated
 msgctxt "signup_option"
 msgid "Sign up. It's easy!"
-msgstr ""
+msgstr "Inscrivez-vous. C'est facile!"
 
 #, untranslated
 msgctxt "state"
 msgid "State"
-msgstr ""
+msgstr "État"
 
 #, untranslated
 msgctxt "team"
 msgid "Team"
-msgstr ""
+msgstr "Équipe"
 
 #, untranslated
 msgctxt "type"
 msgid "Type"
-msgstr ""
+msgstr "Genre"
 
 #, untranslated
 msgctxt "zip"
 msgid "Zip"
-msgstr ""
+msgstr "Code Postal"

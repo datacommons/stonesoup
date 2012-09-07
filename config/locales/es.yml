@@ -1,21 +1,42 @@
---- 
-es: 
+es:
+  a_directory: "Un directorio de la economía cooperativa"
   about: "Sobre nosotros"
+  access_denied: "Acceso restringido."
   add_organization: "Agregue una organización"
-  advanced_search: Avanzada
+  advanced_search: "Avanzada"
   choose_password: "Elegir contraseña"
+  city: "Ciudad"
+  collaborative_directory: "Directorio Colaborativo"
   confirm_password: "Confirmar contraseña"
-  contact: Contacto
+  contact: "Contacto"
+  country: "País"
+  create_personal_entry: "Crear biografía"
+  edit_personal_entry: "Modificar biografía"
   email_address: "Dirección de correo electrónico"
+  examples: "Ejemplos"
   forgot_password: "Contraseña olvidada"
-  go: Ve
-  help: ¡Ayúdame!
-  hide: Eliminar
-  join: Únete
+  go: "Ve"
+  help: "¡Ayúdame!"
+  hide: "Eliminar"
+  join: "Únete"
+  legal: "Legal"
+  logged_in_as: "Autenticado como"
   login: "Iniciar sesión"
+  login_message: "Este directorio está abierto y editable por cualquier persona. Sin embargo, se requiere que los editores conectarse antes de añadir o actualizar las entradas para ayudar con la rendición de cuentas."
+  login_needed: "Por favor, primero inicie sesión o registrarte."
   login_option: "¿Ya tienes una cuenta?"
-  password: Contraseña
+  logout: "Cerrar sesión"
+  password: "Contraseña"
+  postal_code: "Código Postal"
+  preferences: "Preferencias"
+  province: "Provincia"
   recent_changes: "Cambios recientes"
   report_problem: "Informar de un problema"
-  search: Buscar
-  signup: Registrarse
+  search: "Buscar"
+  sector: "Sector"
+  signup: "Registrarse"
+  signup_option: "Regístrate. ¡Es fácil!"
+  state: "Estado"
+  team: "Equipo"
+  type: "Tipo"
+  zip: "Código postal"

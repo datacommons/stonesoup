@@ -1,12 +1,3 @@
-<div id="userstatus">
-<%
-langs = [{:code => :en, :name => "English"},
-         {:code => :es, :name => "Español"},
-         {:code => :fr, :name => "Français"}]
-lang_links = langs.reject{|x| x[:code] == I18n.locale}.map{|x| link_to(x[:name],:locale=>x[:code])}.join(", ")
-# when translations are ready, render this.
-%>
-&nbsp;&nbsp;&nbsp;
 <%- if current_user -%>
 		<%= t :logged_in_as %>: <%= current_user.login %> 
 		( <%= link_to t(:preferences), :controller => 'users', :action => 'prefs' %>
@@ -21,4 +12,3 @@ lang_links = langs.reject{|x| x[:code] == I18n.locale}.map{|x| link_to(x[:name],
 <%- else -%>
 <%= link_to t(:login), :controller => 'users', :action => 'login' %> | <a href='http://datacommons.find.coop/contact'><%= t(:report_problem) %></a>
 <% end %>
-</div>

@@ -86,6 +86,10 @@ class Site
     nil
   end
 
+  def languages
+    nil
+  end
+
   def search_bar_in_header
     self.layout == :sprint
   end

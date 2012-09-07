@@ -16,6 +16,10 @@ class DefaultSite < Site
     'Data Commons'
   end
 
+  def languages
+    :all
+  end
+
   def menu
     [
      {

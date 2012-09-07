@@ -28,7 +28,12 @@ Event.observe(window, 'load', function() {
 
 <!-- begin header div -->
 <div id="header"><div class="header_material">
-        <div class='loginblock nohover'>
+        <%- unless @site.languages.nil? -%>
+        <div id="langstatus" class='languageblock nohover userstatus'>
+	<%=render :partial => 'layouts/langmenu'%>
+	</div>
+        <%- end -%>
+        <div id="userstatus" class='loginblock nohover'>
 	<%=render :partial => 'layouts/usermenu'%>
         </div>
 	<div class='titleblock nohover clearboth'>

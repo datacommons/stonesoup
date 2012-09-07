@@ -1,0 +1,8 @@
+<%
+langs = [{:code => :en, :name => "English"},
+         {:code => :es, :name => "Español"},
+         {:code => :fr, :name => "Français"}]
+lang_links = langs.reject{|x| x[:code] == I18n.locale}.map{|x| link_to(x[:name],:locale=>x[:code])}.join(" | ")
+# when translations are ready, render this.
+%>
+<%= lang_links %>
