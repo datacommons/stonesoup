@@ -2,21 +2,31 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-01 19:01+0000\n"
+"POT-Creation-Date: 2012-09-06 20:42+0000\n"
 "PO-Revision-Date: 2012-09-01 19:30+0000\n"
 "Last-Translator: Paul Fitzpatrick <paulfitz@alum.mit.edu>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-09-02 04:39+0000\n"
-"X-Generator: Launchpad (build 15890)\n"
+"X-Launchpad-Export-Date: 2012-09-07 05:00+0000\n"
+"X-Generator: Launchpad (build 15914)\n"
 "X-Language: fr\n"
+
+#, untranslated
+msgctxt "a_directory"
+msgid "A directory of the cooperative economy"
+msgstr ""
 
 #, ok
 msgctxt "about"
 msgid "About"
 msgstr "Qui sommes-nous?"
+
+#, untranslated
+msgctxt "access_denied"
+msgid "Access to that function is restricted."
+msgstr ""
 
 #, ok
 msgctxt "add_organization"
@@ -34,6 +44,16 @@ msgid "Choose password"
 msgstr "Choisir un mot de passe"
 
 #, untranslated
+msgctxt "city"
+msgid "City"
+msgstr ""
+
+#, untranslated
+msgctxt "collaborative_directory"
+msgid "Collaborative Directory"
+msgstr ""
+
+#, untranslated
 msgctxt "confirm_password"
 msgid "Confirm password"
 msgstr "Confirmer le mot de passe"
@@ -44,9 +64,29 @@ msgid "Contact"
 msgstr "Contact"
 
 #, untranslated
+msgctxt "country"
+msgid "Country"
+msgstr ""
+
+#, untranslated
+msgctxt "create_personal_entry"
+msgid "Create personal entry"
+msgstr ""
+
+#, untranslated
+msgctxt "edit_personal_entry"
+msgid "Edit personal entry"
+msgstr ""
+
+#, untranslated
 msgctxt "email_address"
 msgid "E-mail address"
 msgstr "Adresse email"
+
+#, untranslated
+msgctxt "examples"
+msgid "Examples"
+msgstr ""
 
 #, untranslated
 msgctxt "forgot_password"
@@ -74,6 +114,16 @@ msgid "Join"
 msgstr "Rejoins nous"
 
 #, untranslated
+msgctxt "legal"
+msgid "Legal"
+msgstr ""
+
+#, untranslated
+msgctxt "logged_in_as"
+msgid "Logged in as"
+msgstr ""
+
+#, untranslated
 msgctxt "login"
 msgid "Login"
 msgstr "Se connecter"
@@ -86,14 +136,39 @@ msgid ""
 msgstr ""
 
 #, untranslated
+msgctxt "login_needed"
+msgid "Please log in or sign up first."
+msgstr ""
+
+#, untranslated
 msgctxt "login_option"
 msgid "Already have an account?"
 msgstr "Vous avez déjà un compte ?"
 
 #, untranslated
+msgctxt "logout"
+msgid "Logout"
+msgstr ""
+
+#, untranslated
 msgctxt "password"
 msgid "Password"
 msgstr "Mot de passe"
+
+#, untranslated
+msgctxt "postal_code"
+msgid "Postal Code"
+msgstr ""
+
+#, untranslated
+msgctxt "preferences"
+msgid "Preferences"
+msgstr ""
+
+#, untranslated
+msgctxt "province"
+msgid "Province"
+msgstr ""
 
 #, ok
 msgctxt "recent_changes"
@@ -111,6 +186,11 @@ msgid "Search"
 msgstr "Rechercher"
 
 #, untranslated
+msgctxt "sector"
+msgid "Sector"
+msgstr ""
+
+#, untranslated
 msgctxt "signup"
 msgid "Sign up"
 msgstr "S'enregistrer"
@@ -118,4 +198,24 @@ msgstr "S'enregistrer"
 #, untranslated
 msgctxt "signup_option"
 msgid "Sign up. It's easy!"
+msgstr ""
+
+#, untranslated
+msgctxt "state"
+msgid "State"
+msgstr ""
+
+#, untranslated
+msgctxt "team"
+msgid "Team"
+msgstr ""
+
+#, untranslated
+msgctxt "type"
+msgid "Type"
+msgstr ""
+
+#, untranslated
+msgctxt "zip"
+msgid "Zip"
 msgstr ""
