@@ -1,12 +1,21 @@
-es:
-  help: ¡Ayúdame!
-  recent_changes: Cambios recientes
-  join: Únete
-  about: Sobre nosotros
-  contact: Contacto
-  add_organization: Agregue una organización
-  search: Buscar
+--- 
+es: 
+  about: "Sobre nosotros"
+  add_organization: "Agregue una organización"
   advanced_search: Avanzada
+  choose_password: "Elegir contraseña"
+  confirm_password: "Confirmar contraseña"
+  contact: Contacto
+  email_address: "Dirección de correo electrónico"
+  forgot_password: "Contraseña olvidada"
   go: Ve
+  help: ¡Ayúdame!
   hide: Eliminar
-
+  join: Únete
+  login: "Iniciar sesión"
+  login_option: "¿Ya tienes una cuenta?"
+  password: Contraseña
+  recent_changes: "Cambios recientes"
+  report_problem: "Informar de un problema"
+  search: Buscar
+  signup: Registrarse

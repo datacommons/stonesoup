@@ -1,11 +1,21 @@
-fr:
-  help: A l'aide!
-  recent_changes: Changements récents
-  join: Rejoins nous
-  about: Qui sommes-nous?
+--- 
+fr: 
+  about: "Qui sommes-nous?"
+  add_organization: "Ajoute une organisation"
+  advanced_search: "Recherche avancée"
+  choose_password: "Choisir un mot de passe"
+  confirm_password: "Confirmer le mot de passe"
   contact: Contact
-  add_organization: Ajoute une organisation
-  search: Rechercher
-  advanced_search: Recherche avancée
+  email_address: "Adresse email"
+  forgot_password: "Mot de passe perdu"
   go: Va
+  help: "A l'aide!"
   hide: Supprime
+  join: "Rejoins nous"
+  login: "Se connecter"
+  login_option: "Vous avez déjà un compte ?"
+  password: "Mot de passe"
+  recent_changes: "Changements récents"
+  report_problem: "Signale un problème"
+  search: Rechercher
+  signup: S'enregistrer
