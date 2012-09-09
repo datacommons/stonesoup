@@ -2,13 +2,15 @@
 <kml xmlns="http://www.opengis.net/kml/2.2">
 <%- @entries.each do |entry| -%>
 <%- entry.locations.each do |loc| -%>
-  <Placemark>
-    <name><%= entry.name %></name>
-    <description><%= entry.description %></description>
-    <Point>
-      <coordinates><%= loc.latitude.to_s + "," + loc.longitude.to_s + ",0" %></coordinates>
-    </Point>
-  </Placemark>
+  <%- unless loc.longitude.nil? -%>
+    <Placemark>
+      <name><%= h entry.name %></name>
+      <description><%= h entry.description %></description>
+      <Point>
+        <coordinates><%= loc.longitude.to_s + "," + loc.latitude.to_s + ",0" %></coordinates>
+      </Point>
+    </Placemark>
+  <%- end -%>
 <%- end -%>
 <%- end -%>
 </kml>
