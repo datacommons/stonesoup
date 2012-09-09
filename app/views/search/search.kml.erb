@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
 <%- @entries.each do |entry| -%>
 <%- entry.locations.each do |loc| -%>
   <%- unless loc.longitude.nil? -%>
@@ -13,4 +14,5 @@
   <%- end -%>
 <%- end -%>
 <%- end -%>
+</Document>
 </kml>
