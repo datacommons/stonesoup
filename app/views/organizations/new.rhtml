@@ -1,7 +1,23 @@
-<h1>New entry (page 1 of 2)</h1>
+<h1>Add an organization (page 1 of 2)</h1>
+
+<div>
+Thanks for taking the time to add an organization!
+If you have any trouble or concerns, <%= link_to "please holler", contact_path %>.
+</div>
+
+<ul>
+<li>Your addition will be visible to others.</li>
+<li>Other people may edit what you write.</li>
+<li>Your addition may be shared far and wide under an open data license (ODbL).</li>
+<li>If you don't know something, just leave it out for now, you can add it later.</li>
+</ul>
+
+<div>
+&nbsp;
+</div>
 
 <% form_tag :action => 'create' do %>
   <%= render :partial => 'form', :locals => { :more => true } %>
-  <%= submit_tag "Create" %>
+  <%= submit_tag "Add organization" %>
 <% end %>
 

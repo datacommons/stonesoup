@@ -1,35 +1,32 @@
 <%= error_messages_for 'organization' %>
 
 <!--[form:organization]-->
-<table width="100%" cellpadding="0" cellspacing="0">
-	<tr>
-		<td colspan="2">
-			<label for="organization_name">Organization Name</label>: <%= text_field 'organization', 'name'  %><br/>
-			<label for="organization_phone">Phone</label>: <%= text_field 'organization', 'phone'  %><br/>
-			<label for="organization_fax">Fax</label>: <%= text_field 'organization', 'fax'  %><br/>
-			<label for="organization_email">Email</label>: <%= text_field 'organization', 'email'  %><br/>
-			<label for="organization_website">Website</label>: <%= text_field 'organization', 'website'  %><br/>
-			<label for="organization_legal_structure_id">Legal Structure</label>: <%= select 'organization', 'legal_structure_id', [['',nil]] + LegalStructure.find(:all).collect{|ls| [ls.name, ls.id]}  %><br/>
-		</td>
-	</tr>
+<table id="add_organization" cellpadding="0" cellspacing="0">
+	<tr><td class="add_label"><label for="organization_name">Organization Name</label>:</td><td><%= text_field 'organization', 'name'  %></td></tr>
+	<tr><td class="add_label"><label for="organization_website">Website</label>:</td><td><%= text_field 'organization', 'website'  %></td></tr>
+	<tr><td class="add_label"><label for="organization_email">Email</label>:</td><td><%= text_field 'organization', 'email'  %></td></tr>
+	<tr><td class="add_label"><label for="organization_phone">Phone</label>:</td><td><%= text_field 'organization', 'phone'  %></td></tr>
+	<tr><td class="add_label"><label for="organization_fax">Fax</label>:</td><td><%= text_field 'organization', 'fax'  %></td></tr>
+	<tr><td class="add_label"><label for="organization_year_founded">Year founded</label>:</td><td><%= select_year @organization.year_founded, :include_blank => true, :prefix => 'organization', :field_name => 'year_founded(1i)', :start_year => (DateTime.now.year-200), :end_year => DateTime.now.year %></td></tr>
 </table>
+
+<br />
 
 <label for="organization_description">Description:</label><br/>
 <%= text_area 'organization', 'description', :rows => 5, :cols => 60  %><br/>
 <% if defined? more %>
-<b>We'll ask you to add locations, sectors etc. once the basic entry is created</b><br/>
+<div class="polite_note">We will ask you to add locations, organization type, sector information later.</div>
 <% end %>
 
-<p><label for="organization_year_founded">Year founded</label>: <%= select_year @organization.year_founded, :include_blank => true, :prefix => 'organization', :field_name => 'year_founded(1i)', :start_year => (DateTime.now.year-200), :end_year => DateTime.now.year %></p>
 
 <p>
 
 <% if @organization.users.member?(User.current_user) %>
 	<%= check_box_tag 'disassociate_user_from_entry', "1", false %>
-	<label for="disassociate_user_from_entry">Remove me as an editor on this entry</label>
+	<label for="disassociate_user_from_entry">Remove me as an editor for this organization's listing.</label>
 <% else %>
 	<%= check_box_tag 'associate_user_to_entry', "1", true %>
-	<label for="associate_user_to_entry">Make me an editor on this entry</label>
+	<label for="associate_user_to_entry">Make me an editor for this organization's listing.</label>
 <% end %>
 </p>
 <!--[eoform:organization]-->

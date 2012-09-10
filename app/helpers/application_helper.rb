@@ -632,4 +632,8 @@ module ApplicationHelper
     x.sub!("Legal Structure","Legal")
     t(x.underscore.to_sym,:default => x)
   end
+
+  def contact_path
+    'http://datacommons.find.coop/contact'
+  end
 end
