@@ -1,9 +1,23 @@
 
 Unless otherwise stated, the data commons directory source code is:
-  Copyright (c) 2011 - The Data Commons Project
-  Licensed under the GNU AGPL version 3 or later
+  Copyright (c) 2012 - The Data Commons Cooperative, Inc.
+
+You may use the code under the terms of the GNU AGPL version 3 (or later):
     http://www.gnu.org/licenses/agpl.html
 
-Versions of the source code prior to November 2011 are available
-under the GNU GPL version 3 or later
-  http://www.gnu.org/copyleft/gpl.html
+Versions of the source code prior to November 2011 were available
+under the GPLv3.  You can still dig up that code in the repository
+history of the data commons directory source code.
+
+As is usual for ruby/rails projects, code in the "vendor" directory
+comes from a variety of sources, all with their own licenses (all free
+and open, but check the details if they matter to you).  The "public"
+directory likewise contains copyrighted javascript and stylesheets
+used under various free and open licenses.
+
+Authors over the (many) years have included:
+  Josh Crawford
+  Dave Evans
+  Jason Mott
+  Paul Fitzpatrick
+  Benjamin Bradley
