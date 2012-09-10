@@ -1,7 +1,7 @@
 class UsworkerSite < Site
 
   def site_searches
-    ['GAIA Host','collective']
+    ['food','red and black','collective']
   end
 
   def aliases

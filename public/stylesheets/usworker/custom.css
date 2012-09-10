@@ -13,3 +13,7 @@ html,body {
   background-color: #ECECEC;
   padding: 20px;
 }
+
+#footer { 
+  padding: 10px;
+}
