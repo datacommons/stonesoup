@@ -8,7 +8,34 @@ html,body {
   margin-right: 20px;
 }
 
+#search_form { 
+  background-image:url("/images/solidarity/searchbar_tight_transparent.png");
+  width: 446px;
+}
+
+#qq { 
+  top:62px;
+  left:22px;
+  width:382px;
+}
+
+.example_wrapper {
+  width: 300px;
+}
+
 #maincol { 
   background-color: #ddf;
   padding: 20px;
+}
+
+#header { 
+  background-color: #88E1E0;
+}
+
+#search_tips { 
+  background-color: #88E1E0;
+}
+
+#header .header_material { 
+  background-color: #88E1E0;
 }

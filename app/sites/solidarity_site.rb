@@ -1,7 +1,7 @@
 class SolidaritySite < Site
 
   def site_searches
-    ['GEO']
+    ['GEO', 'childcare']
   end
 
   def aliases
