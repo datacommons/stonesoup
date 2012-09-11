@@ -565,7 +565,7 @@ module ApplicationHelper
   end
 
   def clean_params
-    return params.reject{|x,y| ['Map','commit','page'].member? x}
+    return params.reject{|x,y| ['Map','commit','page','x','y'].member? x}
   end
 
   def is_admin?

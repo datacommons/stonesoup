@@ -136,6 +136,7 @@ public
     default_filters = []
     active_filters = []
     @filter_bank = {}
+    @filter_params = {}
     all_filters = []
     all_default = true
     possible_filters.each do |possible_filter|
@@ -169,6 +170,9 @@ public
         is_default = false
       end
       f = { :name => name, :label => possible_filter[:label], :value => filter, :original => filter0, :is_default => is_default, :has_default => has_default, :single => possible_filter[:single], :active => !filter.blank? }
+      unless filter.nil?
+        @filter_params[f[:name]] = filter.join(",")
+      end
       all_filters << f
       @filter_bank[f[:name]] = f
     end
@@ -304,9 +308,46 @@ public
     else
       @entries = results.paginate(:per_page => 30, :page => (params[:page]||1))
     end
+    render_entries
+  end
+
+  def render_entries
     respond_to do |format|
-      format.html { render :template => 'search/search' }
+      format.html { if params['Map'] then render :action => 'map' else render 'search/search' end }
       format.xml  { render :xml => @entries }
+      format.kml { 
+        data = render :file => 'search/search.kml.erb', :layout => false
+        send_data data,
+        :type => "application/vnd.google-earth.kml+xml",
+        :filename => "search.kml",
+        :disposition => "inline"
+      }
+      format.csv do
+        data = [@entries].flatten
+        data = data.map {|r| r.reportable_data}.flatten
+        cols = Organization.column_names
+        table = Ruport::Data::Table.new(:data => data,
+                                        :column_names => cols)
+        send_data table.to_csv,
+        :type => 'text/csv; charset=iso-8859-1; header=present',
+        :disposition => ("attachment; filename=search.csv")
+      end
+      format.pdf do
+        report = SearchReport.new(:data => @entries.uniq.sort{|a,b| a.oname <=> b.oname}, :search => @search_text,
+                                  :user => current_user,
+                                  :style => params[:style])
+        data = report.to_pdf
+        if Hash === data
+          @report = data
+          @template_format = :html
+          render :action => "no_report", :content_type => "text/html"
+        else
+          send_data data, :filename => "search.pdf",
+          :type => "application/pdf",
+          :disposition => 'inline'
+        end
+      end
+      format.json { render :json => @entries }
     end
   end
 

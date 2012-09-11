@@ -53,38 +53,7 @@ public
     @merge_target = session[:merge] 
 
     if params[:q]
-      f = params[:format]
-      respond_to do |f| 
-        f.html { if params['Map'] then render :action => 'map' else render end }
-        f.kml { render :file => 'search/search.kml.erb', :layout => false }
-        f.xml { render :xml => @entries }
-        f.csv do
-          data = [@entries].flatten
-          data = data.map {|r| r.reportable_data}.flatten
-          cols = Organization.column_names
-          table = Ruport::Data::Table.new(:data => data,
-                                          :column_names => cols)
-          send_data table.to_csv,
-          :type => 'text/csv; charset=iso-8859-1; header=present',
-          :disposition => ("attachment; filename=search.csv")
-        end
-        f.pdf do
-          report = SearchReport.new(:data => @entries.uniq.sort{|a,b| a.oname <=> b.oname}, :search => @search_text,
-                                    :user => current_user,
-                                    :style => params[:style])
-          data = report.to_pdf
-          if Hash === data
-            @report = data
-            @template_format = :html
-            render :action => "no_report", :content_type => "text/html"
-          else
-            send_data data, :filename => "search.pdf",
-            :type => "application/pdf",
-            :disposition => 'inline'
-          end
-        end
-        f.json { render :json => @entries }
-      end
+      render_entries
     end
   end
 
