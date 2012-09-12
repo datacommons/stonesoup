@@ -1,4 +1,4 @@
-<h1>Add an organization (page 1 of 2)</h1>
+<h1><%= t :add_organization %> (<%= t :page_n_of_n, :current => 1, :last => 2 %>)</h1>
 
 <div>
 Thanks for taking the time to add an organization!
@@ -18,6 +18,6 @@ If you have any trouble or concerns, <%= link_to "please holler", contact_path %
 
 <% form_tag :action => 'create' do %>
   <%= render :partial => 'form', :locals => { :more => true } %>
-  <%= submit_tag "Add organization" %>
+  <%= submit_tag t(:add_the_organization) %>
 <% end %>
 

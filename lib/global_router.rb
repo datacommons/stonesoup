@@ -12,7 +12,7 @@ module RoutingFilter
       end
 
       def locales
-        @@locales ||= [:en, :fr, :es] # I18n.available_locales.map(&:to_sym)
+        @@locales ||= [:en, :fr, :es, :cn]
       end
 
       def locales=(locales)

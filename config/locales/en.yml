@@ -40,3 +40,14 @@ en:
   state: State
   province: Province
   country: Country
+  page_n_of_n: page %{current} of %{last}
+  organization_name: Organization Name
+  website: Website
+  phone_number: Phone Number
+  fax_number: Fax Number
+  year_founded: Year Founded
+  description: Description
+  make_me_an_editor: Make me an editor for this organization's listing.
+  remove_me_as_editor: Remove me as an editor for this organization's listing.
+  add_the_organization: Add the organization
+  more_details_later: We will ask you to add locations, organization type, sector information later.
