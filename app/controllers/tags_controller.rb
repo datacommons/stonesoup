@@ -63,6 +63,31 @@ class TagsController < ApplicationController
     # @tags = Tag.find(:all).sort{|x,y| x.literal_qualified_name <=> y.literal_qualified_name}
   end
 
+  def new
+    @tag = Tag.new
+    respond_to do |format|
+      format.html # new.html.erb
+      format.xml  { render :xml => @tag }
+    end
+  end
+
+  # POST /tags
+  # POST /tags.xml
+  def create
+    @tag = Tag.new(params[:tag])
+
+    respond_to do |format|
+      if @tag.save
+        flash[:notice] = 'Tag was successfully created.'
+        format.html { redirect_to(@tag) }
+        format.xml  { render :xml => @tag, :status => :created, :location => @tag }
+      else
+        format.html { render :action => "new" }
+        format.xml  { render :xml => @tag.errors, :status => :unprocessable_entity }
+      end
+    end
+  end
+
   def show
     show_tag(Tag.find(params[:id]))
   end

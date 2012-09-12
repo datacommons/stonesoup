@@ -21,6 +21,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :locations
   map.resources :organizations
   map.resources :tags
+  map.resources :tag_worlds
+  map.resources :tag_contexts
 
   # The priority is based upon order of creation: first created -> highest priority.
   

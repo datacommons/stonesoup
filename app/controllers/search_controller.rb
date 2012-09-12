@@ -238,6 +238,8 @@ public
     results = []
     tags.each do |h|
       root = h.effective_root
+      next if root.kind_of? TagContext
+      next if root.kind_of? TagWorld
       label = h.literal_qualified_name
       results << {
         :name => h.name,
@@ -248,6 +250,7 @@ public
         }
     end
     results.sort!{|a,b| diff(a[:label],b[:label],true,true,search)}
+    logger.debug("Result #{results.to_json}")
     render :json => results.to_json
   end
 
@@ -276,6 +279,7 @@ public
         }
     end
     results.sort!{|a,b| diff(a[:label],b[:label],true,true,search)}
+    logger.debug("Result #{results.to_json}")
     render :json => results.to_json
   end
 
