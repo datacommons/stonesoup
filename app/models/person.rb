@@ -34,6 +34,10 @@ class Person < ActiveRecord::Base
     [firstname, lastname].compact.join(' ')
   end  
 
+  def description
+    [firstname, lastname].compact.join(' ')
+  end  
+
   def oname 
     "p" + name
   end

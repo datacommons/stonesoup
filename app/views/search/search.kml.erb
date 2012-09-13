@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
 <Document>
-<%- @entries.each do |entry| -%>
-<%- entry.locations.each do |loc| -%>
+<%- @entries.each do |loc| -%>
   <%- unless loc.longitude.nil? -%>
     <Placemark>
-      <name><%= h entry.name %></name>
-      <description><%= h entry.description %></description>
+      <name><%= h loc.name %></name>
+      <description><%= h "" + link_to(loc,loc.link_hash.merge({:only_path => false})) %><%= h "<br />" %><%= h loc.description %></description>
       <Point>
         <coordinates><%= loc.longitude.to_s + "," + loc.latitude.to_s + ",0" %></coordinates>
       </Point>
     </Placemark>
   <%- end -%>
-<%- end -%>
 <%- end -%>
 </Document>
 </kml>

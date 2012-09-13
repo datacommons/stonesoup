@@ -95,22 +95,22 @@ public
     if _params[:state]
       long_state = Location::STATE_SHORT[_params[:state]]
       long_state = _params[:state] unless long_state
-      session[:active_state_filter] = long_state.split(/,/)
+      session[:active_state_filter] = long_state.split(/[,;*]/)
     end
     if _params[:city]
-      session[:active_city_filter] = _params[:city].split(/,/)
+      session[:active_city_filter] = _params[:city].split(/[,;*]/)
     end
     if _params[:zip]
-      session[:active_zip_filter] = _params[:zip].split(/,/)
+      session[:active_zip_filter] = _params[:zip].split(/[,;*]/)
     end
     if _params[:sector]
-      session[:active_sector_filter] = _params[:sector].split(/;/)
+      session[:active_sector_filter] = _params[:sector].split(/[;*]/)
     end
     if _params[:org_type]
-      session[:active_org_type_filter] = _params[:org_type].split(/;/)
+      session[:active_org_type_filter] = _params[:org_type].split(/[;*]/)
     end
     if _params[:dso]
-      session[:active_dso_filter] = _params[:dso].split(/;/)
+      session[:active_dso_filter] = _params[:dso].split(/[;*]/)
     end
     if _params[:location_origin]
       if _params[:location_origin].blank?
@@ -171,7 +171,7 @@ public
       end
       f = { :name => name, :label => possible_filter[:label], :value => filter, :original => filter0, :is_default => is_default, :has_default => has_default, :single => possible_filter[:single], :active => !filter.blank? }
       unless filter.nil?
-        @filter_params[f[:name]] = filter.join(",")
+        @filter_params[f[:name]] = filter.join("*")
       end
       all_filters << f
       @filter_bank[f[:name]] = f
@@ -319,6 +319,7 @@ public
         data = render :file => 'search/search.kml.erb', :layout => false
         send_data data,
         :type => "application/vnd.google-earth.kml+xml",
+        #:type => "text/plain",
         :filename => "search.kml",
         :disposition => "inline"
       }

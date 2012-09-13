@@ -32,7 +32,7 @@ module ApplicationHelper
     return datetime.strftime("%Y-%m-%d %I:%M %p") # "2009-07-20 06:37 PM"
   end
   
-  def show_link(obj)
+  def show_link(obj,opts = {})
     return '' if obj.nil?
     if obj.respond_to?('link_name') and obj.respond_to?('link_hash')
       if obj.link_hash.nil?
@@ -40,9 +40,9 @@ module ApplicationHelper
       else
         # problem with user
         begin
-          return link_to(obj.link_name, obj)
+          return link_to(obj.link_name, obj, opts)
         rescue
-          return link_to(obj.link_name, obj.link_hash)
+          return link_to(obj.link_name, obj.link_hash, opts)
         end
       end
     else

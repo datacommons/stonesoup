@@ -514,7 +514,6 @@ class Organization < ActiveRecord::Base
   
   def link_hash
     {:controller => 'organizations', :action => 'show', :id => self.id}
-    self
   end
 
   def to_s
