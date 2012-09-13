@@ -7,7 +7,10 @@
    <%= render :partial => 'locations/manage_list', :locals => { :org => @organization2, :existing_expanded => existing_expanded, :new_expanded => new_expanded } %>
    <br />
 <% end %>
-<%= link_to_function('New location', "Element.toggle('block_location_new_form'); Element.hide('block_location_new_link');", 'id' => 'block_location_new_link', :style => (new_expanded ? 'display:none' : '')) %>
+<% if @organization.locations.length == 0 %>
+No locations known.<br />
+<% end %>
+<%= link_to_function('Add new location', "Element.toggle('block_location_new_form'); Element.hide('block_location_new_link');", 'id' => 'block_location_new_link', :style => (new_expanded ? 'display:none' : '')) %>
 <div id="block_location_new_form" style="<%=new_expanded ? '' : 'display:none'%>" class="clearboth">
 	<% @new_location = ((@location.nil? or @location.new_record?) ? @location : Location.new) %>
 	<%= error_messages_for 'new_location' %>
