@@ -214,17 +214,27 @@ public
 
   def auto_complete_org_type
     opts = { :omit => [:org_type_filter] }
-    auto_complete_tag("OrgType",opts)
+    auto_complete_tag_core("OrgType",opts)
   end
 
   def auto_complete_sector
     opts = { :omit => [:sector_filter] }
-    auto_complete_tag("Sector",opts)
+    auto_complete_tag_core("Sector",opts)
   end
 
   def auto_complete_legal_structure
     opts = { :omit => [:legal_structure_filter] }
-    auto_complete_tag("LegalStructure",opts)
+    auto_complete_tag_core("LegalStructure",opts)
+  end
+
+  def auto_complete_member_org
+    opts = { }
+    auto_complete_tag_core("MemberOrg",opts)
+  end
+
+  def auto_complete_tag
+    opts = { }
+    auto_complete_tag_core(nil,opts)
   end
 
   def auto_complete_tag_all
@@ -649,7 +659,7 @@ protected
     render_auto_complete([areas],search)
   end
 
-  def auto_complete_tag(key,opts)
+  def auto_complete_tag_core(key,opts)
     search = params[:search]
     search = "" if search.nil?
     negated = search.starts_with?("-")

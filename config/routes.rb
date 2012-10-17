@@ -4,6 +4,7 @@ ActionController::Routing::Routes.draw do |map|
   map.filter :global_router
 
   map.connect 'tags/search', :controller => "tags", :action => "search"
+  map.connect 'tags/search2', :controller => "tags", :action => "search2"
   map.connect 'tags/dashboard', :controller => "tags", :action => "dashboard"
   map.connect 'tags/update_identities', :controller => "tags", :action => "update_identities"
 

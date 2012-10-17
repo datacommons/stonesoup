@@ -77,29 +77,6 @@ function filter_apply_change(e,name) {
     return false;
 }
 
-String.prototype.hashCode = function(){
-	var hash = 0;
-	if (this.length == 0) return hash;
-	for (i = 0; i < this.length; i++) {
-		char = this.charCodeAt(i);
-		hash = ((hash<<5)-hash)+char;
-		hash = hash & hash; // Convert to 32bit integer
-	}
-	return hash;
-}
-
-function cache_filter_option(obj,txt) {
-  var at = obj["id_cache_ct"] || 0;
-  var c = obj["id_cache"];
-  if (typeof(c)=="undefined") { c = obj["id_cache"] = {}; }
-  var r = c[txt];
-  if (typeof(r)=="undefined") { 
-    r = c[txt] = at;  
-    obj["id_cache_ct"] = at+1;
-  }
-  return r;
-}
-
 function place_filter_editor(x,name) {
     var obj = jQuery("#floating_editor");
     var val = jQuery("input#" + name + "_value").val();

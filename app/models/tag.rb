@@ -73,15 +73,22 @@ class Tag < ActiveRecord::Base
     end
     # Our parent, if we have one, is canonical.
     return false if self.root.nil?
-    return false if self.root.name == self.name
-    unless self.effective.nil?
-      return false if self.effective.name = self.root.name
+    if self.effective.nil?
+      return false if self.root.name == self.name 
+    else
+      if self.effective != self
+        return false if self.effective.name == self.root.name
+      end
     end
 
     # We are rooted in an entity that does not match our name.
     # So we are non-canonical.
     t = Tag.find_or_create_by_name_and_root_id_and_root_type(self.root.name,self.root_id,self.root_type)
-    self.effective = t
+    if t == self
+      self.effective = nil
+    else
+      self.effective = t
+    end
     return true
   end
 
@@ -110,7 +117,8 @@ class Tag < ActiveRecord::Base
   end
 
   def qualified_name
-    self.effective.qualified_name unless self.effective.nil?
+    puts "working on #{self.name}"
+    return self.effective.qualified_name unless self.effective.nil?
     #if self.root
     #  if self.root.respond_to? "friendly_name"
     #    return self.root.friendly_name

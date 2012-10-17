@@ -1,5 +1,92 @@
 <%= render :partial => "tags/auto_complete_code" %>
 
+<script>
+
+function org_apply_change(e,name,taggable_type,taggable_id,seed) {
+    var addition = e.added;
+    if (!e.added && !e.removed) {
+       e.added = jQuery("#" + name + "_select2").select2('data');
+    }
+    if (e.added) {
+	var a = e.added.details;
+	console.log(a);
+	if ("fallback" in a) {
+	    var str = a.fallback;
+	    if (confirm("Add custom " + seed + " tag '" + str + "'?")) {
+		new Ajax.Updater('tags', "/tags/associate/0?type=" + seed + "&taggable_type=" + taggable_type + "&taggable_id=" + taggable_id + "&text=" + escape(str), {asynchronous:true, evalScripts:true});
+	    }
+	    return false;
+	}
+
+	var url = "/tags/associate/" + a.id + "?type=tags" + "&taggable_type=" + taggable_type + "&taggable_id=" + taggable_id;
+	new Ajax.Updater('tags',url, {asynchronous:true, evalScripts:true});
+	return false;
+
+	var lnk = new Object();
+	var item = "/search/change_filter";
+        var params = {};
+	params["act"] = "select";
+	if (typeof a.pid == "object") {
+	    for (var p in a.pid) { 
+		params[p+"_filter"] = a.pid[p];
+	    }
+	} else {
+	    params[a.type + "_filter"] = a.name;
+	}
+	lnk["ac_label"] = a.label;
+	lnk["ac_link"] = item;
+	lnk["ac_cat"] = a.cat;
+	new Ajax.Updater('search_filters', item, {parameters: params, asynchronous:true, evalScripts:true});
+    }
+    return false;
+}
+
+function org_filter_format(result, container, query) {
+    var markup=[];
+    Select2.util.markMatch(result.text, query.term, markup);
+    txt = markup.join("");
+    if (!result.details.direct) {
+	txt = "<i>" + txt + "</i> (" + result.details.family + ")";
+    }
+    return txt;
+}
+
+function instrument3(prefix,taggable_type,taggable_id,seed,raw) {
+    var sel_id = prefix + "_select2";
+    var in_id = prefix + "_input";
+    var out_id = prefix + "_tips";
+    var form_id = prefix + "_form";
+    var base = jQuery("#" + sel_id);
+    base.select2({
+	placeholder: "Add...",
+	allowClear: false,
+ 	multiple: false,
+        formatResult: org_filter_format,
+	ajax: {
+	    //url: "/search/auto_complete_" + raw,
+	    url: "/tags/search2",
+	    dataType: 'json',
+	    data: function(term,page) {
+		var fallback = 0;
+                if (term.length>0) fallback = 1;	
+	     	return { search: term, parent: seed, base: seed, limit: 101, fallback: fallback };
+	    },
+	    results: function(data,page) {
+		match_count = data.length;
+		if (data.length>=101) {
+                    data = [];
+                }
+		return { 
+		    results: data.map(function(e) { var name = e.name.split(/;/)[0]; return { id: cache_filter_option(base[0],e.label), text: name, long_text: e.name, details: e }; }
+				     ) };
+	    }
+	}      
+    });
+    base.bind("change", function(e) { org_apply_change(e,prefix,taggable_type,taggable_id,seed); });
+}
+
+</script>
+
 <% 
 
 units = []
@@ -49,18 +136,17 @@ end
        <% end %>
     <% end %>
     <% end %>
-    <li>Add <input type="text" id="<%= code_label %>_input" autocomplete="off" /></li>
+    <li>Add <input type=hidden id='<%= code_label %>_select2' style='width:350px;' value='hello' /></li>
   </ul>
   <ul id="<%= code_label %>_tips">
   </ul>
   </form>
-  <% units << { :name => code_label, :seed => ((name!="Tag") ? name : "") } %>
+<% units << { :raw => name, :name => code_label, :seed => ((name!="Tag") ? name : "") } %>
 <% end %>
 
 <script>
 <% units.each do |unit| %>
-  instrument("<%= unit[:name] %>","<%= @organization.class.to_s %>", <%= @organization.id %>, "<%= unit[:seed] %>");
+    instrument3("<%= unit[:name] %>","<%= @organization.class.to_s %>", <%= @organization.id %>, "<%= unit[:seed] %>", "<%= unit[:raw].underscore %>");
 <% end %>
 </script>
-
 

@@ -102,16 +102,71 @@ class TagsController < ApplicationController
     end
   end
 
+  def search2
+    search = params[:search]
+    search = "" if search.nil?
+
+    parent = nil
+    seed = ""
+    if params[:parent]
+      seed = params[:parent]
+      parent = Tag.find_by_name_and_root_type(seed,"TagContext")
+    end
+
+    hits = []
+    hits = Tag.find_all_by_parent_id(parent.id) if parent
+    hits.reject!{|x| x.name.downcase.index(search.downcase).nil?}
+
+    if hits.length <= 3
+      hits = hits + Tag.find(:all, :conditions => ['name LIKE ?', 
+                                            (search.length>2 ? "%" : "")+
+                                            search+"%"],
+                             :limit => 5)
+    end
+    results = Array.new
+    if params[:parent]
+      hits.reject!{|x| x.root_type == "TagContext" or x.root_type == "TagWorld"}
+    end
+    hits.each do |h|
+      target = h
+      is_tag = false
+      if h.respond_to? "effective_root"
+        is_tag = true
+        target = h.effective_root
+        target = h if target.nil?
+      end
+      results << {
+        :name => h.name,
+        :label => h.qualified_name,
+        :family => target.class.to_s.underscore.humanize,
+        :id => h.id,
+        :direct => (h.parent == parent || seed == "")
+      }
+    end
+    results.uniq!{|x| x[:name]}
+    results.sort!{|x,y| ((x[:direct] ? 0 : 1) <=> (y[:direct] ? 0 : 1)).nonzero? || (x[:name].downcase <=> y[:name].downcase)}
+
+    if params[:fallback]
+      if params[:fallback] == "1"
+        matches = "no exact match"
+        if (results.length>0) 
+          matches = "matches found" 
+        end
+        results << { :fallback => search, :name => "#{search}; #{matches}", :pid => { params[:base].sub(/_filter/,'') => search }, :family => 'custom' }
+      end
+    end
+
+    render :json => results.to_json
+  end
+
+
+
   def search
     search = params[:search]
     search = "" if search.nil?
     search = search.gsub(/ \(.*/,'')
 
     lowlevel = params[:exact] || false
-
-    if search.length == 0
-      search = "dcc"
-    end
 
     cursor = nil
     parent = nil
@@ -120,8 +175,16 @@ class TagsController < ApplicationController
       seed = params[:parent]
       parent = Tag.find_by_name_and_root_type(seed,"TagContext")
     end
-    exact, closest = Tag.find_by_qualified_name(search)
-    hits = []
+
+    if search == ""
+      exact = parent
+      closest = nil
+      hits = []
+    else
+      exact, closest = Tag.find_by_qualified_name(search)
+      hits = []
+    end
+
     if exact
       if params[:parent]
         hits = hits + [exact]
