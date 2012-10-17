@@ -110,6 +110,7 @@ end
   code_label = label.gsub(' ','_')
   -%>
   <h2><%= label %></h2>
+  <%= render :partial => "tags/explain_#{name.underscore}" %>
   <form id="<%= code_label %>_form">
   <ul>
     <% if taggings %>
