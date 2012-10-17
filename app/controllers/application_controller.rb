@@ -104,10 +104,14 @@ public
       session[:active_zip_filter] = _params[:zip].split(/[,;*]/)
     end
     if _params[:sector]
-      session[:active_sector_filter] = _params[:sector].split(/[;*]/)
+      if _params[:sector].respond_to? "downcase"
+        session[:active_sector_filter] = _params[:sector].split(/[;*]/)
+      end
     end
     if _params[:org_type]
-      session[:active_org_type_filter] = _params[:org_type].split(/[;*]/)
+      if _params[:sector].respond_to? "downcase"
+        session[:active_org_type_filter] = _params[:org_type].split(/[;*]/)
+      end
     end
     if _params[:dso]
       session[:active_dso_filter] = _params[:dso].split(/[;*]/)
