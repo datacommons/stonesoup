@@ -1,7 +1,7 @@
 	<h2>Associated Organizations</h2>
 	<% unless @person.organizations_people.length == 0 then %>
 		<% for op in @person.organizations_people %>
-			<%= render :partial => 'organizations_people/display', :locals => { :org_person => op, :show_delete => true, :hide_person => true, :context => 'person' } %>
+			<%= render :partial => 'organizations_people/display', :locals => { :org_person => op, :show_delete => true, :hide_person => true, :context => 'person', :hide_links => current_user.nil? } %>
 		<% end %>
 	<% end %>
 	<%= link_to_function('New org association', "Element.toggle('block_org_association_new_form'); Element.hide('block_org_association_new_link');", 'id' => 'block_org_association_new_link') %>

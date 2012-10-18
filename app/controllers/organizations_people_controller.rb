@@ -1,4 +1,6 @@
 class OrganizationsPeopleController < ApplicationController
+  before_filter :login_required, :only => [:new, :create, :edit, :update, :move, :destroy]
+
   # GET /organizations_people
   # GET /organizations_people.xml
   def index
