@@ -51,7 +51,7 @@ Event.observe(window, 'load', function() {
 <div class="button-right flip-color"><%= link_to "<b>+</b> #{t :add_organization}", :controller => 'organizations', :action => 'new' %></div>
 <div class="button-right"><%= link_to t(:help), help_path %></div>
 <div class="button-right"><%= link_to t(:recent_changes), recent_path %></div>
-<%- @site.menu.each do |button| -%><div class="button"><a href="<%= button[:link] %>"><%= t(button[:name].underscore, :default => button[:name]) %></a></div><%- end -%>
+<%- @site.menu.each do |button| -%><div class="button"><a href="<%= button[:link][:id] ? url_for({:controller => 'search', :action => 'page'}.merge(button[:link])) : button[:link] %>"><%= t(button[:name].underscore, :default => button[:name]) %></a></div><%- end -%>
 </div>
 
 <!-- end header div -->

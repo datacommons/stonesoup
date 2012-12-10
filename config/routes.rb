@@ -8,6 +8,8 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'tags/dashboard', :controller => "tags", :action => "dashboard"
   map.connect 'tags/update_identities', :controller => "tags", :action => "update_identities"
 
+  map.connect 'page/:id', :controller => "search", :action => "page"
+
   map.resources :data_sharing_orgs
 
   map.resources :legal_structures

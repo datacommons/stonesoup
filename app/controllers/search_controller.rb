@@ -490,7 +490,11 @@ public
     opts[:state_first] = true if state_first
     render_auto_complete(groups,search,opts)
   end
-  
+
+  def page
+    render :template => "layouts/#{@site.name}/#{params[:id]}"
+  end
+
 protected
   def get_latest_changes
     data = Organization.latest_changes(session)
