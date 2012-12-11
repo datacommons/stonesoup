@@ -20,6 +20,10 @@ class FciSite < Site
     false
   end
 
+  def custom_css
+    name
+  end
+ 
   def layout
     :sprint
   end

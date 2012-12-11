@@ -1,0 +1,17 @@
+html,body { 
+        background-color: #5b5b5b;
+}
+
+.header_material {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+#footer { 
+  padding: 10px;
+}
+
+#maincol { 
+  background-color: #ECECEC;
+  padding: 20px;
+}
