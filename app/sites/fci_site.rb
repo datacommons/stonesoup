@@ -5,7 +5,7 @@ class FciSite < Site
   end
 
   def aliases
-    ['fci.find.coop','testfci.find.coop','coopdirectory.org','www.coopdirectory.org']
+    ['commons.coopdirectory.org','fci.find.coop','testfci.find.coop','coopdirectory.org','www.coopdirectory.org']
   end
 
   def dso_filter
