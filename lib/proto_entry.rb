@@ -5,6 +5,7 @@ class ProtoEntry
   attr_accessor :product_service_names
   attr_accessor :entry
   attr_accessor :default_access_type
+  attr_accessor :tags
 
   def from_org(org)
     self.org_attr = org
@@ -20,6 +21,7 @@ class ProtoEntry
     self.sector_names = org.sectors.collect{|x| x.name}
     self.legal_structure_name = nil
     self.legal_structure_name = org.legal_structure.name unless org.legal_structure.nil?
+    self.tags = org.tags.collect{|x| x.name}
     # more to do ...
     true
   end
@@ -61,7 +63,8 @@ class ProtoEntry
       :sector_names => to_part(sector_names),
       :legal_structure_name => to_part(legal_structure_name),
       :member_orgs => to_part(member_orgs),
-      :product_service_names => to_part(product_service_names)
+      :product_service_names => to_part(product_service_names),
+      :tags => to_port(tags),
     }
   end
 end

@@ -13,6 +13,7 @@ class ImportHelper
   end
 
   def simplify(a)
+    return a if a.nil?
     a.downcase.gsub(/[^a-z0-9]/,'')
   end
 
@@ -140,6 +141,7 @@ class ImportHelper
 
 
   def apply_proto(dso, action, proto)
+    RAILS_DEFAULT_LOGGER.debug("IMPORT: basics dso #{dso.inspect}         action #{action.inspect}             proto #{proto.inspect}")
     if action == :add
       return add(dso,proto)
     end
@@ -149,6 +151,7 @@ class ImportHelper
   end
 
   def add(dso,proto)
+    RAILS_DEFAULT_LOGGER.debug("IMPORT: here I am!")
     errors = []
     default_access_type = proto.default_access_type
 
@@ -156,10 +159,31 @@ class ImportHelper
     organization.set_access_rule(default_access_type)
     organization.save!
     
+    RAILS_DEFAULT_LOGGER.debug("IMPORT: working on org #{proto.tags}")
+    need_save = false
+    if proto.tags
+      proto.tags.each do |name|
+        tag = nil
+        if name.kind_of?(Array)
+          parent = Tag.find_by_name(name[0])
+          tag = Tag.find_by_name_and_parent_id(name[1],parent.id) if parent
+        else
+          tag = Tag.find_by_name(name)
+        end
+        organization.tags.push(tag) if tag
+        RAILS_DEFAULT_LOGGER.debug("IMPORT: added tag #{tag.inspect}") if tag
+      end
+    end
+
+    if need_save
+      organization.save!
+    end
+
     DataSharingOrgsTaggable.linked_org_to_dso(organization, dso, nil)
 
     # now process org_type_names, loading or creating as necessary...
     organization.org_types = proto.org_type_names.collect{|name| OrgType.find_or_create_custom(name.strip)} if proto.org_type_names
+    
 
     # process legal structure, loading or creating as necessary
     unless(proto.legal_structure_name.blank?)
@@ -252,21 +276,26 @@ class ImportHelper
       # can be in other organizations too ...
       organization.people.destroy_all
     end
-    proto.contact_attrs.each do |c|
-      contact1_attr = c[:person_attr]
-      contact1_link_attr = c[:link_attr]
-      contact1 = Person.new(contact1_attr)
-      if(contact1.valid?)
-        contact1.set_access_rule(default_access_type)
-        contact1.save!
-        contact1_link = OrganizationsPerson.new(contact1_link_attr)
-        contact1_link.person_id = contact1.id
-        contact1_link.organization_id = organization.id
-        contact1_link.save!
-        RAILS_DEFAULT_LOGGER.debug("IMPORT: Added contact1 & linked to org: #{contact1.name}")
-      else
-        RAILS_DEFAULT_LOGGER.debug("IMPORT: contact1 is invalid: #{contact1.errors.full_messages.inspect}")
+    if proto.contact_attrs
+      proto.contact_attrs.each do |c|
+        contact1_attr = c[:person_attr]
+        contact1_link_attr = c[:link_attr]
+        contact1 = Person.new(contact1_attr)
+        if(contact1.valid?)
+          contact1.set_access_rule(default_access_type)
+          contact1.save!
+          contact1_link = OrganizationsPerson.new(contact1_link_attr)
+          contact1_link.person_id = contact1.id
+          contact1_link.organization_id = organization.id
+          contact1_link.save!
+          RAILS_DEFAULT_LOGGER.debug("IMPORT: Added contact1 & linked to org: #{contact1.name}")
+        else
+          RAILS_DEFAULT_LOGGER.debug("IMPORT: contact1 is invalid: #{contact1.errors.full_messages.inspect}")
+        end
       end
+    end
+
+    if proto.tags
     end
 
     # update org locations
@@ -283,8 +312,8 @@ class ImportHelper
     if organization.locations.empty?
       # easy, just create them...
       proto.location_attrs.each do |loc_attr|
-        loc_attr[:physical_country] = 'USA' unless loc_attr[:physical_state].blank?
-        loc_attr[:mailing_country] = 'USA' unless loc_attr[:mailing_state].blank?
+        loc_attr[:physical_country] = 'United States' unless loc_attr[:physical_state].blank?
+        loc_attr[:mailing_country] = 'United States' unless loc_attr[:mailing_state].blank?
         loc = organization.locations.new(loc_attr)
         if(loc.valid?)
           RAILS_DEFAULT_LOGGER.debug("IMPORT: Adding Location to organization: #{loc.physical_address1} / #{loc.physical_city}")
