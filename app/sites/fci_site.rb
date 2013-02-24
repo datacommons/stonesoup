@@ -9,11 +9,7 @@ class FciSite < Site
   end
 
   def dso_filter
-    nil
-  end
-
-  def city_filter
-    ["Boston"]
+    ["Natural Food Co-ops and Buying Clubs Taskforce"]
   end
 
   def should_show_latest_people
