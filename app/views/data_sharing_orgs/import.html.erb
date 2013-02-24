@@ -63,7 +63,7 @@ Data imported using the <b><%= params[:plugin_name] %></b> plugin.
 	  <li>
 	    <%- button_name = "maker_#{index}_button" -%>
 	    <%- msg_name = "maker_#{index}_msg" -%>
-	    <%= n['name'] %> 
+	    <b><%= n['name'] %></b> <%= n['location_stub'].inspect %> <%= n['stub'].inspect %>
 	        <% form_remote_tag :url => {:action => 'add_org'}, 
 		:loading => %(showLinkingButton('#{button_name}')),
 		:update => "#{msg_name}_2",

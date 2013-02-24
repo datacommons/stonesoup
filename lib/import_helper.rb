@@ -101,6 +101,7 @@ class ImportHelper
     if @orgs.length == 0
       errors.push "No matches for #{orgName}"
       entry['stub'] = org_attr
+      entry['location_stub'] = loc_attr
       @match_status[:available] = true
     else
       errors.push "Many matches for #{orgName}"
