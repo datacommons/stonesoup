@@ -33,7 +33,11 @@ of zip
 <%- if @filter_bank["loc"][:value].blank? -%>
 of zip
 <%- else -%>
+<%- if @filter_bank["loc"][:value][0].include? " " -%>
+of location
+<%- else -%>
 of <%= link_to 'location', { :action=> 'show', :controller => 'locations', :id =>@filter_bank["loc"][:value][0].to_i } %> 
+<%- end -%>
 <%- end -%>
 <%- end -%>
 <%- end -%>

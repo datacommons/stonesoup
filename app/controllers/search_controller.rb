@@ -38,7 +38,7 @@ public
     #  _params[:q] = search_query
     #end
 
-    @entries, @counts = @template.search_core(_params,@site,{ :unlimited_search => @unlimited_search }, true)
+    @entries, @counts = @template.search_core(_params,@site,{ :unlimited_search => @unlimited_search, :params => _params }, true)
 
     if params[:merge]
       @merge_active = true
