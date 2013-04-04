@@ -40,3 +40,23 @@ function cache_filter_option(obj,txt) {
   return r;
 }
 
+function findcoop_select2() {
+    var $ = jQuery;
+    $('input.select2').each(function(i, e){
+	var select = $(e);
+	options = {};
+	if (!select.hasClass('ajaxed')) {
+	    if (select.hasClass('ajax')) {
+		options.ajax = {
+		    url: "/people",
+		    dataType: 'json',
+		    data: function(term, page) { return { q: term, page: page, per: 10 } },
+		    results: function(data, page) { return { results: data } }
+		}
+		options.dropdownCssClass = "bigdrop"
+	    }
+	    select.select2(options);
+	    select.addClass('ajaxed');
+	}
+    });
+}

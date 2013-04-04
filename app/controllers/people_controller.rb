@@ -11,11 +11,43 @@ class PeopleController < ApplicationController
   # GET /people
   # GET /people.xml
   def index
-    @people = Person.find(:all)
+    if params[:q]
+      name = params[:q]
+      limit = 50
+      conditions = nil
+      joinSQL = nil
+      if name.length>=2
+        first, last = name.split(/ /)
+        unless last.nil?
+          last = nil if last == ""
+        end
+        joinSQL, condSQLs, condParams = Organization.all_join(session,{ :entity => "Person"})
+        joinSQL = "INNER JOIN organizations_people ON organizations_people.person_id = people.id INNER JOIN organizations ON organizations_people.organization_id = organizations.id #{joinSQL}"
+        joinSQL = nil if condSQLs.empty?
+        unless last.nil?
+          condSQLs << "people.lastname LIKE ? AND people.firstname LIKE ?"
+          condParams << (last + "%")
+          condParams << (first + "%")
+        else
+          condSQLs << "people.lastname LIKE ? OR people.firstname LIKE ?"
+          condParams << (first + "%")
+          condParams << (first + "%")
+        end
+        # people = Person.find(:all, :conditions => ["lastname LIKE ? OR firstname LIKE ?",first + "%",first+"%"], :limit => limit)
+        conditions = []
+        conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
+      else
+        conditions = ["people.lastname IS NOT NULL AND people.lastname <> ''"]
+      end
+      @people = Person.find(:all, :conditions => conditions, :joins => joinSQL, :limit => limit, :order => "people.lastname ASC, people.firstname ASC")
+    else
+      @people = Person.find(:all)
+    end
 
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @people }
+      format.json  { render :json => @people }
     end
   end
 

@@ -1288,3 +1288,7 @@ position: relative;
   height: 400px;
   border: 1px solid #ccc;
 }
+
+.ajax { 
+  min-width: 200px;
+}

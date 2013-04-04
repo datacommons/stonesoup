@@ -6,7 +6,8 @@ hide_org = false if hide_org.nil?
 <% unless hide_person %>
 	<tr>
 		<th><label for="organizations_person_person_id">Person:</label></th>
-		<td><%= select 'organizations_person', 'person_id', Person.find(:all).sort_by{|p| p.name.downcase.lstrip}.collect{|p| [p.name, p.id]} %></td>
+		<td><%= hidden_field 'organizations_person', 'person_id', :class => 'select2 ajax' %></td>
+                <script>findcoop_select2();</script>
 	</tr>
 <% end %>
 <% unless hide_org %>

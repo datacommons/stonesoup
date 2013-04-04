@@ -1,4 +1,10 @@
 class Person < ActiveRecord::Base
+  scope :finder, lambda { |q| where("name like :q", :q => "%#{q}%") }
+  
+  def as_json(options)
+    { :id => id, :text => name }
+  end
+
   belongs_to :access_rule
   has_many :organizations_people, :dependent => :destroy
   has_many :organizations, :through => :organizations_people
