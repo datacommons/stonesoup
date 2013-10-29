@@ -353,6 +353,7 @@ public
         end
       end
       format.json { render :json => @entries }
+      format.yaml { render :text => @entries.map{|x| x.attributes}.to_yaml, :content_type => "text/x-yaml; charset=utf-8" }
     end
   end
 
