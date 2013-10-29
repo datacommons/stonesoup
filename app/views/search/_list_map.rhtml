@@ -3,12 +3,14 @@
  <% unless @model %>
    <ul>  
     <% if @have_something %>
-    <li>View <%= link_to 'larger map', clean_params.merge(:style => 'map') %></li>
+    <li>View <%= link_to 'larger map', clean_params.merge(:style => 'map').merge(@filter_params) %></li>
     <% end %>
-    <li>Download as <%= link_to 'CSV', clean_params.merge(:format => 'csv') %></li>
-    <li>Download as <%= link_to 'XML', clean_params.merge(:format => 'xml') %></li>
-    <li>Download as <%= link_to 'PDF', clean_params.merge(:format => 'pdf') %></li>
-    <li>Download as <%= link_to 'KML', clean_params.merge(:format => 'kml').merge(@filter_params) %></li>
+    <li>Download as <%= link_to 'PDF', clean_params.merge(:format => 'pdf').merge(:style => 'map').merge(@filter_params) %></li>
+    <li>Download as <%= link_to 'KML', clean_params.merge(:format => 'kml').merge(:style => 'map').merge(@filter_params) %></li>
+    <li>Download as <%= link_to 'CSV', clean_params.merge(:format => 'csv').merge(:style => 'map').merge(@filter_params) %></li>
+    <li>Download as <%= link_to 'XML', clean_params.merge(:format => 'xml').merge(:style => 'map').merge(@filter_params) %></li>
+    <li>Download as <%= link_to 'JSON', clean_params.merge(:format => 'json').merge(:style => 'map').merge(@filter_params) %></li>
+    <li>Download as <%= link_to 'YAML', clean_params.merge(:format => 'yaml').merge(:style => 'map').merge(@filter_params) %></li>
    </ul>
     <% unless @counts.blank? %>
       <h3>Categories</h3>
