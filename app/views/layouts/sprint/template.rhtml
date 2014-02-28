@@ -49,9 +49,9 @@ Event.observe(window, 'load', function() {
 <%= render :partial => 'search/post_search_form', :locals => { :this_is_the_header => true } %>
 <div id="front-bar">
 <div class="button-right flip-color"><%= link_to "<b>+</b> #{t :add_organization}", :controller => 'organizations', :action => 'new' %></div>
-<div class="button-right"><%= link_to t(:help), help_path %></div>
+<div id="button-help" class="button-right"><%= link_to t(:help), help_path %></div>
 <div class="button-right"><%= link_to t(:recent_changes), recent_path %></div>
-<%- @site.menu.each do |button| -%><div class="button"><a href="<%= button[:link][:id] ? url_for({:controller => 'search', :action => 'page'}.merge(button[:link])) : button[:link] %>"><%= t(button[:name].underscore, :default => button[:name]) %></a></div><%- end -%>
+<%- @site.menu.each do |button| -%><div class="button"<%- if button[:id] -%> id="<%= button[:id] %>"<%- end -%>><a href="<%= button[:link][:id] ? url_for({:controller => 'search', :action => 'page'}.merge(button[:link])) : button[:link] %>"><%= t(button[:name].underscore, :default => button[:name]) %></a></div><%- end -%>
 </div>
 
 <!-- end header div -->

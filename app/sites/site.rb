@@ -103,6 +103,7 @@ class Site
   end
 
   def home
+    nil
   end
 
   def menu
