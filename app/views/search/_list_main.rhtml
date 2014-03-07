@@ -41,7 +41,7 @@ end
 <%- end -%>
 
 <% if @entries %>
- <% if @entries.blank? and not(@tag) %>
+ <% if @entries.blank? and not(@model) %>
   <p>
   No results were found for this search.
     <% if not(params[:unrestricted]) %>
