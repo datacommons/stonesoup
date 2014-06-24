@@ -13,7 +13,7 @@ Event.observe(window, 'load', function() {
 });
 </script>
 </head>
-<body class="section-<%=params[:controller]%> page-<%=params[:controller]%>-<%=params[:action]%>">
+<body class="section-<%=params[:controller]%> page-<%=params[:controller]%>-<%=params[:action]%><% if @welcome_page%> welcome-page<% end %>">
 
 <%=render :partial => 'layouts/adminmenu'%>
 <%- 

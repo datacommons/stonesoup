@@ -1,11 +1,14 @@
-body{
+html {
+  height: 100%;
+}
+
+html, body {
   background: #ddd;
   padding: 0;
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 14px;
 }
-
 
 #pagewidth {
   width:984px;
@@ -127,10 +130,27 @@ body{
   display: none;
 }
 #maincol.welcome-page {
+  height: 75%;
   padding: 0;
   margin: 0;
 }
-#big_front_map {
+body.welcome-page {
+  height: 100%;
+}
+body.welcome-page #bigwrapper, #pagewidth {
+  height: 100%;
+}
+body.welcome-page #big_front_map {
+  height: 100%;
+}
+body.welcome-page #all_update {
+  height: 100%;
+}
+body.welcome-page .surround_map_insert {
+  height: 100% !important;
+}
+body.welcome-page #big_front_map .map_insert {
+  height: 100%;
   padding: 0;
   margin: 0;
 }
