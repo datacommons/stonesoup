@@ -56,7 +56,7 @@ Event.observe(window, 'load', function() {
 
 <!-- end header div -->
 <!-- begin maincol div -->
-<div id="maincol">
+<div id="maincol"<% if @welcome_page%> class="welcome-page"<% end %>>
 	<%- unless flash[:notice].blank? -%>
 		<p style="color: green"><%= flash[:notice] %></p>
 	<%- end -%>

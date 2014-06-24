@@ -116,3 +116,21 @@ body{
   font-size: 200%;
   text-shadow: 2px 2px 8px #FF0000;
 }
+
+#big_front_map .surround_map_insert { 
+  width: 100%;
+}
+#big_front_map .search_listing { 
+  display: none;
+}
+#dso_status {
+  display: none;
+}
+#maincol.welcome-page {
+  padding: 0;
+  margin: 0;
+}
+#big_front_map {
+  padding: 0;
+  margin: 0;
+}
