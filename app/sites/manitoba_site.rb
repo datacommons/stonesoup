@@ -1,7 +1,7 @@
 class ManitobaSite < Site
 
   def site_searches
-    ['organic', 'Winnipeg']
+    ['Winnipeg','oil']
   end
 
   def aliases
@@ -9,7 +9,7 @@ class ManitobaSite < Site
   end
 
   def dso_filter
-    nil
+    ["Manitoba Cooperative Association"]
   end
 
   def state_filter
