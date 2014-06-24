@@ -1,7 +1,7 @@
 class ManitobaSite < Site
 
   def site_searches
-    ['Winnipeg','housing', 'music']
+    ['housing', 'music']
   end
 
   def aliases
