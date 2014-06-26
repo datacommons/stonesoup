@@ -17,7 +17,7 @@ class ManitobaSite < Site
   end
 
   def country_filter
-    ["Canada","CA"]
+    ["Canada"]
   end
 
   def should_show_latest_people

@@ -154,3 +154,22 @@ body.welcome-page #big_front_map .map_insert {
   padding: 0;
   margin: 0;
 }
+
+#dso_filter_form { 
+  display: none;
+}
+#state_filter_form { 
+  display: none;
+}
+#country_filter_form { 
+  display: none;
+}
+#legal_structure_filter_form { 
+  display: none;
+}
+#sector_filter_form { 
+  display: none;
+}
+#zip_filter_form { 
+  display: none;
+}
