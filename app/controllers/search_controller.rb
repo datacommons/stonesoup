@@ -244,7 +244,7 @@ public
     template = "name LIKE ?"
     value = (name.length>2 ? "%" : "")+name+"%"
     limit = 50
-    tags = Tag.find(:all, :conditions => [template, value], :limit => limit)
+    tags = Tag.find(:all, :conditions => [template, value], :limit => limit, :select => 'DISTINCT tags.*')
     results = []
     tags.each do |h|
       root = h.effective_root
@@ -365,7 +365,7 @@ public
       end
       conditions = []
       conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
-      tags = Tag.find(:all, :conditions => conditions, :joins => joinSQL, :limit => limit)
+      tags = Tag.find(:all, :conditions => conditions, :joins => joinSQL, :limit => limit, :select => 'DISTINCT tags.*')
     end
 
     if name.length>=1
@@ -695,7 +695,7 @@ protected
       end
       conditions = []
       conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
-      tags = Tag.find(:all, :conditions => conditions, :joins => joinSQL, :limit => limit)
+      tags = Tag.find(:all, :conditions => conditions, :joins => joinSQL, :limit => limit, :select => 'DISTINCT tags.*')
     end
     render_auto_complete([tags],search,{:negated => negated})
   end
