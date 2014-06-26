@@ -60,6 +60,7 @@ public
       redirect_to "http://find.coop", :status => :moved_permanently
       return
     end
+    session[:country_filter] = @site.country_filter
     session[:state_filter] = @site.state_filter
     session[:city_filter] = @site.city_filter
     session[:zip_filter] = @site.zip_filter
