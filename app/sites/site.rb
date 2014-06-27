@@ -41,6 +41,10 @@ class Site
     true
   end
 
+  def country_filter
+    nil
+  end
+
   def state_filter
     nil
   end
