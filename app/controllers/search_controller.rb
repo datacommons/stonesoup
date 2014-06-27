@@ -122,6 +122,8 @@ public
     else
       @entries = @entries.paginate(:per_page => 15, :page => (params[:page]||1))
     end
+
+    render_entries
   end
   
   def render_js
