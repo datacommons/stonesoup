@@ -71,20 +71,6 @@
 	See <%= website_link(@organization.website) %>
 <%- end -%>
 
-<p>
-<!-- Lockerz Share BEGIN -->
-<a class="a2a_dd" href="http://www.addtoany.com/share_save?linkurl=<%= u url_for :action => 'show', :id => @organization, :only_path => false %>&amp;linkname=<%= u @organization.name %>"><img src="http://static.addtoany.com/buttons/share_save_171_16.png" width="171" height="16" border="0" alt="Share"/></a>
-<script type="text/javascript">
-var a2a_config = a2a_config || {};
-a2a_config.linkname = "<%= @organization.name %>";
-a2a_config.linkurl = "<%= url_for :action => 'show', :id => @organization, :only_path => false %>";
-</script>
-<script type="text/javascript" src="http://static.addtoany.com/menu/page.js"></script>
-<!-- Lockerz Share END -->
-</p>
-
-<div class="clearboth"></div>
-
 <div id="listing_info">
 	<% if @organization.primary_location %>
 		<%= render :partial => 'locations/display', :locals => {:location => @organization.primary_location, :hide_links => true}%>
@@ -123,7 +109,6 @@ a2a_config.linkurl = "<%= url_for :action => 'show', :id => @organization, :only
 </div id="listing_info">
 
 <% if @organization.locations.length > 1 %>
-	<div class="clearboth"></div>
 	<h2>Other Locations</h2>
 	<% @organization.locations.each do |loc| 
 		next if loc.id == @organization.primary_location.id %>
@@ -132,7 +117,6 @@ a2a_config.linkurl = "<%= url_for :action => 'show', :id => @organization, :only
 <% end %>
 
 
-<div class="clearboth"></div>
 <div id="attributes">
 	<%- if(!@organization.year_founded.nil? or !@organization.legal_structure.nil?) -%>
 		<h2>Attributes</h2>
@@ -165,7 +149,7 @@ a2a_config.linkurl = "<%= url_for :action => 'show', :id => @organization, :only
 
 
 <% unless @organization.organizations_people.empty? %>
-	<div id="organizations_people" class="clearboth">
+	<div id="organizations_people">
 		<h2>People associated with this organization</h2>
 		<% for op in @organization.organizations_people %>
 			<%= render :partial => 'organizations_people/display', :locals => {:org_person => op, :hide_links => true} %>
@@ -174,7 +158,7 @@ a2a_config.linkurl = "<%= url_for :action => 'show', :id => @organization, :only
 <% end %>
 
 <%- unless included_view -%>
-	<div class="clearboth" id="organization_editors">
+	<div id="organization_editors">
 		<h2>Editors of this entry</h2>
 		<% if @organization.users.any? %>
 		<ul>
@@ -210,4 +194,5 @@ a2a_config.linkurl = "<%= url_for :action => 'show', :id => @organization, :only
 
 	<span id="organization_edit_link"><%= link_to 'Edit', :action => 'edit', :id => @organization %> |</span>
 	<%= link_to 'Back', :controller => 'search', :action => 'index' %>
+
 <%- end -%>
