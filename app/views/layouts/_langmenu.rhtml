@@ -2,6 +2,13 @@
 langs = [{:code => :en, :name => "English"},
          {:code => :es, :name => "Español"},
          {:code => :fr, :name => "Français"}]
+
+# if the user doesn't want all three languages, we filter it down to the subset
+# they do want
+if @site.languages != :all
+  langs = langs.select{|x| @site.languages.include?(x[:code])}
+end
+
 lang_links = langs.reject{|x| x[:code] == I18n.locale}.map{|x| link_to(x[:name],:locale=>x[:code])}.join(" | ")
 # when translations are ready, render this.
 %>
