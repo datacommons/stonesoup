@@ -1,3 +1,13 @@
+
+#userstatus { 
+  display: none;
+}
+#button-help { 
+  display: none !important;             
+}
+#front-bar .flip-color { 
+  display: none;                         
+}
 #dso_filter_form { 
   display: none;
 }
@@ -8,5 +18,11 @@
   display: none;
 }
 #sector_filter_form { 
+  display: none;
+}
+#organization_editors { 
+  display: none;
+}
+#organization_edit_link { 
   display: none;
 }
