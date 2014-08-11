@@ -146,7 +146,7 @@ class Location < ActiveRecord::Base
   
   def save_ll
     address = self.to_s
-    location=GeoKit::Geocoders::GoogleGeocoder.geocode(address)
+    location=GeoKit::Geocoders::GoogleGeocoder3.geocode(address)
     coords = location.ll.scan(/[0-9\.\-\+]+/)
     logger.debug("Geocoding: #{address} gives #{coords}")
     if coords.length == 2
