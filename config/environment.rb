@@ -47,10 +47,9 @@ Rails::Initializer.run do |config|
   
   # See Rails::Configuration for more options
 
-  # Geokit-gem vendored in to avoid broken rubygem on recent Ubuntu
-  # Thanks Levi Turner
+  # this gem needs to be imported at this point so the rails plugin
+  # geokit-rails can load
   require "geokit" 
-  # config.gem "geokit"
 
   config.autoload_paths << "#{RAILS_ROOT}/app/reports"
   config.autoload_paths << "#{RAILS_ROOT}/app/sites"
