@@ -179,3 +179,6 @@ body.welcome-page #big_front_map .map_insert {
 #organization_edit_link { 
   display: none;
 }
+.listing_menu_bar { 
+  display: none;
+}
