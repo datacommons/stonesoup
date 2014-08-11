@@ -72,52 +72,6 @@ end
 $KCODE = 'u'
 require 'jcode'
 
-# This is your yahoo application key for the Yahoo Geocoder.
-# See http://developer.yahoo.com/faq/index.html#appid
-# and http://developer.yahoo.com/maps/rest/V1/geocode.html
-GeoKit::Geocoders::YAHOO='REPLACE_WITH_YOUR_YAHOO_KEY'
-    
-# This is your Google Maps geocoder key. 
-# See http://www.google.com/apis/maps/signup.html
-# and http://www.google.com/apis/maps/documentation/#Geocoding_Examples
-
-if ENV['RAILS_ENV'] == 'development'
-   # the key given here is appropriate for http://localhost/
-   #GeoKit::Geocoders::GOOGLE='ABQIAAAATL4sfiJFXUFfYtomrKYcMRT2yXp_ZAY8_ufC3CFXhHIE1NvwkxSgdzNqmW5nuNCkPicJS8sOhHTE4w'
-   # Here's a key for http://localhost:3000
-   GeoKit::Geocoders::GOOGLE="ABQIAAAA3HdfrnxFAPWyY-aiJUxmqRTJQa0g3IQ9GZqIMmInSLzwtGDKaBQ0KYLwBEKSM7F9gCevcsIf6WPuIQ"    
-elsif ENV['RAILS_ENV'] == 'production'
-   # Here's a key for http://temp-dcp.gaiahost.net/ 
-   #GeoKit::Geocoders::GOOGLE="ABQIAAAATL4sfiJFXUFfYtomrKYcMRTiunT2uSmbcIF9JcYA7tUAKz8ykBQrDga0HatVT0swrunnV3FDzdK4QA" 
-   # Here's a key for http://proto.find.coop
-   #GeoKit::Geocoders::GOOGLE="ABQIAAAATL4sfiJFXUFfYtomrKYcMRSRQZaHZSfXeR81hnlCJRsRo2MAKhSQQPObczixZftaBkuHNkPBTHA0XQ";
-   # Here's a key for http://find.coop
-   GeoKit::Geocoders::GOOGLE="ABQIAAAATL4sfiJFXUFfYtomrKYcMRQWkLFHAQFNAudcyCckITx1xAPkLBSrTBBG0d4ePeNRV85ri4suvrDeCg"
-end
-
-# This is your username and password for geocoder.us.
-# To use the free service, the value can be set to nil or false.  For 
-# usage tied to an account, the value should be set to username:password.
-# See http://geocoder.us
-# and http://geocoder.us/user/signup
-GeoKit::Geocoders::GEOCODER_US=false 
-
-# This is your authorization key for geocoder.ca.
-# To use the free service, the value can be set to nil or false.  For 
-# usage tied to an account, set the value to the key obtained from
-# Geocoder.ca.
-# See http://geocoder.ca
-# and http://geocoder.ca/?register=1
-GeoKit::Geocoders::GEOCODER_CA=false
-
-# This is the order in which the geocoders are called in a failover scenario
-# If you only want to use a single geocoder, put a single symbol in the array.
-# Valid symbols are :google, :yahoo, :us, and :ca.
-# Be aware that there are Terms of Use restrictions on how you can use the 
-# various geocoders.  Make sure you read up on relevant Terms of Use for each
-# geocoder you are going to use.
-GeoKit::Geocoders::PROVIDER_ORDER=[:google,:us]
-
 require "will_paginate"
 
 email_config_file = "#{RAILS_ROOT}/config/email.yml"
