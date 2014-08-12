@@ -633,6 +633,11 @@ module ApplicationHelper
     t(x.underscore.to_sym,:default => x)
   end
 
+  def default_distance_unit
+    return "miles" unless is_canada
+    return "km"
+  end
+
   def contact_path
     'http://datacommons.find.coop/contact'
   end
