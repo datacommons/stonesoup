@@ -33,7 +33,13 @@ end
 		  <%- unless filter[:value].blank? -%>
 			<div class="filter_listing active">
 				<span class="label"><%= refine_filter_label(filter[:label]) %>:</span>
-				<span class="value"><%= filter[:value].join(', ') %></span>
+				<span class="value">
+				<% if filter[:label] == "Loc" %>
+				  <%= filter[:value].map{|id| Location.find(id).to_s.gsub(/[, ]*,[, ]+/,', ')} %>
+				<% else %>
+				  <%= filter[:value].join(', ') %>
+ 				<% end %>
+				</span>
 			</div>
 		  <%- end -%>
 		<%- end -%>
