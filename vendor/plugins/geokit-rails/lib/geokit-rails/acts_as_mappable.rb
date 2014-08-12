@@ -427,8 +427,11 @@ module Geokit
                   COS(#{lat})*SIN(#{lng})*COS(RADIANS(#{qualified_lat_column_name}))*SIN(RADIANS(#{qualified_lng_column_name}))+
                   SIN(#{lat})*SIN(RADIANS(#{qualified_lat_column_name}))))*#{multiplier})
                   SQL_END
+          when "sqlite"
+            # this relies on application adding a specialized method
+            sql = "sphere_distance(#{lat},#{lng},#{qualified_lat_column_name},#{qualified_lng_column_name},#{multiplier})"
           else
-            sql = "unhandled #{connection.adapter_name.downcase} adapter"
+            sql = "unhandled #{connection.adapter_name.downcase} adapter for sphere_distance_sql"
           end        
         end
         
@@ -449,7 +452,7 @@ module Geokit
                   POW(#{lng_degree_units}*(#{origin.lng}-#{qualified_lng_column_name}),2))
                   SQL_END
           else
-            sql = "unhandled #{connection.adapter_name.downcase} adapter"
+            sql = "unhandled #{connection.adapter_name.downcase} adapter for flag_distance_sql"
           end
         end
       end
