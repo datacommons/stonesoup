@@ -170,9 +170,6 @@ body.welcome-page #big_front_map .map_insert {
 #sector_filter_form { 
   display: none;
 }
-#zip_filter_form { 
-  display: none;
-}
 #organization_editors { 
   display: none;
 }
