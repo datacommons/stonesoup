@@ -28,10 +28,10 @@
 <div style="position:relative;"><ul id="<%=filter[:name]%>_filter_tips" class="autocomplete_box" style="margin-top: 0px; padding-top: 0px; margin-left: 0px; margin-right: 0px; width:300px; z-index:<%=10999-index%>; display: none; position:absolute; top: 0px; left: 0px;"></ul></div>
 <%- if filter[:name] == "within" -%>
 <%- if @filter_bank["loc"].blank? -%>
-of zip
+of <%= refine_filter_label("Zip") %>
 <%- else -%>
 <%- if @filter_bank["loc"][:value].blank? -%>
-of zip
+of <%= refine_filter_label("Zip") %>
 <%- else -%>
 <%- if @filter_bank["loc"][:value][0].include? " " -%>
 of location
