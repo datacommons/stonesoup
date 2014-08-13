@@ -49,7 +49,9 @@ Rails::Initializer.run do |config|
 
   # this gem needs to be imported at this point so the rails plugin
   # geokit-rails can load
-  require "geokit" 
+  require "geokit"
+  require "google-v3-geocoder"
+  Geokit::Geocoders::provider_order = [:google_v3,:us]
 
   config.autoload_paths << "#{RAILS_ROOT}/app/reports"
   config.autoload_paths << "#{RAILS_ROOT}/app/sites"
