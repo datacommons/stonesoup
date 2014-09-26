@@ -469,12 +469,13 @@ class Organization < ActiveRecord::Base
 
         unless pro.empty?
           tags = pro.map{|x| Tag.find_by_name_and_root_type(x,name)}.compact.map{|x| x.synonyms}.flatten
-          tags = [0] if tags.length == 0
-          joinSQL = "#{joinSQL} INNER JOIN taggings AS taggings_#{name} ON taggings_#{name}.taggable_id = organizations.id"
-          condSQLs << "taggings_#{name}.taggable_type = ?"
-          condParams += ["Organization"]
-          condSQLs << "taggings_#{name}.tag_id IN (#{tags.collect{'?'}.join(',')})"
-          condParams += tags.map{|x| x.id}
+          if tags.length>0
+            joinSQL = "#{joinSQL} INNER JOIN taggings AS taggings_#{name} ON taggings_#{name}.taggable_id = organizations.id"
+            condSQLs << "taggings_#{name}.taggable_type = ?"
+            condParams += ["Organization"]
+            condSQLs << "taggings_#{name}.tag_id IN (#{tags.collect{'?'}.join(',')})"
+            condParams += tags.map{|x| x.id}
+          end
         end
 
         unless con.empty?

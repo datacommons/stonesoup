@@ -80,10 +80,10 @@ module ApplicationHelper
     if params['map'] then
       v = :openlayers
       case params['map']
-        when 'google': v = :google
-        when 'openstreetmap': v = :openstreetmap
-        when 'openlayers': v = :openlayers
-        when 'yahoo': v = :yahoo
+        when 'google' then v = :google
+        when 'openstreetmap' then v = :openstreetmap
+        when 'openlayers' then v = :openlayers
+        when 'yahoo' then v = :yahoo
       end
       session[:map] = v
       return v
@@ -215,13 +215,11 @@ module ApplicationHelper
 
     if search_query == ""
       entries = Organization.find(:all,
-                                  :limit => :all,
                                   :conditions => org_conditions,
                                   :joins => org_joinSQL,
                                   :select => org_select,
                                   :order => org_order)
       entries2 = Person.find(:all,
-                             :limit => :all,
                              :conditions => ppl_conditions,
                              :joins => ppl_joinSQL,
                              :select => ppl_select)
@@ -237,7 +235,6 @@ module ApplicationHelper
                                      :per_page => 50000,
                                    }, # disable pagination, we need counts
                                    {
-                                     :limit => :all,
                                      :conditions => { :organization => org_conditions, :person => ppl_conditions },
                                      :joins => { :organization => org_joinSQL, :person => ppl_joinSQL },
                                      :select => { :organization => org_select, :person => ppl_select },
@@ -246,10 +243,14 @@ module ApplicationHelper
     end
     if include_counts
       counts = ApplicationHelper.count_tags(entries)
-      entries = entries.paginate(pagination)
+      unless opts[:unlimited_search]
+        entries = entries.paginate(pagination)
+      end
       return [entries, counts]
     end
-    entries = entries.paginate(pagination)
+      unless opts[:unlimited_search]
+        entries = entries.paginate(pagination)
+      end
     entries
   end
 

@@ -71,8 +71,8 @@ end
 # Include your application configuration below
 
 # UTF-8 Support (multibyte support)
-$KCODE = 'u'
-require 'jcode'
+# $KCODE = 'u'
+# require 'jcode'
 
 require "will_paginate"
 

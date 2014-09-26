@@ -12,7 +12,7 @@ module ActsAsFerret
   class FerretResult < ActsAsFerret::BlankSlate
     include ResultAttributes
     attr_accessor :id
-    reveal :methods
+    #reveal :methods
 
     def initialize(model, id, score, rank, data = {})
       @model = model.constantize
