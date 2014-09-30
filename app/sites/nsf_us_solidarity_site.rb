@@ -30,10 +30,6 @@ class NSFUSSolidarity < Site
     ['ussolidarity', 'ussolecon.parit.ca']
   end
 
-  def dso_filter
-    ["NSF_US_solidarity"]
-  end
-
   def title
     'US Solidarity Economy Mapping Platform'
   end
