@@ -27,7 +27,7 @@ class NSFUSSolidarity < Site
   end
 
   def aliases
-    ['ussolidarity', ]
+    ['ussolidarity', 'ussolecon.parit.ca']
   end
 
   def dso_filter
