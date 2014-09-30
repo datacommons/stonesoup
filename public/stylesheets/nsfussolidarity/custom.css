@@ -26,3 +26,9 @@
 #organization_edit_link { 
   display: none;
 }
+#big_front_map .surround_map_insert { 
+  width: 100%;
+}
+#big_front_map .search_listing { 
+  display: none;
+}
