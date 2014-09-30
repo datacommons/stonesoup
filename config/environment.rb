@@ -195,3 +195,6 @@ end
 IMPORT_PLUGINS_DIRECTORY = "#{RAILS_ROOT}/lib/import_plugins"
 
 
+require 'geocode_cache_db'
+require 'geocode_cache'
+GEOCODE_CACHE::CACHE_ENABLED = true
