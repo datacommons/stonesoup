@@ -1,6 +1,7 @@
 #!./script/runner
 
 require 'nsf_db'
+require 'solr_update'
 
 #ActiveRecord::Base.logger = Logger.new(STDOUT) 
 
@@ -68,6 +69,11 @@ NSF_DB::Entity.all(:order => "type,oid,uid", :limit => 200).each do |e|
     # note we're not doing anything with e.comments
     loc.save!
     current_org.save!
+
+    if (loc.longitude != nil and loc.latitude != nil)
+      SOLR_SEARCH::solr_update(current_org.id, loc.id, current_org.name,
+                               loc.longitude, loc.latitude)
+    end
   end
 
   # for some reason, the DSO link doesn't seem to "take" for
