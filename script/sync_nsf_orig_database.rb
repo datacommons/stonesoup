@@ -29,7 +29,7 @@ current_org = nil
 # for now we're loading everything to memory, ideally would re-code for less
 # but non-int id column is making that difficult with the support active_record
 # has for that
-NSF_DB::Entity.all(:order => "type,oid,uid", :limit => 200).each do |e|
+NSF_DB::Entity.all(:order => "type,oid,uid").each do |e|
   if org_tag == nil or org_tag.name != e.org_type
     ot = OrgType.new(:name => e.org_type, :description => e.org_type)
     ot.save!
