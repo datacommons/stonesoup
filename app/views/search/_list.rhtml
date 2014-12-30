@@ -1,6 +1,6 @@
 <% if @welcome_page %>
   <div id="big_front_map">
-  <%= render :partial => "search/map", :locals => { :name => "all", :link => { :no_override => false }, :immediate => false } %>
+  <%= render :partial => 'search/solr_all_map' %>
   </div>
   <div class="clearboth"></div>
 <% else %>
