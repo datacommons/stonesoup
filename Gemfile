@@ -9,3 +9,5 @@ gem "json", "~> 1.8.1"
 gem "mysql", "~> 2.9.1"
 gem "fastercsv", "~> 1.5.5"
 gem "rake", '~> 0.9.2.2'
+gem "rsolr", '~> 1.0.10'
+gem "c_geohash", '~> 1.1.2'
