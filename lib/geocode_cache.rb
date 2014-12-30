@@ -9,10 +9,13 @@ module GEOCODE_CACHE
     end
   end
 
-  def self.insert(address, longitude, latitude)
+  def self.insert(address, longitude, latitude, uid, oid, bid)
     a = GEOCODE_CACHE_DB::Geocode_Cache_Entry.new( :address => address,
                                                    :longitude => longitude,
-                                                   :latitude => latitude )
+                                                   :latitude => latitude,
+                                                   :uid => uid,
+                                                   :oid => oid,
+                                                   :bid => bid)
     a.save!
   end
 
