@@ -1,0 +1,34 @@
+
+#userstatus { 
+  display: none;
+}
+#button-help { 
+  display: none !important;             
+}
+#front-bar .flip-color { 
+  display: none;                         
+}
+#dso_filter_form { 
+  display: none;
+}
+#country_filter_form { 
+  display: none;
+}
+#legal_structure_filter_form { 
+  display: none;
+}
+#sector_filter_form { 
+  display: none;
+}
+#organization_editors { 
+  display: none;
+}
+#organization_edit_link { 
+  display: none;
+}
+#big_front_map .surround_map_insert { 
+  width: 100%;
+}
+#big_front_map .search_listing { 
+  display: none;
+}
