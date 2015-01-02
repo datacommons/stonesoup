@@ -20,3 +20,16 @@
 	background-color: rgb(241, 128, 23);
 }
 
+.marker-cluster-huge {
+	background-color: rgb(255, 66, 50);
+}
+.marker-cluster-huge div {
+	background-color: rgb(255, 33, 25);
+}
+
+.marker-cluster-giant {
+	background-color: rgb(253, 40, 150);
+}
+.marker-cluster-giant div {
+	background-color: rgb(241, 20, 90);
+}
