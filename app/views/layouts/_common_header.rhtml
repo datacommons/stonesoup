@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="/leaflet/clusterer/MarkerCluster.css" />
 <link rel="stylesheet" href="/leaflet/clusterer/MarkerCluster.Default.css" />
 <!--[if lte IE 8]><link rel="stylesheet" href="/leaflet/clusterer/MarkerCluster.Default.ie.css" /><![endif]-->
-<%= Mapstraction.header(current_map_type, :host => request.host) %>
+<%= Mapstraction.header(current_map_type, :host => request.host).html_safe %>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <%= stylesheet_link_tag (@site.style.to_s + '/scaffold.css') %>
 <%= stylesheet_link_tag (@site.style.to_s + '/main.css') %>

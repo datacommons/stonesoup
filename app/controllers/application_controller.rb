@@ -5,6 +5,8 @@ require_dependency "login_system"
 require 'sites'
 
 class ApplicationController < ActionController::Base
+  protect_from_forgery
+
   include LoginSystem
 
   helper ApplicationHelper
