@@ -13,6 +13,11 @@ def fix_null_and_blank(a)
 end
 
 ActiveRecord::Base.transaction do
+  Location.delete_all
+  Organization.delete_all
+  OrgType.delete_all
+  Tag.delete_all
+
   type_tags = {}
   NSF_DB::Type.all.each do |t|
     ot = OrgType.new(:name => t.type_name, :description => t.type_name)
