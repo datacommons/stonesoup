@@ -13,6 +13,7 @@ def fix_null_and_blank(a)
 end
 
 ActiveRecord::Base.transaction do
+  StoneToSolidarity.delete_all
   Location.delete_all
   Organization.delete_all
   OrgType.delete_all
@@ -42,6 +43,9 @@ ActiveRecord::Base.transaction do
         current_org_stone.tags << type_tags[org_type.tid]
       end
       current_org_stone.save!
+      orig_key_save = StoneToSolidarity.new(:stoneid=>current_org_stone.id,
+                                            :solidarityid=>current_org.oid)
+      orig_key_save.save!
     end
 
     # there are only 24 entries without city, StoneSoup requires one
