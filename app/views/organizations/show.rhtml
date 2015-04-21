@@ -157,6 +157,8 @@
 	</div>
 <% end %>
 
+	<h2>Edit this entry</h2>
+	<span><a href="http://edit.<%= request.host %>/organizations/<%= StoneToSolidarity.first(:conditions=> {:stoneid=>@organization.id} ).solidarityid  %>/edit">Edit</a></span>
 <%- unless included_view -%>
 	<div id="organization_editors">
 		<h2>Editors of this entry</h2>
