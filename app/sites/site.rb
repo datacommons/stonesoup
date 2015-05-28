@@ -132,5 +132,10 @@ class Site
       end
     end
   end
+
+  def custom_filters_template
+    false
+  end
+
 end
 

@@ -186,8 +186,13 @@ public
         session[:active_zip_filter] = nil
       end
     end
+    if @site.custom_filters_template
+      partial_name = @site.custom_filters_template
+    else
+      partial_name = 'filters2'
+    end
     self.get_filters
-    render :partial => 'filters2'
+    render :partial => partial_name
   end
 
   def auto_complete_test
