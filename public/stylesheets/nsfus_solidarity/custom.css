@@ -180,7 +180,6 @@ h2 {
 }
 #big_front_map {
 	position: relative;
-	height: 450px;
 }
 #big_front_map:before {
 	-webkit-box-shadow: inset 0px 11px 8px -10px #35343D,
@@ -215,6 +214,7 @@ h2 {
 	left: 0;
 	bottom: 0;
 	z-index: 10;
+	overflow: hidden;
 }
 #map-text-box h4 {
 	font-weight: 600;
