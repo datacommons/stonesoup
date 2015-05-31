@@ -1,0 +1,23 @@
+<% if @welcome_page %>
+<div class="map-wrapper">
+  <div id="big_front_map">
+  <%= render :partial => 'search/solr_all_map' %>
+  </div>
+		  <div id="map-text-box">
+		  <div class="close-box"></div>
+		  <div class="map-text-wrapper">
+			  <h4>The SE is about building an economy for people and planet.</h4>  
+			  <p>Are you interested in being able to find worker coops, community land trusts, community gardens, social currencies, credit unions, community banks, and other solidarity economy businesses or practices? You can find them here. </p>
+		  </div>
+	  </div>
+
+	  <div class="open-box"></div> 
+</div>
+
+<% else %>
+  <% if @map_style %>
+  <%= render :partial => 'search/map_main' %>
+  <% else %>
+  <%= render :partial => 'search/list_main' %>
+  <% end %>
+<% end %>

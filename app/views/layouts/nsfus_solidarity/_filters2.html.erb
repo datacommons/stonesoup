@@ -1,0 +1,194 @@
+<div id="hide_filters_wrap" class="nohover"><div class="header_material"><%= link_to_remote(t(:hide), {:url => {:controller => 'search', :action => 'change_filter', :act => 'reset'}, :update => 'search_filters', :after => "Element.hide('search_filters'); Element.show('search_tips')", :id=>'hide_filters1'}) %> <%= link_to_remote('<img src="/images/sprint/x.png" />', {:url => {:controller => 'search', :action => 'change_filter', :act => 'reset'}, :update => 'search_filters', :after => "Element.hide('search_filters'); Element.show('search_tips')", :id=>'hide_filters1'}) %></div></div>
+
+<% @all_filters.reject{|x| x[:name]=="loc"}.each_with_index do |filter,index| %>
+<% unless filter[:name] == "within" and @active_filters.select{|x| (x[:name] == "zip" || x[:name]=="loc") and !x[:value].blank? and x[:value].length == 1}.length == 0 %>
+<form id="<%=filter[:name]%>_filter_form" class="filter_listing<%- if !(filter[:value].blank?) -%> active<%- elsif filter[:has_default] -%> disable<%- else -%> default<%- end -%>">
+<%- unless filter[:value].blank? and !filter[:has_default] -%>
+<div class="close"><%= link_to_remote( 'x', 
+    :url => {:controller => 'search', :action => 'change_filter', :name => filter[:name]},
+    :update => 'search_filters') %></div>
+<%- end -%>
+    <span id="<%=filter[:name]%>_title" class="filter_title"><%= refine_filter_label(filter[:label]) %></span>
+<div id="<%=filter[:name]%>_filter_input" class="filter_editable">
+<% unless filter[:value].blank? %>
+ <%= filter[:value].join(', ') %><br />
+<% else %>
+ <%= refine_filter_label(filter[:label]) %>...
+<% end %>
+</div>
+<% unless filter[:value].blank? %>
+ <input type='hidden' id="<%=filter[:name]%>_filter_value" value='<%= filter[:value].join(',') %>' />
+<% else %>
+ <input type='hidden' id="<%=filter[:name]%>_filter_value" value='' />
+<% end %>
+<div style="position:relative;"><ul id="<%=filter[:name]%>_filter_tips" class="autocomplete_box" style="margin-top: 0px; padding-top: 0px; margin-left: 0px; margin-right: 0px; width:300px; z-index:<%=10999-index%>; display: none; position:absolute; top: 0px; left: 0px;"></ul></div>
+<%- if filter[:name] == "within" -%>
+<%- if @filter_bank["loc"].blank? -%>
+of <%= refine_filter_label("Zip") %>
+<%- else -%>
+<%- if @filter_bank["loc"][:value].blank? -%>
+of <%= refine_filter_label("Zip") %>
+<%- else -%>
+<%- if @filter_bank["loc"][:value][0].include? " " -%>
+of location
+<%- else -%>
+of <%= link_to 'location', { :action=> 'show', :controller => 'locations', :id =>@filter_bank["loc"][:value][0].to_i } %> 
+<%- end -%>
+<%- end -%>
+<%- end -%>
+<%- end -%>
+&nbsp;
+</form>
+<% end %>
+<% end %>
+<div class="clearboth"></div>
+
+<script>
+
+function filter_apply_change(e,name) {
+    var addition = e.added;
+    if (!e.added && !e.removed) {
+       e.added = jQuery("#" + name + "_select2").select2('data');
+    }
+    if (e.added) {
+	var a = e.added.details;
+	var lnk = new Object();
+	var item = "/search/change_filter";
+        var params = {};
+	params["act"] = "select";
+	if (typeof a.pid == "object") {
+	    for (var p in a.pid) { 
+		params[p+"_filter"] = a.pid[p];
+	    }
+	} else {
+	    params[a.type + "_filter"] = a.name;
+	}
+	lnk["ac_label"] = a.label;
+	lnk["ac_link"] = item;
+	lnk["ac_cat"] = a.cat;
+	new Ajax.Updater('search_filters', item, {parameters: params, asynchronous:true, evalScripts:true});
+    }
+    if (e.removed) {
+	var a = e.removed.text;
+	var ac_link = "/search/change_filter";
+	var params = {act: 'remove'};
+	params[name] = a;
+	new Ajax.Updater('search_filters', ac_link, {parameters: params, asynchronous:true, evalScripts:true}); 
+    }
+    return false;
+}
+
+function place_filter_editor(x,name) {
+    var obj = jQuery("#floating_editor");
+    var val = jQuery("input#" + name + "_value").val();
+    obj.html("<input type=hidden id='" + name  + "_select2' style='width:200px;' value='" + val + "' />");
+    obj.show();
+    obj.offset(x.offset());
+    jQuery("#floating_editor")[0].anchor_object = x.attr('id');
+}
+
+function filter_format(result, container, query) {
+    var markup=[];
+    Select2.util.markMatch(result.text, query.term, markup);
+    var txt = markup.join("");
+    if (result.text!=result.long_text) {
+	var lt = result.long_text.replace(result.text + "; ","").replace("United States","US").replace("United Kingdom", "UK").replace(";",",");
+	txt = txt + " <font size='-1'>(" + lt + ")</font>";
+    }
+    return txt;
+}
+
+var match_count = 0;
+
+function format_searching() {
+    return "";
+}
+
+function format_no_matches(term) {
+    if (match_count>100) {
+	if (term=="") {
+	    return "Please type...";
+	}
+	return "Please type more...";
+    }
+    return "No matches found, sorry";
+}
+
+function filter_instrument2(name,autocompleter,single) {
+  var base_name = name;
+  jQuery("#" + name + "_input").bind('click', function(e) {
+    e.stopPropagation();
+    place_filter_editor(jQuery("#" + name + "_input"), name);
+    var base = jQuery("#" + name + "_select2");
+    base.select2({
+	placeholder: "Editing...",
+	allowClear: true,
+        formatResult: filter_format,
+	formatNoMatches: format_no_matches,
+	formatSearching: format_searching,
+	multiple: !single,
+                initSelection : function (element, callback) {
+                  var data = [];
+                  jQuery(element.val().split(",")).each(function () {
+		    var txt = this+'';
+                    data.push({id: cache_filter_option(base[0], txt), text: txt, long_text: txt, details: null});
+                  });
+		  if (data.length==1 && single) { callback(data[0]); }
+                  else { callback(data); }
+                },
+	ajax: {
+		url: autocompleter,
+		dataType: 'json',
+		data: function(term,page) {
+		    var fallback = 0;
+                    if (term.length>0) fallback = 1;	
+	     	    return { search: term, limit: 101, fallback: fallback, base: base_name };
+		},
+		results: function(data,page) {
+		    match_count = data.length;
+		    if (data.length>=101) {
+                       data = [];
+                    }
+		  return { 
+		      results: data.map(function(e) { var name = e.name.split(/;/)[0]; return { id: cache_filter_option(base[0],e.name), text: name, long_text: e.name, details: e }; }
+		  ) };
+		}
+	}
+  });
+  jQuery("#" + name + "_select2").bind("change", function(e) { filter_apply_change(e,name); });
+  jQuery("#floating_editor").click(function(e) { e.stopPropagation(); });
+  jQuery('body').click(function() { 
+    jQuery("#floating_editor").hide(); 
+  });
+  jQuery("#" + name + "_select2").select2('focus');
+  jQuery("#" + name + "_select2").select2('open');
+  });
+}
+
+var filter_state = new Object();
+<% @all_filters.each do |filter| %>
+filter_instrument2("<%=filter[:name]%>_filter","/search/auto_complete_<%=filter[:name]%>",<%=filter[:single] ? 'true' : 'false'%>);
+<% end %>
+</script>
+
+<script>
+
+var obj = jQuery("#floating_editor");
+if (obj.length == 0) {
+  jQuery('<div/>', {
+    id: 'floating_editor',
+    style: 'position: absolute; display: none; text-align: left;',
+  }).appendTo('#bigwrapper');
+    obj = jQuery("#floating_editor");
+    if (obj.length == 1) {
+	obj.html("...");
+    }
+}
+obj = jQuery("#floating_editor");
+if (obj.length>0) {
+  var anc = obj[0].anchor_object;
+  if (anc) {
+    obj.offset(jQuery("#" + anc).offset());
+  }
+}
+</script>

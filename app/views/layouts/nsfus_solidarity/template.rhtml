@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<title><%- if @content_for_title -%><%=h yield(:title) %><%- else -%><%= @site.title %>: <%= controller.action_name %><%- end -%></title>
+	<%=render :partial => 'layouts/common_header'%>
+
+<% if @welcome_page%>
+    <script src="/javascripts/radicaldesigns.js" type="text/javascript"></script>
+<% end %>
+
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:100,200,300,300italic,400,400italic,600,600italic,700' rel='stylesheet' type='text/css'>
+<script>
+var masonry_list = [];
+Event.observe(window, 'load', function() {
+  for (var unit in $$('.mason')) {
+    //masonry_list.push(new Masonry(unit));
+  }
+});
+</script>
+</head>
+<body class="section-<%=params[:controller]%> page-<%=params[:controller]%>-<%=params[:action]%><% if @welcome_page%> welcome-page<% end %>">
+
+<%=render :partial => 'layouts/adminmenu'%>
+<%- 
+   homepage = @site.home || ""
+   homepage = homepage + url_for(:action => 'index', :controller => 'search')
+-%>
+<!-- begin wrapper div -->
+<div id="bigwrapper">
+
+<!-- begin pagewidth div -->
+<div id="pagewidth">
+
+<!-- begin header div -->
+<div id="header">
+  <div class="header-inner-wrap">
+       <div class="header_material">
+	<div class='titleblock nohover clearboth'>
+          <%- unless @site.use_logo -%>
+	  <div class='clearboth title'><b><a href='<%= homepage %>'>Find</a></b><span class='minor'><a href='<%= homepage%>'>.COOP</a></span></div>
+          <%- else -%>
+          <a href="<%=homepage%>"><img src="/images/<%= @site.name %>/logo2.png" /></a>
+          <%- end -%>
+	</div>
+
+	<div id="front-bar">
+	    <div class="button-right flip-color"><%= link_to "<b>+</b> #{t :add_organization}", :controller => 'organizations', :action => 'new' %></div>
+	    <div id="button-help" class="button-right"><%= link_to t(:help), help_path %></div>
+	    <div class="button-right"><%= link_to t(:recent_changes), recent_path %></div>
+	    <%- @site.menu.each do |button| -%><div class="button"<%- if button[:id] -%> id="<%= button[:id] %>"<%- end -%>><a href="<%= button[:link][:id] ? url_for({:controller => 'search', :action => 'page'}.merge(button[:link])) : button[:link] %>"><%= t(button[:name].underscore, :default => button[:name]) %></a></div><%- end -%>
+
+	    <%- unless @site.languages.nil? -%>
+	    <div id="langstatus" class='languageblock nohover userstatus'>
+            <%=render :partial => 'layouts/langmenu'%>
+	    </div>
+	    <!--langstatus-->
+	    <%- end -%>
+	</div>
+	<!--frontbar-->
+
+	<div id="userstatus" class='loginblock nohover'>
+	<%=render :partial => 'layouts/usermenu'%>
+	</div>
+	<!--userstatus-->
+
+	<%= render :partial => 'layouts/nsfus_solidarity/post_search_form', :locals => { :this_is_the_header => true } %>
+
+
+        <%= render :partial => 'search/search_form', :locals => { :this_is_the_header => true } %>
+
+</div>
+<!-- header_material -->
+
+<div id="post_header"></div>
+
+</div>
+<!--.header-inner-wrap-->
+</div>
+<!-- end header div -->
+
+<!-- begin maincol div -->
+<div id="maincol"<% if @welcome_page%> class="welcome-page"<% end %>>
+	<%- unless flash[:notice].blank? -%>
+		<p style="color: green"><%= flash[:notice] %></p>
+	<%- end -%>
+	<%- unless flash[:error].blank? -%>
+		<p style="color: red"><%= flash[:error] %></p>
+	<%- end -%>
+
+<%= @content_for_layout %>
+</div>
+<!-- end maincol div -->
+<!-- begin footer div -->
+<div id="footer">
+<%=render :partial => 'layouts/nsfus_solidarity/common_footer'%>
+<%=render :partial => 'tags/select_tag', :locals => { :any => true, :act => :open_tag, :exact => false, :auto_complete_input_id => 'q', :auto_complete_output_id => 'qq' }%>
+</div>
+<!-- end footer div -->
+</div>
+<!-- end pagewidth div -->
+</div>
+<!-- end wrapper div -->
+</body>
+</html>
