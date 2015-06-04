@@ -181,6 +181,7 @@ h2 {
 #big_front_map {
 	position: relative;
 }
+/** Drop shadow disabled temporarilly as leaflet marker clickability is absent
 #big_front_map:before {
 	-webkit-box-shadow: inset 0px 11px 8px -10px #35343D,
         inset 0px -11px 8px -10px #35343D; 
@@ -193,7 +194,7 @@ h2 {
     height: 100%;
     content: "";
     z-index: 2;
-}
+}**/
 .leaflet-layer img{
 	z-index: 1
 }
