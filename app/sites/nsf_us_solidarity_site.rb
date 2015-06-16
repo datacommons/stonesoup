@@ -31,7 +31,7 @@ class NSFUSSolidarity < Site
   end
 
   def aliases
-    ['ussolidarity', 'ussolecon.parit.ca', 'solidarityeconomy.us']
+    ['ussolidarity', 'ussolecon.parit.ca', 'solidarityeconomy.us', 'dev.solidarityeconomy.us']
   end
 
   def title
