@@ -13,5 +13,10 @@
 <%= render :partial => 'search/search_form', :locals => {:hide_examples => true} %>
 <%- end %>
 
-<%= render :partial => "search/list" %>
+<% if @site.custom_search_template
+    search_list_partial = @site.custom_search_template
+else
+    search_list_partial = "search/list"
+end %>
+<%= render :partial => search_list_partial %>
 

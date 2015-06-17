@@ -137,5 +137,9 @@ class Site
     false
   end
 
+  def custom_search_template
+    false
+  end
+
 end
 
