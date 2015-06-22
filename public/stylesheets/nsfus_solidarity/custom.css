@@ -29,9 +29,6 @@
 #front-bar .flip-color { 
   display: none;                         
 }                         
-#state_filter_form.filter_listing {
-	margin-right: 10px !important;
-}
 .button-right { 
   display: none !important;
 }                
@@ -207,9 +204,6 @@ h2.content-button a:hover {
 	font-size: 10px;
 }
 #country_filter_form {
-	margin-right: 0;
-}
-#state_filter_form.filter_listing {
 	margin-right: 0;
 }
 #see_list {
