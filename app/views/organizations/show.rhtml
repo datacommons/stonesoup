@@ -157,8 +157,7 @@
 	</div>
 <% end %>
 
-	<h2>Edit this entry</h2>
-	<span><a href="http://edit.<%= request.host %>/organizations/<%= StoneToSolidarity.first(:conditions=> {:stoneid=>@organization.id} ).solidarityid  %>/edit">Edit</a></span>
+	<h2 class="content-button"><a href="http://edit.<%= request.host %>/organizations/<%= StoneToSolidarity.first(:conditions=> {:stoneid=>@organization.id} ).solidarityid  %>/edit">Suggest changes to this entry</a></h2>
 <%- unless included_view -%>
 	<div id="organization_editors">
 		<h2>Editors of this entry</h2>
@@ -187,14 +186,13 @@
 		<% end %>
 	</div>
 
-	<h2>Download this entry</h2>
+	<!--<h2>Download this entry</h2>
 
 	<ul>
 	<li>Download as <%= link_to 'CSV', :action => 'show', :id => @organization, :format => 'csv' %> (suitable for spreadsheet programs)</li>
 	<li>Download as <%= link_to 'XML', :action => 'show', :id => @organization, :format => 'xml' %></li>
-	</ul>
+	</ul>-->
 
 	<span id="organization_edit_link"><%= link_to 'Edit', :action => 'edit', :id => @organization %> |</span>
-	<%= link_to 'Back', :controller => 'search', :action => 'index' %>
 
 <%- end -%>
