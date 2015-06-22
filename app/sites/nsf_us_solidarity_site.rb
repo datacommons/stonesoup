@@ -1,9 +1,5 @@
 class NSFUSSolidarity < Site
 
-  def languages
-    [:es, :en]
-  end
-
   def layout
     :nsfus_solidarity
   end
@@ -26,10 +22,6 @@ class NSFUSSolidarity < Site
     false
   end
 
-  def country_filter
-    ["United States"]
-  end
-
   def aliases
     ['ussolidarity', 'ussolecon.parit.ca', 'solidarityeconomy.us', 'dev.solidarityeconomy.us']
   end
@@ -41,8 +33,14 @@ class NSFUSSolidarity < Site
   def menu
     [
      {
+       :name => "About",
+       :link => "/about/",
+       :id => "menu_button_about" 
+     },
+     {
        :name => "Frontpage",
        :link => "/",
+       :id => "menu_button_frontpage"
      }
     ]
   end
@@ -53,6 +51,10 @@ class NSFUSSolidarity < Site
 
   def custom_filters_template
     'layouts/nsfus_solidarity/filters2'
+  end
+
+  def custom_search_template
+    'layouts/nsfus_solidarity/nsf_list'
   end
 
 end
