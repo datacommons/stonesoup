@@ -33,15 +33,20 @@ class NSFUSSolidarity < Site
   def menu
     [
      {
+       :name => "Defining solidarity economy",
+       :link => "/definition/",
+       :id => "menu_button_define"
+     },
+     {
+       :name => "How to use this map",
+       :link => "/howto/",
+       :id => "menu_button_howto"
+     },
+     {
        :name => "About",
        :link => "/about/",
        :id => "menu_button_about" 
      },
-     {
-       :name => "Frontpage",
-       :link => "/",
-       :id => "menu_button_frontpage"
-     }
     ]
   end
 

@@ -37,6 +37,66 @@
   display: none;
 }
 
+#info-page-content p {
+  margin: 1.12em 0;
+}
+
+#info-page-content ol li {
+  margin-bottom: 1.12em;
+}
+
+#info-page-content ol li ul li {
+  margin-bottom: 0.2em;
+ }
+
+#info-page-content .activity-list li { 
+  font-style: italic;
+}
+
+#info-page-content q {
+  quotes: "\201C" "\201D";
+}
+
+#info-page-content .boldq {
+  font-weight: bold;
+}
+
+#info-page-content table {
+  border-spacing: 0;
+  border-style: none;
+  border: 0;
+  padding: 15px;
+}
+
+#info-page-content th { 
+  background: #4f81bd;
+  text-align: center;
+  color: #ffffff;
+  border-width: 1pt;
+  border-style: solid;
+  border-color: black;
+}
+
+#info-page-content td { 
+  padding: 0.5em;
+  vertical-align: top;
+  border-style: solid;
+  border-width: 1pt;
+  border-top-width: 0;
+}
+
+#info-page-content table ul li { 
+  margin-bottom: 1.12em;  
+}
+
+#info-page-content .intropara { 
+  font-style: italic;
+}
+
+#info-page-content #team-paras p  { 
+  margin: 2em 0;
+}
+
 /* All CSS below designed and written by Kristin Snelling of 
    Radical Designs Cooperative http://www.radicaldesigns.org */
 
