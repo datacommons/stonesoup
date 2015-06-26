@@ -21,4 +21,7 @@
 <%= javascript_include_tag '/leaflet/leaflet' %> 
 <%= javascript_include_tag '/leaflet/clusterer/leaflet.markercluster.js' %>
 <%= javascript_include_tag 'findcoop' %> 
+<script src="/leaflet/clusterer/MarkerClusterGroup-excerpt.js"></script>
+<script src="/javascripts/oms.min.js" type="text/javascript"></script>
+<script src="/javascripts/solr_clustered_map.js" type="text/javascript"></script>
 <%= content_tag("script", "", { "type" => "text/javascript", "src" => url_for(:controller => '/search', :action => 'render_js', 'src' => 'app_js') })%>

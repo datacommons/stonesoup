@@ -40,6 +40,7 @@ jQuery(document).ready(function(){
 	    jQuery(".page-search-search #the_map, .section-org_types #the_map").css({'height':search_map_height});
 	}
     search_map_height();
+    show_continental_US_map('big_front_map');
     jQuery(window).bind('resize', search_map_height);
     
     
