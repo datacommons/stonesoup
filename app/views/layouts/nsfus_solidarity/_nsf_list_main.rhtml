@@ -35,6 +35,9 @@ end
 	    <span class="title">Search Results</span>
 <%- end -%>
 
+<% if @entries.total_entries > 30 %>
+Showing <%= @entries.length %> of <%= @entries.total_entries %> on map
+<% end %>
 	    <div id="list_results">
 	    <a href="#search_meta">List View</a>
 	    </div>
