@@ -34,13 +34,12 @@ jQuery(document).ready(function(){
     
     function search_map_height() {
 		var header = jQuery('#header').height();
-		var criteria = jQuery('#search_criteria').height() + jQuery('#search_criteria').outerHeight() + jQuery('#search_meta h3').height();
+		var criteria = jQuery('#search_criteria').height() + jQuery('#search_criteria').outerHeight() + jQuery('#search_meta h3').height() - 10;
 	    var height = jQuery(window).height();
 	    var search_map_height = parseInt((height) - (header) - (criteria)) + 'px';
-	    jQuery(".page-search-search #the_map, .section-org_types #the_map").css({'height':search_map_height});
+	    jQuery(".page-search-search #the_map, .section-org_types #the_map").css('height',search_map_height);
 	}
     search_map_height();
-    show_continental_US_map('big_front_map');
     jQuery(window).bind('resize', search_map_height);
     
     
@@ -80,4 +79,8 @@ jQuery(document).ready(function(){
 		});
 	};
 	graceful_scroll();
+
+	if ( jQuery("#big_front_map").length ){
+		show_continental_US_map('big_front_map');   
+	}
 });
