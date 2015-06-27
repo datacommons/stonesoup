@@ -83,4 +83,8 @@ jQuery(document).ready(function(){
 	if ( jQuery("#big_front_map").length ){
 		show_continental_US_map('big_front_map');   
 	}
+	else if ( jQuery('#the_map').length ) {
+		show_map();
+	}
+
 });

@@ -47,6 +47,7 @@
   <div class="clearboth"></div>
 
 <script>
+function show_map(){
 var name = "<%= j map_id %>";
 var x1 = <%= j x1 %>;
 var x2 = <%= j x2 %>;
@@ -82,7 +83,7 @@ markers.addLayer(marker);
 <% end %>
 
 map.addLayer(markers);
-
+}
 </script>
 
   <% end %>
