@@ -215,6 +215,7 @@ h2.content-button a:hover {
 	padding: 5px;
 	border-right: 1px solid #65814f;
 	float: left;
+	position: relative;
 	}
 #front-bar .button:last-child {
 	border-right: 0;
@@ -227,6 +228,28 @@ h2.content-button a:hover {
 	margin: 0;
 	padding: 5px;
 }
+#front-bar .button .drop-down {
+	background: #35343d none repeat scroll 0 0;
+	padding: 5px 20px;
+	position: absolute;
+	right: -4px;
+	top: 32px;
+	display: none;
+	border-top: 1px solid #65814f;
+	z-index: 100;
+}
+#front-bar .button:hover > .drop-down  {
+	display: block;
+}
+.drop-down ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.drop-down ul li {
+	margin: 10px 0;
+}
+
 
 /** Search Form Properties **/
 
@@ -255,12 +278,20 @@ h2.content-button a:hover {
 	-moz-border-radius: 2px;
 	border-radius: 2px;
 }
+#floating_editor {
+	z-index: 2;
+}
+.select2-container-multi .select2-choices {
+	border: solid #94ce60 1px;
+}
 .filter_editable {
 	min-height: 10px;
 	font-size: 13px;
 	padding: 10px;
 	background: #ffffff;
 	border: none;
+	max-height: 16px;
+	overflow:hidden;
 }
 .filter_listing {
 	margin-right: 10px;
@@ -395,6 +426,9 @@ h2.content-button a:hover {
 }
 #login a {
 	color: #ffffff;
+}
+#login h2 {
+	font-weight: 400;
 }
 .close-box {
 	position: absolute;
@@ -543,9 +577,9 @@ ul.menu_bar a:hover {
 	float: none;
 }
 .page-organizations-show #surround_map {
-	width: 550px;
-	padding: 0 10px 10px 10px;
-	margin: -8px 0 40px;
+	width: 800px;
+	padding: 0;
+	margin: 0 0 40px;
 	float: right;
 }
 #surround_map h3 {
@@ -572,16 +606,15 @@ ul.menu_bar a:hover {
 	border: none;
 }
 .page-organizations-show #the_map {
-	width: 570px;
+	width: 800px;
 	height: 400px;
-	margin-right: -10px;
 }
 .category_box {
 	float: none;
 	background: #8bc460;
 	margin: auto;
 	background: #45444d;
-	color: #35343d;
+	color: #95949d;
 }
 .category_box a {
 	color: #94ce60;
@@ -692,7 +725,6 @@ li:before {
 	font-size: 11px;
 	font-weight: 100;
 	position: relative;
-	padding-right: 200px;
 	vertical-align: bottom;
 	color: #95949d;
 }
@@ -703,6 +735,7 @@ li:before {
 	position: absolute;
 	right: 20px;
 	top: 10px;
+	display: none;
 }
 .sm-button {
 	float: right;
@@ -745,7 +778,7 @@ li:before {
 }
 #search_meta {
 	background: #35343d;
-	padding: 20px 10px;
+	padding: 10px;
 	text-align: center;
 	color: #ffffff;
 }
@@ -786,4 +819,56 @@ li:before {
 }
 #add_se .close-box {
 	color: #35343d;
+}
+
+/** Map Icon Styling **/
+
+.marker-cluster-small div {
+  background-color: rgba(255, 255, 51, 0.6);
+}
+.marker-cluster-small {
+  background-color: rgba(255, 255, 51, 0.6);
+  color: #35343d;
+}
+.marker-cluster-medium div {
+  background-color: rgba(255, 204, 51, 0.6);
+}
+.marker-cluster-medium {
+  background-color: rgba(255, 204, 51, 0.6);
+  color: #35343d;
+}
+.marker-cluster-large div {
+  background-color: rgba(255, 153, 51, 0.6);
+}
+.marker-cluster-large {
+  background-color: rgba(255, 153, 51, 0.6);
+  color: #35343d;
+}
+.marker-cluster-huge div {
+  background-color: rgba(255, 102, 51, 0.6);
+}
+.marker-cluster-huge {
+  background-color: rgba(255, 102, 51, 0.6);
+  color: #35343d;
+}
+.marker-cluster-giant div {
+  background-color: rgba(255, 51, 51, 0.6);
+}
+.marker-cluster-giant {
+  background-color: rgba(255, 51, 51, 0.6);
+  color: #35343d;
+}
+
+@media (max-width: 1199px) {
+	.page-organizations-show #the_map {
+	width: 570px;
+	}
+	.page-organizations-show #surround_map {
+	width: 570px;
+	}
+}
+@media (max-width: 900px) {
+	#q {
+		width: 80px;
+	}
 }

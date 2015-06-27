@@ -40,6 +40,20 @@
 	    <div class="button-right"><%= link_to t(:recent_changes), recent_path %></div>
 	    <%- @site.menu.each do |button| -%><div class="button"<%- if button[:id] -%> id="<%= button[:id] %>"<%- end -%>><a href="<%= button[:link][:id] ? url_for({:controller => 'search', :action => 'page'}.merge(button[:link])) : button[:link] %>"><%= t(button[:name].underscore, :default => button[:name]) %></a></div><%- end -%>
 
+	   <div class="button" id="menu_button_about">
+               <a href="/about/">About</a>
+               <div class="drop-down">
+               <ul>
+               <li><a href="http://dev.solidarityeconomy.us/credits">
+               Credits and Terms of Use</a></li>
+               <li><a href="http://dev.solidarityeconomy.us/people/">
+               People</a></li>
+               <li><a href="http://dev.solidarityeconomy.us/contact">
+               Contact Us</a></li>
+               </ul>
+               </div>
+           </div>
+
 	    <%- unless @site.languages.nil? -%>
 	    <div id="langstatus" class='languageblock nohover userstatus'>
             <%=render :partial => 'layouts/langmenu'%>

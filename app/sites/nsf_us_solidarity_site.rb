@@ -42,11 +42,6 @@ class NSFUSSolidarity < Site
        :link => "/howto/",
        :id => "menu_button_howto"
      },
-     {
-       :name => "About",
-       :link => "/about/",
-       :id => "menu_button_about" 
-     },
     ]
   end
 
