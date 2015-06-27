@@ -66,13 +66,20 @@ var dx = <%= j dx %>;
 var dy = <%= j dy %>;
 var map = L.map(name).fitBounds([[x1-dx,y1-dy],[x2+dx,y2+dy]]);
 
-var mapquest = 'http://{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png';
-var subdomains = ['otile1','otile2','otile3','otile4'];
-var attrib = '<a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> data, <a href="http://www.mapquest.com/" target="_blank">MapQuest-OSM</a> tiles.';
-L.tileLayer(mapquest, {
+var mapbox =
+  'http://{s}.tiles.mapbox.com/v4/solidarityeconomy.d591ea8d' +
+  '/{z}/{x}/{y}.png?access_token={accessToken}'
+
+var attrib = 
+	"<a href='https://www.mapbox.com/about/maps/' " +
+	    "target='_blank'>&copy; Mapbox &copy; " +
+	    "OpenStreetMap</a> <a class='mapbox-improve-map' " +
+	    "href='https://www.mapbox.com/map-feedback/' " +
+	    "target='_blank'>Improve this map</a>'"
+L.tileLayer(mapbox, {
     attribution: attrib,
-    subdomains: subdomains,
-    maxZoom: 18
+    maxZoom: 18,
+    accessToken: mapbox_accessToken
 }).addTo(map);
 map.attributionControl.setPrefix('<a href="http://leaflet.cloudmade.com/">Leaflet</a>');
 var marker = null;
