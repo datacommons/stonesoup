@@ -55,7 +55,25 @@ var y1 = <%= j y1 %>;
 var y2 = <%= j y2 %>;
 var dx = <%= j dx %>;
 var dy = <%= j dy %>;
-var map = L.map(name).fitBounds([[x1-dx,y1-dy],[x2+dx,y2+dy]]);
+var map = L.map(name, {zoomControl: false});
+
+var logo_control = L.Control.extend({
+        options: { position: 'bottomright' },
+        onAdd: function (map) {
+        var container = L.DomUtil.create('div');
+        container.innerHTML =
+		'<a href="http://mapbox.com/" class="mapbox-logo" ' +
+		'target="_blank">MapBox</a>';
+    
+        return container;
+        }
+});
+
+map.addControl( new logo_control() );
+
+L.control.zoom({position: 'topright'}).addTo(map);
+
+map.fitBounds([[x1-dx,y1-dy],[x2+dx,y2+dy]]);
 
 var mapbox =
   'http://{s}.tiles.mapbox.com/v4/solidarityeconomy.d591ea8d' +
