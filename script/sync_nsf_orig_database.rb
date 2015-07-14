@@ -33,7 +33,7 @@ ActiveRecord::Base.transaction do
   # this is very memory intensive, and :order isn't allowed for find_each
   # so we would have to keep in memory or in some kind of secondary storage
   # a tracking of orgs anyway, might as well do it here
-  NSF_DB::Location.all(:order => 'oid').each do |l|
+  NSF_DB::Location.all(:order => 'oid', :limit =>1000).each do |l|
     o = l.organization
     if current_org == nil or o.oid != current_org.oid
       current_org = o
@@ -70,8 +70,13 @@ ActiveRecord::Base.transaction do
       current_org_stone.save!
 
       if (loc.longitude != nil and loc.latitude != nil)
+        primary_type_name = nil
+        if current_org_stone.tags.length >= 1
+          primary_type_name = current_org_stone.tags[0].name
+        end
         SOLR_SEARCH::solr_update(current_org_stone.id, loc.id,
                                  current_org_stone.name,
+                                 primary_type_name,
                                  loc.longitude, loc.latitude)
       end
       current_org_stone.ferret_update      
