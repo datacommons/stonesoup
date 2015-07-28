@@ -10,6 +10,12 @@ module NSF_DB
       :join_table=> "org_and_type_assoc",
       :foreign_key=> "oid",
       :association_foreign_key=> "tid"
+
+    has_and_belongs_to_many :icon_groups,
+    :join_table=> "icon_groups_org_assoc",
+    :foreign_key=> "oid",
+    :association_foreign_key=> "igid"
+
     self.primary_key = "oid"
   end
 
@@ -27,4 +33,14 @@ module NSF_DB
       :foreign_key=> "tid",
       :association_foreign_key=> "oid"
   end
+
+  class IconGroup < NSFEntity
+    set_table_name "icon_groups"
+    self.primary_key = "id"
+    has_and_belongs_to_many :organizations,
+    :join_table=> "icon_groups_org_assoc",
+    :foreign_key=> "igid",
+    :association_foreign_key=> "oid"
+  end
+
 end

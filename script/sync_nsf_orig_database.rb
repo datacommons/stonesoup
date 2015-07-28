@@ -74,9 +74,14 @@ ActiveRecord::Base.transaction do
         if current_org_stone.tags.length >= 1
           primary_type_name = current_org_stone.tags[0].name
         end
+        icon_group_id = nil
+        if current_org.icon_groups.length >= 1
+          icon_group_id = current_org.icon_groups[0].id
+        end
         SOLR_SEARCH::solr_update(current_org_stone.id, loc.id,
                                  current_org_stone.name,
                                  primary_type_name,
+                                 icon_group_id,
                                  loc.longitude, loc.latitude)
       end
       current_org_stone.ferret_update      
