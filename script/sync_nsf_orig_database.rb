@@ -35,6 +35,11 @@ ActiveRecord::Base.transaction do
   # a tracking of orgs anyway, might as well do it here
   NSF_DB::Location.all(:order => 'oid').each do |l|
     o = l.organization
+    if (nil !=
+        NSF_DB::Suggestion.find(:first,
+                                :conditions => {:organization_id => o.id}))
+      next
+    end
     if current_org == nil or o.oid != current_org.oid
       current_org = o
       current_org_stone = Organization.new(:name => current_org.name)

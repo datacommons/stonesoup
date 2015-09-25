@@ -43,4 +43,9 @@ module NSF_DB
     :association_foreign_key=> "oid"
   end
 
+  class Suggestion < NSFEntity
+    set_table_name "suggestions"
+    self.primary_key = "id"
+  end
+
 end
