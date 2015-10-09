@@ -55,7 +55,7 @@ jQuery(document).ready(function(){
 	sticky_footer();
 	jQuery(window).bind('resize', sticky_footer);
 	
-	/** This function keeps he "Be on the Map" box in place where we want it in its container depending on screen height **/
+	/** This function keeps the "Be on the Map" box in place where we want it in its container depending on screen height **/
 	function sticky_add() {
 		var sidebar_height = parseInt(jQuery('#map-text-box').height() - jQuery('#map-text-box p').height() - jQuery('#map-text-box h4').height() - jQuery('#map-text-box h4').outerHeight() - jQuery('#login').height());
 		var min_height = parseInt(jQuery('#map-text-box').height());
