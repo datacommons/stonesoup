@@ -142,7 +142,7 @@ body {
 	max-width: 2000px;
 }
 a, a:link, a:visited {
-	color: #94ce60;
+	color: #84be50;
 }
 a:hover {
 	background-color: transparent;
@@ -227,8 +227,8 @@ h2.content-button a:hover {
 	font-weight: 100;
 }
 #front-bar .button {
-	padding: 5px;
-	border-right: 1px solid #65814f;
+	padding: 5px 15px;
+	border-right: 3px solid #65814f;
 	float: left;
 	position: relative;
 	}
@@ -689,6 +689,9 @@ li:before {
 #maincol #surround_map ul {
 	list-style: none;
 }
+#info-page-content {
+	padding: 25px 0;
+}
 
 /** Footer Properties **/
 #footer {
@@ -747,7 +750,6 @@ li:before {
 	position: absolute;
 	right: 20px;
 	top: 10px;
-	display: none;
 }
 .sm-button {
 	float: right;
