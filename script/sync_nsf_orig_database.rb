@@ -37,7 +37,8 @@ ActiveRecord::Base.transaction do
     o = l.organization
     if (nil !=
         NSF_DB::Suggestion.find(:first,
-                                :conditions => {:organization_id => o.id}))
+                                :conditions => {:organization_id => o.id}) or
+        o.ally or o.defunct or o.hide_from_site)
       next
     end
     if current_org == nil or o.oid != current_org.oid
