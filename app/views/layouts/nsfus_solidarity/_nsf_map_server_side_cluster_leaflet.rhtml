@@ -1,0 +1,86 @@
+
+  <%
+  # maybe this should be set higher up when we were checking @entries ealier
+  @have_something = true
+  if @entries.blank? and not(@model)
+      @have_something = false
+  end
+  %>
+
+
+  <% if @have_something %>
+  <div<%- if map_class -%> class="<%= map_class %>"<%- end -%> id="<%= map_id %>"></div>
+  <div class="clearboth"></div>
+  <% end %>
+  <div id="add_se">
+    <div id="login">
+      <div class="close-box"></div>
+      <a href="http://edit.<%= request.host %>"><h2>Be On the Map!</h2></a>
+      <p>If you have an SE practice that you’d like to add to the map, or have info to update, you can  fill out the form <a href="http://edit.<%= request.host %>">here</a>.</p>
+    </div>
+    <div class="open-box"></div>
+  </div>
+  <% if @have_something %>
+
+<script>
+function show_map(){
+var name = "<%= j map_id %>";
+var map = L.map(name, {zoomControl: false});
+
+var logo_control = L.Control.extend({
+        options: { position: 'bottomright' },
+        onAdd: function (map) {
+        var container = L.DomUtil.create('div');
+        container.innerHTML =
+		'<a href="http://mapbox.com/" class="mapbox-logo" ' +
+		'target="_blank">MapBox</a>';
+    
+        return container;
+        }
+});
+
+map.addControl( new logo_control() );
+
+L.control.zoom({position: 'topright'}).addTo(map);
+
+// fit within the boundaries of the 48 US states
+//
+// This is temporary. The right thing to do here is to get the server
+// side to tell us the boundaries of the search results so we can just fit those
+//
+// http://en.wikipedia   .org/wiki/Extreme_points_of_the_United_States
+// Southern point used is Western Dry Rocks, Florida
+// Western point used is Umatilla Reef, Washinton
+// Northern point used is Northwest Angle, Minnesota
+// Eastern point used is Sail Rock, Maine
+map.fitBounds( [ [24.446667, -124.785], // south-west
+		 [49.384472, -66.947028] ], // north-east
+		  {padding: [20, 20]}
+);
+
+var mapbox =
+  'http://{s}.tiles.mapbox.com/v4/solidarityeconomy.d591ea8d' +
+  '/{z}/{x}/{y}.png?access_token={accessToken}'
+
+var attrib = 
+	"<a href='https://www.mapbox.com/about/maps/' " +
+	    "target='_blank'>&copy; Mapbox &copy; " +
+	    "OpenStreetMap</a> <a class='mapbox-improve-map' " +
+	    "href='https://www.mapbox.com/map-feedback/' " +
+	    "target='_blank'>Improve this map</a>'"
+L.tileLayer(mapbox, {
+    attribution: attrib,
+    maxZoom: 18,
+    accessToken: mapbox_accessToken
+}).addTo(map);
+map.attributionControl.setPrefix(
+    '<a href="http://leafletjs.com" ' +
+    'title="A JS library for interactive maps">Leaflet</a>');
+
+} // end show_map()
+
+// we need to call show_map here on sites that are not triggering it elsewhere
+// the way solidarityeconomy.us is
+</script>
+
+  <% end %>
