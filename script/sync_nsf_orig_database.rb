@@ -88,7 +88,12 @@ ActiveRecord::Base.transaction do
                                  current_org_stone.name,
                                  primary_type_name,
                                  icon_group_id,
-                                 loc.longitude, loc.latitude)
+                                 loc.longitude, loc.latitude,
+                                 loc.physical_city,
+                                 loc.physical_state,
+                                 loc.physical_zip,
+                                 loc.physical_country
+                                 )
       end
       current_org_stone.ferret_update      
     end

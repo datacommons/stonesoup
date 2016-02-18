@@ -1,5 +1,5 @@
 <div id="surround_map" class="map_bar">
-<%= render :partial => "layouts/nsfus_solidarity/nsf_map_core_leaflet_search_results", :locals => { :map_id => "the_map", :map_class => nil, :orgs => @entries } %>
+<%= render :partial => "layouts/nsfus_solidarity/nsf_map_server_side_cluster_leaflet.rhtml", :locals => { :map_id => "the_map", :map_class => nil, :orgs => @entries } %>
  <% unless @model %>
 
  <% else %>

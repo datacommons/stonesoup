@@ -6,14 +6,20 @@ module SOLR_SEARCH
   SOLR_URL = 'http://localhost:8080/solr/'
 
   def self.solr_update(id, loc_id, name, type_name, icon_group_id,
-                       longitude, latitude)
+                       longitude, latitude,
+                       city, state_two_letter, zip, country
+                       )
     geohash_str = GeoHash.encode latitude, longitude, GEOHASH_PRECISION
     solr = RSolr.connect :url => SOLR_URL
     document = {"id"=> loc_id, "org_id" => id, "name"=> name,
       "type_name" => type_name,
       "icon_group_id" => icon_group_id,
       "longitude" => longitude, "latitude" => latitude,
-      "location" => latitude.to_s + ", " + longitude.to_s
+      "location" => latitude.to_s + ", " + longitude.to_s,
+      "state_two_letter" => state_two_letter,
+      "zip" => zip,
+      "city" => city,
+      "country" => country
     }
     1.upto(GEOHASH_PRECISION) do |i|
       document["geohash_#{i}"] = geohash_str[0..(i-1)]
