@@ -19,6 +19,9 @@ ActiveRecord::Base.transaction do
   OrgType.delete_all
   Tag.delete_all
 
+  solr_con = SOLR_SEARCH::create_solr_connection()
+  SOLR_SEARCH::solr_delete_all(solr_con)
+
   type_tags = {}
   NSF_DB::Type.all.each do |t|
     ot = OrgType.new(:name => t.type_name, :description => t.type_name)
@@ -84,7 +87,8 @@ ActiveRecord::Base.transaction do
         if current_org.icon_groups.length >= 1
           icon_group_id = current_org.icon_groups[0].id
         end
-        SOLR_SEARCH::solr_update(current_org_stone.id, loc.id,
+        SOLR_SEARCH::solr_update(solr_con,
+                                 current_org_stone.id, loc.id,
                                  current_org_stone.name,
                                  primary_type_name,
                                  icon_group_id,
@@ -98,5 +102,7 @@ ActiveRecord::Base.transaction do
       current_org_stone.ferret_update      
     end
   end
+
+  solr_con.commit
 end
 

@@ -5,7 +5,15 @@ module SOLR_SEARCH
   GEOHASH_PRECISION = 12
   SOLR_URL = 'http://localhost:8080/solr/'
 
-  def self.solr_update(id, loc_id, name, type_name, icon_group_id,
+  def self.create_solr_connection()
+    solr = RSolr.connect :url => SOLR_URL
+  end
+
+  def self.solr_delete_all(solr)
+    solr.delete_by_query '*:*'
+  end
+
+  def self.solr_update(solr, id, loc_id, name, type_name, icon_group_id,
                        longitude, latitude,
                        city, state_two_letter, zip, country
                        )
@@ -25,7 +33,6 @@ module SOLR_SEARCH
       document["geohash_#{i}"] = geohash_str[0..(i-1)]
     end
     response = solr.add [document]
-    solr.commit
   end
 
 end
