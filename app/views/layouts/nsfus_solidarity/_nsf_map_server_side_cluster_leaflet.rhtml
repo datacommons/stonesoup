@@ -54,6 +54,12 @@ filter_mapping = { "org_type"=>"type_name", "state"=>"state_two_letter", "city"=
 filters_from_search = filters_from_search + "&<%= filter_mapping[filter[:name]] %>=<%= filter[:value] %>";
 <% end %>
 
+<% if @search_text.blank? %>
+var open_ended_search_text = '';
+<% else %>
+var open_ended_search_text = '&search_text=<%= URI.escape(@search_text) %>';
+<% end %>
+
 var name = "<%= j map_id %>";
 var map = L.map(name, {zoomControl: false});
 
@@ -160,7 +166,8 @@ map.attributionControl.setPrefix(
 		  map.getBounds().toBBoxString() +
 		  "&zoom=" + map.getZoom() +
 		  type_exclusion_queries +
-		  filters_from_search,
+		  filters_from_search + 
+                  open_ended_search_text,
 		  function(data, status, jqXHR){
 		      var geojson_layer = L.geoJson(
 			  false,
