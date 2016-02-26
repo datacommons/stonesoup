@@ -45,6 +45,13 @@ function icon_group_marker_for_feature(feature, latlng){
 
 function show_map(){
 
+<% if @tag.instance_of?(OrgType) %>
+var require_type='&require_org_type=<%= URI.escape(@tag.name) %>';
+<% else %>
+var require_type='';
+<% end %>
+
+
 var filters_from_search = '';
 
 <%
@@ -166,7 +173,8 @@ map.attributionControl.setPrefix(
 		  map.getBounds().toBBoxString() +
 		  "&zoom=" + map.getZoom() +
 		  type_exclusion_queries +
-		  filters_from_search + 
+		  filters_from_search +
+		  require_type + 
                   open_ended_search_text,
 		  function(data, status, jqXHR){
 		      var geojson_layer = L.geoJson(
