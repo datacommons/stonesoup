@@ -13,14 +13,14 @@ module SOLR_SEARCH
     solr.delete_by_query '*:*'
   end
 
-  def self.solr_update(solr, id, loc_id, name, type_name, icon_group_id,
+  def self.solr_update(solr, id, loc_id, name, type_names, icon_group_id,
                        longitude, latitude,
                        city, state_two_letter, zip, country
                        )
     geohash_str = GeoHash.encode latitude, longitude, GEOHASH_PRECISION
     solr = RSolr.connect :url => SOLR_URL
     document = {"id"=> loc_id, "org_id" => id, "name"=> name,
-      "type_name" => type_name,
+      "type_name" => type_names,
       "icon_group_id" => icon_group_id,
       "longitude" => longitude, "latitude" => latitude,
       "location" => latitude.to_s + ", " + longitude.to_s,

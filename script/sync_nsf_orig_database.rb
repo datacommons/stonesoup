@@ -44,12 +44,15 @@ ActiveRecord::Base.transaction do
         o.ally or o.defunct or o.hide_from_site)
       next
     end
+
+    org_types = []
     if current_org == nil or o.oid != current_org.oid
       current_org = o
       current_org_stone = Organization.new(:name => current_org.name)
       current_org_stone.set_access_rule(AccessRule::ACCESS_TYPE_PUBLIC)
       o.types.each do |org_type|
         current_org_stone.tags << type_tags[org_type.tid]
+        org_types << type_tags[org_type.tid].name
       end
       current_org_stone.save!
       orig_key_save = StoneToSolidarity.new(:stoneid=>current_org_stone.id,
@@ -79,10 +82,6 @@ ActiveRecord::Base.transaction do
       current_org_stone.save!
 
       if (loc.longitude != nil and loc.latitude != nil)
-        primary_type_name = nil
-        if current_org_stone.tags.length >= 1
-          primary_type_name = current_org_stone.tags[0].name
-        end
         icon_group_id = nil
         if current_org.icon_groups.length >= 1
           icon_group_id = current_org.icon_groups[0].id
@@ -90,7 +89,7 @@ ActiveRecord::Base.transaction do
         SOLR_SEARCH::solr_update(solr_con,
                                  current_org_stone.id, loc.id,
                                  current_org_stone.name,
-                                 primary_type_name,
+                                 org_types,
                                  icon_group_id,
                                  loc.longitude, loc.latitude,
                                  loc.physical_city,
