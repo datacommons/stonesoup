@@ -57,9 +57,9 @@ var filters_from_search = '';
 <%
 filter_mapping = { "org_type"=>"type_name", "state"=>"state_two_letter", "city"=> "city", "zip"=> "zip", "country"=>"country" }
 @all_filters.select{|x| x[:active] and ["org_type", "state", "city", "zip", "country"].include?(x[:name]) }.each_with_index do |filter, index|
-%>
-filters_from_search = filters_from_search + "&<%= filter_mapping[filter[:name]] %>=<%= filter[:value] %>";
-<% end %>
+    filter[:value].each do | filter_val | %>
+filters_from_search = filters_from_search + "&<%= filter_mapping[filter[:name]] %>=<%= URI.escape(filter_val) %>"; <% end 
+end %>
 
 <% if @search_text.blank? %>
 var open_ended_search_text = '';
