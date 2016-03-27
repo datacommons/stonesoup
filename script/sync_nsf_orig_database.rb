@@ -62,7 +62,8 @@ ActiveRecord::Base.transaction do
 
     # there are only 24 entries without city, StoneSoup requires one
     city = fix_null_and_blank(l.city)
-    if city != nil
+    country = fix_null_and_blank(l.country)
+    if city != nil and country != nil
       loc = current_org_stone.locations.new(:note => l.location_name,
                                             :physical_address1 =>
                                             fix_null_and_blank(l.address),
@@ -74,7 +75,7 @@ ActiveRecord::Base.transaction do
                                             :physical_state =>
                                             fix_null_and_blank(l.state),
                                             :physical_zip => l.zipcode,
-                                            :physical_country => l.country
+                                            :physical_country => country
                                             )
 
       # should do something here with primary locations?
