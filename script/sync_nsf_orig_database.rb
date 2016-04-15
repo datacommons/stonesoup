@@ -33,6 +33,27 @@ ActiveRecord::Base.transaction do
 
   current_org = nil
   current_org_stone = nil
+
+  # this is memory intensive, but we're doing a similar memory
+  # intensive operation below, maybe the whole thing should be one
+  # custom query and perhaps then some paging could be done
+  # to not waste so much memory
+  #
+  # oh well, nobody is complaining when the dataset is 30,000 locations
+  locations_lid_long_lat = NSF_DB::Location.find_by_sql(
+     "select " +
+     "lid, " +
+     "ST_X(geographic_location::geometry) as longitude, " + # longitude
+     "ST_Y(geographic_location::geometry) as latitude " +  # latitude
+     "from locations;"
+  )
+  locations_lid_long_lat_table =
+    Hash[ locations_lid_long_lat.map{
+          |locations_lid_long_lat|
+          [locations_lid_long_lat.id,
+           locations_lid_long_lat]
+          } ]
+
   # this is very memory intensive, and :order isn't allowed for find_each
   # so we would have to keep in memory or in some kind of secondary storage
   # a tracking of orgs anyway, might as well do it here
@@ -63,14 +84,26 @@ ActiveRecord::Base.transaction do
     # there are only 24 entries without city, StoneSoup requires one
     city = fix_null_and_blank(l.city)
     country = fix_null_and_blank(l.country)
+
+    # set to nil if not found in existing database
+    if locations_lid_long_lat_table.key?(l.lid)
+      longitude = locations_lid_long_lat_table[l.lid].longitude
+      latitude = locations_lid_long_lat_table[l.lid].latitude
+    # we should also use this some time to find out which database entries
+    # lack geocoding
+    else
+      longitude = nil
+      latitude = nil
+    end
+
     if city != nil and country != nil
       loc = current_org_stone.locations.new(:note => l.location_name,
                                             :physical_address1 =>
                                             fix_null_and_blank(l.address),
                                             :physical_address2 =>
                                             fix_null_and_blank(l.address2),
-                                            :latitude => nil,
-                                            :longitude => nil,
+                                            :latitude => latitude,
+                                            :longitude => longitude,
                                             :physical_city => city,
                                             :physical_state =>
                                             fix_null_and_blank(l.state),
