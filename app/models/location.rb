@@ -149,6 +149,10 @@ class Location < ActiveRecord::Base
   def save_ll
     address = self.to_s
 
+    if self.longitude != nil and self.latitude != nil
+      return true
+    end
+
     if (defined?(GEOCODE_CACHE::CACHE_ENABLED) and 
         GEOCODE_CACHE::CACHE_ENABLED and 
         GEOCODE_CACHE::lookup(address) )
