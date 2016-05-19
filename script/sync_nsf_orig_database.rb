@@ -24,11 +24,14 @@ ActiveRecord::Base.transaction do
 
   type_tags = {}
   NSF_DB::Type.all.each do |t|
-    ot = OrgType.new(:name => t.type_name, :description => t.type_name)
-    ot.save!
-    org_tag = Tag.new(:root=> ot, :name => t.type_name )
-    org_tag.save!
-    type_tags[t.tid] = org_tag
+    # only use types that are in use
+    if t != nil and t.organizations.length > 0
+      ot = OrgType.new(:name => t.type_name, :description => t.type_name)
+      ot.save!
+      org_tag = Tag.new(:root=> ot, :name => t.type_name )
+      org_tag.save!
+      type_tags[t.tid] = org_tag
+    end
   end
 
   current_org = nil
