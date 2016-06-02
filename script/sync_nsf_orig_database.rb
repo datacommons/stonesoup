@@ -119,6 +119,9 @@ ActiveRecord::Base.transaction do
       current_org_stone.save!
 
       if (loc.longitude != nil and loc.latitude != nil)
+        if latitude == nil or longitude == nil
+          puts l.lid.to_s + "," + "POINT(" + loc.longitude.to_s + " " + loc.latitude.to_s + ")"
+        end
         icon_group_id = current_org.icon_group_id
 
         SOLR_SEARCH::solr_update(solr_con,
