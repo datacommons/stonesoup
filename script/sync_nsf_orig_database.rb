@@ -72,7 +72,9 @@ ActiveRecord::Base.transaction do
     org_types = []
     if current_org == nil or o.oid != current_org.oid
       current_org = o
-      current_org_stone = Organization.new(:name => current_org.name)
+      current_org_stone = Organization.new(
+                                           :name => current_org.name,
+                                           :website => current_org.website)
       current_org_stone.set_access_rule(AccessRule::ACCESS_TYPE_PUBLIC)
       o.types.each do |org_type|
         current_org_stone.tags << type_tags[org_type.tid]
