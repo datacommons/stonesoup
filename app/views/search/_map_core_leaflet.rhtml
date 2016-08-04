@@ -56,13 +56,11 @@ var dx = <%= j dx %>;
 var dy = <%= j dy %>;
 var map = L.map(name).fitBounds([[x1-dx,y1-dy],[x2+dx,y2+dy]]);
 
-var mapquest = 'http://{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png';
-var subdomains = ['otile1','otile2','otile3','otile4'];
-var attrib = '<a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> data, <a href="http://www.mapquest.com/" target="_blank">MapQuest-OSM</a> tiles.';
+var mapquest = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+var attrib = '©<a href="http://openstreetmap.org" target="_blank">OpenStreetMap</a> contributors';
 L.tileLayer(mapquest, {
     attribution: attrib,
-    subdomains: subdomains,
-    maxZoom: 18
+    maxZoom: 19
 }).addTo(map);
 map.attributionControl.setPrefix('<a href="http://leaflet.cloudmade.com/">Leaflet</a>');
 var marker = null;
