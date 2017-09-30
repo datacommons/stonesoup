@@ -1,0 +1,172 @@
+html {
+  height: 100%;
+}
+
+html, body {
+  background: #ddd;
+  padding: 0;
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+#pagewidth {
+  width:984px;
+  background-color:#fff;
+}
+
+#front-bar {
+  background-color: #54b948;
+  border-top: 1px solid white;
+}
+
+#front-bar .button { 
+  display: inline-block;
+  padding:0;
+  margin:0;
+}
+
+#front-bar .button-right { 
+  display: inline-block;
+  padding:0;
+  margin:0;
+}
+
+#front-bar a { 
+  padding:10px;
+  display: inline-block;
+  background-color: #54b948;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+#front-bar .button a { 
+  border-right: 1px solid white;
+}
+
+#front-bar .button-right a { 
+  border-left: 1px solid white;
+}
+
+#front-bar a:hover { 
+  background-color: #000;
+}
+
+#manitoba-button-find a {
+  background-color: #000;
+}
+
+#front-bar .flip-color {
+  display: none;
+}
+
+#userstatus {
+  display: none;
+}
+
+.subtitle {
+  color: white;
+}
+
+#header .header_material, #search_tips {
+  background-color: #8a8;
+}
+
+.titleblock img {
+  margin-top: 20px;
+  margin-left: 20px;
+}
+
+#basic_search {
+  background-color: #fff;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 20px;
+  margin-right: 20px;
+  border-radius: 10px;
+}
+
+#search_tips {
+  padding-right: 20px;
+}
+
+#search_filters {
+  padding-top: 20px;
+  padding-right: 20px;
+  background-color: #8a8;
+}
+
+.example_bubble {
+  border: none;
+  border-radius: 2px;
+}
+
+#maincol {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+#button-help {
+  display: none !important;
+}
+
+#footer {
+  padding: 10px;
+}
+
+#testing {
+  font-size: 200%;
+  text-shadow: 2px 2px 8px #FF0000;
+}
+
+#big_front_map .surround_map_insert { 
+  width: 100%;
+}
+#big_front_map .search_listing { 
+  display: none;
+}
+#dso_status {
+  display: none;
+}
+#maincol.welcome-page {
+  height: 75%;
+  padding: 0;
+  margin: 0;
+}
+body.welcome-page {
+  height: 100%;
+}
+body.welcome-page #bigwrapper, #pagewidth {
+  height: 100%;
+}
+body.welcome-page #big_front_map {
+  height: 100%;
+}
+body.welcome-page #all_update {
+  height: 100%;
+}
+body.welcome-page .surround_map_insert {
+  height: 100% !important;
+}
+body.welcome-page #big_front_map .map_insert {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+#legal_structure_filter_form { 
+  display: none;
+}
+#sector_filter_form { 
+  display: none;
+}
+#organization_editors { 
+  display: none;
+}
+#organization_edit_link { 
+  display: none;
+}
+.listing_menu_bar { 
+  display: none;
+}
