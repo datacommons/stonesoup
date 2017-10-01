@@ -10,9 +10,17 @@ html, body {
   font-size: 14px;
 }
 
+body.tag-inactive {
+  background-color:#000;
+}
+
 #pagewidth {
   width:984px;
   background-color:#fff;
+}
+
+body.tag-inactive #pagewidth {
+  background-color:#ddd;    
 }
 
 #front-bar {
@@ -169,4 +177,8 @@ body.welcome-page #big_front_map .map_insert {
 }
 .listing_menu_bar { 
   display: none;
+}
+
+div.left_listing div.tag-inactive a {
+  color: gray;
 }
