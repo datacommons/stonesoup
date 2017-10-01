@@ -13,7 +13,7 @@ Event.observe(window, 'load', function() {
 });
 </script>
 </head>
-<body class="section-<%=params[:controller]%> page-<%=params[:controller]%>-<%=params[:action]%><% if @welcome_page%> welcome-page<% end %>">
+<body class="section-<%=params[:controller]%> page-<%=params[:controller]%>-<%=params[:action]%><% if @welcome_page%> welcome-page<% end %><% if @organization %><% for tag in @organization.tags %> tag-<%= tag.name.downcase.gsub(/[^a-z0-9]/,'_') %><% end %><%end%>">
 
 <%=render :partial => 'layouts/adminmenu'%>
 <%- 
