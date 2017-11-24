@@ -129,8 +129,7 @@ class OrganizationsController < ApplicationController
     @organization.destroy
 
     respond_to do |format|
-      # format.html { redirect_to(organizations_url) }
-      format.html { redirect_to :action => 'index', :controller => "search" }
+      format.html { redirect_to :action => (if params[:recent] then 'recent' else 'index' end), :controller => "search" }
       format.xml  { head :ok }
     end
   end
