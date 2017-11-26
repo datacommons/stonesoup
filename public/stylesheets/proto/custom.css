@@ -134,9 +134,7 @@ body.tag-inactive #pagewidth {
 #big_front_map .search_listing { 
   display: none;
 }
-#dso_status {
-  display: none;
-}
+
 #maincol.welcome-page {
   height: 75%;
   padding: 0;
