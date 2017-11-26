@@ -219,6 +219,7 @@ module ApplicationHelper
                                   :conditions => org_conditions,
                                   :joins => org_joinSQL,
                                   :select => org_select,
+                                  :group => 'coalesce(grouping, organizations.id)',
                                   :order => org_order)
       entries2 = Person.find(:all,
                              :limit => :all,

@@ -25,6 +25,13 @@ class OrganizationsController < ApplicationController
       redirect_to :controller => 'search' and return
     end
 
+    @peers = []
+    if @organization.grouping
+      @peers = Organization.find_all_by_grouping(@organization.grouping).select{ 
+        |x| x.id != @organization.id
+      }
+    end
+
     #if not(@organization.latitude)
     #  @organization.save_ll
     #  @organization.save
@@ -130,7 +137,7 @@ class OrganizationsController < ApplicationController
 
     respond_to do |format|
       # format.html { redirect_to(organizations_url) }
-      format.html { redirect_to :action => 'index', :controller => "search" }
+      format.html { redirect_to :action => (if params[:recent] then 'recent' else 'index' end), :controller => "search" }
       format.xml  { head :ok }
     end
   end

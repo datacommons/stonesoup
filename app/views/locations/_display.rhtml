@@ -19,7 +19,7 @@
 <% end %>
 <dl class="address" id='location_<%=location.id%>' style='<%=(expanded ? 'display:none' : '')%>'>
     <%- if @organization -%>
-	<dt><%- if location.taggable_id != @organization.id -%>Unmerged: <%- end -%><%= location.note.blank? ? 'Address' : location.note %>
+	<dt><%- if location.taggable_id != @organization.id -%><%- end -%><%= location.note.blank? ? 'Address' : location.note %>
 		<% unless hide_links %>
 			<span class="actions">
 			<%- if location.taggable_id != @organization.id -%>
