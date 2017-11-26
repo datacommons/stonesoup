@@ -25,6 +25,13 @@ class OrganizationsController < ApplicationController
       redirect_to :controller => 'search' and return
     end
 
+    @peers = []
+    if @organization.grouping
+      @peers = Organization.find_all_by_grouping(@organization.grouping).select{ 
+        |x| x.id != @organization.id
+      }
+    end
+
     #if not(@organization.latitude)
     #  @organization.save_ll
     #  @organization.save
