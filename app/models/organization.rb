@@ -531,7 +531,7 @@ class Organization < ActiveRecord::Base
   end
 
   def to_json(options)
-    options[:include] ||= :locations
+    # options[:include] ||= :locations
     super(options)
   end
 

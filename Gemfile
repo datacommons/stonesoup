@@ -5,6 +5,7 @@ ruby '1.8.7'
 
 ruby '1.8.7'
 
+gem "oj", "~> 2.2.0"
 gem "rack", "~> 1.1.0"
 gem "geokit", "~> 1.6.7"
 gem "google-v3-geocoder", "~> 1.0.0"

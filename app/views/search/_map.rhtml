@@ -43,7 +43,7 @@ end
 
 <div id="<%= name+'_update' %>">
 <script>
-  new Ajax.Updater("<%=name%>_update","<%= url_for(:action => "mini_map", :controller => "search", :name => name, :link => link.to_yaml, :site => request.host).gsub("&amp;","&") %>",{asynchronous:true, evalScripts:true});
+  new Ajax.Updater("<%=name%>_update","<%= url_for(:action => "mini_map2", :controller => "search", :name => name, :link => link.to_yaml, :site => request.host).gsub("&amp;","&") %>",{asynchronous:true, evalScripts:true});
 </script>
 <img src="/images/loading.gif" style="padding: 20px;" />
 </div>
