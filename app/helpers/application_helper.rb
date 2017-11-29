@@ -527,16 +527,14 @@ module ApplicationHelper
     p = {}
     p[:q] = query
     opts = {:no_override => true, :unlimited_search => true}.merge(opts)
-    search_core(p,nil,opts,false)
+    result = search_core(p,nil,opts,false)
+    MultiJson.dump(result,
+                   :only => [:id, :latitude, :longitude, :name])
   end
 
   def get_listing_core(query,name,site_name,opts = {})
     # long cache for now
-    key = "findcoop_get_listingv29:#{site_name}:#{name}"
-    if Rails.env.development?
-      # Say the magic words to avoid a YAML problem
-      logger.debug([Organization,Person])
-    end
+    key = "findcoop_get_listingv30:#{site_name}:#{name}"
     result = YAML::load(Rails.cache.fetch(key, :expires_in => 14400.minute) { { :list => get_listing_uncached(query,opts), :query => query, :opts => opts }.to_yaml })
     return [] if result[:query] != query or result[:opts] != opts
     result[:list]

@@ -5,7 +5,7 @@ class ProtoSite < Site
   end
 
   def aliases
-    ['proto.find.coop']
+    ['proto.find.coop', 'test.proto.find.coop']
   end
 
   def dso_filter
@@ -41,7 +41,7 @@ class ProtoSite < Site
   end
 
   def home
-    'http://proto.find.coop:4000'
+    'http://proto.find.coop'
   end
 
   def menu
