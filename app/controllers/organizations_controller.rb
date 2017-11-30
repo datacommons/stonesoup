@@ -31,6 +31,9 @@ class OrganizationsController < ApplicationController
         |x| x.id != @organization.id
       }
     end
+    @orgs = [@organization] + @peers
+
+    @all_verified_dsos = @orgs.map{|x| x.verified_dsos}.flatten.compact.uniq
 
     #if not(@organization.latitude)
     #  @organization.save_ll
