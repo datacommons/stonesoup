@@ -37,7 +37,7 @@ class ProtoSite < Site
   end
 
   def title
-    'Proto Find.coop'
+    'Stone Soup directory'
   end
 
   def home
