@@ -1,7 +1,7 @@
 class ProtoSite < Site
 
   def site_searches
-    ['housing', 'Australia']
+    nil
   end
 
   def aliases
