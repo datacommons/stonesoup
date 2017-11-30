@@ -1093,6 +1093,11 @@ body.page-users-prefs .listing {
   background: #cccc66;
 }
 
+.filter_listing.danger {
+  color: #fff;
+  background: #f00;
+}
+
 .filter_listing.default {
   /*background: #cccc66;
   border: 1px solid #ddddaa;*/

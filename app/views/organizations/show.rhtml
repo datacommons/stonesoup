@@ -4,6 +4,22 @@
 <%- end -%>
 <%- included_view = (params && params[:widget]) if included_view.nil? -%>
 
+<% if @all_verified_dsos.length == 0 %>
+ <div id='search_criteria'>
+ <span class='title'>Data from:</span>
+    <div class="filter_listing danger">Unverified sources</div>
+ <span>(your mileage may vary)</span>
+ </div>
+<% else %>
+ <div id='search_criteria'>
+ <span class='title'>Data from:</span>
+  <% for dso in @all_verified_dsos %>
+    <div class="filter_listing active"><%= link_to dso.name, :controller => 'search', :action => 'search', :params => { :dso => dso.name, :reset => 1 } %></div>
+  <% end %>
+ <span>(if we've garbled it, blame us not them)</span>
+ </div>
+<% end %>
+
 <%= render :partial => 'organizations/show_main', :locals => {:organization => @organization, :included_view => included_view, :map => true} %>
 
 <% for peer in @peers %>
