@@ -194,6 +194,12 @@ module ApplicationHelper
 
     joinSQL, condSQLs, condParams, org_select, org_order = Organization.all_join(session,opts.merge(:entity => "Entity"))
 
+    if search_query != ""
+      joinSQL = "#{joinSQL} INNER JOIN units ON units.taggable_id = entities.id AND units.taggable_type = 'Entity'"
+      condSQLs << "units match ?"
+      condParams << search_query
+    end
+
     org_joinSQL, org_condSQLs, org_condParams = [joinSQL, condSQLs, condParams]
     # org_joinSQL = nil if org_condSQLs.empty?
     org_conditions = []
@@ -213,38 +219,22 @@ module ApplicationHelper
 
     ppl_select = org_select.gsub("DISTINCT organizations","DISTINCT people")
 
-    if search_query == ""
-      entries = Organization.find(:all,
-                                  :limit => :all,
-                                  :conditions => org_conditions,
-                                  :joins => org_joinSQL,
-                                  :select => org_select,
-                                  :group => 'coalesce(grouping, organizations.id)',
-                                  :order => org_order)
-      entries2 = Person.find(:all,
-                             :limit => :all,
-                             :conditions => ppl_conditions,
-                             :joins => ppl_joinSQL,
-                             :select => ppl_select)
-      if entries.length>0 and entries2.length>0
-        @entry_name = "result"
-      end
-      entries += entries2
-    else
-      entries = ActsAsFerret::find(search_query,
-                                   [Organization,Person],
-                                   { 
-                                     :page => 1, 
-                                     :per_page => 50000,
-                                   }, # disable pagination, we need counts
-                                   {
-                                     :limit => :all,
-                                     :conditions => { :organization => org_conditions, :person => ppl_conditions },
-                                     :joins => { :organization => org_joinSQL, :person => ppl_joinSQL },
-                                     :select => { :organization => org_select, :person => ppl_select },
-                                     :order => { :organization => org_order }
-                                   })
+    entries = Organization.find(:all,
+                                :limit => :all,
+                                :conditions => org_conditions,
+                                :joins => org_joinSQL,
+                                :select => org_select,
+                                :group => 'coalesce(grouping, organizations.id)',
+                                :order => org_order)
+    entries2 = Person.find(:all,
+                           :limit => :all,
+                           :conditions => ppl_conditions,
+                           :joins => ppl_joinSQL,
+                           :select => ppl_select)
+    if entries.length>0 and entries2.length>0
+      @entry_name = "result"
     end
+    entries += entries2
     if include_counts
       counts = ApplicationHelper.count_tags(entries)
       entries = entries.paginate(pagination)
