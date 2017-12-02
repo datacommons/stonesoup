@@ -385,7 +385,7 @@ public
       condParams << value
       conditions = []
       conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
-      organizations = Organization.find(:all, :conditions => conditions, :joins => joinSQL, :limit => limit*5)
+      organizations = Organization.find(:all, :conditions => conditions, :joins => joinSQL, :limit => limit*5, :group => 'coalesce(grouping, organizations.id)')
     end
 
     if name.length>=2
