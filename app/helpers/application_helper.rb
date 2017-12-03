@@ -195,7 +195,7 @@ module ApplicationHelper
     joinSQL, condSQLs, condParams, org_select, org_order = Organization.all_join(session,opts.merge(:entity => "Entity"))
 
     if search_query != ""
-      joinSQL = "#{joinSQL} INNER JOIN units ON units.taggable_id = entities.id AND units.taggable_type = 'Entity'"
+      joinSQL = "#{joinSQL} INNER JOIN units_taggables ON units_taggables.taggable_id = entities.id AND units_taggables.taggable_type = 'Entity' INNER JOIN units ON units.docid = units_taggables.id"
       condSQLs << "units match ?"
       condParams << search_query
     end
