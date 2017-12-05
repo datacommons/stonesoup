@@ -30,7 +30,7 @@
       <div class="category_box">
       <table>
       <% @counts_dsos.each do |tag| %>
-        <tr><td><%= tag.count %></td><td><%= link_to tag.name, tag %></td></tr>
+        <tr><td><%= tag.count %></td><td><%= link_to tag.name, :controller => 'search', :action => 'search', :params => { :dso => tag.name, :reset => 1 } %></td></tr>
       <% end %>
       </table>
       </div>
