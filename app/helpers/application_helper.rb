@@ -183,6 +183,14 @@ module ApplicationHelper
     return [] if lst == ""
     Tag.find_by_sql("SELECT t.*, COUNT(DISTINCT o.id) AS count FROM organizations o, tags t, taggings ot WHERE ot.tag_id = t.id AND ot.taggable_id = o.id AND ot.taggable_type = 'Organization' AND ot.taggable_id IN (#{lst}) GROUP BY t.id ORDER BY count DESC")
   end
+
+  def ApplicationHelper.count_dsos(entries)
+    # this is currently being called inefficiently in some cases, where
+    # it would be faster to repeat sql joins rather than list entries
+    lst = entries.select{|x| Organization === x}.map{|x| x.id}.join(",")
+    return [] if lst == ""
+    DataSharingOrg.find_by_sql("SELECT t.*, COUNT(DISTINCT o.id) AS count FROM organizations o, data_sharing_orgs t, data_sharing_orgs_taggables ot WHERE ot.data_sharing_org_id = t.id AND ot.taggable_id = o.id AND ot.taggable_type = 'Organization' AND ot.taggable_id IN (#{lst}) GROUP BY t.id ORDER BY count DESC")
+  end
   
   def search_core_org_ppl(search_query,pagination,opts,include_counts = false)
     # In SQL conditions, we replace:
@@ -237,8 +245,9 @@ module ApplicationHelper
     entries += entries2
     if include_counts
       counts = ApplicationHelper.count_tags(entries)
+      counts2 = ApplicationHelper.count_dsos(entries)
       entries = entries.paginate(pagination)
-      return [entries, counts]
+      return [entries, counts, counts2]
     end
     entries = entries.paginate(pagination)
     entries
