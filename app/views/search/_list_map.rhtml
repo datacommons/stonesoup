@@ -25,6 +25,17 @@
       <div class="clearboth"></div>
       Remember: not all organizations are tagged.
     <% end %>
+    <% unless @counts_dsos.blank? %>
+      <h3>Sources</h3>
+      <div class="category_box">
+      <table>
+      <% @counts_dsos.each do |tag| %>
+        <tr><td><%= tag.count %></td><td><%= link_to tag.name, tag %></td></tr>
+      <% end %>
+      </table>
+      </div>
+      <div class="clearboth"></div>
+    <% end %>
 
  <% else %>
  <b>Not complete?</b><br />
