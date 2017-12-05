@@ -224,6 +224,7 @@ module ApplicationHelper
     org_select = ApplicationHelper.get_org_select(org_select)
     org_order = nil if org_order.blank?
     org_order = 'organizations.updated_at DESC' if org_order.blank?
+    org_select = "#{org_select}, count(*) as grouping_count"
 
     ppl_select = org_select.gsub("DISTINCT organizations","DISTINCT people")
 
@@ -238,7 +239,9 @@ module ApplicationHelper
                            :limit => :all,
                            :conditions => ppl_conditions,
                            :joins => ppl_joinSQL,
-                           :select => ppl_select)
+                           :select => ppl_select,
+                           :group => 'coalesce(grouping, people.id)')
+
     if entries.length>0 and entries2.length>0
       @entry_name = "result"
     end
