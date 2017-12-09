@@ -13,7 +13,10 @@ module ApplicationHelper
   end
   
   def date_format_long(date)
-    return '' if date.nil?
+    return 'at a date and time unknown' if date.nil?
+    if date.day == 1 and date.month == 1
+        return date.strftime('in %Y')
+    end
     return date.strftime('%B %d, %Y') # "July 20, 2009"
   end
 
