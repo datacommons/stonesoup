@@ -30,6 +30,9 @@ class OrganizationsController < ApplicationController
       @peers = Organization.find_all_by_grouping(@organization.grouping).select{ 
         |x| x.id != @organization.id
       }
+      past = DateTime.now - 10000.years
+      @peers = @peers.sort_by { |x| x.updated_at || past }
+      @peers.reverse!
     end
     @orgs = [@organization] + @peers
 

@@ -1,7 +1,7 @@
 <h1><%= organization.name %></h1>
 <div id="last_updated">
 <%- unless organization.updated_at.nil? -%>
-	This entry was last updated on <%= date_format_long(organization.updated_at) %>
+	This entry was last updated <%= date_format_long(organization.updated_at) %>
 	<%- unless organization.updated_by.nil? -%>
 	    <%- if current_user -%>
 		by <%= organization.updated_by.login %>
@@ -34,6 +34,7 @@
   <div id="surround_map">
   <%= render :partial => "search/map_core_leaflet", :locals => { :map_id => "the_map", :map_class => nil, :orgs => organization.locations } %>
   <div class="map_offer">
+<% unless organization.locations[0].physical_state.blank? %>
   Meet the neighbors:
   <ul>
    <%- organization.locations.each do |loc| -%>
@@ -57,6 +58,7 @@
      <% end %>
   <% end %>
   </ul>
+<% end %>
   </div>
   </div>
 <% end %>
@@ -69,7 +71,7 @@
 
 <div id="listing_info">
 	<% if organization.primary_location %>
-		<%= render :partial => 'locations/display', :locals => {:location => organization.primary_location, :hide_links => true}%>
+		<%= render :partial => 'locations/display', :locals => {:location => organization.primary_location, :hide_links => true, :organization => organization}%>
 	<% end %>
 
 	<% unless organization.phone.blank? %>
@@ -108,7 +110,7 @@
 	<h2>Other Locations</h2>
 	<% organization.locations.each do |loc| 
 		next if loc.id == organization.primary_location.id %>
-		<%= render :partial => 'locations/display', :locals => {:location => loc, :hide_links => true}%>
+		<%= render :partial => 'locations/display', :locals => {:location => loc, :hide_links => true, :organization => organization}%>
 	<% end %>
 <% end %>
 
