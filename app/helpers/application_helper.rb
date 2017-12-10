@@ -206,9 +206,16 @@ module ApplicationHelper
     joinSQL, condSQLs, condParams, org_select, org_order = Organization.all_join(session,opts.merge(:entity => "Entity"))
 
     if search_query != ""
+      sq = search_query
+      if not sq.include? '"'
+        # not-great hack to make "co-op" non-disastrous
+        sq = sq.split ' '
+        sq = sq.map { |x| if x.include? '-' then "\"#{x}\"" else x end }
+        sq = sq.join ' '
+      end
       joinSQL = "#{joinSQL} INNER JOIN units_taggables ON units_taggables.taggable_id = entities.id AND units_taggables.taggable_type = 'Entity' INNER JOIN units ON units.docid = units_taggables.id"
       condSQLs << "units match ?"
-      condParams << search_query
+      condParams << sq
     end
 
     org_joinSQL, org_condSQLs, org_condParams = [joinSQL, condSQLs, condParams]
