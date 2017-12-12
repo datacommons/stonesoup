@@ -20,13 +20,18 @@
  </div>
 <% end %>
 
-<%= render :partial => 'organizations/show_main', :locals => {:organization => @organization, :included_view => included_view, :map => true} %>
+<% if @orgs.length > 1 %>
+   <%- org_summary = summary(@orgs) -%>
+   <%= render :partial => 'organizations/show_main', :locals => {:organization => org_summary, :included_view => included_view, :map => true} %>
+   <% @orgs.each_with_index do |peer, idx| %>
+     <p style='clear: both;' >&nbsp;<br/>&nbsp;</p>
+     <div style='text-align: right;'><i>Original listing <%= idx+1 %> of <%= @orgs.length %></i></div>
+     <%= render :partial => 'organizations/show_main', :locals => {:organization => peer, :included_view => included_view, :map => false} %>
+   <% end %>
 
-<% for peer in @peers %>
-   <p style='clear: both;' ></p>
-   <div>(Another related entry: <%= show_link peer %>)</div>
-   <%= render :partial => 'organizations/show_main', :locals => {:organization => peer, :included_view => included_view, :map => false} %>
 
+<% else %>
+   <%= render :partial => 'organizations/show_main', :locals => {:organization => @organization, :included_view => included_view, :map => true} %>
 <% end %>
 
 <% unless @organization.organizations_people.empty? %>
