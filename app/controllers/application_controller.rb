@@ -330,15 +330,7 @@ public
       }
       format.csv do
         data = [@entries].flatten
-        data = data.map {|r| r.reportable_data(:include => [:primary_location])}.flatten
-        cols = Organization.column_names + Location.column_names
-        cols.reject!{|x| x.include? 'mailing_'}
-        cols.reject!{|x| x.include? '_id'}
-        cols.reject!{|x| x.include? 'created_at'}
-        cols.reject!{|x| x.include? 'updated_at'}
-        cols.reject!{|x| ['dccid', 'grouping', 'dso_update', 'oid', 'id'].include? x}
-        cols.reject!{|x| ['taggable_type', 'dso'].include? x}
-
+        data = data.map {|r| r.reportable_data}.flatten
         cols = [
                 'name',
                 'phone',
@@ -352,12 +344,11 @@ public
                 'physical_zip',
                 'physical_country',
                 'description',
-                'year_founded',
+                'tag_names',
+                'founded',
                 'latitude',
                 'longitude',
                ]
-
-
         table = Ruport::Data::Table.new(:data => data,
                                         :column_names => cols)
         send_data table.to_csv,
