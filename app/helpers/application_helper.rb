@@ -235,6 +235,7 @@ module ApplicationHelper
     org_order = nil if org_order.blank?
     org_order = 'organizations.updated_at DESC' if org_order.blank?
     org_select = "#{org_select}, count(*) as grouping_count"
+    org_select = "#{org_select}, (select group_concat(name, ' ~ ') from taggings join tags on taggings.tag_id = tags.id where taggings.taggable_id = organizations.id and taggings.taggable_type = 'Organization' order by name) as tag_names, strftime('%Y', organizations.year_founded) as founded"
 
     ppl_select = org_select.gsub("DISTINCT organizations","DISTINCT people")
 
