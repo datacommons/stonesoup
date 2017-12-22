@@ -905,7 +905,7 @@ body.page-users-prefs .listing {
 }
 
 #carousel-area .surround_map_insert {  
-  width: 400px;
+  width: 650px;
   height: 400px;
   float: left;
   margin-right: 10px;
@@ -1296,4 +1296,8 @@ position: relative;
 
 .ajax { 
   min-width: 200px;
+}
+
+.add-org { 
+  display: none !important;
 }

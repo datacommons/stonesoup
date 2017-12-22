@@ -5,7 +5,7 @@ class ProtoSite < Site
   end
 
   def aliases
-    ['proto.find.coop', 'test.proto.find.coop']
+    ['proto2.find.coop', 'test.proto2.find.coop']
   end
 
   def dso_filter
