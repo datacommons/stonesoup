@@ -6,7 +6,6 @@
 <%- unless filter[:value].blank? and !filter[:has_default] -%>
 <div class="close"><%= link_to_remote( 'x', 
     :url => {:controller => 'search', :action => 'change_filter', :name => filter[:name]},
-  :complete => "jQuery('#search_form').submit()",
     :update => 'search_filters') %></div>
 <%- end -%>
     <span id="<%=filter[:name]%>_title" class="filter_title"><%= refine_filter_label(filter[:label]) %></span><br />
@@ -70,14 +69,14 @@ function filter_apply_change(e,name) {
 	lnk["ac_label"] = a.label;
 	lnk["ac_link"] = item;
 	lnk["ac_cat"] = a.cat;
-	new Ajax.Updater('search_filters', item, {parameters: params, asynchronous:true, evalScripts:true, onComplete: function(){ jQuery("#search_form").submit(); }});
+	new Ajax.Updater('search_filters', item, {parameters: params, asynchronous:true, evalScripts:true});
     }
     if (e.removed) {
 	var a = e.removed.text;
 	var ac_link = "/search/change_filter";
 	var params = {act: 'remove'};
 	params[name] = a;
-	new Ajax.Updater('search_filters', ac_link, {parameters: params, asynchronous:true, evalScripts:true, onComplete: function(){ jQuery("#search_form").submit(); }});
+	new Ajax.Updater('search_filters', ac_link, {parameters: params, asynchronous:true, evalScripts:true});
     }
     return false;
 }
