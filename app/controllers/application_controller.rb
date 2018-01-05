@@ -348,6 +348,7 @@ public
                 'founded',
                 'latitude',
                 'longitude',
+                'dso'
                ]
         table = Ruport::Data::Table.new(:data => data,
                                         :column_names => cols)
