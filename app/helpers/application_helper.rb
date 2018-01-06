@@ -223,6 +223,9 @@ module ApplicationHelper
     org_conditions = []
     org_conditions = [org_condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + org_condParams unless org_condSQLs.empty?
     org_joinSQL = org_joinSQL.gsub('Entity','Organization').gsub('entities','organizations')
+    # remove a nasty duplication
+    org_joinSQL = org_joinSQL.gsub("OR (data_sharing_orgs_taggables.taggable_id = organizations.id AND data_sharing_orgs_taggables.taggable_type = 'Organization')", "")
+
 
     ppl_joinSQL, ppl_condSQLs, ppl_condParams = [joinSQL, condSQLs, condParams]
     ppl_joinSQL = "INNER JOIN organizations_people ON organizations_people.person_id = people.id INNER JOIN organizations ON organizations_people.organization_id = organizations.id #{ppl_joinSQL}"
