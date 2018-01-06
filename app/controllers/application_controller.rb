@@ -331,6 +331,13 @@ public
       format.csv do
         data = [@entries].flatten
         data = data.map {|r| r.reportable_data}.flatten
+        data.each do |d|
+          if (!d['mailing_state'].blank?) and d['physical_state'].blank?
+            d['physical_city'] = d['mailing_city']
+            d['physical_state'] = d['mailing_state']
+            d['physical_country'] = d['mailing_country']
+          end
+        end
         cols = [
                 'name',
                 'phone',
