@@ -2,6 +2,10 @@ class SearchController < ApplicationController
 
   # before_filter :login_required, :only => [:inspect]
 
+  before_filter(:only => :search) do |controller|
+    controller.send(:login_required) if ['json', 'kml', 'pdf', 'csv', 'yaml', 'xml'].include? controller.request.format
+  end
+
 public
 
   def index
