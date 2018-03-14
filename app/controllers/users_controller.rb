@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_filter :login_required, :only => [:new, :create, :edit, :update, :destroy, :index, :list, :show, :prefs, :update_prefs]
+  before_filter :login_required, :only => [:new, :create, :edit, :update, :destroy, :index, :list, :show, :prefs, :update_prefs, :old_signup]
   before_filter :admin_required, :only => [:index, :list, :new, :create, :edit, :update, :destroy]
 
   def index
@@ -45,8 +45,43 @@ class UsersController < ApplicationController
         end
     end
   end
+
+  def old_login
+    case request.method
+      when :post
+        if params[:login] # attempting a login
+          if session[:user] = User.authenticate(params['user_login'], params['user_password'])
+
+            session[:user].update_attribute('last_login', DateTime.now)
+            flash['notice']  = "Login successful"
+            redirect_back_or_default :controller => 'search', :action => "index"
+          else
+            @login    = params['user_login']
+            @message  = "Login unsuccessful"
+          end
+        elsif params[:forgot_pass] # requesting password reset
+          if params[:user_login].blank?
+            @login    = params['user_login']
+            @message  = "Enter your e-mail address to reset your password."
+          else
+            user = User.find_by_login(params[:user_login])
+            if user.nil?
+              @login    = params['user_login']
+              @message  = "No user was found with for that e-mail address."
+            else
+              # reset password and send e-mail
+              newpass = Common::random_password(user.login)
+              user.password_cleartext = newpass
+              user.save!
+              Email.deliver_password_reset(user, newpass)
+              @message = "A new password was e-mailed to #{user.login} (if you don't see it, check your spam folder, or whitelist \"find.coop\")"
+            end
+          end
+        end
+    end
+  end
   
-  def signup
+  def old_signup
     case request.method
       when :post
         @user = User.new(params['user'])

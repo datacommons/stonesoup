@@ -24,15 +24,15 @@ class DefaultSite < Site
     [
      {
        :name => "About",
-       :link => "http://datacommons.find.coop/about"
+       :link => "http://datacommons.coop/"
      },
      {
        :name => "Join",
-       :link => "http://datacommons.find.coop/content/member-packet"
+       :link => "http://member.datacommons.coop/applications/new"
      },
      {
        :name => "Contact",
-       :link => "http://datacommons.find.coop/contact"
+       :link => "http://datacommons.coop/contact/"
      },
     ]
   end

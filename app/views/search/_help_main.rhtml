@@ -24,7 +24,7 @@ gambol around your feet whenever you chose to visit, and we'd have a team
 of enthusiastic researchers on call to find whatever you needed.
 Unfortunately we've made the questionable decision to use computers
 instead, inevitably leading to sadness and ill-feeling.
-When that happens, please <a href="http://datacommons.find.coop/contact">contact us</a>!
+When that happens, please <a href="http://datacommons.coop/contact/">contact us</a>!
 We're a helpful bunch, when not hiding behind a computer.
 
 </div>
@@ -36,6 +36,7 @@ We're a helpful bunch, when not hiding behind a computer.
 <% end %>
 </ul>
 
+<% if false %>
 <%= faq("add","Can I add a missing organization?",content_run) %>
 
 <% if content_run %>
@@ -50,8 +51,10 @@ Additions are subject to verification and reversion by editors
 and moderators.
 </div>
 <% end %>
+<% end %>
 
 
+<% if false %>
 <%= faq("login","How do I log in, or sign on, or whatever you call it?",content_run) %>
 
 <% if content_run %>
@@ -62,8 +65,10 @@ leading to the <%= link_to "login page", :controller=>"users", :action=>"login" 
 
 </div>
 <% end %>
+<% end %>
 
 
+<% if false %>
 <%= faq("edit","I found a mistake in a listing.  Can I fix it myself?",content_run) %>
 
 <% if content_run %>
@@ -75,7 +80,9 @@ and moderators.
 
 </div>
 <% end %>
+<% end %>
 
+<% if false %>
 <%= faq("dups","I found some near-duplicate listings. Can I merge them?",content_run) %>
 
 <% if content_run %>
@@ -87,12 +94,14 @@ now see a new &ldquo;Set as main version&rdquo; link beneath
 each search result.  Click this link for the best of the
 near-duplicates.  Then click &ldquo;Merge&rdquo; for one other version,
 and follow the guidance on merging any useful bits and pieces from it.
-Or just <a href="http://datacommons.find.coop/contact">send us a note</a> 
+Or just <a href="http://datacommons.coop/contact/">send us a note</a> 
 and we'll do it.
 
 </div>
 <% end %>
+<% end %>
 
+<% if false %>
 <%= faq("defunct","I found a defunct organization. Should I delete it?",content_run) %>
 
 <% if content_run %>
@@ -107,6 +116,7 @@ at the bottom of every listing.
 
 </div>
 <% end %>
+<% end %>
 
 
 
@@ -116,7 +126,7 @@ at the bottom of every listing.
 <div>
 
 The directory is curated by small teams of moderators from various
-member organizations of the <a href="http://datacommons.find.coop">Data Commons Co-op</a>.  At the start of any
+member organizations of the <a href="http://datacommons.coop">Data Commons Co-op</a>.  At the start of any
 listing, you should see a note about when it was last updated.
 Anything older than a year or two is not likely to be accurate.  Each
 listing will also give all editors of that listing.  Listings with
@@ -133,12 +143,12 @@ editors are more likely to be accurate.
 If the listing for that organization says it is in the &ldquo;data pool&rdquo;
 of such-and-such, that shows which of our co-op members have approved it.
 If there is no language like that, then nobody is very attached to 
-it, it just wafted in on the breeze.  You could tag it as evil (or
+it, it just wafted in on the breeze.  <!--- You could tag it as evil (or
 some more polite keyword) to warn others, or
-<a href="http://datacommons.find.coop/contact">report it</a>,
+<a href="http://datacommons.coop/contact/">report it</a>,
 or <%= faq_link 'delete it', 'defunct' %> (this should be a last resort, since negative knowledge
 about an organization is valuable).
-We're working on better communicating the quality of individual listings.
+We're working on better communicating the quality of individual listings. -->
 
 </div>
 <% end %>
@@ -152,19 +162,19 @@ We're working on better communicating the quality of individual listings.
 
 Access to the database is currently limited to members of the Data
 Commons Cooperative.  We encourage you to <a
-href="http://datacommons.find.coop/join">apply for membership</a> to
+href="http://member.datacommons.coop/applications/new">apply for membership</a> to
 get complete access (including the full database, plus full database
 history since DCC incorporation, plus contributed data in source
 format from members, plus continuous updates for the duration of your
-membership).  
-We are working to migrate as much data as possible to an
+membership).
+<!-- We are working to migrate as much data as possible to an
 ODbL open-data license, for public release, but we don't yet have all
 our ducks in a row on this.  In the meantime, there are several export
 options for saving information from searches (XML, CSV).  New and
 updated listings can be monitored with an <%= link_to 'RSS feed',
 feed_path %>.  Parts of the database are drawn from sources maintained
 by members of the Co-op. Those members are of course free to provide the data to
-you under different terms than they provide it to the Co-op.
+you under different terms than they provide it to the Co-op. -->
 
 </div>
 <% end %>
@@ -175,15 +185,15 @@ you under different terms than they provide it to the Co-op.
 <div>
 Be our guest!  The Data Commons Directory software is
 available under a free license at 
-<%= link_to 'launchpad.net/datacommons', "https://code.launchpad.net/~datacommons/datacommons/trunk" %>.
-There are tips on installing it on <%= link_to 'Cultivate', "http://cultivate.coop/wiki/Data_Commons_Directory" %>.
+<%= link_to 'github.com/datacommons/stonesoup', "https://github.com/datacommons/stonesoup" %>.
+There are elderly tips on installing it on <%= link_to 'Cultivate', "http://cultivate.coop/wiki/Data_Commons_Directory" %>.
 We'd appreciate if you share improvements you make to the software.
 If you need to integrate the directory with an existing website,
 and don't have a team in place to do it,
 we may be able to put you in touch with a co-op familiar with 
 the software that is available to do 
 the work - 
-<a href="http://datacommons.find.coop/contact">contact us</a> (or 
+<a href="http://datacommons.coop/contact/">contact us</a> (or 
 check the fine print at the bottom of any page for leads).
 </div>
 <% end %>
@@ -193,18 +203,17 @@ check the fine print at the bottom of any page for leads).
 <% if content_run %>
 <div>
 
-Love.  It is the one thing we have plenty of.  Also, as of July 2012,
-membership fees of the Data commons Cooperative.  Along the way, we've
+Membership fees of the Data commons Cooperative.  Along the way, we've
 had wonderful help from funders and volunteers, check the acknowledgments
 at the bottom of this page, and the list on our
-<a href="http://datacommons.find.coop/donate">donation page</a>.
+<a href="http://datacommons.coop/donate">donation page</a>.
 
 </div>
 <% end %>
 
 
 
-
+<% if false %>
 <%= faq("moderator","How do I become a moderator?",content_run) %>
 
 <% if content_run %>
@@ -216,10 +225,11 @@ Data Commons Cooperative can also nominate moderators.
 
 </div>
 <% end %>
+<% end %>
 
 
 
-
+<% if false %>
 <%= faq("moderator_do","Ok, I\'m a moderator. What can I actually do?",content_run) %>
 
 <% if content_run %>
@@ -240,9 +250,11 @@ an association between your team (or teams) and individual listings.
 
 </div>
 <% end %>
+<% end %>
 
 
 
+<% if false %>
 <%= faq("moderator_recent","How can I see a list of recent changes?",content_run) %>
 
 <% if content_run %>
@@ -257,4 +269,5 @@ result in it floating to the top of this recent changes list (if you
 need a complete report before we fix this, an administrator can produce it for you).
 
 </div>
+<% end %>
 <% end %>

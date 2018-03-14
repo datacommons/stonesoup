@@ -1,12 +1,13 @@
 
-<div>
-<%= t(:login_message) %>
-</div>
+<p>
+Changes to this directory, along with bulk downloads of its contents, are managed
+by the Data Commons Cooperative.  Some operations are not public, but only
+available with express authorization of data contributors.
+</p>
 
 <div title="Account login" id="loginform" class="form" style="float: left;">
 
 <% form_tag :action=> "login" do %>
-    <h2><%= t(:login_option) %></h2>
     
     <% if @message %>
       <div class="message"><%= @message %></div>
@@ -19,12 +20,9 @@
     <input type="password" name="user_password" id="user_password" size="30"/>
     <br/><br />
     <input type="submit" name="login" value="<%=t :login%> &#187;" class="primary" />
-    <input type="submit" name="forgot_pass" value="<%=t :forgot_password%>" class="primary" />
 
 <% end %>
 
 </div>
-
-<%= render :file => 'users/signup' %>
 
 <div class="clearboth"></div>
