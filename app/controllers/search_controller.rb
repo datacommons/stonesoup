@@ -58,6 +58,9 @@ public
     end
     @merge_target = session[:merge] 
 
+    if @unlimited_search
+      @map_style = true
+    end
     if params[:q]
       render_entries
     end
@@ -65,6 +68,7 @@ public
 
   def map
     @unlimited_search = true
+    @map_style = true
     search
   end
 
