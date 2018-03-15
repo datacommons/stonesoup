@@ -184,7 +184,6 @@ public
       if(DataSharingOrgsTaggable.set_status(dso, org, params[:verified] || false))
         status = (params[:verified] ? 'verified' : 'unverified')
         flash[:notice] = "#{org.name} was successfully added to the data pool for #{dso.name} as #{status}"
-         org.ferret_update
       else
         flash[:error] = "Couldn't add Org to DSO"
       end
