@@ -19,11 +19,6 @@ class Person < ActiveRecord::Base
 
   validates_presence_of :firstname
 
-  acts_as_ferret(:fields => {
-    :name => {:boost => 2.0, :store => :yes },
-    :access_type => { :store => :yes }
-  })
-
   def access_type
     self.access_rule.access_type
   end

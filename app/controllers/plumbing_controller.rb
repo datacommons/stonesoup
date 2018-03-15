@@ -8,14 +8,14 @@ class PlumbingController < ApplicationController
   def org
     @orgs = Organization.find(:all)
     @orgs.each do |org|
-      org.ferret_update
+      # do not need to do anything anymore
     end
   end
 
   def ppl
     @data = Person.find(:all)
     @data.each do |datum|
-      datum.ferret_update
+      # do not need to do anything anymore
     end
   end
 

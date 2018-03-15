@@ -21,8 +21,3 @@ You can then run the development server as:
 ```
 $ ./script/server
 ```
-
-To enable search indexing, do:
-```
-$ ruby ./script/ferret_server -e development -R `pwd` start
-```
