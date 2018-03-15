@@ -1,44 +1,6 @@
 
   <%
-  at = 0
-  markers = {}
-  bounds = [10000, 10000, -10000, -10000]
-  @have_something = false
-  mkr = []
-  for e in orgs
-   if e.respond_to? "latitude"
-    unless e.latitude.nil? or e.longitude.nil?
-     unless Float(e.latitude).abs+Float(e.longitude).abs<0.001
-      icon = "/openlayers/img/marker-star.png"
-      pt = [Float(e.latitude), Float(e.longitude)]
-      markers[e.id] = icon
-      bounds = [[bounds[0], pt[0]].min,
-                [bounds[1], pt[1]].min,
-                [bounds[2], pt[0]].max,
-                [bounds[3], pt[1]].max]
-      mkr << {
-            :point => pt, 
-	    :info_bubble => show_link(e),
-	    :title => e.name,
-	    :icon => icon, 
-	    :icon_size => [22,22]
-       }
-      @have_something = true
-     end
-    end
-   end
-  end
-  x1 = bounds[0]
-  y1 = bounds[1]
-  x2 = bounds[2]
-  y2 = bounds[3]
-  dx = (x2-x1)/10
-  dy = (y2-y1)/10
-  if dx<0.00001 and dy<0.00001
-    dx = 0.1
-    dy = 0.1
-  end
-  #  map.center_zoom_on_bounds_init([[x1-dx,y1-dy],[x2+dx,y2+dy]]) if @have_something
+  @have_something = true
   %>
 
 
@@ -48,12 +10,25 @@
 
 <script>
 var name = "<%= j map_id %>";
-var x1 = <%= j x1 %>;
-var x2 = <%= j x2 %>;
-var y1 = <%= j y1 %>;
-var y2 = <%= j y2 %>;
-var dx = <%= j dx %>;
-var dy = <%= j dy %>;
+
+var orgs = <%= MultiJson.dump(orgs, :only => [:id, :latitude, :longitude, :name]) %>;
+
+var x1 = 500;
+var x2 = -500;
+var y1 = 500;
+var y2 = -500;
+for (var i=0; i<orgs.length; i++) {
+    var org = orgs[i];
+    var lat = org.latitude;
+    var lng = org.longitude;
+    if (!lat || !lng) continue;
+    if (lat<x1) x1 = lat;
+    if (lat>x2) x2 = lat;
+    if (lng<y1) y1 = lng;
+    if (lng>y2) y2 = lng;
+}
+var dx = (x2 - x1) / 10;
+var dy = (y2 - y1) / 10;
 var map = L.map(name).fitBounds([[x1-dx,y1-dy],[x2+dx,y2+dy]]);
 
 // var mapquest = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -69,11 +44,15 @@ map.attributionControl.setPrefix('<a href="http://leaflet.cloudmade.com/">Leafle
 var marker = null;
 var markers = new L.MarkerClusterGroup({maxClusterRadius: 40});
 
-<% mkr.each do |m| %>
-marker = new L.Marker(new L.LatLng(<%= m[:point][0] %>, <%= m[:point][1] %>), { title: "<%= j m[:title] %>" });
-marker.bindPopup("<%= j m[:info_bubble] %>");
-markers.addLayer(marker);
-<% end %>
+for (var i=0; i<orgs.length; i++) {
+    var org = orgs[i];
+    var lat = org.latitude;
+    var lng = org.longitude;
+    if (!lat || !lng) continue;
+    marker = new L.Marker(new L.LatLng(lat, lng), { title: org.name });
+    marker.bindPopup("\u003Ca href=/organizations/" + org.id + "\u003E" + org.name + "\u003C/a\u003E");
+    markers.addLayer(marker);
+}
 
 map.addLayer(markers);
 
