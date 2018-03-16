@@ -13,6 +13,10 @@ body, p, ol, ul, td {
   font-size:   14px;
 }
 
+body.tag-inactive {
+  background-color:#333;
+}
+
 img { border: 0; }
 
 a:link{
@@ -222,6 +226,12 @@ form.button-to {
 	background-color: #fff;
 } 
  
+body.tag-inactive #pagewidth {
+  padding-left: 20px;
+  padding-right: 20px;
+  background-color:#ddd;    
+}
+
 #header {
   margin: 0;
   padding: 0;
@@ -1300,4 +1310,8 @@ position: relative;
 
 .add-org { 
   display: none !important;
+}
+
+div.left_listing div.tag-inactive a {
+  color: gray;
 }
