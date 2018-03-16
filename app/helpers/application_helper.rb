@@ -213,9 +213,9 @@ module ApplicationHelper
         sq = sq.map { |x| if x.include? '-' then "\"#{x}\"" else x end }
         sq = sq.join ' '
       end
-      joinSQL = "#{joinSQL} INNER JOIN units_taggables ON units_taggables.taggable_id = entities.id AND units_taggables.taggable_type = 'Entity' INNER JOIN units ON units.docid = units_taggables.id"
-      condSQLs << "units match ?"
-      condParams << sq
+      joinSQL = "INNER JOIN units_taggables ON units_taggables.taggable_id = entities.id AND units_taggables.taggable_type = 'Entity' INNER JOIN units ON units.docid = units_taggables.id #{joinSQL}"
+      condSQLs.unshift("units match ?")
+      condParams.unshift(sq)
     end
 
     org_joinSQL, org_condSQLs, org_condParams = [joinSQL, condSQLs, condParams]
