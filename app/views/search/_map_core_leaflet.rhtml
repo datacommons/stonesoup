@@ -8,6 +8,7 @@
   <div<%- if map_class -%> class="<%= map_class %>"<%- end -%> id="<%= map_id %>"></div>
   <div class="clearboth"></div>
 
+
 <script>
 var name = "<%= j map_id %>";
 
@@ -29,6 +30,8 @@ for (var i=0; i<orgs.length; i++) {
 }
 var dx = (x2 - x1) / 10;
 var dy = (y2 - y1) / 10;
+dx = Math.max(dx, 0.03);
+dy = Math.max(dy, 0.03);
 var map = L.map(name).fitBounds([[x1-dx,y1-dy],[x2+dx,y2+dy]]);
 
 // var mapquest = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -38,7 +41,7 @@ var attrib = 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVT
 
 L.tileLayer(mapquest, {
     attribution: attrib,
-    maxZoom: 19
+    maxZoom: 16
 }).addTo(map);
 map.attributionControl.setPrefix('<a href="http://leaflet.cloudmade.com/">Leaflet</a>');
 var marker = null;
@@ -49,8 +52,10 @@ for (var i=0; i<orgs.length; i++) {
     var lat = org.latitude;
     var lng = org.longitude;
     if (!lat || !lng) continue;
-    marker = new L.Marker(new L.LatLng(lat, lng), { title: org.name });
-    marker.bindPopup("\u003Ca href=/organizations/" + org.id + "\u003E" + org.name + "\u003C/a\u003E");
+    marker = new L.Marker(new L.LatLng(lat, lng), { title: org.name || 'organization' });
+    if (org.name) {
+        marker.bindPopup("\u003Ca href=/organizations/" + org.id + "\u003E" + (org.name || default_name) + "\u003C/a\u003E");
+    }
     markers.addLayer(marker);
 }
 
