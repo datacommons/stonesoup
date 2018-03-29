@@ -17,8 +17,17 @@
     <div class="filter_listing active"><%= link_to dso.name, :controller => 'search', :action => 'search', :params => { :dso => dso.name, :reset => 1 } %></div>
   <% end %>
  <span>(if we've garbled it, blame us not them)</span>
+ <p>
+ <% for source in @source_info %>
+   <% if source.name.present? and source.source_directory_link.present? and source.description.present? %>
+   <div><%= link_to source.name, source.source_directory_link %>: <%= source.description %></div>
+   <% end %>
+ <% end %>
+ </p>
  </div>
+
 <% end %>
+
 
 <% if @orgs.length > 1 %>
    <%- org_summary = summary(@orgs) -%>
