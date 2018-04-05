@@ -108,3 +108,20 @@ updateCarouselIndex(0);
 
 <div class="clearboth"></div>
 
+<h1>Current Sources</h1>
+
+<div>
+
+ <% for source in @source_info %>
+   <% if source.name.present? and source.description.present? %>
+     <% if source.source_directory_link.present? %>
+       <p><b><%= link_to source.name, source.source_directory_link %></b>: <%= source.description %></p>
+     <% else %>
+       <p><b><%= source.name %></b>: <%= source.description %></p>
+     <% end %>
+   <% end %>
+ <% end %>
+
+
+</div>
+
