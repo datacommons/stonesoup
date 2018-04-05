@@ -19,8 +19,12 @@
  <span>(if we've garbled it, blame us not them)</span>
  <p>
  <% for source in @source_info %>
-   <% if source.name.present? and source.source_directory_link.present? and source.description.present? %>
-   <div><%= link_to source.name, source.source_directory_link %>: <%= source.description %></div>
+   <% if source.name.present? and source.description.present? %>
+     <% if source.source_directory_link.present? %>
+       <div><b><%= link_to source.name, source.source_directory_link %></b>: <%= source.description %></div>
+     <% else %>
+       <div><b><%= source.name %></b>: <%= source.description %></div>
+     <% end %>
    <% end %>
  <% end %>
  </p>
