@@ -41,6 +41,8 @@ class OrganizationsController < ApplicationController
     # following is not actually a DataSharingOrg (*shame*)
     @source_info = DataSharingOrg.find_by_sql(["select * from sources where sources.key in (?)", @all_verified_dsos.map{|x| x.key}])
 
+    @sponsor_info = @source_info.map{|x| Organization.get_sponsors(x)}.flatten.uniq
+
     #if not(@organization.latitude)
     #  @organization.save_ll
     #  @organization.save
