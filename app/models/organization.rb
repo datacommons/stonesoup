@@ -531,4 +531,18 @@ class Organization < ActiveRecord::Base
   def oname
     "o" + (name.nil? ? "" : name)
   end
+
+  def Organization.get_sponsors(source)
+    sponsors = []
+    if source.name.include? "Census"
+      sponsors << "fce"
+    end
+    if source.key.include? "_coops"
+      sponsors << "fce"
+    end
+    if source.key == 'mass_census'
+      sponsors << "somo"
+    end
+    return sponsors
+  end
 end

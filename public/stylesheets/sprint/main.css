@@ -1315,3 +1315,16 @@ position: relative;
 div.left_listing div.tag-inactive a {
   color: gray;
 }
+
+div.org_sponsor_wrap {
+  float: right;
+}
+
+div.org_sponsor { 
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 1em;
+}
+
+div.org_sponsor img { 
+}

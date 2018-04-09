@@ -18,6 +18,17 @@
   <% end %>
  <span>(if we've garbled it, blame us not them)</span>
  <p>
+
+<% if @sponsor_info %>
+  <div class="org_sponsor_wrap">
+    <% for sponsor in @sponsor_info %>
+      <div class="org_sponsor">
+        <%= render :partial => 'sponsors/' + sponsor %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
  <% for source in @source_info %>
    <% if source.name.present? and source.description.present? %>
      <% if source.source_directory_link.present? %>
@@ -28,8 +39,9 @@
    <% end %>
  <% end %>
  </p>
- </div>
+ <div class="clearboth"></div>
 
+</div>
 <% end %>
 
 
