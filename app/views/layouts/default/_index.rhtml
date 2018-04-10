@@ -112,6 +112,17 @@ updateCarouselIndex(0);
 
 <div>
 
+  <div class="org_sponsor_wrap">
+    <% for sponsor in ['fce', 'somo'] %>
+    <p>
+      <div class="org_sponsor">
+        <%= render :partial => 'sponsors/' + sponsor %>
+      </div>
+      </p>
+    <% end %>
+  </div>
+
+
  <% for source in @source_info %>
    <% if source.name.present? and source.description.present? %>
      <% if source.source_directory_link.present? %>
@@ -122,6 +133,7 @@ updateCarouselIndex(0);
    <% end %>
  <% end %>
 
+ <div class="clearboth"></div>
 
 </div>
 
