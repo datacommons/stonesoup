@@ -536,9 +536,11 @@ class Organization < ActiveRecord::Base
     sponsors = []
     if source.name.include? "Census"
       sponsors << "fce"
+      sponsors << "cabot"
     end
     if source.key.include? "_coops"
       sponsors << "fce"
+      sponsors << "cabot"
     end
     if source.key == 'mass_census'
       sponsors << "somo"
