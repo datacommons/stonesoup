@@ -13,7 +13,7 @@ Event.observe(window, 'load', function() {
 });
 </script>
 </head>
-<body class="section-<%=params[:controller]%> page-<%=params[:controller]%>-<%=params[:action]%><% if @welcome_page%> welcome-page<% end %>">
+<body class="section-<%=params[:controller]%> page-<%=params[:controller]%>-<%=params[:action]%><% if @welcome_page%> welcome-page<% end %><% if @organization %><% for tag in @organization.tags %> tag-<%= tag.name.downcase.gsub(/[^a-z0-9]/,'_') %><% end %><%end%>">
 
 <%=render :partial => 'layouts/adminmenu'%>
 <%- 
@@ -48,7 +48,7 @@ Event.observe(window, 'load', function() {
 <div id="post_header"></div>
 <%= render :partial => 'search/post_search_form', :locals => { :this_is_the_header => true } %>
 <div id="front-bar">
-<div class="button-right flip-color"><%= link_to "<b>+</b> #{t :add_organization}", :controller => 'organizations', :action => 'new' %></div>
+<div class="button-right flip-color add-org"><%= link_to "<b>+</b> #{t :add_organization}", :controller => 'organizations', :action => 'new' %></div>
 <div id="button-help" class="button-right"><%= link_to t(:help), help_path %></div>
 <div class="button-right"><%= link_to t(:recent_changes), recent_path %></div>
 <%- @site.menu.each do |button| -%><div class="button"<%- if button[:id] -%> id="<%= button[:id] %>"<%- end -%>><a href="<%= button[:link][:id] ? url_for({:controller => 'search', :action => 'page'}.merge(button[:link])) : button[:link] %>"><%= t(button[:name].underscore, :default => button[:name]) %></a></div><%- end -%>

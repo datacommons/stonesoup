@@ -13,6 +13,10 @@ body, p, ol, ul, td {
   font-size:   14px;
 }
 
+body.tag-inactive {
+  background-color:#333;
+}
+
 img { border: 0; }
 
 a:link{
@@ -222,6 +226,12 @@ form.button-to {
 	background-color: #fff;
 } 
  
+body.tag-inactive #pagewidth {
+  padding-left: 20px;
+  padding-right: 20px;
+  background-color:#ddd;    
+}
+
 #header {
   margin: 0;
   padding: 0;
@@ -905,7 +915,7 @@ body.page-users-prefs .listing {
 }
 
 #carousel-area .surround_map_insert {  
-  width: 400px;
+  width: 650px;
   height: 400px;
   float: left;
   margin-right: 10px;
@@ -1091,6 +1101,11 @@ body.page-users-prefs .listing {
 .filter_listing.active {
   color: #384637;
   background: #cccc66;
+}
+
+.filter_listing.danger {
+  color: #fff;
+  background: #f00;
 }
 
 .filter_listing.default {
@@ -1291,4 +1306,25 @@ position: relative;
 
 .ajax { 
   min-width: 200px;
+}
+
+.add-org { 
+  display: none !important;
+}
+
+div.left_listing div.tag-inactive a {
+  color: gray;
+}
+
+div.org_sponsor_wrap {
+  float: right;
+}
+
+div.org_sponsor { 
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 1em;
+}
+
+div.org_sponsor img { 
 }

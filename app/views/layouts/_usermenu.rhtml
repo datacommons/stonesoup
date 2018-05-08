@@ -7,8 +7,8 @@
 			<% else %>
 				<%= link_to t(:edit_personal_entry), :controller => 'people', :action => 'edit', :id => current_user.person %>
 			<% end %>
-		| <%= link_to t(:report_problem), 'http://datacommons.find.coop/contact'%>
+		| <%= link_to t(:report_problem), 'http://datacommons.coop/contact/'%>
 		)
 <%- else -%>
-<%= link_to t(:login), :controller => 'users', :action => 'login' %> | <a href='http://datacommons.find.coop/contact'><%= t(:report_problem) %></a>
+<%= link_to t(:login), :controller => 'users', :action => 'login' %> | <a href='http://datacommons.coop/contact/'><%= t(:report_problem) %></a>
 <% end %>

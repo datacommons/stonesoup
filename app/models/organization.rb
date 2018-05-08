@@ -29,25 +29,6 @@ class Organization < ActiveRecord::Base
   has_many :tags, :through => :taggings
   has_many :taggings, :as => :taggable
 
-  acts_as_ferret(:fields => {
-                   :name => {:boost => 2.0, :store => :yes },
-                   :description => { :store => :yes },
-                   :products_services_to_s => { :store => :yes },
-                   :location => { :via => :locations_to_s,
-                     :store => :yes },
-                   # some different tags to enable more selective searches
-                   :state => { :via => :states_to_s },
-                   :zip => { :via => :zips_to_s },
-                   :country => { :via => :countries_to_s },
-                   :sector => { :via => :sectors_to_s },
-                   :org_type => { :via => :org_types_to_s },
-                   :access_type => { :store => :yes },
-                   :verified => { :via => :verified_to_s },
-                   :city => { :via => :cities_to_s },
-#                   :public => { :store => :yes },
-                   :pool => { :via => :pool_to_s },
-                 } )
-
   acts_as_reportable
 
   validates_presence_of :name
@@ -531,7 +512,7 @@ class Organization < ActiveRecord::Base
   end
 
   def to_json(options)
-    options[:include] ||= :locations
+    # options[:include] ||= :locations
     super(options)
   end
 
@@ -549,5 +530,21 @@ class Organization < ActiveRecord::Base
 
   def oname
     "o" + (name.nil? ? "" : name)
+  end
+
+  def Organization.get_sponsors(source)
+    sponsors = []
+    if source.name.include? "Census"
+      sponsors << "fce"
+      sponsors << "cabot"
+    end
+    if source.key.include? "_coops"
+      sponsors << "fce"
+      sponsors << "cabot"
+    end
+    if source.key == 'mass_census'
+      sponsors << "somo"
+    end
+    return sponsors
   end
 end

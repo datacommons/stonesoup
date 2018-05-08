@@ -30,7 +30,6 @@ class TagsController < ApplicationController
     @taggable.taggings.delete(@tagging)
     @taggable.save!
     # @taggable.notify_related_record_change(:deleted, @tag)
-    @taggable.ferret_update
     @organization = @taggable
     render :partial => 'manage'
   end
@@ -54,7 +53,6 @@ class TagsController < ApplicationController
     @organization.tags.push(@tag)
     @organization.save!
     # @organization.notify_related_record_change(:added, @tag)
-    @organization.ferret_update
     render :partial => 'manage'
   end
 

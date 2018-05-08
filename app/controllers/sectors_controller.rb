@@ -9,7 +9,6 @@ class SectorsController < ApplicationController
     @organization.sectors.delete(@sector)
     @organization.save!
     @organization.notify_related_record_change(:deleted, @sector)
-    @organization.ferret_update
     render :partial => 'manage'
   end
 
@@ -20,7 +19,6 @@ class SectorsController < ApplicationController
     @organization.sectors.push(@sector)
     @organization.save!
     @organization.notify_related_record_change(:added, @sector)
-    @organization.ferret_update
     render :partial => 'manage'
   end
 

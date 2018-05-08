@@ -13,7 +13,5 @@ To view a test server:
   #rm -rf index
   #rm -rf log
 
-  script/ferret_server -e test -R `pwd` start
-  script/runner -e test 'Organization.rebuild_index'
   script/server -e test
 

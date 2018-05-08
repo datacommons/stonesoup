@@ -76,7 +76,7 @@ function filter_apply_change(e,name) {
 	var ac_link = "/search/change_filter";
 	var params = {act: 'remove'};
 	params[name] = a;
-	new Ajax.Updater('search_filters', ac_link, {parameters: params, asynchronous:true, evalScripts:true}); 
+	new Ajax.Updater('search_filters', ac_link, {parameters: params, asynchronous:true, evalScripts:true});
     }
     return false;
 }

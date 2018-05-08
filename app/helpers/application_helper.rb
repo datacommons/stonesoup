@@ -13,7 +13,10 @@ module ApplicationHelper
   end
   
   def date_format_long(date)
-    return '' if date.nil?
+    return 'at a date and time unknown' if date.nil?
+    if date.day == 1 and date.month == 1
+        return date.strftime('in %Y')
+    end
     return date.strftime('%B %d, %Y') # "July 20, 2009"
   end
 
@@ -183,6 +186,14 @@ module ApplicationHelper
     return [] if lst == ""
     Tag.find_by_sql("SELECT t.*, COUNT(DISTINCT o.id) AS count FROM organizations o, tags t, taggings ot WHERE ot.tag_id = t.id AND ot.taggable_id = o.id AND ot.taggable_type = 'Organization' AND ot.taggable_id IN (#{lst}) GROUP BY t.id ORDER BY count DESC")
   end
+
+  def ApplicationHelper.count_dsos(entries)
+    # this is currently being called inefficiently in some cases, where
+    # it would be faster to repeat sql joins rather than list entries
+    lst = entries.select{|x| Organization === x}.map{|x| x.id}.join(",")
+    return [] if lst == ""
+    DataSharingOrg.find_by_sql("SELECT t.*, COUNT(DISTINCT o.id) AS count FROM organizations o, data_sharing_orgs t, data_sharing_orgs_taggables ot WHERE ot.data_sharing_org_id = t.id AND ot.taggable_id = o.id AND ot.taggable_type = 'Organization' AND ot.taggable_id IN (#{lst}) GROUP BY t.id ORDER BY count DESC")
+  end
   
   def search_core_org_ppl(search_query,pagination,opts,include_counts = false)
     # In SQL conditions, we replace:
@@ -194,11 +205,27 @@ module ApplicationHelper
 
     joinSQL, condSQLs, condParams, org_select, org_order = Organization.all_join(session,opts.merge(:entity => "Entity"))
 
+    if search_query != ""
+      sq = search_query
+      if not sq.include? '"'
+        # not-great hack to make "co-op" non-disastrous
+        sq = sq.split ' '
+        sq = sq.map { |x| if x.include? '-' then "\"#{x}\"" else x end }
+        sq = sq.join ' '
+      end
+      joinSQL = "INNER JOIN units_taggables ON units_taggables.taggable_id = entities.id AND units_taggables.taggable_type = 'Entity' INNER JOIN units ON units.docid = units_taggables.id #{joinSQL}"
+      condSQLs.unshift("units match ?")
+      condParams.unshift(sq)
+    end
+
     org_joinSQL, org_condSQLs, org_condParams = [joinSQL, condSQLs, condParams]
     # org_joinSQL = nil if org_condSQLs.empty?
     org_conditions = []
     org_conditions = [org_condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + org_condParams unless org_condSQLs.empty?
     org_joinSQL = org_joinSQL.gsub('Entity','Organization').gsub('entities','organizations')
+    # remove a nasty duplication
+    org_joinSQL = org_joinSQL.gsub("OR (data_sharing_orgs_taggables.taggable_id = organizations.id AND data_sharing_orgs_taggables.taggable_type = 'Organization')", "")
+
 
     ppl_joinSQL, ppl_condSQLs, ppl_condParams = [joinSQL, condSQLs, condParams]
     ppl_joinSQL = "INNER JOIN organizations_people ON organizations_people.person_id = people.id INNER JOIN organizations ON organizations_people.organization_id = organizations.id #{ppl_joinSQL}"
@@ -210,44 +237,34 @@ module ApplicationHelper
     org_select = ApplicationHelper.get_org_select(org_select)
     org_order = nil if org_order.blank?
     org_order = 'organizations.updated_at DESC' if org_order.blank?
+    org_select = "#{org_select}, count(*) as grouping_count"
+    org_select = "#{org_select}, (select group_concat(name, ' ~ ') from taggings join tags on taggings.tag_id = tags.id where taggings.taggable_id = organizations.id and taggings.taggable_type = 'Organization' order by name) as tag_names, strftime('%Y', organizations.year_founded) as founded"
 
     ppl_select = org_select.gsub("DISTINCT organizations","DISTINCT people")
 
-    if search_query == ""
-      entries = Organization.find(:all,
-                                  :limit => :all,
-                                  :conditions => org_conditions,
-                                  :joins => org_joinSQL,
-                                  :select => org_select,
-                                  :order => org_order)
-      entries2 = Person.find(:all,
-                             :limit => :all,
-                             :conditions => ppl_conditions,
-                             :joins => ppl_joinSQL,
-                             :select => ppl_select)
-      if entries.length>0 and entries2.length>0
-        @entry_name = "result"
-      end
-      entries += entries2
-    else
-      entries = ActsAsFerret::find(search_query,
-                                   [Organization,Person],
-                                   { 
-                                     :page => 1, 
-                                     :per_page => 50000,
-                                   }, # disable pagination, we need counts
-                                   {
-                                     :limit => :all,
-                                     :conditions => { :organization => org_conditions, :person => ppl_conditions },
-                                     :joins => { :organization => org_joinSQL, :person => ppl_joinSQL },
-                                     :select => { :organization => org_select, :person => ppl_select },
-                                     :order => { :organization => org_order }
-                                   })
+    entries = Organization.find(:all,
+                                :limit => :all,
+                                :conditions => org_conditions,
+                                :joins => org_joinSQL,
+                                :select => org_select,
+                                :group => 'coalesce(grouping, organizations.id)',
+                                :order => org_order)
+    entries2 = Person.find(:all,
+                           :limit => :all,
+                           :conditions => ppl_conditions,
+                           :joins => ppl_joinSQL,
+                           :select => ppl_select,
+                           :group => 'coalesce(grouping, people.id)')
+
+    if entries.length>0 and entries2.length>0
+      @entry_name = "result"
     end
+    entries += entries2
     if include_counts
       counts = ApplicationHelper.count_tags(entries)
+      counts2 = ApplicationHelper.count_dsos(entries)
       entries = entries.paginate(pagination)
-      return [entries, counts]
+      return [entries, counts, counts2]
     end
     entries = entries.paginate(pagination)
     entries
@@ -526,16 +543,14 @@ module ApplicationHelper
     p = {}
     p[:q] = query
     opts = {:no_override => true, :unlimited_search => true}.merge(opts)
-    search_core(p,nil,opts,false)
+    result = search_core(p,nil,opts,false)
+    MultiJson.dump(result,
+                   :only => [:id, :latitude, :longitude, :name])
   end
 
   def get_listing_core(query,name,site_name,opts = {})
     # long cache for now
-    key = "findcoop_get_listingv29:#{site_name}:#{name}"
-    if Rails.env.development?
-      # Say the magic words to avoid a YAML problem
-      logger.debug([Organization,Person])
-    end
+    key = "findcoop_get_listingv30:#{site_name}:#{name}"
     result = YAML::load(Rails.cache.fetch(key, :expires_in => 14400.minute) { { :list => get_listing_uncached(query,opts), :query => query, :opts => opts }.to_yaml })
     return [] if result[:query] != query or result[:opts] != opts
     result[:list]

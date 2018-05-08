@@ -6,11 +6,11 @@
 	<% form_tag( {:controller => 'search', :action => 'search'}, :id => 'search_form', :name => 'search_form', :method => 'get' ) do %>
 		<div><label id="search_label" for="q">Search the directory:</label>
 		<%- if @site.search_bar_in_header %>
-		  <%= text_field_tag 'q', @query, :size => 30, :placeholder=>"#{t :search}...", :autocomplete => "off" %><%= image_submit_tag "/images/spacer.gif", :id => "see_list" %>
+		  <%= text_field_tag 'q', @query, :size => 30, :placeholder=>"#{t :search}...", :autocomplete => "off" %><%= image_submit_tag "/images/spacer.gif", :id => "see_list", :value => "" %>
 		  <ul id="qq" class="autocomplete_box">
 		  </ul>
                 <%- else -%>
-		  <%= text_field_tag 'q', @query, :size => 30 %><%= submit_tag "see list", :id => "see_list" %>
+		  <%= text_field_tag 'q', @query, :size => 30 %><%= submit_tag "see list", :id => "see_list", :value => "" %>
                 <%- end -%>
 		<%= submit_tag 'See Map', :name => 'Map', :id => "see_map" %>
 		 <%= link_to 'Add...', {:controller => 'organizations', :action => 'new'}, {:id=>'see_add'} %>
