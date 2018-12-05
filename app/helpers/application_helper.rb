@@ -164,6 +164,7 @@ module ApplicationHelper
   end
 
   def truncate_string(s,len)
+    s.gsub!(/<\/p>/,' ')
     s.gsub!(/<[^>]*>/,'')
     s.gsub!(/\.\.\./,'')
     s.gsub!(/  +/,' ')
