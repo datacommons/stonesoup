@@ -2,7 +2,7 @@ workflow "New workflow" {
   on = "push"
   resolves = [
     "GitHub Action for Slack",
-    "maddox/actions/ssh@6fc6694b013badc932fb2a6ec6edfa4e629254cf",
+    "GitHub Action for Slack-1",
   ]
 }
 
@@ -15,7 +15,7 @@ action "GitHub Action for Slack" {
   uses = "Ilshidur/action-slack@1ee0e72f5aea6d97f26d4a67da8f4bc5774b6cc7"
   needs = ["Filters for GitHub Actions"]
   secrets = ["SLACK_WEBHOOK"]
-  args = "pushed to test"
+  args = "staging deployment started"
 }
 
 action "maddox/actions/ssh@6fc6694b013badc932fb2a6ec6edfa4e629254cf" {
@@ -23,4 +23,11 @@ action "maddox/actions/ssh@6fc6694b013badc932fb2a6ec6edfa4e629254cf" {
   needs = ["Filters for GitHub Actions"]
   secrets = ["PRIVATE_KEY", "PUBLIC_KEY", "HOST", "USER"]
   args = "./deploy.sh staging test"
+}
+
+action "GitHub Action for Slack-1" {
+  uses = "Ilshidur/action-slack@1ee0e72f5aea6d97f26d4a67da8f4bc5774b6cc7"
+  needs = ["maddox/actions/ssh@6fc6694b013badc932fb2a6ec6edfa4e629254cf"]
+  secrets = ["SLACK_WEBHOOK"]
+  args = "staging deployment finished"
 }
