@@ -8,7 +8,7 @@ workflow "New workflow" {
 
 action "Filters for GitHub Actions" {
   uses = "actions/bin/filter@712ea355b0921dd7aea27d81e247c48d0db24ee4"
-  args = "branch test"
+  args = "branch ussen_staging"
 }
 
 action "GitHub Action for Slack" {
@@ -20,7 +20,7 @@ action "GitHub Action for Slack" {
 
 action "maddox/actions/ssh@6fc6694b013badc932fb2a6ec6edfa4e629254cf" {
   uses = "maddox/actions/ssh@6fc6694b013badc932fb2a6ec6edfa4e629254cf"
-  needs = ["Filters for GitHub Actions"]
+  needs = ["GitHub Action for Slack"]
   secrets = ["PRIVATE_KEY", "PUBLIC_KEY", "HOST", "USER"]
   args = "./deploy.sh staging test"
 }
