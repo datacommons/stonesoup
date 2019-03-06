@@ -12,7 +12,7 @@
 <body class="section-<%=params[:controller]%> page-<%=params[:controller]%>-<%=params[:action]%><% if @welcome_page%> welcome-page<% end %>">
 
 <%=render :partial => 'layouts/adminmenu'%>
-<%- 
+<%-
    homepage = @site.home || ""
    homepage = homepage + url_for(:action => 'index', :controller => 'search')
 -%>
@@ -71,7 +71,7 @@
 	<%= render :partial => 'layouts/nsfus_solidarity/post_search_form', :locals => { :this_is_the_header => true } %>
 
 
-        <%= render :partial => 'search/search_form', :locals => { :this_is_the_header => true } %>
+        <%= render :partial => 'layouts/nsfus_solidarity/search_form', :locals => { :this_is_the_header => true } %>
 
 </div>
 <!-- header_material -->
