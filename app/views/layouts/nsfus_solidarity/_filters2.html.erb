@@ -54,7 +54,7 @@ function filter_apply_change(e,name) {
     var {pid, type, name} = e.added.details;
 	  params.act = "select";
 	  if (typeof pid == "object") {
-      for (var p in a.pid) {
+      for (var p in pid) {
 		    params[p+"_filter"] = pid[p];
 	    }
 	  } else {
