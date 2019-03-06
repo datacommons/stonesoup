@@ -4,7 +4,7 @@
 <% unless filter[:name] == "within" and @active_filters.select{|x| (x[:name] == "zip" || x[:name]=="loc") and !x[:value].blank? and x[:value].length == 1}.length == 0 %>
 <form id="<%=filter[:name]%>_filter_form" class="filter_listing<%- if !(filter[:value].blank?) -%> active<%- elsif filter[:has_default] -%> disable<%- else -%> default<%- end -%>">
 <%- unless filter[:value].blank? and !filter[:has_default] -%>
-<div class="close"><%= link_to_remote( 'x', 
+<div class="close"><%= link_to_remote( 'x',
     :url => {:controller => 'search', :action => 'change_filter', :name => filter[:name]},
     :update => 'search_filters') %></div>
 <%- end -%>
@@ -32,7 +32,7 @@ of <%= refine_filter_label("Zip") %>
 <%- if @filter_bank["loc"][:value][0].include? " " -%>
 of location
 <%- else -%>
-of <%= link_to 'location', { :action=> 'show', :controller => 'locations', :id =>@filter_bank["loc"][:value][0].to_i } %> 
+of <%= link_to 'location', { :action=> 'show', :controller => 'locations', :id =>@filter_bank["loc"][:value][0].to_i } %>
 <%- end -%>
 <%- end -%>
 <%- end -%>
@@ -46,36 +46,29 @@ of <%= link_to 'location', { :action=> 'show', :controller => 'locations', :id =
 <script>
 
 function filter_apply_change(e,name) {
-    var addition = e.added;
-    if (!e.added && !e.removed) {
-       e.added = jQuery("#" + name + "_select2").select2('data');
-    }
-    if (e.added) {
-	var a = e.added.details;
-	var lnk = new Object();
-	var item = "/search/change_filter";
-        var params = {};
-	params["act"] = "select";
-	if (typeof a.pid == "object") {
-	    for (var p in a.pid) { 
-		params[p+"_filter"] = a.pid[p];
+  if (!e.added && !e.removed) {
+    e.added = jQuery("#" + val + "_select2").select2('data');
+  }
+  var params = {};
+  if (e.added) {
+    var {pid, type, name} = e.added.details;
+	  params.act = "select";
+	  if (typeof pid == "object") {
+      for (var p in a.pid) {
+		    params[p+"_filter"] = a.pid[p];
 	    }
-	} else {
-	    params[a.type + "_filter"] = a.name;
-	}
-	lnk["ac_label"] = a.label;
-	lnk["ac_link"] = item;
-	lnk["ac_cat"] = a.cat;
-	new Ajax.Updater('search_filters', item, {parameters: params, asynchronous:true, evalScripts:true});
-    }
-    if (e.removed) {
-	var a = e.removed.text;
-	var ac_link = "/search/change_filter";
-	var params = {act: 'remove'};
-	params[name] = a;
-	new Ajax.Updater('search_filters', ac_link, {parameters: params, asynchronous:true, evalScripts:true}); 
-    }
-    return false;
+	  } else {
+	    params[type + "_filter"] = name;
+	  }
+  }
+  if (e.removed) {
+    params.act = 'remove';
+    params.name = e.removed.text;
+  }
+  jQuery.post('/search/change_filter', params, () => {
+    jQuery('form#search_form').submit()
+  })
+  return false;
 }
 
 function place_filter_editor(x,name) {
@@ -141,7 +134,7 @@ function filter_instrument2(name,autocompleter,single) {
 		dataType: 'json',
 		data: function(term,page) {
 		    var fallback = 0;
-                    if (term.length>0) fallback = 1;	
+                    if (term.length>0) fallback = 1;
 	     	    return { search: term, limit: 101, fallback: fallback, base: base_name };
 		},
 		results: function(data,page) {
@@ -149,7 +142,7 @@ function filter_instrument2(name,autocompleter,single) {
 		    if (data.length>=101) {
                        data = [];
                     }
-		  return { 
+		  return {
 		      results: data.map(function(e) { var name = e.name.split(/;/)[0]; return { id: cache_filter_option(base[0],e.name), text: name, long_text: e.name, details: e }; }
 		  ) };
 		}
@@ -157,8 +150,8 @@ function filter_instrument2(name,autocompleter,single) {
   });
   jQuery("#" + name + "_select2").bind("change", function(e) { filter_apply_change(e,name); });
   jQuery("#floating_editor").click(function(e) { e.stopPropagation(); });
-  jQuery('body').click(function() { 
-    jQuery("#floating_editor").hide(); 
+  jQuery('body').click(function() {
+    jQuery("#floating_editor").hide();
   });
   jQuery("#" + name + "_select2").select2('focus');
   jQuery("#" + name + "_select2").select2('open');
