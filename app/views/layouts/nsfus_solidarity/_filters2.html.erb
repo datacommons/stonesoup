@@ -45,7 +45,7 @@ of <%= link_to 'location', { :action=> 'show', :controller => 'locations', :id =
 
 <script>
 
-function filter_apply_change(e,name) {
+function filter_apply_change(e, filterName) {
   if (!e.added && !e.removed) {
     e.added = jQuery("#" + val + "_select2").select2('data');
   }
@@ -63,7 +63,7 @@ function filter_apply_change(e,name) {
   }
   if (e.removed) {
     params.act = 'remove';
-    params.name = e.removed.text;
+    params[filterName] = e.removed.text;
   }
   jQuery.post('/search/change_filter', params, () => {
     jQuery('form#search_form').submit()
