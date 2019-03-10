@@ -830,6 +830,7 @@ li:before {
 	left: 0;
 	opacity: 0.9;
 	bottom: 20px;
+  z-index: 999;
 }
 #add_se .close-box {
 	color: #35343d;
