@@ -103,7 +103,7 @@ map.fitBounds( [ [24.446667, -124.785], // south-west
 );
 
 var mapbox =
-  'http://{s}.tiles.mapbox.com/v4/solidarityeconomy.d591ea8d' +
+  'https://{s}.tiles.mapbox.com/v4/solidarityeconomy.d591ea8d' +
   '/{z}/{x}/{y}.png?access_token={accessToken}'
 
 var attrib =
@@ -165,7 +165,7 @@ map.attributionControl.setPrefix(
 
 
     function display_map(){
-        var type_exclusion_queries = '';
+        var type_exclusion_queries = '&ignore_types=Credit Unions';
 	//if ( ! document.getElementById("cu_control").checked ){
         //    type_exclusion_queries = '&ignore_types=Credit Unions';
 	//}
