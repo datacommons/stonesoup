@@ -16,6 +16,27 @@
 <%= javascript_include_tag 'select2.min' %>
 <%= javascript_include_tag '/leaflet-1.4/leaflet' %>
 <%= javascript_include_tag '/Leaflet.markercluster-1.4.1/dist/leaflet.markercluster.js' %>
+<script>
+function cluster_icon_create (cluster_count) {
+    var c = ' marker-cluster-';
+    if (cluster_count < 10) {
+  c += 'small';
+    } else if (cluster_count < 100) {
+  c += 'medium';
+    } else if (cluster_count < 200) {
+  c += 'large';
+    }
+    else if (cluster_count < 700) {
+        c += 'huge';
+    } else {
+        c += 'giant';
+    }
+    return new L.DivIcon({ html: '<div><span>' + cluster_count +
+         '</span></div>',
+         className: 'marker-cluster' + c,
+         iconSize: new L.Point(40, 40) });
+}
+</script>
 <%= javascript_include_tag 'findcoop' %>
 <script src="/javascripts/oms.min.js" type="text/javascript"></script>
 <script src="/javascripts/solr_clustered_map.js" type="text/javascript"></script>

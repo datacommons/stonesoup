@@ -66,25 +66,7 @@ var open_ended_search_text = '';
 <% else %>
 var open_ended_search_text = '&search_text=<%= URI.escape(@search_text) %>';
 <% end %>
-function cluster_icon_create (cluster_count) {
-    var c = ' marker-cluster-';
-    if (cluster_count < 10) {
-	c += 'small';
-    } else if (cluster_count < 100) {
-	c += 'medium';
-    } else if (cluster_count < 200) {
-	c += 'large';
-    }
-    else if (cluster_count < 700) {
-        c += 'huge';
-    } else {
-        c += 'giant';
-    }
-    return new L.DivIcon({ html: '<div><span>' + cluster_count +
-			   '</span></div>',
-			   className: 'marker-cluster' + c,
-			   iconSize: new L.Point(40, 40) });
-}
+
 
 var name = "<%= j map_id %>";
 var map = L.map(name, {zoomControl: false});

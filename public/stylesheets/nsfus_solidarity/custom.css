@@ -1,39 +1,39 @@
-#userstatus { 
+#userstatus {
   display: none;
 }
-#button-help { 
-  display: none !important;             
+#button-help {
+  display: none !important;
 }
-#dso_filter_form { 
+#dso_filter_form {
   display: none;
 }
-#legal_structure_filter_form { 
+#legal_structure_filter_form {
   display: none;
 }
-#sector_filter_form { 
+#sector_filter_form {
   display: none;
 }
-#organization_editors { 
+#organization_editors {
   display: none;
 }
-#organization_edit_link { 
+#organization_edit_link {
   display: none;
 }
-#big_front_map .surround_map_insert { 
+#big_front_map .surround_map_insert {
   width: 100%;
 }
-#big_front_map .search_listing { 
+#big_front_map .search_listing {
   display: none;
 }
 /** Hide the add org link as it uses this **/
-#front-bar .flip-color { 
-  display: none;                         
-}                         
-.button-right { 
+#front-bar .flip-color {
+  display: none;
+}
+.button-right {
   display: none !important;
-}                
+}
 
-#maincol .listing_menu_bar { 
+#maincol .listing_menu_bar {
   display: none;
 }
 
@@ -49,7 +49,7 @@
   margin-bottom: 0.2em;
  }
 
-#info-page-content .activity-list li { 
+#info-page-content .activity-list li {
   font-style: italic;
 }
 
@@ -68,7 +68,7 @@
   padding: 15px;
 }
 
-#info-page-content th { 
+#info-page-content th {
   background: #4f81bd;
   text-align: center;
   color: #ffffff;
@@ -77,7 +77,7 @@
   border-color: black;
 }
 
-#info-page-content td { 
+#info-page-content td {
   padding: 0.5em;
   vertical-align: top;
   border-style: solid;
@@ -85,15 +85,15 @@
   border-top-width: 0;
 }
 
-#info-page-content table ul li { 
-  margin-bottom: 1.12em;  
+#info-page-content table ul li {
+  margin-bottom: 1.12em;
 }
 
-#info-page-content .intropara { 
+#info-page-content .intropara {
   font-style: italic;
 }
 
-#info-page-content #team-paras p  { 
+#info-page-content #team-paras p  {
   margin: 2em 0;
 }
 
@@ -101,7 +101,7 @@
   display: none;
 }
 
-.mapbox-logo { 
+.mapbox-logo {
       position: absolute;
       left:-65px; bottom:-5px;
       height: 20px;
@@ -115,7 +115,7 @@
       background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIIAAAAoCAMAAAAFWtJHAAAAwFBMVEUAAAAAAAAAAABtbW0AAAAAAAAAAAAAAAAAAAAAAAClpaUAAADp6ekAAAD5+fna2toAAAAMDAzv7+/Nzc0AAAA2Njb8/Pz9/f3T09MAAAAAAAD7+/sAAAArKyuxsbH39/fs7OwbGxuIiIjz8/N8fHyenp7u7u74+PgAAAC8vLxWVlbx8fF1dXXl5eVcXFyUlJTQ0NDFxcVCQkLAwMC4uLj19fXo6OjW1tarq6ve3t77+/vi4uL6+vrKysrNzc3///8w7gSSAAAAP3RSTlMAOQNdPSYBPywKexLLGPCxNEHXnzFL+v2nGwf1IEiE6dBFad9jd9PuLo1V2mDDV3Cjl06SiuXIq4C3973ym6BQMVUPAAAEXElEQVR4Ae2WCVP6OBiH05L0l1IqrVbkKHJ54I0oHn+PfP9vtUle0z/YdhbH2XVnd58ZnRJIeHiPJOx//mH4vQSAN+8FjAhFxgHIaPvJeZ99hxwEElon5iAQbj85Y98g8ODwjEOMAvGFyeE3FEKgodTBqj0BJGN9DhyNd5Ta3ean9QEopfaA+LsKhnEKRExqg4FSP6Og7oEkAjBWnxSCgBX4xF+kcLoPcOBQrSv0e5kH7s1j37jECQieCTPiFGxL5VHw2zQWCeeJiPt6kjRQw0XSkIdVChf67xGa4alSnZlT6HEQ8CK9ANbhvXUF9xlDkBfTuHDWScgC9+z5FQpPI12TlwC6+sV7ixR8CUMKiwjm2GQeOQWHMGuHGdbnObJAwCEqFJpNU5H6uaPUaEIKiQfg+PHk1+u4OwW9PlWW2ctbA4BHCtp+cNK+H8Jos4gDmC5ar4Nx9waaG/2B13NgDqS7+vm2RgEtEws82P+kwIHhs/pgkQKcFIhfd7CogtGNjYMHTLpurD0ERbYFw4JaD3GlQuNAL/JEsSAF4HqlCnaHACk4WhOn4OgCkMD5hSpYNYDJTD8Y46n+jsE1kPhVCuR6QBXhFK7MUOu9O6b1SWF3b+/9ZVWMGOlu93E8UDaAhgc7bfH+0DHqKXCkHzoNDFfU+zxiVQrUC9QXTuHYtKpN59OA3IxCG4b7jh6ZFuVockaNTW09mkJzOaPU49a6mE9cAchZpQJNpUWcwgV9r6FJswsFKrITp2B5pMBMdnS0z2HZNy2+BNKxSZxZfglkrFYBJxQnpzA5sN/HheR2aFQoZBLAi149dQoyAYYjW0hHlHguBAdMcR0DuDZ5omevX6+AI8qcU7ikKT3GBHCnXwydgmCC0tRwCnGQ2Wp6Be71yNIWfQSkOl9vAI1SBCNWrwC01RROgX7BuT2HI4r7tFAw086p/NwZEdOEa7R1uAFuNmQPuKAEAjYNQ0CyeoUEWHYBnpQVQgpvc0Ph+gsKlAnKg1+vEHsw5LKciLKCAJobiWBzYFGbCKpHqkZZrxBFHEASyFI59vJPCskcwNVGOWZAOqsrR+pKbaNeAMT1CixMEtlnsqopNxUMzVJT3tY35aXZm6a6Y9QhwMN6BUJWbE1lhbMO1WehkO7poO0sK7em9MJGxp1XSbC1gtugzzSLQmGsX7VntJGSwsPZ2d2z3bIPKzdoOp3Wzqt8G4XyMVUoFIxLx1S7+piaHtCvR3FeRVsq0GFdp9C5TbGpcNqsPqyHKxcfd14h21KhuLKUFU4f3osrC7F6uV3WXFnadL7wyAPeKDXw2RoJCO5GY4DouYvb/gepVXheLoewzPseQG9N/vzilrMIjoStE3++zvle4eSurw7XEe76ynI4aq+v7lEyt1x5awiFlFLQbHKIpabnM3eJLym4Szzzc/du7SU+zOXv9UNpECH7IoH/gecURPlN9vdQpeD47yhIFNX0U0QgvID9nENm+yxk/xb+AGAjNfRZuk9qAAAAAElFTkSuQmCC);
 }
 
-/* All CSS below designed and written by Kristin Snelling of 
+/* All CSS below designed and written by Kristin Snelling of
    Radical Designs Cooperative http://www.radicaldesigns.org */
 
 * {
@@ -204,7 +204,7 @@ h2.content-button a:hover {
 	margin: auto;
 	padding: 20px;
 	padding-bottom: 5px;
-	
+
 }
 #header .header_material {
 	min-height: auto;
@@ -359,7 +359,7 @@ h2.content-button a:hover {
 }
 #qq, .select2-drop {
 	background: #ffffff;
-	border: 1px solid #94ce60; 
+	border: 1px solid #94ce60;
 	top: 40px;
 	left: 0;
 }
@@ -402,7 +402,7 @@ h2.content-button a:hover {
 	color: #ffffff;
 	left: 0;
 	bottom: 0;
-	z-index: 10;
+	z-index: 999;
 	overflow: auto;
 }
 #map-text-box h4 {
@@ -473,7 +473,7 @@ h2.content-button a:hover {
 	background-color: #94ce60;
 	content: "\25B6 ";
 	color: #35343d;
-	 
+
 }
 .leaflet-control-zoom, .leaflet-control-zoom a {
 	border-radius: 0;
@@ -555,7 +555,7 @@ ul.menu_bar a:hover {
 .pagination {
 	font-size: 18px;
 	font-weight: 300;
-	text-align: center; 
+	text-align: center;
 	margin-left: 20px;
 	font-family: 'Quicksand', san-serif;
 	padding-top: 20px;
@@ -755,7 +755,7 @@ li:before {
 	float: right;
 	margin-left: 15px;
 }
-	
+
 /** Things to be hidden **/
 #hide_filters_wrap {
 	display: none;
@@ -778,12 +778,12 @@ li:before {
 	position: relative;
 }
 #search_criteria #list_results {
-	position: relative; 
+	position: relative;
 	display: inline-block;
-	background: #94ce60; 
-	padding: 2px 5px; 
-	border-radius: 3px; 
-	font-size: 16px; 
+	background: #94ce60;
+	padding: 2px 5px;
+	border-radius: 3px;
+	font-size: 16px;
 	float: right;
 	font-family: 'Quicksand', sans-serif;
 }
@@ -809,7 +809,7 @@ li:before {
 	margin: auto;
 	width: 200px;
 	display: block;
-	cursor: pointer; 
+	cursor: pointer;
 	margin-bottom: 0;
 	}
 #search_meta h3:after {
