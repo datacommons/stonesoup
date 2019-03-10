@@ -58,7 +58,7 @@ var filters_from_search = '';
 filter_mapping = { "org_type"=>"type_name", "state"=>"state_two_letter", "city"=> "city", "zip"=> "zip", "country"=>"country" }
 @all_filters.select{|x| x[:active] and ["org_type", "state", "city", "zip", "country"].include?(x[:name]) }.each_with_index do |filter, index|
     filter[:value].each do | filter_val | %>
-filters_from_search = filters_from_search + "&<%= filter_mapping[filter[:name]] %>=<%= URI.escape(filter_val) %>"; <% end 
+filters_from_search = filters_from_search + "&<%= filter_mapping[filter[:name]] %>=<%= URI.escape(filter_val) %>"; <% end
 end %>
 
 <% if @search_text.blank? %>
@@ -66,6 +66,25 @@ var open_ended_search_text = '';
 <% else %>
 var open_ended_search_text = '&search_text=<%= URI.escape(@search_text) %>';
 <% end %>
+function cluster_icon_create (cluster_count) {
+    var c = ' marker-cluster-';
+    if (cluster_count < 10) {
+	c += 'small';
+    } else if (cluster_count < 100) {
+	c += 'medium';
+    } else if (cluster_count < 200) {
+	c += 'large';
+    }
+    else if (cluster_count < 700) {
+        c += 'huge';
+    } else {
+        c += 'giant';
+    }
+    return new L.DivIcon({ html: '<div><span>' + cluster_count +
+			   '</span></div>',
+			   className: 'marker-cluster' + c,
+			   iconSize: new L.Point(40, 40) });
+}
 
 var name = "<%= j map_id %>";
 var map = L.map(name, {zoomControl: false});
@@ -77,7 +96,7 @@ var logo_control = L.Control.extend({
         container.innerHTML =
 		'<a href="http://mapbox.com/" class="mapbox-logo" ' +
 		'target="_blank">MapBox</a>';
-    
+
         return container;
         }
 });
@@ -105,7 +124,7 @@ var mapbox =
   'http://{s}.tiles.mapbox.com/v4/solidarityeconomy.d591ea8d' +
   '/{z}/{x}/{y}.png?access_token={accessToken}'
 
-var attrib = 
+var attrib =
 	"<a href='https://www.mapbox.com/about/maps/' " +
 	    "target='_blank'>&copy; Mapbox &copy; " +
 	    "OpenStreetMap</a> <a class='mapbox-improve-map' " +
@@ -174,7 +193,7 @@ map.attributionControl.setPrefix(
 		  "&zoom=" + map.getZoom() +
 		  type_exclusion_queries +
 		  filters_from_search +
-		  require_type + 
+		  require_type +
                   open_ended_search_text,
 		  function(data, status, jqXHR){
 		      var geojson_layer = L.geoJson(
