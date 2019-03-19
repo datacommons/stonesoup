@@ -105,26 +105,12 @@ function show_map(){
   var markerGroup = new L.markerClusterGroup({
     zoomToBoundsOnClick: true,
     iconCreateFunction: function(cluster) {
-      const count = cluster.getAllChildMarkers()
-        .reduce((sum, marker) => {
-          const markerCount = marker.feature.properties.clusterCount || 1;
-          return sum + markerCount;
-        }, 0);
-      var size = 'small';
-      if (count >= 10) {
-        size = 'medium';
-      } else if (count >= 100) {
-        size = 'large';
-      } else if (count >= 200) {
-        size = 'huge';
-      } else if (count >= 700) {
-        size = 'giant';
-      }
-  		return L.divIcon({
-        html: `<div><span>${count}</span></div>`,
-        className: `marker-cluster marker-cluster-${size}`,
-        iconSize: new L.Point(40, 40)
-      });
+      var count = 0;
+      cluster.getAllChildMarkers().forEach(marker => {
+        const markerCount = marker.feature.properties.clusterCount || 1;
+        count += markerCount;
+      })
+      return cluster_icon_create(count);
   	}
   });
 
@@ -141,6 +127,7 @@ function show_map(){
 
   var geojson_layer_options = {
   	pointToLayer: function (feature, latlng) {
+      if (feature.properties.clusterCount) return cluster_icon_create(feature.properties.clusterCount);
       if (feature.properties.icon_group_id) {
   		  return icon_group_marker_for_feature(feature, latlng);
   	  }
