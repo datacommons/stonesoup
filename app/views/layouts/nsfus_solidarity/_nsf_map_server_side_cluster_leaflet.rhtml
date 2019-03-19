@@ -127,7 +127,11 @@ function show_map(){
 
   var geojson_layer_options = {
   	pointToLayer: function (feature, latlng) {
-      if (feature.properties.clusterCount) return cluster_icon_create(feature.properties.clusterCount);
+      if (feature.properties.clusterCount) {
+        return return L.marker(latlng, {
+          icon: cluster_icon_create(feature.properties.clusterCount)
+        });
+      }
       if (feature.properties.icon_group_id) {
   		  return icon_group_marker_for_feature(feature, latlng);
   	  }
