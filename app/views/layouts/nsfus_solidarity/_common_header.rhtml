@@ -19,17 +19,17 @@
 <script>
 function cluster_icon_create (cluster_count) {
   var size = 'small';
-  if (count >= 10) {
+  if (cluster_count >= 10) {
     size = 'medium';
-  } else if (count >= 100) {
+  } else if (cluster_count >= 100) {
     size = 'large';
-  } else if (count >= 200) {
+  } else if (cluster_count >= 200) {
     size = 'huge';
-  } else if (count >= 700) {
+  } else if (cluster_count >= 700) {
     size = 'giant';
   }
   return L.divIcon({
-    html: `<div><span>${count}</span></div>`,
+    html: `<div><span>${cluster_count}</span></div>`,
     className: `marker-cluster marker-cluster-${size}`,
     iconSize: new L.Point(40, 40)
   });
