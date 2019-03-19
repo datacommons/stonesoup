@@ -69,7 +69,10 @@ var open_ended_search_text = '&search_text=<%= URI.escape(@search_text) %>';
 
 
 var name = "<%= j map_id %>";
-var map = L.map(name, {zoomControl: false});
+var map = L.map(name, {
+  zoomControl: false,
+  maxZoom: 18
+});
 
 var logo_control = L.Control.extend({
         options: { position: 'bottomright' },
@@ -113,7 +116,9 @@ var attrib =
 	    "href='https://www.mapbox.com/map-feedback/' " +
 	    "target='_blank'>Improve this map</a>'"
 
-var markerGroup = new L.LayerGroup();
+var markerGroup = new L.markerClusterGroup({
+  zoomToBoundsOnClick: true
+});
 markerGroup.addTo(map);
 
 L.tileLayer(mapbox, {
@@ -127,17 +132,11 @@ map.attributionControl.setPrefix(
 
     var geojson_layer_options = {
 	pointToLayer: function (feature, latlng) {
-	    if (feature.properties.clusterCount) {
-		return L.marker(latlng,
-				{icon: cluster_icon_create(
-				     feature.properties.clusterCount) });
-	    }
-	    else if (feature.properties.icon_group_id){
-		return icon_group_marker_for_feature(feature, latlng);
-	    }
-	    else {
-		return L.marker(latlng);
-	    }
+    if (feature.properties.icon_group_id){
+		  return icon_group_marker_for_feature(feature, latlng);
+	  } else {
+		  return L.marker(latlng);
+	  }
 	},
 
 	onEachFeature: function(feature, layer) {
