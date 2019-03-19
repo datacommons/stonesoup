@@ -128,7 +128,7 @@ function show_map(){
   var geojson_layer_options = {
   	pointToLayer: function (feature, latlng) {
       if (feature.properties.clusterCount) {
-        return return L.marker(latlng, {
+        return L.marker(latlng, {
           icon: cluster_icon_create(feature.properties.clusterCount)
         });
       }
