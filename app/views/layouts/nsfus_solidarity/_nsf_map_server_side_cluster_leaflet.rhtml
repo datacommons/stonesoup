@@ -103,7 +103,9 @@ function show_map(){
 	    "target='_blank'>Improve this map</a>'"
 
   var markerGroup = new L.markerClusterGroup({
-    zoomToBoundsOnClick: true,
+    zoomToBoundsOnClick: false,
+    spiderfyOnMaxZoom: false,
+    disableClusteringAtZoom: 12,
     iconCreateFunction: function(cluster) {
       var count = 0;
       cluster.getAllChildMarkers().forEach(marker => {
