@@ -130,19 +130,24 @@ map.attributionControl.setPrefix(
     '<a href="http://leafletjs.com" ' +
     'title="A JS library for interactive maps">Leaflet</a>');
 
-    var geojson_layer_options = {
+var geojson_layer_options = {
 	pointToLayer: function (feature, latlng) {
+    if (feature.properties.clusterCount) {
+	    return L.marker(latlng, {
+        icon: cluster_icon_create(
+				     feature.properties.clusterCount)
+      });
+    }
     if (feature.properties.icon_group_id){
 		  return icon_group_marker_for_feature(feature, latlng);
-	  } else {
-		  return L.marker(latlng);
 	  }
+	  return L.marker(latlng);
 	},
 
 	onEachFeature: function(feature, layer) {
 	    // does this feature have a property named popupContent?
 	    if (feature.properties && feature.properties.popupContent
-		&& ! feature.properties.clusterCount ){
+		&& !feature.properties.clusterCount ){
 		    layer.bindPopup('<a href="/organizations/' +
 				    feature.properties.org_id +
 				   '/">' +
@@ -170,51 +175,19 @@ map.attributionControl.setPrefix(
 	//}
 
 	jQuery.getJSON("/geosearch?bounds=" +
-		  map.getBounds().toBBoxString() +
-		  "&zoom=" + map.getZoom() +
-		  type_exclusion_queries +
-		  filters_from_search +
-		  require_type +
-                  open_ended_search_text,
-		  function(data, status, jqXHR){
-		      var geojson_layer = L.geoJson(
-			  false,
-			  geojson_layer_options
-		      );
-		      geojson_layer.addData(data['clusters']);
-		      geojson_layer.addData(data['single_points']);
-		      markerGroup.clearLayers();
-		      markerGroup.addLayer(geojson_layer);
-
-		      for(var i=0; i<data['grouped_points'].length; i++){
-			  var oms = new OverlappingMarkerSpiderfier(
-			      map, {keepSpiderfied: true});
-			  var spidergeojson_layer = L.geoJson(
-			      false, {
-				  pointToLayer: function(feature, latlng){
-				      new_marker = icon_group_marker_for_feature(feature, latlng);
-				      oms.addMarker(new_marker);
-				      return new_marker;
-				  },
-			       	  onEachFeature: function(feature, layer){
-				      layer.bindPopup(
-					  '<a href="/organizations/' +
-					  feature.properties.org_id +
-					  '/">' +
-					  feature.properties.popupContent +
-					  '</a>' );
-				  }
-			      }
-			  );
-
-			  spidergeojson_layer.addData(
-			      data['grouped_points'][i]);
-			  markerGroup.addLayer(spidergeojson_layer);
-		      }
-
-		  }
-		 );
-    }
+	  map.getBounds().toBBoxString() +
+	  "&zoom=" + map.getZoom() +
+	  type_exclusion_queries +
+	  filters_from_search +
+	  require_type +
+    open_ended_search_text,
+	  function(data, status, jqXHR){
+      var geojson_layer = L.geoJson(false, geojson_layer_options);
+      geojson_layer.addData(data['clusters']);
+      geojson_layer.addData(data['single_points']);
+      markerGroup.clearLayers();
+      markerGroup.addLayer(geojson_layer);
+    });
 
     function handle_map_move_end(e){
 	if (map._popup){
