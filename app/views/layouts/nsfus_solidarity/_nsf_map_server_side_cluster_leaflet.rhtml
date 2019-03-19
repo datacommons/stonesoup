@@ -69,7 +69,7 @@ function show_map(){
   var name = "<%= j map_id %>";
   var map = L.map(name, {
     zoomControl: false,
-    maxZoom: 18
+    maxZoom: 12
   });
 
   var logo_control = L.Control.extend({
@@ -103,9 +103,7 @@ function show_map(){
 	    "target='_blank'>Improve this map</a>'"
 
   var markerGroup = new L.markerClusterGroup({
-    zoomToBoundsOnClick: false,
-    spiderfyOnMaxZoom: false,
-    disableClusteringAtZoom: 12,
+    zoomToBoundsOnClick: true,
     iconCreateFunction: function(cluster) {
       var count = 0;
       cluster.getAllChildMarkers().forEach(marker => {
