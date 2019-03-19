@@ -104,7 +104,25 @@ function show_map(){
 	    "target='_blank'>Improve this map</a>'"
 
   var markerGroup = new L.markerClusterGroup({
-    zoomToBoundsOnClick: true
+    zoomToBoundsOnClick: true,
+    iconCreateFunction: function(cluster) {
+      const count = cluster.getChildCount();
+      var size = 'small';
+      if (count > 10) {
+        size = 'medium';
+      } else if (count > 100) {
+        size = 'large';
+      } else if (count > 200) {
+        size = 'huge';
+      } else if (count > 700) {
+        size = 'giant';
+      }
+  		return L.divIcon({
+        html: `<div><span>${count}</span></div>`,
+        className: `marker-cluster marker-cluster-${size}`,
+        iconSize: new L.Point(40, 40)
+      });
+  	}
   });
 
   markerGroup.addTo(map);
@@ -120,16 +138,12 @@ function show_map(){
 
   var geojson_layer_options = {
   	pointToLayer: function (feature, latlng) {
-      if (feature.properties.clusterCount) {
-  	    return L.marker(latlng, {
-          icon: cluster_icon_create(
-  				     feature.properties.clusterCount)
-        });
+      if (!feature.properties.clusterCount) {
+        if (feature.properties.icon_group_id) {
+    		  return icon_group_marker_for_feature(feature, latlng);
+    	  }
+    	  return L.marker(latlng);
       }
-      if (feature.properties.icon_group_id) {
-  		  return icon_group_marker_for_feature(feature, latlng);
-  	  }
-  	  return L.marker(latlng);
   	},
 
   	onEachFeature: function(feature, layer) {
@@ -187,9 +201,6 @@ function show_map(){
   display_map();
 
 } // end show_map()
-
-// we need to call show_map here on sites that are not triggering it elsewhere
-// the way solidarityeconomy.us is
 </script>
 
   <% end %>
