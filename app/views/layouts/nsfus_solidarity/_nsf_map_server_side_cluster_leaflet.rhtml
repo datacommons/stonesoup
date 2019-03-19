@@ -107,18 +107,17 @@ function show_map(){
     iconCreateFunction: function(cluster) {
       const count = cluster.getAllChildMarkers()
         .reduce((sum, marker) => {
-          console.log('sum: ', sum);
-          console.log('obj: ', marker);
-          return sum + marker.feature.properties.clusterCount
+          const markerCount = marker.feature.properties.clusterCount || 1;
+          return sum + markerCount;
         }, 0);
       var size = 'small';
-      if (count > 10) {
+      if (count >= 10) {
         size = 'medium';
-      } else if (count > 100) {
+      } else if (count >= 100) {
         size = 'large';
-      } else if (count > 200) {
+      } else if (count >= 200) {
         size = 'huge';
-      } else if (count > 700) {
+      } else if (count >= 700) {
         size = 'giant';
       }
   		return L.divIcon({
