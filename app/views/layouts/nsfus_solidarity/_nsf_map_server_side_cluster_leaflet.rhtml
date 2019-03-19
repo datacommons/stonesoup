@@ -1,4 +1,3 @@
-
   <%
   # maybe this should be set higher up when we were checking @entries ealier
   @have_something = true
@@ -106,7 +105,12 @@ function show_map(){
   var markerGroup = new L.markerClusterGroup({
     zoomToBoundsOnClick: true,
     iconCreateFunction: function(cluster) {
-      const count = cluster.getChildCount();
+      const count = cluster.getAllChildMarkers()
+        .reduce((sum, marker) => {
+          console.log('sum: ', sum);
+          console.log('obj: ', marker);
+          return sum + marker.feature.properties.clusterCount
+        }, 0);
       var size = 'small';
       if (count > 10) {
         size = 'medium';
