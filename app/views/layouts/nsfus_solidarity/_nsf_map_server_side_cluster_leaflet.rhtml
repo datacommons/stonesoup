@@ -174,8 +174,9 @@ function show_map(){
       open_ended_search_text;
   	jQuery.getJSON(url, function(data) {
       var geojson_layer = L.geoJson(false, geojson_layer_options);
-      geojson_layer.addData(data['clusters']);
-      geojson_layer.addData(data['single_points']);
+      geojson_layer.addData(data.clusters);
+      geojson_layer.addData(data.grouped_points);
+      geojson_layer.addData(data.single_points);
       markerGroup.clearLayers();
       markerGroup.addLayer(geojson_layer);
     });
