@@ -19,14 +19,14 @@
 <script>
 function cluster_icon_create (cluster_count) {
   var size = 'small';
-  if (cluster_count >= 10) {
-    size = 'medium';
-  } else if (cluster_count >= 100) {
-    size = 'large';
+  if (cluster_count >= 700) {
+    size = 'giant';
   } else if (cluster_count >= 200) {
     size = 'huge';
-  } else if (cluster_count >= 700) {
-    size = 'giant';
+  } else if (cluster_count >= 100) {
+    size = 'large';
+  } else if (cluster_count >= 10) {
+    size = 'medium';
   }
   return L.divIcon({
     html: `<div><span>${cluster_count}</span></div>`,
