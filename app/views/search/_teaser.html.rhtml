@@ -2,8 +2,8 @@
 <%- show_country = true if local_assigns[:show_country].nil? -%>
 <%- show_state = true if local_assigns[:show_state].nil? -%>
 <%- show_class = true if local_assigns[:show_class].nil? -%>
-<div id='listing_<%=entry.id%>' class='listing <%= "listing_merge_target" if is_merge_target(entry) %>'>
-<b><%= show_link entry %></b><br />
+<div id='listing_<%=entry.id%>' class='listing <%= "listing_merge_target" if is_merge_target(entry) %><% if entry.respond_to? "tags" %><% for tag in entry.tags %> tag-<%= tag.name.downcase.gsub(/[^a-z0-9]/,"_") %><% end %><% end %>'>
+<b><%= show_link entry %></b><% if entry.respond_to? 'grouping_count' %><% if entry.grouping_count > 1 %> (<%= entry.grouping_count %> listings)<% end %><% end %><% if is_admin? %> (<%= link_to 'delete', url_for(entry) + "?recent=1", :confirm => 'Are you sure?', :method => :delete %>)<% end %><br />
 <%- if entry.respond_to? "website" and !entry.website.blank? -%>
 	<i><%= website_link(entry.website, :shorten => true) %></i><br/>
 <%- end -%>

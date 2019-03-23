@@ -1,0 +1,55 @@
+<div class="surround_map_insert">
+
+  <div class="map_insert" id="the_map_<%= @name %>"></div>
+  <div class="clearboth"></div>
+
+<script>
+var name = "the_map_<%= @name %>";
+
+var orgs = <%= @orgs %>;
+
+var x1 = 500;
+var x2 = -500;
+var y1 = 500;
+var y2 = -500;
+for (var i=0; i<orgs.length; i++) {
+    var org = orgs[i];
+    var lat = org.latitude;
+    var lng = org.longitude;
+    if (!lat || !lng) continue;
+    if (lat<x1) x1 = lat;
+    if (lat>x2) x2 = lat;
+    if (lng<y1) y1 = lng;
+    if (lng>y2) y2 = lng;
+}
+var dx = (x2 - x1) / 10;
+var dy = (y2 - y1) / 10;
+var map = L.map(name).fitBounds([[x1-dx,y1-dy],[x2+dx,y2+dy]]);
+
+var mapquest = 'http://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}';
+var attrib = 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC';
+L.tileLayer(mapquest, {
+    attribution: attrib,
+    maxZoom: 19
+}).addTo(map);
+map.attributionControl.setPrefix('<a href="http://leaflet.cloudmade.com/">Leaflet</a>');
+var marker = null;
+var markers = new L.MarkerClusterGroup({maxClusterRadius: 40});
+
+for (var i=0; i<orgs.length; i++) {
+    var org = orgs[i];
+    var lat = org.latitude;
+    var lng = org.longitude;
+    if (!lat || !lng) continue;
+    marker = new L.Marker(new L.LatLng(lat, lng), { title: org.name });
+    marker.bindPopup("\u003Ca href=/organizations/" + org.id + "\u003E" + org.name + "\u003C/a\u003E");
+    markers.addLayer(marker);
+}
+
+map.addLayer(markers);
+
+</script>
+
+  
+
+  </div>

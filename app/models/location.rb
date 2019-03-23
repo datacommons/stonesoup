@@ -17,6 +17,8 @@ class Location < ActiveRecord::Base
                    :lng_column_name => 'longitude',
                    :distance_field_name => 'distance'
 
+  acts_as_reportable
+
   validates_presence_of :taggable_id, :on => :save
   validates_each :physical_city, :physical_country do |record, attr, value|
     record.errors.add attr, "(or mailing city & country) must be specified" unless \

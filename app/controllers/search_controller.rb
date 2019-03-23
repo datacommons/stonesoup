@@ -2,6 +2,10 @@ class SearchController < ApplicationController
 
   # before_filter :login_required, :only => [:inspect]
 
+  before_filter(:only => [:search, :map, :near]) do |controller|
+    controller.send(:login_required) if ['json', 'kml', 'pdf', 'csv', 'yaml', 'xml'].include? controller.request.format
+  end
+
 public
 
   def index
@@ -10,13 +14,16 @@ public
       render :action => 'search'
     else
       @welcome_page = true
+      @source_info = DataSharingOrg.find_by_sql(["select * from sources order by name"])
       render :action => 'welcome'
     end
   end
 
   def test
     _params = {}
-    @entries, @counts = @template.search_core(_params,@site,{ :unlimited_search => true }, true)
+    @entries, @counts, @counts_dsos = @template.search_core(_params,@site,{ 
+                                                              :unlimited_search => true 
+                                                            }, true)
     @entries.reject!{|e| e.kind_of? Person}
     @entries.uniq!
     @entries.sort!{|a,b| a.oname <=> b.oname}
@@ -38,7 +45,7 @@ public
     #  _params[:q] = search_query
     #end
 
-    @entries, @counts = @template.search_core(_params,@site,{ :unlimited_search => @unlimited_search, :params => _params }, true)
+    @entries, @counts, @counts_dsos = @template.search_core(_params,@site,{ :unlimited_search => @unlimited_search, :params => _params }, true)
 
     if params[:merge]
       @merge_active = true
@@ -52,6 +59,9 @@ public
     end
     @merge_target = session[:merge] 
 
+    if @unlimited_search
+      @map_style = true
+    end
     if params[:q]
       render_entries
     end
@@ -59,6 +69,7 @@ public
 
   def map
     @unlimited_search = true
+    @map_style = true
     search
   end
 
@@ -138,6 +149,14 @@ public
     @orgs = @template.get_listing_for_link(@name,@link,@site.name)
     @rendered = true
     render :partial => "search/map"
+  end
+
+  def mini_map2
+    @name = params[:name]
+    @link = YAML::load(params[:link])
+    @orgs = @template.get_listing_for_link(@name,@link,@site.name)
+    @rendered = true
+    render :partial => "search/map2"
   end
 
   def change_filter
@@ -382,7 +401,7 @@ public
       condParams << value
       conditions = []
       conditions = [condSQLs.collect{|c| "(#{c})"}.join(' AND ')] + condParams unless condSQLs.empty?
-      organizations = Organization.find(:all, :conditions => conditions, :joins => joinSQL, :limit => limit*5)
+      organizations = Organization.find(:all, :conditions => conditions, :joins => joinSQL, :limit => limit*5, :group => 'coalesce(grouping, organizations.id)')
     end
 
     if name.length>=2

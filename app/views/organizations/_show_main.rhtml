@@ -1,0 +1,146 @@
+<h1><%= organization.name %></h1>
+<div id="last_updated">
+<%- unless organization.updated_at.nil? -%>
+	This entry was last updated <%= date_format_long(organization.updated_at) %>
+	<%- unless organization.updated_by.nil? -%>
+	    <%- if current_user -%>
+		by <%= organization.updated_by.login %>
+		<%- if organization.updated_by.data_sharing_orgs.any? -%>
+			(manager for <%= organization.updated_by.data_sharing_orgs.map(&:name).to_sentence %>)
+		<%- end -%>
+	    <%- end -%>
+	<%- end -%>
+<%- end -%>
+</div>
+
+<%= render :partial => "tags/dso_link", :locals => { :included_view => included_view, :entry => organization } %>
+
+<%- verified_nonuser_dsos = (organization.verified_dsos - ( (!included_view and current_user and current_user.data_sharing_orgs.any?) ? current_user.data_sharing_orgs : [])) -%>
+<%- if verified_nonuser_dsos.any? -%>
+	<div id="dso_status">
+		This record is in the 
+		<span class="popup" title="The listed organization(s) have verified this entry as accurate and current.">data pool</span> of... 
+		<ul>
+			<%- verified_nonuser_dsos.each do |dso| -%>
+				<li><%= dso.name %></li>
+			<%- end -%>
+		</ul>
+	</div>
+<%- end -%>
+
+<% if map %>
+<% unless organization.locations.length == 0 %>
+
+  <div id="surround_map">
+  <%= render :partial => "search/map_core_leaflet", :locals => { :map_id => "the_map", :map_class => nil, :orgs => organization.locations } %>
+  <div class="map_offer">
+<% unless organization.locations[0].physical_state.blank? %>
+  Meet the neighbors:
+  <ul>
+   <%- organization.locations.each do |loc| -%>
+     <li>Near <%= link_to loc.name, :action => 'map', :controller => 'search', :params => { :within => "20 #{default_distance_unit}", :location_origin => loc.id, :reset => 1 } %></li>
+   <%- end -%>
+  <% if organization.primary_location %>
+     <% @zip = organization.primary_location.summary_zip %>
+     <% @city = organization.primary_location.summary_city %>
+     <% @state = organization.primary_location.summary_state %>
+     <% @country = organization.primary_location.summary_country %>
+     <% if @city and @state %>
+      <li>In <%= link_to @city, :controller => 'search', :action => 'map', :params => { :city => @city, :state => @state, :country => @country, :reset => 1 } %></li>
+     <% end %>
+     <% if @zip %>
+      <li>In zip code <%= link_to @zip, :controller => 'search', :action => 'map', :params => { :zip => @zip, :country => @country, :reset => 1 } %></li>
+     <% end %>
+     <% if not(session[:city_filter]) %>
+     <% if @state %>
+       <li>In <%= link_to @state, :controller => 'search', :action => 'search', :params => { :state => @state, :country => @country, :reset => 1 } %></li>
+     <% end %>
+     <% end %>
+  <% end %>
+  </ul>
+<% end %>
+  </div>
+  </div>
+<% end %>
+<% end %>
+
+<p><%= simple_format organization.description %></p>
+<%- unless organization.website.blank? %>
+	See <%= website_link(organization.website) %>
+<%- end -%>
+
+<div id="listing_info">
+	<% if organization.primary_location %>
+		<%= render :partial => 'locations/display', :locals => {:location => organization.primary_location, :hide_links => true, :organization => organization}%>
+	<% end %>
+
+	<% unless organization.phone.blank? %>
+		<dl class="address">
+			<dt>Phone</dt>
+			<dd><%= organization.phone %></dd>
+		</dl>
+	<% end %>
+	<% unless organization.website.blank? %>
+		<dl class="address">
+			<dt>Website</dt>
+			<dd>
+			<% if /https?:\/\/(.*)/.match(organization.website)==nil %>
+			  <%= link_to organization.website, "http://#{organization.website}" %>
+			<% else %>
+			  <%= link_to organization.website, "#{organization.website}" %>
+			<% end %>
+			</dd>
+		</dl>
+	<% end %>
+	<% unless organization.fax.blank? %>
+		<dl class="address">
+			<dt>Fax</dt>
+			<dd><%= organization.fax %></dd>
+		</dl>
+	<% end %>
+	<% unless organization.email.blank? %>
+		<dl class="address">
+		<dt>Email</dt>
+		<dd><a href="<%= javascript_email_link(organization.email) %>"><%= javascript_email(organization.email) %></A></dd>
+		</dl class="address">
+	<% end %>
+</div id="listing_info">
+
+<% if organization.locations.length > 1 %>
+	<h2>Other Locations</h2>
+	<% organization.locations.each do |loc| 
+		next if loc.id == organization.primary_location.id %>
+		<%= render :partial => 'locations/display', :locals => {:location => loc, :hide_links => true, :organization => organization}%>
+	<% end %>
+<% end %>
+
+
+<div id="attributes">
+	<%- if(!organization.year_founded.nil? or !organization.legal_structure.nil?) -%>
+		<h2>Attributes</h2>
+		<% unless organization.year_founded.nil? %>
+			Year Founded: <%= organization.year_founded.year %><br />
+		<% end %>
+		<% unless organization.legal_structure.nil? %>
+			Legal Structure: <%= organization.legal_structure.name %><br />
+		<% end %>
+	<%- end -%>
+
+	<% unless organization.products_services.empty? %>
+		<h2>Products &amp; Services</h2>
+		<ul>
+		<% organization.products_services.each do |ps| %>
+			<li><%= ps.name %></li>
+		<% end %>
+		</ul>
+	<% end %>
+
+	<% organization.tags.group_by{|x| x.effective_parent}.each do |parent,tags|  %>
+          <h2><%= parent ? parent.readable_name : "Tags" %></h2>
+  	  <ul>
+ 	    <% tags.each do |t| %>
+	      <li><%= show_link(t.leaf) %></li>
+            <% end %>
+          </ul>
+	<% end %>
+</div>

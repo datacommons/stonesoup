@@ -25,6 +25,24 @@ class OrganizationsController < ApplicationController
       redirect_to :controller => 'search' and return
     end
 
+    @peers = []
+    if @organization.grouping
+      @peers = Organization.find_all_by_grouping(@organization.grouping).select{ 
+        |x| x.id != @organization.id
+      }
+      past = DateTime.now - 10000.years
+      @peers = @peers.sort_by { |x| x.updated_at || past }
+      @peers.reverse!
+    end
+    @orgs = [@organization] + @peers
+
+    @all_verified_dsos = @orgs.map{|x| x.verified_dsos}.flatten.compact.uniq
+
+    # following is not actually a DataSharingOrg (*shame*)
+    @source_info = DataSharingOrg.find_by_sql(["select * from sources where sources.key in (?)", @all_verified_dsos.map{|x| x.key}])
+
+    @sponsor_info = @source_info.map{|x| Organization.get_sponsors(x)}.flatten.uniq
+
     #if not(@organization.latitude)
     #  @organization.save_ll
     #  @organization.save
@@ -129,8 +147,7 @@ class OrganizationsController < ApplicationController
     @organization.destroy
 
     respond_to do |format|
-      # format.html { redirect_to(organizations_url) }
-      format.html { redirect_to :action => 'index', :controller => "search" }
+      format.html { redirect_to :action => (if params[:recent] then 'recent' else 'index' end), :controller => "search" }
       format.xml  { head :ok }
     end
   end

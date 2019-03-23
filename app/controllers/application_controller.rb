@@ -331,7 +331,32 @@ public
       format.csv do
         data = [@entries].flatten
         data = data.map {|r| r.reportable_data}.flatten
-        cols = Organization.column_names
+        data.each do |d|
+          if (!d['mailing_state'].blank?) and d['physical_state'].blank?
+            d['physical_city'] = d['mailing_city']
+            d['physical_state'] = d['mailing_state']
+            d['physical_country'] = d['mailing_country']
+          end
+        end
+        cols = [
+                'name',
+                'phone',
+                'website',
+                'email',
+                'fax',
+                'physical_address1',
+                'physical_address2',
+                'physical_city',
+                'physical_state',
+                'physical_zip',
+                'physical_country',
+                'description',
+                'tag_names',
+                'founded',
+                'latitude',
+                'longitude',
+                'dso'
+               ]
         table = Ruport::Data::Table.new(:data => data,
                                         :column_names => cols)
         send_data table.to_csv,
