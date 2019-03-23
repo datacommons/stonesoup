@@ -13,10 +13,13 @@ var ICONS = [
 function icon_group_marker_for_feature(feature, latlng){
     return L.marker(
 	latlng,
-	{icon: L.icon( {iconUrl: '/images/nsfus_solidarity/' +
-			ICONS[feature.properties.icon_group_id]
-		       })
-	} );
+    {icon: L.icon({
+      iconUrl: '/images/nsfus_solidarity/' +
+			ICONS[feature.properties.icon_group_id],
+      iconSize: [34, 50],
+      iconAnchor: [17, 50]
+    })
+	});
 }
 
 function show_continental_US_map(div_name){
