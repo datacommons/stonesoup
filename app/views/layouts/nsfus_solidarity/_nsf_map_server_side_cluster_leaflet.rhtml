@@ -73,7 +73,8 @@ function show_map(){
   var name = "<%= j map_id %>";
   var map = L.map(name, {
     zoomControl: false,
-    maxZoom: 18
+    maxZoom: 18,
+    scrollWheelZoom: false
   });
 
   var logo_control = L.Control.extend({

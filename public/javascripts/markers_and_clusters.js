@@ -35,7 +35,8 @@ function show_continental_US_map(div_name){
     var map = L.map(div_name, {
 			attributionControl: true,
       maxZoom: 18,
-			zoomControl: false
+			zoomControl: false,
+      scrollWheelZoom: false
 		    } );
     map.attributionControl.setPrefix(
 	'<a href="http://leafletjs.com" '
