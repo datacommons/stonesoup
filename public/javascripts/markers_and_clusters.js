@@ -17,7 +17,8 @@ function icon_group_marker_for_feature(feature, latlng){
       iconUrl: '/images/nsfus_solidarity/' +
 			ICONS[feature.properties.icon_group_id],
       iconSize: [34, 50],
-      iconAnchor: [17, 50]
+      iconAnchor: [17, 50],
+      popupAnchor: [0, -50]
     })
 	});
 }
