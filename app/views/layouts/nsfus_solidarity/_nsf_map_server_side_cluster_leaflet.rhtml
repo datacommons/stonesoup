@@ -33,8 +33,6 @@ var ICONS = [
     "collectives-small.png"
 ]
 
-var totalCount = 0;
-
 function icon_group_marker_for_feature(feature, latlng){
     return L.marker(
 	latlng,
@@ -46,6 +44,14 @@ function icon_group_marker_for_feature(feature, latlng){
     popupAnchor: [0, -50]
 		})
 	} );
+}
+
+function displayResultsCount(data) {
+  var totalCount = 0;
+  data.clusters.features.forEach(feature => totalCount += feature.properties.clusterCount);
+  if (data.grouped_points.length > 0) totalCount += data.grouped_points.length;
+  if (data.single_points.features.length > 0) totalCount += data.single_points.features.length;
+  jQuery('.map-results-count').text(totalCount);
 }
 
 function show_map(){
@@ -116,7 +122,6 @@ function show_map(){
         const markerCount = marker.feature.properties.clusterCount || 1;
         count += markerCount;
       })
-      totalCount += count;
       return cluster_icon_create(count);
   	}
   });
@@ -139,7 +144,6 @@ function show_map(){
           icon: cluster_icon_create(feature.properties.clusterCount)
         });
       }
-      totalCount++;
       if (feature.properties.icon_group_id) {
   		  return icon_group_marker_for_feature(feature, latlng);
   	  }
@@ -183,6 +187,7 @@ function show_map(){
   	  require_type +
       open_ended_search_text;
   	jQuery.getJSON(url, function(data) {
+      displayResultsCount(data);
       var geojson_layer = L.geoJson(false, geojson_layer_options);
       geojson_layer.addData(data.clusters);
       geojson_layer.addData(data.grouped_points);
@@ -204,7 +209,7 @@ function show_map(){
 
 } // end show_map()
 
-$('.map-results-count').text(totalCount);
+
 </script>
 
   <% end %>
