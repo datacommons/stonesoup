@@ -33,6 +33,8 @@ var ICONS = [
     "collectives-small.png"
 ]
 
+var totalCount = 0;
+
 function icon_group_marker_for_feature(feature, latlng){
     return L.marker(
 	latlng,
@@ -114,6 +116,7 @@ function show_map(){
         const markerCount = marker.feature.properties.clusterCount || 1;
         count += markerCount;
       })
+      totalCount += count;
       return cluster_icon_create(count);
   	}
   });
@@ -136,6 +139,7 @@ function show_map(){
           icon: cluster_icon_create(feature.properties.clusterCount)
         });
       }
+      totalCount++;
       if (feature.properties.icon_group_id) {
   		  return icon_group_marker_for_feature(feature, latlng);
   	  }
@@ -199,6 +203,8 @@ function show_map(){
   display_map();
 
 } // end show_map()
+
+$('.map-results-count').text(totalCount);
 </script>
 
   <% end %>
