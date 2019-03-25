@@ -194,7 +194,7 @@ function show_map(){
       geojson_layer.addData(data.single_points);
       markerGroup.clearLayers();
       markerGroup.addLayer(geojson_layer);
-      map.fitBounds(geojsonLayer.getBounds());
+      map.fitBounds(geojson_layer.getBounds());
     });
   }
 
