@@ -173,7 +173,7 @@ function show_map(){
   	}
   };
 
-  function display_map() {
+  function display_map(mapMoved = false) {
     var type_exclusion_queries = '';
     // var type_exclusion_queries = '&ignore_types=Credit Unions';
   	//if ( ! document.getElementById("cu_control").checked ){
@@ -194,7 +194,7 @@ function show_map(){
       geojson_layer.addData(data.single_points);
       markerGroup.clearLayers();
       markerGroup.addLayer(geojson_layer);
-      map.fitBounds(geojson_layer.getBounds());
+      if (!mapMoved) map.fitBounds(geojson_layer.getBounds());
     });
   }
 
@@ -202,7 +202,7 @@ function show_map(){
   	if (map._popup){
   	    map._popup._source.closePopup();
   	}
-  	display_map();
+  	display_map(true);
   }
 
   map.on('moveend', handle_map_move_end);
