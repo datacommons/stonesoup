@@ -198,6 +198,7 @@ function show_map(){
         let boundOptions = {};
         if (data.clusters.features.length === 1 && data.single_points.features.length === 0) boundOptions.padding = [5, 5];
         map.fitBounds(geojson_layer.getBounds(), boundOptions);
+      }
     });
   }
 
