@@ -194,7 +194,10 @@ function show_map(){
       geojson_layer.addData(data.single_points);
       markerGroup.clearLayers();
       markerGroup.addLayer(geojson_layer);
-      if (!mapMoved) map.fitBounds(geojson_layer.getBounds());
+      if (!mapMoved) {
+        let boundOptions = {};
+        if (data.clusters.features.length === 1 && data.single_points.features.length === 0) boundOptions.padding = [5, 5];
+        map.fitBounds(geojson_layer.getBounds(), boundOptions);
     });
   }
 
