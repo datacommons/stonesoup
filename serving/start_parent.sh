@@ -30,6 +30,6 @@ docker kill stonesoup || echo ok
 docker rm stonesoup || echo ok
 
 # this will work only if you don't have spaces or other odd characters in your path
-docker run --rm --name stonesoup -p 4040:4040 -v $PWD:$PWD -w $PWD -dit stonesoup_cc nginx -g 'daemon off;'
+docker run --rm --name stonesoup -p 4040:4040 -v "$PWD:$PWD" -w "$PWD" -dit stonesoup_cc nginx -g 'daemon off;'
 
 docker ps

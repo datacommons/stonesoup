@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -ex
+
+cd stonesouper/backend
+npm i
+
+if [ ! -e stonesoup.sqlite3 ]; then
+  ln -s ../../stonesoup.sqlite3 stonesoup.sqlite3
+fi
+npm start
+
