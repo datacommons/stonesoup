@@ -1,6 +1,6 @@
-<% 
+<%
 if @entries
-  @entry_name = "result" if @entries.map{|e| e.class.to_s}.uniq.length>1 
+  @entry_name = "result" if @entries.map{|e| e.class.to_s}.uniq.length>1
 end
 %>
 
@@ -36,7 +36,7 @@ end
 <%- end -%>
 
 <% if @entries.total_entries > 30 %>
-Showing <%= @entries.total_entries %> results on map
+<span class='map-results-count'></span>
 <% end %>
 	    <div id="list_results">
 	    <a href="#search_meta">List View</a>

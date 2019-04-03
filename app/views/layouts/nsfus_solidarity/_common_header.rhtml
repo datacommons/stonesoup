@@ -36,5 +36,5 @@ function cluster_icon_create (cluster_count) {
 }
 </script>
 <%= javascript_include_tag 'findcoop' %>
-<script src="/javascripts/solr_clustered_map.js" type="text/javascript"></script>
+<script src="/javascripts/markers_and_clusters.js" type="text/javascript"></script>
 <%= content_tag("script", "", { "type" => "text/javascript", "src" => url_for(:controller => '/search', :action => 'render_js', 'src' => 'app_js') })%>

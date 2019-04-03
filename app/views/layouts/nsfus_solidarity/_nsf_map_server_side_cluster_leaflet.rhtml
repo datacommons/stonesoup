@@ -36,10 +36,22 @@ var ICONS = [
 function icon_group_marker_for_feature(feature, latlng){
     return L.marker(
 	latlng,
-	{icon: L.icon( {iconUrl: '/images/nsfus_solidarity/' +
-			ICONS[feature.properties.icon_group_id]
-		       })
+	{icon: L.icon({
+    iconUrl: '/images/nsfus_solidarity/' +
+			ICONS[feature.properties.icon_group_id],
+    iconSize: [34, 50],
+    iconAnchor: [17, 50],
+    popupAnchor: [0, -50]
+		})
 	} );
+}
+
+function displayResultsCount(data) {
+  var totalCount = 0;
+  data.clusters.features.forEach(feature => totalCount += feature.properties.clusterCount);
+  if (data.grouped_points.length > 0) totalCount += data.grouped_points.length;
+  if (data.single_points.features.length > 0) totalCount += data.single_points.features.length;
+  jQuery('.map-results-count').text(`Showing ${totalCount} results on map`);
 }
 
 function show_map(){
@@ -69,7 +81,8 @@ function show_map(){
   var name = "<%= j map_id %>";
   var map = L.map(name, {
     zoomControl: false,
-    maxZoom: 18
+    maxZoom: 18,
+    scrollWheelZoom: false
   });
 
   var logo_control = L.Control.extend({
@@ -160,7 +173,7 @@ function show_map(){
   	}
   };
 
-  function display_map() {
+  function display_map(mapMoved = false) {
     var type_exclusion_queries = '';
     // var type_exclusion_queries = '&ignore_types=Credit Unions';
   	//if ( ! document.getElementById("cu_control").checked ){
@@ -174,12 +187,18 @@ function show_map(){
   	  require_type +
       open_ended_search_text;
   	jQuery.getJSON(url, function(data) {
+      displayResultsCount(data);
       var geojson_layer = L.geoJson(false, geojson_layer_options);
       geojson_layer.addData(data.clusters);
       geojson_layer.addData(data.grouped_points);
       geojson_layer.addData(data.single_points);
       markerGroup.clearLayers();
       markerGroup.addLayer(geojson_layer);
+      if (!mapMoved) {
+        let boundOptions = {};
+        if (data.clusters.features.length === 1 && data.single_points.features.length === 0) boundOptions.maxZoom = 11;
+        map.fitBounds(geojson_layer.getBounds(), boundOptions);
+      }
     });
   }
 
@@ -187,13 +206,15 @@ function show_map(){
   	if (map._popup){
   	    map._popup._source.closePopup();
   	}
-  	display_map();
+  	display_map(true);
   }
 
   map.on('moveend', handle_map_move_end);
   display_map();
 
 } // end show_map()
+
+
 </script>
 
   <% end %>
