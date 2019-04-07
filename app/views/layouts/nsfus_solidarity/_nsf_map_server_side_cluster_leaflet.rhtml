@@ -81,7 +81,7 @@ function show_map(){
   var name = "<%= j map_id %>";
   var map = L.map(name, {
     zoomControl: false,
-    maxZoom: 15,
+    maxZoom: 18,
     scrollWheelZoom: false
   });
 
@@ -130,7 +130,7 @@ function show_map(){
 
   L.tileLayer(mapbox, {
       attribution: attrib,
-      maxZoom: 15,
+      maxZoom: 18,
       accessToken: mapbox_accessToken
   }).addTo(map);
   map.attributionControl.setPrefix(
@@ -182,7 +182,6 @@ function show_map(){
     const url = "/geosearch?bounds=" +
   	  map.getBounds().toBBoxString() +
   	  "&zoom=" + map.getZoom() +
-      "&distance_threshold=260" +
   	  type_exclusion_queries +
   	  filters_from_search +
   	  require_type +
