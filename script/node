@@ -2,11 +2,19 @@
 
 set -ex
 
-cd stonesouper/backend
+base="$PWD"
+cd stonesouper
+
+# stonesouper used to have backend in a subdirectory, but now has / will soon have
+# it at top level
+if [ ! -e package.json ]; then
+  cd backend
+fi
+
 npm i
 
 if [ ! -e stonesoup.sqlite3 ]; then
-  ln -s ../../stonesoup.sqlite3 stonesoup.sqlite3
+  ln -s $base/stonesoup.sqlite3 stonesoup.sqlite3
 fi
 npm start
 
