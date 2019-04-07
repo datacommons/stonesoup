@@ -51,7 +51,7 @@ function displayResultsCount(data) {
   data.clusters.features.forEach(feature => totalCount += feature.properties.clusterCount);
   if (data.grouped_points.length > 0) totalCount += data.grouped_points.length;
   if (data.single_points.features.length > 0) totalCount += data.single_points.features.length;
-  jQuery('.map-results-count').text(`Showing ${totalCount} results on map`);
+  jQuery('.map-results-count').text(`Showing ${totalCount} locations on map`);
 }
 
 function show_map(){
