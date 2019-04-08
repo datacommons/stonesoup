@@ -183,7 +183,7 @@ function show_map(){
     const url = "/geosearch?bounds=" +
   	  map.getBounds().toBBoxString() +
   	  "&zoom=" + map.getZoom() +
-  	  type_exclusion_queries +
+  	  '&ignore_icon_types=0' +
   	  filters_from_search +
   	  require_type +
       open_ended_search_text;
