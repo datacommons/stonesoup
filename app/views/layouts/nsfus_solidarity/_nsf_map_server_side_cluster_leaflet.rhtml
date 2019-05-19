@@ -51,7 +51,7 @@ function displayResultsCount(data) {
   data.clusters.features.forEach(feature => totalCount += feature.properties.clusterCount);
   if (data.grouped_points.length > 0) totalCount += data.grouped_points.length;
   if (data.single_points.features.length > 0) totalCount += data.single_points.features.length;
-  jQuery('.map-results-count').text(`Showing ${totalCount} results on map`);
+  jQuery('.map-results-count').text(`Showing ${totalCount} locations on map`);
 }
 
 function show_map(){
@@ -81,6 +81,7 @@ function show_map(){
   var name = "<%= j map_id %>";
   var map = L.map(name, {
     zoomControl: false,
+    minZoom: 2,
     maxZoom: 18,
     scrollWheelZoom: false
   });
@@ -182,7 +183,7 @@ function show_map(){
     const url = "/geosearch?bounds=" +
   	  map.getBounds().toBBoxString() +
   	  "&zoom=" + map.getZoom() +
-  	  type_exclusion_queries +
+  	  '&ignore_icon_types=0' +
   	  filters_from_search +
   	  require_type +
       open_ended_search_text;
