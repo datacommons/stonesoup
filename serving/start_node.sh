@@ -7,6 +7,7 @@ if [ ! -e stonesouper ]; then
 fi
 
 cd stonesouper
+git stash
 git pull
 
 docker exec -it stonesoup script/node
