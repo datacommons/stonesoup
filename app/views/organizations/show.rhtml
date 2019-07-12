@@ -68,7 +68,9 @@
 	</div>
 <% end %>
 
+<% if false %>
 	<h2 class="content-button"><a href="http://edit.<%= request.host %>/organizations/<%= StoneToSolidarity.first(:conditions=> {:stoneid=>@organization.id} ).solidarityid  %>/edit">Suggest changes to this entry</a></h2>
+<% end %>
 <%- unless included_view -%>
 	<div id="organization_editors">
 		<h2>Editors of this entry</h2>
