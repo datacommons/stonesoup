@@ -94,5 +94,6 @@ create index idsot3 on data_sharing_orgs_taggables(taggable_id, taggable_type);
 -- CREATE INDEX ix_data_sharing_orgs_taggables_0a6e8b1431918283 ON data_sharing_orgs_taggables (taggable_id, taggable_type);
 
 ALTER TABLE data_sharing_orgs ADD COLUMN key;
+ALTER TABLE organizations ADD COLUMN icon_group_id;
 EOF
 ) | sqlite3 stonesoup.sqlite3
