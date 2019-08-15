@@ -13,7 +13,10 @@
 
 <div style="clear: both;"></div>
 
-<%= render :partial => "list" %>
+<script>
+var carousel = null;
+var carousel_active = true;
+</script>
 
 <div id="carousel-area" onmouseover="if (carousel) { if (carousel.timer) { carousel.stop(); carousel.start(); } } return false;">
 <a id="carousel-left" href="javascript:" class="carousel-control prev" rel="prev">&laquo;</a>
