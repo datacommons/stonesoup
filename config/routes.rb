@@ -3,6 +3,14 @@ require 'global_router'
 ActionController::Routing::Routes.draw do |map|
   map.filter :global_router
 
+  map.match  '/about', :controller => 'static_pages', :action => 'about'
+  map.match  '/howto', :controller => 'static_pages', :action => 'howto'
+  map.match  '/definition', :controller => 'static_pages',
+                            :action => 'definition'
+  map.match '/credits', :controller => 'static_pages', :action => 'credits'
+  map.match '/people', :controller => 'static_pages', :action => 'people'
+  map.match '/contact', :controller => 'static_pages', :action => 'contact'
+
   map.connect 'tags/search', :controller => "tags", :action => "search"
   map.connect 'tags/search2', :controller => "tags", :action => "search2"
   map.connect 'tags/dashboard', :controller => "tags", :action => "dashboard"

@@ -1,0 +1,86 @@
+<%
+if @entries
+  @entry_name = "result" if @entries.map{|e| e.class.to_s}.uniq.length>1
+end
+%>
+
+        <div id="search_criteria">
+	<div class="content">
+<%- if @tag -%>
+  <%= render :partial => "#{@tag.class.to_s.underscore.pluralize}/summary", :locals => {:entry => @tag} %>
+	    <span class="title"><%= @tag.to_s %></span>
+<%- elsif !@search_text.blank? or @active_filters.any? -%>
+		<span class="title">Current Search Criteria</span>
+		<%- unless @search_text.blank? -%>
+			<div class="filter_listing active">
+				<span class="label">Keyword(s):</span>
+				<span class="value"><%= @search_text %></span>
+			</div>
+		<%- end -%>
+		<%- @active_filters.each do |filter| -%>
+		  <%- unless filter[:value].blank? -%>
+			<div class="filter_listing active">
+				<span class="label"><%= refine_filter_label(filter[:label]) %>:</span>
+				<span class="value">
+				<% if filter[:label] == "Loc" %>
+				  <%= filter[:value].map{|id| Location.find(id).to_s.gsub(/[, ]*,[, ]+/,', ')} %>
+				<% else %>
+				  <%= filter[:value].join(', ') %>
+ 				<% end %>
+				</span>
+			</div>
+		  <%- end -%>
+		<%- end -%>
+<%- else -%>
+	    <span class="title">Search Results</span>
+<%- end -%>
+
+<% if @entries.total_entries > 30 %>
+<span class='map-results-count'></span>
+<% end %>
+	    <div id="list_results">
+	    <a href="#search_meta">List View</a>
+	    </div>
+        </div>
+        </div>
+
+<% if @entries %>
+ <% if @entries.blank? and not(@model) %>
+  <p>
+  No results were found for this search.
+    <% if not(params[:unrestricted]) %>
+    <% if @filter_bank["country"][:active] or @filter_bank["state"][:active] or @filter_bank["city"][:active] or @filter_bank["org_type"][:active] or @filter_bank["dso"][:active] %>
+      Would you like to try an <%= link_to 'unrestricted search', params.merge(:unrestricted => true) %>?
+    <% end %>
+    <% if @filter_bank["state"][:active] %>
+    <br />The state was restricted to: <%= @filter_bank["state"][:value].join(" / ") %>.
+    <% end %>
+    <% if @filter_bank["city"][:active] %>
+    <br />The city was restricted to: <%= @filter_bank["city"][:value].join(" / ") %>.
+    <% end %>
+    <% if @filter_bank["dso"][:active] %>
+    <br />The search was restricted to entries selected by: <%= @filter_bank["dso"][:value].join(" / ") %>.
+    <% end %>
+    <% if @filter_bank["org_type"][:active] %>
+    <br />The search was restricted to entries of type: <%= @filter_bank["org_type"][:value].join(" / ") %>.
+    <% end %>
+    <% end %>
+  </p>
+  <p><%= link_to 'Would you like to add a new organization?', :controller => 'organizations', :action => 'new' %></p>
+ <% else %>
+  <%= render :partial => "layouts/nsfus_solidarity/nsf_list_map" %>
+  <div class="left_listing">
+  <div class="list_header">
+  <div class="listing_info"><%= page_entries_info @entries, (@entry_name ? {:entry_name => @entry_name} : {}) %></div>
+  <%= will_paginate @entries %>
+  </div>
+  <div class="mason_wall">
+  <%= render :partial => "search/listings" %>
+  </div>
+  <div class='clearboth'></div>
+  <%= will_paginate @entries %>
+ </div>
+ <% end %>
+<% else %>
+  <%= render :partial => 'latest' %>
+<% end %>

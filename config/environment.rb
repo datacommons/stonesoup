@@ -195,3 +195,8 @@ end
 IMPORT_PLUGINS_DIRECTORY = "#{RAILS_ROOT}/lib/import_plugins"
 
 
+# This was added for USSEN but is not in a functional state.
+# TODO: remove.
+require 'geocode_cache_db'
+require 'geocode_cache'
+GEOCODE_CACHE::CACHE_ENABLED = false

@@ -1,3 +1,5 @@
+require 'geocode_cache'
+
 class Location < ActiveRecord::Base
   # belongs_to :organization
 
@@ -148,8 +150,20 @@ class Location < ActiveRecord::Base
   
   def save_ll
     address = self.to_s
-    location=GeoKit::Geocoders::GoogleGeocoder3.geocode(address)
-    coords = location.ll.scan(/[0-9\.\-\+]+/)
+
+    if self.longitude != nil and self.latitude != nil
+      return true
+    end
+
+    if (defined?(GEOCODE_CACHE::CACHE_ENABLED) and 
+        GEOCODE_CACHE::CACHE_ENABLED and 
+        GEOCODE_CACHE::lookup(address) )
+      coords = GEOCODE_CACHE::lookup(address)
+    else
+      location=GeoKit::Geocoders::GoogleGeocoder3.geocode(address)
+      coords = location.ll.scan(/[0-9\.\-\+]+/)
+    end
+
     logger.debug("Geocoding: #{address} gives #{coords}")
     if coords.length == 2
       self.longitude = coords[1]

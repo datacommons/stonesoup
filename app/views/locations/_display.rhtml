@@ -18,7 +18,7 @@
 	</div>
 <% end %>
 <dl class="address" id='location_<%=location.id%>' style='<%=(expanded ? 'display:none' : '')%>'>
-    <%- if organization and !location.physical_state.blank? -%>
+    <%- if (defined? organization) and organization and !location.physical_state.blank? -%>
 	<dt><%- if location.taggable_id != organization.id -%><%- end -%><%= location.note.blank? ? 'Address' : location.note %>
 		<% unless hide_links %>
 			<span class="actions">

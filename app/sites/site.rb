@@ -132,5 +132,17 @@ class Site
       end
     end
   end
+
+  def custom_filters_template
+    false
+  end
+
+  def custom_search_template
+    false
+  end
+
+  def custom_map_template
+    false
+  end
 end
 

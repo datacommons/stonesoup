@@ -1,0 +1,9 @@
+development:
+  adapter: sqlite3
+  database: stonesoup.sqlite3
+production:
+  adapter: sqlite3
+  database: stonesoup.sqlite3
+geocode_cache_db:
+  adapter: sqlite3
+  database: stonesoup.sqlite3

@@ -1,0 +1,29 @@
+<% if @welcome_page %>
+<div class="map-wrapper">
+  <div id="big_front_map">
+  <%= render :partial => 'search/solr_all_map' %>
+  </div>
+		  <div id="map-text-box">
+		  <div class="close-box"></div>
+		  <div class="map-text-wrapper">
+			  <h4>The SE is about building an economy for people and planet.</h4>  
+			  <p>Are you interested in being able to find worker coops, community land trusts, community gardens, social currencies, credit unions, community banks, and other solidarity economy businesses or practices? You can find them here. </p>
+
+<div id="login">
+	<a href="http://edit.<%= request.host %>/"><h2>Be On the Map!</h2></a>
+	<p>If you have an SE practice that you’d like to add to the map, or have info to update, you can  fill out the form <a href="http://edit.<%= request.host %>/">here</a>.</p>
+</div>
+
+		  </div>
+	  </div>
+
+	  <div class="open-box"></div> 
+</div>
+
+<% else %>
+  <% if @map_style %>
+  <%= render :partial => 'search/map_main' %>
+  <% else %>
+  <%= render :partial => 'layouts/nsfus_solidarity/nsf_list_main' %>
+  <% end %>
+<% end %>

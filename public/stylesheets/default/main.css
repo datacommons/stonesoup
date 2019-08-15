@@ -624,3 +624,9 @@ body.page-users-prefs .note {
 body.page-users-prefs .listing {
 	width: 230px;
 }
+
+body.welcome-page #big_front_map .map_insert {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}

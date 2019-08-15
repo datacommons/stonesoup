@@ -21,7 +21,7 @@
 <% end %>
 </div>
 <% unless filter[:value].blank? %>
- <input type='hidden' id="<%=filter[:name]%>_filter_value" value='<%= filter[:value].join(',') %>' />
+ <input type='hidden' id="<%=filter[:name]%>_filter_value" value='<%= filter[:value].join(';') %>' />
 <% else %>
  <input type='hidden' id="<%=filter[:name]%>_filter_value" value='' />
 <% end %>
@@ -132,7 +132,7 @@ function filter_instrument2(name,autocompleter,single) {
 	multiple: !single,
                 initSelection : function (element, callback) {
                   var data = [];
-                  jQuery(element.val().split(",")).each(function () {
+                  jQuery(element.val().split(";")).each(function () {
 		    var txt = this+'';
                     data.push({id: cache_filter_option(base[0], txt), text: txt, long_text: txt, details: null});
                   });

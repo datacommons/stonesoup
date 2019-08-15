@@ -205,8 +205,13 @@ public
         session[:active_zip_filter] = nil
       end
     end
+    if @site.custom_filters_template
+      partial_name = @site.custom_filters_template
+    else
+      partial_name = 'filters2'
+    end
     self.get_filters
-    render :partial => 'filters2'
+    render :partial => partial_name
   end
 
   def auto_complete_test
@@ -661,15 +666,16 @@ protected
         condParams << alt
       end
       logger.debug("Working on #{key} / #{value} / #{name} / #{alt} / #{search}")
-      sql = 'DISTINCT locations.physical_country'
+      collate = ' COLLATE NOCASE'  # ignore case differences - TODO could be faster to put this in schema
+      sql = "DISTINCT locations.physical_country#{collate} as physical_country"
       condSQLs << "locations.physical_country IS NOT NULL AND locations.physical_country <> ''"
       unless key == "physical_country"
-        sql << ", locations.physical_state"
+        sql << ", locations.physical_state#{collate} as physical_state"
         # condSQLs << "locations.physical_state IS NOT NULL AND locations.physical_state <> ''"
         unless key == "physical_state"
-          sql << ", locations.physical_city"
+          sql << ", locations.physical_city#{collate} as physical_city"
           unless key == "physical_city"
-            sql << ", locations.physical_zip"
+            sql << ", locations.physical_zip#{collate} as physical_zip"
           end
         end
       end

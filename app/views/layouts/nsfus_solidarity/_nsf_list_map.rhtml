@@ -1,0 +1,28 @@
+<div id="surround_map" class="map_bar">
+<%= render :partial => "layouts/nsfus_solidarity/nsf_map_server_side_cluster_leaflet.rhtml", :locals => { :map_id => "the_map", :map_class => nil, :orgs => @entries } %>
+ <% unless @model %>
+
+ <% else %>
+ <b>Not complete?</b><br />
+ <%= link_to "Add #{@title.downcase.singularize}", new_link(@model) %>
+ <% end %>
+  </div>
+<div id="search_meta">
+<div class="content">
+    <% unless @counts.blank? %>
+      <h3>Categories</h3>
+      <div id="meta_inner">
+      The search results contain organizations with the following tags:
+      <div class="category_box">
+      <table>
+      <% @counts.each do |tag| %>
+        <tr><td><%= tag.count %></td><td><%= link_to tag.name, tag.leaf %></td></tr>
+      <% end %>
+      </table>
+      </div>
+      <div class="clearboth"></div>
+      Remember: not all organizations are tagged.
+      </div>
+    <% end %>
+</div>
+</div>

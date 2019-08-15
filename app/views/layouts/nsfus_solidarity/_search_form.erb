@@ -1,0 +1,68 @@
+<%- this_is_the_header = false unless this_is_the_header -%>
+<%- unless @site.search_bar_in_header and not(this_is_the_header) -%>
+<% hide_examples = true if @site.site_searches.nil? %>
+<% hide_examples = false if hide_examples.nil? %>
+<div id="basic_search" style="<%= params[:advanced] ? 'display:none' : ''%>">
+	<% form_tag( {:controller => 'search', :action => 'search'}, :id => 'search_form', :name => 'search_form', :method => 'get' ) do %>
+		<div><label id="search_label" for="q">Search the directory:</label>
+		<%- if @site.search_bar_in_header %>
+		  <%= text_field_tag 'q', @query, :size => 30, :placeholder=>"#{t :search}...", :autocomplete => "off" %><%= image_submit_tag "/images/spacer.gif", :id => "see_list", :value => "" %>
+		  <ul id="qq" class="autocomplete_box">
+		  </ul>
+                <%- else -%>
+		  <%= text_field_tag 'q', @query, :size => 30 %><%= submit_tag "see list", :id => "see_list" %>
+                <%- end -%>
+		<%= submit_tag 'See Map', :name => 'Map', :id => "see_map" %>
+		 <%= link_to 'Add...', {:controller => 'organizations', :action => 'new'}, {:id=>'see_add'} %>
+		</div>
+	<% end %>
+
+</div>
+<%- unless @site.search_bar_in_header %>
+<div id="advanced_search" style="<%= params[:advanced] ? '' : 'display:none'%>">
+	<%= link_to_function('Switch to Basic Search', "Element.hide('advanced_search'); Element.show('basic_search')") %>
+	<br/>
+	<% form_tag( {:controller => 'search', :action => 'search'}, :method => 'get' ) do %>
+		<%= hidden_field_tag 'advanced', 1 %>
+		<table id="advsearch">
+			<tr><th>Geographically</th>
+				<td>
+					<table cellspacing="0" cellpadding="0" class="inner">
+					<%- if !session[:state_filter].nil? and session[:state_filter].include?('CA') -%>
+						<tr><td>Within the county:</td><td><%= select_tag "county", options_for_select([''] + Location.unique_counties('CA')) %></td></tr>
+					<%- end -%>
+					<%- if session[:state_filter].nil? -%>
+						<tr><td>Within the state:</td><td><%= select_tag "state", '<option></option>' + options_for_select(Location::STATES, params[:state]) %></td></tr>
+					<%- end -%>
+					<tr><td>Within <%= select_tag 'within', options_for_select([['',''], ['1 mile', 1], ['5 miles', 5], ['10 miles', 10], ['20 miles', 20]], params[:within].to_i)%>
+					of</td><td><%= text_field_tag 'origin', params[:origin] %> (zipcode)</td></tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<th>Organizational Details</th>
+				<td>
+					<table cellspacing="0" cellpadding="0" class="inner">
+						<tr><td>Organization Type:</td><td><%= select_tag 'org_type_id', '<option></option>' + options_from_collection_for_select(OrgType.get_available, 'id', 'name', params[:org_type_id].to_i) %></td></tr>
+						<tr><td>Business Sector:</td><td><%= select_tag 'sector_id', '<option></option>' + options_from_collection_for_select(Sector.get_available, 'id', 'name', params[:sector_id].to_i) %></td></tr>
+					</table>
+				</td>
+			</tr>
+			<tr><th><label for="q">Keyword search</label></th>
+				<td><%= text_field_tag 'q', @query, :size => 60 %>
+					<br/><span class="note">searches Organization's name, description and products/services</span>
+				</td>
+			</tr>
+			<tr><th>Data Verification</th>
+				<td><%= check_box_tag 'verified', 1, params[:verified] %>
+					<label for='verified'>Verified entries only</label>
+				</td>
+			</tr>
+		</table>
+		<%= submit_tag 'Search' %>
+	<% end %>
+	<br/>
+	<br/>
+</div>
+<%- end -%>
+<%- end -%>

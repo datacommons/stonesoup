@@ -1,0 +1,6 @@
+<% if @site.custom_map_template
+    map_partial = @site.custom_map_template
+else
+    map_partial = "search/map_core_leaflet"
+end %>
+<%= render :partial => map_partial, :locals => { :map_id => map_id, :map_class => map_class, :orgs => orgs } %>

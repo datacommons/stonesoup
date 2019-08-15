@@ -1,0 +1,221 @@
+  <%
+  # maybe this should be set higher up when we were checking @entries ealier
+  @have_something = true
+  if @entries.blank? and not(@model)
+      @have_something = false
+  end
+  %>
+
+
+  <% if @have_something %>
+  <div<%- if map_class -%> class="<%= map_class %>"<%- end -%> id="<%= map_id %>"></div>
+  <div class="clearboth"></div>
+  <% end %>
+  <div id="add_se">
+    <div id="login">
+      <div class="close-box"></div>
+      <a href="http://edit.<%= request.host %>"><h2>Be On the Map!</h2></a>
+      <p>If you have an SE practice that you’d like to add to the map, or have info to update, you can  fill out the form <a href="http://edit.<%= request.host %>">here</a>.</p>
+    </div>
+    <div class="open-box"></div>
+  </div>
+  <% if @have_something %>
+
+<script>
+
+var ICONS = [
+    "finance-small.png",
+    "food-small.png",
+    "goods-small.png",
+    "governance-small.png",
+    "housing-small.png",
+    "education-small.png",
+    "collectives-small.png"
+]
+
+function icon_group_marker_for_feature(feature, latlng){
+    return L.marker(
+	latlng,
+	{icon: L.icon({
+    iconUrl: '/images/nsfus_solidarity/' +
+			ICONS[feature.properties.icon_group_id],
+    iconSize: [34, 50],
+    iconAnchor: [17, 50],
+    popupAnchor: [0, -50]
+		})
+	} );
+}
+
+function displayResultsCount(data) {
+  var totalCount = 0;
+  data.clusters.features.forEach(feature => totalCount += feature.properties.clusterCount);
+  if (data.grouped_points.length > 0) totalCount += data.grouped_points.length;
+  if (data.single_points.features.length > 0) totalCount += data.single_points.features.length;
+  jQuery('.map-results-count').text(`Showing ${totalCount} locations on map`);
+}
+
+function show_map(){
+
+  <% if @tag.instance_of?(OrgType) %>
+  var require_type='&require_org_type=<%= URI.escape(@tag.name) %>';
+  <% else %>
+  var require_type='';
+  <% end %>
+
+  var filters_from_search = '';
+
+  <%
+  filter_mapping = { "org_type"=>"type_name", "state"=>"state_two_letter", "city"=> "city", "zip"=> "zip", "country"=>"country" }
+  @all_filters.select{|x| x[:active] and ["org_type", "state", "city", "zip", "country"].include?(x[:name]) }.each_with_index do |filter, index|
+      filter[:value].each do | filter_val | %>
+  filters_from_search = filters_from_search + "&<%= filter_mapping[filter[:name]] %>=<%= URI.escape(filter_val) %>"; <% end
+  end %>
+
+  <% if @search_text.blank? %>
+  var open_ended_search_text = '';
+  <% else %>
+  var open_ended_search_text = '&search_text=<%= URI.escape(@search_text) %>';
+  <% end %>
+
+
+  var name = "<%= j map_id %>";
+  var map = L.map(name, {
+    zoomControl: false,
+    minZoom: 2,
+    maxZoom: 18,
+    scrollWheelZoom: false
+  });
+
+  var logo_control = L.Control.extend({
+          options: { position: 'bottomright' },
+          onAdd: function (map) {
+          var container = L.DomUtil.create('div');
+          container.innerHTML =
+  		'<a href="http://mapbox.com/" class="mapbox-logo" ' +
+  		'target="_blank">MapBox</a>';
+
+          return container;
+          }
+  });
+
+  map.addControl( new logo_control() );
+
+  L.control.zoom({position: 'topright'}).addTo(map);
+
+  map.fitBounds( [ [24.446667, -124.785], // south-west
+		 [49.384472, -66.947028] ], // north-east
+		  {padding: [20, 20]}
+  );
+
+  var mapbox = 'https://{s}.tiles.mapbox.com/v4/solidarityeconomy.d591ea8d' +
+  '/{z}/{x}/{y}.png?access_token={accessToken}'
+
+  var attrib = "<a href='https://www.mapbox.com/about/maps/' " +
+	    "target='_blank'>&copy; Mapbox &copy; " +
+	    "OpenStreetMap</a> <a class='mapbox-improve-map' " +
+	    "href='https://www.mapbox.com/map-feedback/' " +
+	    "target='_blank'>Improve this map</a>'"
+
+  var markerGroup = new L.markerClusterGroup({
+    iconCreateFunction: function(cluster) {
+      var count = 0;
+      cluster.getAllChildMarkers().forEach(marker => {
+        const markerCount = marker.feature.properties.clusterCount || 1;
+        count += markerCount;
+      })
+      return cluster_icon_create(count);
+  	}
+  });
+
+  markerGroup.addTo(map);
+
+  L.tileLayer(mapbox, {
+      attribution: attrib,
+      maxZoom: 18,
+      accessToken: mapbox_accessToken
+  }).addTo(map);
+  map.attributionControl.setPrefix(
+      '<a href="http://leafletjs.com" ' +
+      'title="A JS library for interactive maps">Leaflet</a>');
+
+  var geojson_layer_options = {
+  	pointToLayer: function (feature, latlng) {
+      if (feature.properties.clusterCount) {
+        return L.marker(latlng, {
+          icon: cluster_icon_create(feature.properties.clusterCount)
+        });
+      }
+      if (feature.properties.icon_group_id) {
+  		  return icon_group_marker_for_feature(feature, latlng);
+  	  }
+  	  return L.marker(latlng);
+  	},
+
+  	onEachFeature: function(feature, layer) {
+  	    // does this feature have a property named popupContent?
+  	    if (feature.properties && feature.properties.popupContent
+  		&& !feature.properties.clusterCount ){
+  		    layer.bindPopup('<a href="/organizations/' +
+  				    feature.properties.org_id +
+  				   '/">' +
+  				   feature.properties.popupContent +
+  				   '</a>' );
+  		}
+  	    else {
+  		layer.on('click', function(e) {
+  			     if (map._popup) {
+  				 map._popup._source.closePopup();
+  			     }
+  			     // Zoom and pan to clicked item.
+  			     map.panTo(layer.getLatLng());
+  			     map.zoomIn();
+  			 });
+  	    } // else
+  	}
+  };
+
+  function display_map(mapMoved = false) {
+    var type_exclusion_queries = '';
+    // var type_exclusion_queries = '&ignore_types=Credit Unions';
+  	//if ( ! document.getElementById("cu_control").checked ){
+          //    type_exclusion_queries = '&ignore_types=Credit Unions';
+  	//}
+    const url = "/geosearch?bounds=" +
+  	  map.getBounds().toBBoxString() +
+  	  "&zoom=" + map.getZoom() +
+  	  '&ignore_icon_types=0' +
+  	  filters_from_search +
+  	  require_type +
+      open_ended_search_text;
+  	jQuery.getJSON(url, function(data) {
+      displayResultsCount(data);
+      var geojson_layer = L.geoJson(false, geojson_layer_options);
+      geojson_layer.addData(data.clusters);
+      geojson_layer.addData(data.grouped_points);
+      geojson_layer.addData(data.single_points);
+      markerGroup.clearLayers();
+      markerGroup.addLayer(geojson_layer);
+      if (!mapMoved) {
+        let boundOptions = {};
+        if (data.clusters.features.length === 1 && data.single_points.features.length === 0) boundOptions.maxZoom = 11;
+        map.fitBounds(geojson_layer.getBounds(), boundOptions);
+      }
+    });
+  }
+
+  function handle_map_move_end(e){
+  	if (map._popup){
+  	    map._popup._source.closePopup();
+  	}
+  	display_map(true);
+  }
+
+  map.on('moveend', handle_map_move_end);
+  display_map();
+
+} // end show_map()
+
+
+</script>
+
+  <% end %>

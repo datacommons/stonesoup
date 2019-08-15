@@ -32,7 +32,7 @@
 <% unless organization.locations.length == 0 %>
 
   <div id="surround_map">
-  <%= render :partial => "search/map_core_leaflet", :locals => { :map_id => "the_map", :map_class => nil, :orgs => organization.locations } %>
+  <%= render :partial => "search/map_core_leaflet_wrapper", :locals => { :map_id => "the_map", :map_class => nil, :orgs => organization.locations } %>
   <div class="map_offer">
 <% unless organization.locations[0].physical_state.blank? %>
   Meet the neighbors:

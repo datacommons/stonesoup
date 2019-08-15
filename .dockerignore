@@ -1,0 +1,5 @@
+*
+!README.md
+!Gemfile
+!Gemfile.lock
+!serving/nginx.conf

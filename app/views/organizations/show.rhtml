@@ -68,7 +68,7 @@
 	</div>
 <% end %>
 
-<%- unless included_view -%>
+<%- unless included_view or true -%>
 	<div id="organization_editors">
 		<h2>Editors of this entry</h2>
 		<% if @organization.users.any? %>
@@ -104,6 +104,5 @@
 	</ul>
 
 	<span id="organization_edit_link"><%= link_to 'Edit', :action => 'edit', :id => @organization %> |</span>
-	<%= link_to 'Back', :controller => 'search', :action => 'index' %>
 
 <%- end -%>
