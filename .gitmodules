@@ -1,3 +1,0 @@
-[submodule "solr-stonesoup"]
-	path = solr-stonesoup
-	url = https://github.com/datacommons/solr-geocluster-rocks.git
