@@ -7,9 +7,3 @@ production:
 geocode_cache_db:
   adapter: sqlite3
   database: stonesoup.sqlite3
-
-nsf_db:
-  adapter: postgresql
-  database: solid
-  host: host.docker.internal
-  username: paulfitz
