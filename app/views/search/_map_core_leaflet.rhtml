@@ -1,44 +1,6 @@
 
   <%
-  at = 0
-  markers = {}
-  bounds = [10000, 10000, -10000, -10000]
-  @have_something = false
-  mkr = []
-  for e in orgs
-   if e.respond_to? "latitude"
-    unless e.latitude.nil? or e.longitude.nil?
-     unless Float(e.latitude).abs+Float(e.longitude).abs<0.001
-      icon = "/openlayers/img/marker-star.png"
-      pt = [Float(e.latitude), Float(e.longitude)]
-      markers[e.id] = icon
-      bounds = [[bounds[0], pt[0]].min,
-                [bounds[1], pt[1]].min,
-                [bounds[2], pt[0]].max,
-                [bounds[3], pt[1]].max]
-      mkr << {
-            :point => pt, 
-           :info_bubble => show_link(e),
-           :title => e.name,
-           :icon => icon, 
-           :icon_size => [22,22]
-       }
-      @have_something = true
-     end
-    end
-   end
-  end
-  x1 = bounds[0]
-  y1 = bounds[1]
-  x2 = bounds[2]
-  y2 = bounds[3]
-  dx = (x2-x1)/10
-  dy = (y2-y1)/10
-  if dx<0.00001 and dy<0.00001
-    dx = 0.1
-    dy = 0.1
-  end
-  #  map.center_zoom_on_bounds_init([[x1-dx,y1-dy],[x2+dx,y2+dy]]) if @have_something
+  @have_something = true
   %>
 
 
@@ -48,55 +10,7 @@
 
 
 <script>
-function show_map(){
 var name = "<%= j map_id %>";
-
-/**  solidarity-specific part starts here   */
-var x1 = <%= j x1 %>;
-var x2 = <%= j x2 %>;
-var y1 = <%= j y1 %>;
-var y2 = <%= j y2 %>;
-var dx = <%= j dx %>;
-var dy = <%= j dy %>;
-var map = L.map(name, {zoomControl: false});
-
-var logo_control = L.Control.extend({
-        options: { position: 'bottomright' },
-        onAdd: function (map) {
-        var container = L.DomUtil.create('div');
-        container.innerHTML =
-		'<a href="http://mapbox.com/" class="mapbox-logo" ' +
-		'target="_blank">MapBox</a>';
-    
-        return container;
-        }
-});
-
-map.addControl( new logo_control() );
-
-L.control.zoom({position: 'topright'}).addTo(map);
-
-map.fitBounds([[x1-dx,y1-dy],[x2+dx,y2+dy]]);
-
-var mapbox =
-  'http://{s}.tiles.mapbox.com/v4/solidarityeconomy.d591ea8d' +
-  '/{z}/{x}/{y}.png?access_token={accessToken}'
-
-var attrib = 
-	"<a href='https://www.mapbox.com/about/maps/' " +
-	    "target='_blank'>&copy; Mapbox &copy; " +
-	    "OpenStreetMap</a> <a class='mapbox-improve-map' " +
-	    "href='https://www.mapbox.com/map-feedback/' " +
-	    "target='_blank'>Improve this map</a>'"
-L.tileLayer(mapbox, {
-    attribution: attrib,
-    maxZoom: 18,
-    accessToken: mapbox_accessToken
-}).addTo(map);
-    
-/**  solidarity-specific part ends here   */
-
-/****
 
 var orgs = <%= MultiJson.dump(orgs, :only => [:id, :latitude, :longitude, :name]) %>;
 
@@ -129,11 +43,7 @@ L.tileLayer(mapquest, {
     attribution: attrib,
     maxZoom: 16
 }).addTo(map);
-****/
-
-map.attributionControl.setPrefix(
-    '<a href="http://leafletjs.com" ' +
-    'title="A JS library for interactive maps">Leaflet</a>');
+map.attributionControl.setPrefix('<a href="http://leaflet.cloudmade.com/">Leaflet</a>');
 var marker = null;
 var markers = new L.MarkerClusterGroup({maxClusterRadius: 40});
 
@@ -150,7 +60,7 @@ for (var i=0; i<orgs.length; i++) {
 }
 
 map.addLayer(markers);
-}
+
 </script>
 
   <% end %>

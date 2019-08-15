@@ -141,5 +141,8 @@ class Site
     false
   end
 
+  def custom_map_template
+    false
+  end
 end
 

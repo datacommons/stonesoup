@@ -58,4 +58,7 @@ class NSFUSSolidarity < Site
     'layouts/nsfus_solidarity/nsf_list'
   end
 
+  def custom_map_template
+    'layouts/nsfus_solidarity/map_core_leaflet'
+  end
 end
