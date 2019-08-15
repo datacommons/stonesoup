@@ -68,7 +68,7 @@
 	</div>
 <% end %>
 
-<%- unless included_view -%>
+<%- unless included_view or true -%>
 	<div id="organization_editors">
 		<h2>Editors of this entry</h2>
 		<% if @organization.users.any? %>
@@ -96,12 +96,12 @@
 		<% end %>
 	</div>
 
-	<!--<h2>Download this entry</h2>
+	<h2>Download this entry</h2>
 
 	<ul>
 	<li>Download as <%= link_to 'CSV', :action => 'show', :id => @organization, :format => 'csv' %> (suitable for spreadsheet programs)</li>
 	<li>Download as <%= link_to 'XML', :action => 'show', :id => @organization, :format => 'xml' %></li>
-	</ul>-->
+	</ul>
 
 	<span id="organization_edit_link"><%= link_to 'Edit', :action => 'edit', :id => @organization %> |</span>
 
