@@ -26,7 +26,7 @@ var dx = (x2 - x1) / 10;
 var dy = (y2 - y1) / 10;
 var map = L.map(name).fitBounds([[x1-dx,y1-dy],[x2+dx,y2+dy]]);
 
-var mapquest = 'http://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}';
+var mapquest = 'https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}';
 var attrib = 'Tiles &copy; Esri &mdash; National Geographic, Esri, DeLorme, NAVTEQ, UNEP-WCMC, USGS, NASA, ESA, METI, NRCAN, GEBCO, NOAA, iPC';
 L.tileLayer(mapquest, {
     attribution: attrib,
