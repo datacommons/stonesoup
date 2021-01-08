@@ -14,7 +14,7 @@ public
       render :action => 'search'
     else
       @welcome_page = true
-      @source_info = DataSharingOrg.find_by_sql(["select * from sources order by name"])
+      @source_info = DataSharingOrg.find_by_sql(["select * from sources where key is not null and key <> '' order by name"])
       render :action => 'welcome'
     end
   end
