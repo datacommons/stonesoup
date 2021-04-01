@@ -32,7 +32,7 @@ class MaineSite < Site
     [
      {
        :name => "Cooperative Maine",
-       :link => "http://www.cooperativemaine.org/"
+       :link => "https://maine.coop/"
      },
      {
        :name => "Data Commons Cooperative",
