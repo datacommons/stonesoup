@@ -9,7 +9,7 @@ class MaineSite < Site
   end
 
   def dso_filter
-    ["Cooperative Maine Business Association"]
+    ["Cooperative Maine Business Alliance"]
   end
 
   def should_show_latest_people
