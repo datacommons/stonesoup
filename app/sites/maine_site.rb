@@ -9,7 +9,7 @@ class MaineSite < Site
   end
 
   def dso_filter
-    ["Cooperative Maine"]
+    ["Cooperative Maine Business Association"]
   end
 
   def should_show_latest_people
@@ -36,7 +36,7 @@ class MaineSite < Site
      },
      {
        :name => "Data Commons Cooperative",
-       :link => "http://datacommons.find.coop"
+       :link => "http://datacommons.coop"
      },
     ]
   end
