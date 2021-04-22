@@ -25,8 +25,8 @@ var carousel_active = true;
     <div id="carousel-content">
 
 <div id="slide1" class="slide">
-<h3>Cooperative Development</h3>
-<%= render :partial => "search/map", :locals => { :name => "coopdev3", :immediate => false, :link => { :sector => "Cooperative Development " } } %>
+<h3>NYC</h3>
+<%= render :partial => "search/map", :locals => { :name => "nyc", :immediate => false, :link => { :city => "New York" } } %>
 </div>
 
 <div id="slide2" class="slide">
@@ -36,8 +36,8 @@ var carousel_active = true;
 
 
 <div id="slide3" class="slide">
-<h3>Web development</h3>
-<%= render :partial => "search/map", :locals => { :name => "webdev2", :link => { :sector => "Web development", :org_type => "-Inactive" }, :immediate => false } %>
+<h3>Worker Cooperatives</h3>
+<%= render :partial => "search/map", :locals => { :name => "workercoop", :link => { :org_type => "Worker Cooperative" }, :immediate => false } %>
 </div>
 
 <div id="slide4" class="slide">
@@ -104,7 +104,6 @@ carousel = new Carousel('carousel-wrapper', $$('#carousel-content .slide'), $$('
 updateCarouselIndex(0);
 
 </script>
-
 
 <div class="clearboth"></div>
 
