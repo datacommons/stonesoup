@@ -416,9 +416,9 @@ class Organization < ActiveRecord::Base
 
     dso_filter = ApplicationHelper.get_filter(filters,:dso_filter,opts)
     org_type_filter = ApplicationHelper.get_filter(filters,:org_type_filter,opts) || []
-    if org_type_filter.length == 0
-      org_type_filter = ['-Inactive']
-    end
+    #if org_type_filter.length == 0
+    #  org_type_filter = ['-Inactive']
+    #end
     sector_filter = ApplicationHelper.get_filter(filters,:sector_filter,opts) || []
     legal_structure_filter = ApplicationHelper.get_filter(filters,:legal_structure_filter,opts) || []
     condSQLs = []
