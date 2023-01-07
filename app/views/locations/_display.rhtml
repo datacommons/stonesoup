@@ -49,7 +49,11 @@
 	<% unless location.physical_address2.blank? %>
 		<dd><%= location.physical_address2 %></dd>
 	<% end %>
-	<dd><%= location.physical_city %>, <%= location.physical_state %> <%= location.physical_zip %></dd>
+	<% unless location.physical_city.blank? %>
+	  <dd><%= location.physical_city %>, <%= location.physical_state %> <%= location.physical_zip %></dd>
+	<% else %>
+	  <dd><%= location.physical_state %> <%= location.physical_zip %></dd>
+	<% end %>
 	<dd><%= location.physical_country %></dd>
 <% end %>
 <% unless location.mailing_same_as_physical? or location.mailing_address_blank? %>

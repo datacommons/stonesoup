@@ -203,7 +203,6 @@ module ApplicationHelper
     #   MACRO_entities with organizations or persons
     # as appropriate.  This *may* be used in DSO or tag logic, depending
     # on the active filters.
-
     joinSQL, condSQLs, condParams, org_select, org_order = Organization.all_join(session,opts.merge(:entity => "Entity"))
 
     if search_query != ""
@@ -242,7 +241,6 @@ module ApplicationHelper
     org_select = "#{org_select}, (select group_concat(name, ' ~ ') from taggings join tags on taggings.tag_id = tags.id where taggings.taggable_id = organizations.id and taggings.taggable_type = 'Organization' order by name) as tag_names, strftime('%Y', organizations.year_founded) as founded"
 
     ppl_select = org_select.gsub("DISTINCT organizations","DISTINCT people")
-
     entries = Organization.find(:all,
                                 :limit => :all,
                                 :conditions => org_conditions,

@@ -44,7 +44,6 @@ public
     # search_query = @site.blank_search
     #  _params[:q] = search_query
     #end
-
     @entries, @counts, @counts_dsos = @template.search_core(_params,@site,{ :unlimited_search => @unlimited_search, :params => _params }, true)
 
     if params[:merge]

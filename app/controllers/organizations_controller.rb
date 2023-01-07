@@ -26,15 +26,24 @@ class OrganizationsController < ApplicationController
     end
 
     @peers = []
+    @overrides = []
     if @organization.grouping
-      @peers = Organization.find_all_by_grouping(@organization.grouping).select{ 
+      @all_peers = Organization.find_all_by_grouping(@organization.grouping)
+      @overrides = @all_peers.select{
+        |x| x.mode == 'override'
+      }
+      @peers = @all_peers.select{
         |x| x.id != @organization.id
       }
       past = DateTime.now - 10000.years
       @peers = @peers.sort_by { |x| x.updated_at || past }
       @peers.reverse!
     end
-    @orgs = [@organization] + @peers
+    if @overrides.length > 0
+      @orgs = @overrides
+    else
+      @orgs = [@organization] + @peers
+    end
 
     @all_verified_dsos = @orgs.map{|x| x.verified_dsos}.flatten.compact.uniq
 
