@@ -41,6 +41,7 @@ class OrganizationsController < ApplicationController
     end
     if @overrides.length > 0
       @orgs = @overrides
+      @organization = @orgs[0]
     else
       @orgs = [@organization] + @peers
     end
