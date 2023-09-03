@@ -138,6 +138,17 @@ module ApplicationHelper
 
   def website_link(website,opts = {})
     return '' if website.blank?
+    links = website.split
+    html = ""
+    links.each_with_index do |link, index|
+      html << " " unless index == 0
+      html << website_link_core(link)
+    end
+    return html
+  end
+
+  def website_link_core(website,opts = {})
+    return '' if website.blank?
     txt = website
     if opts[:shorten]
       txt.gsub!(/https?:\/\/(www\.)?/,'')

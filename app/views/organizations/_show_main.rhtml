@@ -84,11 +84,7 @@
 		<dl class="address">
 			<dt>Website</dt>
 			<dd>
-			<% if /https?:\/\/(.*)/.match(organization.website)==nil %>
-			  <%= link_to organization.website, "http://#{organization.website}" %>
-			<% else %>
-			  <%= link_to organization.website, "#{organization.website}" %>
-			<% end %>
+			<%= website_link(organization.website) %>
 			</dd>
 		</dl>
 	<% end %>
