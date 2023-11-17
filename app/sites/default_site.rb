@@ -28,7 +28,7 @@ class DefaultSite < Site
      },
      {
        :name => "Join",
-       :link => "http://member.datacommons.coop/applications/new"
+       :link => "https://datacommons.coop/members/join/"
      },
      {
        :name => "Contact",
